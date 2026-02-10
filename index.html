@@ -410,7 +410,8 @@
         }
 
         function renderAnalytics() {
-            const ctx = document.getElementById('analyticsChart'); if(chartInstance) chartInstance.destroy();
+            const ctx = document.getElementById('analyticsChart'); if(!ctx) return;
+            if(chartInstance) chartInstance.destroy();
             let clsCounts = {}; db.logs.forEach(l => { clsCounts[l.class] = (clsCounts[l.class] || 0) + 1; });
             chartInstance = new Chart(ctx, { type: 'bar', data: { labels: Object.keys(clsCounts), datasets: [{ label: 'مرات الاستئذان', data: Object.values(clsCounts), backgroundColor: '#1a5f3f' }] } });
         }

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إذن للانضباط المدرسي - متوسطة الإمام النووي</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary: #1a5f3f; --primary-dark: #0f3d28; --secondary: #d4af37;
+            --danger: #e63946; --success: #2a9d8f; --bg: #f4f7f9; --white: #ffffff;
+            --grad: linear-gradient(135deg, #0f3d28 0%, #1a5f3f 100%);
+            --c-blue: #3498db; --c-green: #2ecc71; --c-orange: #f39c12; --c-purple: #9b59b6; --c-gold: #d4af37;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); color: #333; overflow-x: hidden; line-height: 1.6; }
+
+        #loginOverlay {
+            position: fixed; inset: 0; background: var(--grad);
+            z-index: 10000; display: flex; align-items: center; justify-content: center;
+        }
+        .login-card {
+            background: var(--white); padding: 3rem; border-radius: 35px; width: 90%; max-width: 500px;
+            text-align: center; box-shadow: 0 40px 80px rgba(0,0,0,0.4); border-top: 10px solid var(--secondary);
+        }
+
+        .btn-3d { 
+            width: 100%; padding: 1.2rem; margin: 15px 0; border: none; border-radius: 20px; 
+            font-weight: 800; cursor: pointer; transition: 0.2s; font-size: 1.2rem; display: flex; 
+            align-items: center; justify-content: center; gap: 15px; color: white;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2); text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .btn-3d:active { transform: translateY(4px); box-shadow: none; }
+        .btn-back { background: #666 !important; box-shadow: 0 6px 0 #444 !important; }
+
+        header { 
+            background: var(--grad); color: white; padding: 1rem 2.5rem; display: flex; 
+            justify-content: space-between; align-items: center; position: sticky; top: 0; 
+            z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .badge-danger { background: var(--danger); padding: 6px 20px; border-radius: 50px; font-weight: 800; animation: pulse 2s infinite; }
+
+        .admin-nav { display: flex; gap: 12px; margin: 2rem auto; max-width: 1200px; padding: 0 1rem; overflow-x: auto; }
+        .nav-item { 
+            min-width: 120px; flex: 1; background: white; padding: 1.5rem 0.5rem; border-radius: 25px; text-align: center; 
+            cursor: pointer; transition: 0.3s; box-shadow: 0 8px 15px rgba(0,0,0,0.05); font-weight: 800;
+            border-bottom: 6px solid #ddd; color: #555;
+        }
+        .nav-item.active { border-bottom-color: var(--secondary); background: #fdfaf0; transform: translateY(-5px); color: var(--primary); }
+        .nav-item i { font-size: 2.2rem; margin-bottom: 8px; display: block; filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.1)); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem 5rem; }
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: slideInUp 0.5s ease; }
+
+        .card { background: white; padding: 2.5rem; border-radius: 30px; box-shadow: 0 15px 45px rgba(0,0,0,0.03); margin-bottom: 2.5rem; border: 1px solid #f0f0f0; }
+        .form-input { width: 100%; padding: 18px; margin: 10px 0; border: 2px solid #f2f2f2; border-radius: 18px; font-size: 1rem; }
+        .form-input:focus { border-color: var(--secondary); outline: none; }
+
+        .monitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; }
+        .monitor-card { 
+            background: white; border-right: 20px solid var(--secondary); padding: 2.5rem; border-radius: 35px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06); transition: 0.3s; position: relative; margin-bottom: 20px;
+        }
+        .monitor-card.late { border-right-color: var(--danger); background: #fff8f8; animation: shake 0.5s infinite; }
+
+        .certificate-frame {
+            width: 1100px; height: 780px; padding: 50px; background: white; border: 25px double var(--secondary);
+            margin: 0 auto; display: none; text-align: center; color: var(--primary-dark);
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+            position: relative;
+        }
+        .cert-header-img { font-family: 'Amiri', serif; font-size: 4.5rem; color: var(--primary); margin-bottom: 5px; }
+        .student-name-cert { font-family: 'Amiri', serif; font-size: 4rem; color: var(--primary); text-decoration: underline; margin: 20px 0; display: block; }
+
+        .special-case-wrapper {
+            background: #fff0f0; border: 1px solid #ffcccc; padding: 15px; 
+            border-radius: 15px; margin-top: 15px; display: flex; align-items: center; gap: 15px;
+        }
+        .special-case-wrapper input[type="checkbox"] { width: 25px; height: 25px; cursor: pointer; accent-color: var(--danger); }
+        .special-case-wrapper label { font-weight: 800; color: var(--danger); cursor: pointer; font-size: 1.1rem; }
+
+        .sound-btn { 
+            position: fixed; bottom: 20px; left: 20px; z-index: 9999; 
+            width: 60px; height: 60px; border-radius: 50%; border: none;
+            background: #555; color: white; font-size: 1.5rem; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .sound-btn.active { background: var(--danger); animation: pulse 2s infinite; }
+
+        .report-table-container { margin-top: 2rem; overflow-x: auto; }
+        .report-header { padding: 1rem; border-radius: 15px 15px 0 0; color: white; font-weight: bold; text-align: center; }
+        .rh-red { background: var(--danger); }
+        .rh-yellow { background: var(--c-orange); }
+        .rh-green { background: var(--success); }
+        .report-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; align-items: center;}
+
+        @keyframes slideInUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(4px); } 75% { transform: translateX(-4px); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        @media print { .no-print { display: none !important; } .certificate-frame { display: block !important; position: fixed; inset:0; z-index: 99999; } }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; border-radius: 25px; overflow: hidden; }
+        th { background: #f8faf9; padding: 18px; text-align: right; color: var(--primary); border-bottom: 4px solid var(--secondary); }
+        td { padding: 18px; border-bottom: 1px solid #f5f5f5; background: white; }
+    </style>
+</head>
+<body>
+
+    <audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+    <button id="globalSoundBtn" class="sound-btn no-print" onclick="toggleSound()">
+        <i class="fas fa-volume-mute" id="soundIcon"></i>
+    </button>
+
+    <div id="loginOverlay">
+        <div class="login-card" id="roleSelector">
+            <i class="fas fa-school" style="font-size: 6rem; color: var(--primary); margin-bottom: 2rem; filter: drop-shadow(4px 4px 6px rgba(0,0,0,0.2));"></i>
+            <h1 style="font-family:'Amiri'; color:var(--primary); font-size: 2.8rem; margin-bottom: 1rem">متوسطة الإمام النووي</h1>
+            <p style="color:#777; margin-bottom:2rem; font-weight: 800;">نظام إذن الرقمي</p>
+            <button class="btn-3d" style="background:#2c3e50" onclick="pickRole('admin')"><i class="fas fa-user-shield" style="color:var(--c-blue)"></i> لوحة الإدارة</button>
+            <button class="btn-3d" style="background:var(--secondary); color:var(--primary-dark); box-shadow: 0 6px 0 #a6892a;" onclick="pickRole('teacher')"><i class="fas fa-chalkboard-user" style="color:var(--primary)"></i> دخول المعلم</button>
+        </div>
+        <div class="login-card" id="passPanel" style="display:none">
+            <h3 id="panelHeader" style="margin-bottom:2rem;">التحقق السحابي</h3>
+            <input type="password" id="passInput" class="form-input" placeholder="****" style="text-align:center; font-size:3rem; letter-spacing:15px">
+            <button class="btn-3d" style="background:var(--primary)" onclick="verifyLogin()">تأكيد</button>
+            <button class="btn-3d btn-back" onclick="location.reload()">رجوع</button>
+        </div>
+    </div>
+
+    <header class="no-print">
+        <div style="display:flex; align-items:center; gap:20px">
+            <i class="fas fa-medal" style="color: var(--secondary); font-size: 3.5rem;"></i>
+            <h1 style="font-family:'Amiri'; font-size: 2rem;">متوسطة الإمام النووي</h1>
+        </div>
+        <div style="display:flex; align-items:center; gap:25px">
+            <div id="liveBadge" class="badge-danger">٠ بالخارج</div>
+            <div id="clockAr" style="font-weight:900; font-size:1.3rem"></div>
+            <button onclick="location.reload()" style="background:none; border:none; color:white; font-size:0.8rem; cursor:pointer; text-decoration:underline">خروج</button>
+        </div>
+    </header>
+
+    <div class="admin-nav no-print" id="adminNavBar" style="display:none">
+        <div class="nav-item active" id="tabHome" onclick="goTab('home')"><i class="fas fa-house-user" style="color:var(--c-blue)"></i>الرئيسية</div>
+        <div class="nav-item" id="tabReports" onclick="goTab('reports')"><i class="fas fa-chart-pie" style="color:var(--c-green)"></i>التقارير</div>
+        <div class="nav-item" id="tabCert" onclick="goTab('cert')"><i class="fas fa-award" style="color:var(--c-gold)"></i>التكريم</div>
+        <div class="nav-item" id="tabMonitor" onclick="goTab('monitor')"><i class="fas fa-desktop" style="color:var(--c-orange)"></i>المتابعة</div>
+        <div class="nav-item" id="tabSettings" onclick="goTab('settings')"><i class="fas fa-user-gear" style="color:#777"></i>الإعدادات</div>
+    </div>
+
+    <div class="admin-nav no-print" id="teacherNavBar" style="display:none">
+        <div class="nav-item active" id="tabTeacherForm" onclick="goTab('teacherForm')"><i class="fas fa-signature" style="color:var(--c-blue)"></i>إصدار إذن</div>
+        <div class="nav-item" id="tabTeacherMonitor" onclick="goTab('monitor')"><i class="fas fa-eye" style="color:var(--c-orange)"></i>متابعة طلابي</div>
+    </div>
+
+    <div class="container no-print">
+        <div id="viewTeacherForm" class="view-section">
+            <div class="card">
+                <h2>تسجيل إذن جديد</h2>
+                <label>المعلم:</label>
+                <select id="teacherSel" class="form-input" onchange="refresh()"></select>
+                <div style="display:grid; grid-template-columns:1fr 2.5fr; gap:15px">
+                    <select id="classSel" class="form-input" onchange="loadStudentsForTeacher()"></select>
+                    <select id="studentSel" class="form-input"></select>
+                </div>
+                
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:15px; margin-top:10px">
+                    <select id="destSel" class="form-input"><option>دورة المياه</option><option>المقصف</option><option>الإدارة</option></select>
+                    <input type="number" id="maxLimit" class="form-input" value="5">
+                </div>
+
+                <div class="special-case-wrapper">
+                    <input type="checkbox" id="specialCase">
+                    <label for="specialCase"><i class="fas fa-exclamation-circle"></i> تجاوز النظام (حالة خاصة/طارئة)</label>
+                </div>
+
+                <button class="btn-3d" style="background:var(--primary); margin-top:20px" onclick="issuePerm()">تأكيد الخروج</button>
+            </div>
+            <div id="teacherActiveList"></div>
+        </div>
+
+        <div id="viewHome" class="view-section">
+            <div class="card" style="text-align:center; background:#fffdf5; border:2px dashed var(--secondary)">
+                <h3>كود المعلم اليومي</h3>
+                <div id="dailyCodeVal" style="font-size:5rem; font-weight:900; color:var(--danger); margin:1rem 0">----</div>
+                <button class="btn-3d" style="background:var(--primary); width:auto; padding:10px 50px; margin:0 auto" onclick="newDailyCode()">كود جديد</button>
+            </div>
+            <div class="stat-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="stat-box" style="background: white; padding: 1.5rem; border-radius: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.03);"><h3>خارج الآن</h3><p id="sOut" style="font-size:2.5rem; font-weight:900">٠</p></div>
+                <div class="stat-box" style="background: white; padding: 1.5rem; border-radius: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.03);"><h3>إجمالي اليوم</h3><p id="sToday" style="font-size:2.5rem; font-weight:900">٠</p></div>
+            </div>
+        </div>
+
+        <div id="viewSettings" class="view-section">
+            <div class="card">
+                <h3 style="color:var(--primary)"><i class="fas fa-chalkboard-teacher"></i> إدارة المعلمين</h3>
+                <hr style="margin:15px 0; border:0; border-top:1px solid #eee">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px">
+                    <button class="btn-3d" style="background:#f1f1f1; color:#333; box-shadow:0 4px 0 #ccc" onclick="triggerImp('tch')"><i class="fas fa-file-excel" style="color:green"></i> استيراد معلمين (Excel)</button>
+                    <div style="display:flex; gap:10px">
+                        <input type="text" id="manT" class="form-input" placeholder="اسم المعلم الجديد">
+                        <button class="btn-3d" style="width:auto; padding:0 30px; margin:0; background:var(--primary)" onclick="addTeacherManual()"><i class="fas fa-plus"></i> إضافة معلم</button>
+                    </div>
+                </div>
+                <div id="settingsTList" style="max-height:250px; overflow-y:auto; margin-top:20px; border:1px solid #eee; border-radius:15px; padding:10px"></div>
+            </div>
+
+            <div class="card">
+                <h3 style="color:var(--primary)"><i class="fas fa-user-graduate"></i> إدارة الطلاب والصفوف</h3>
+                <hr style="margin:15px 0; border:0; border-top:1px solid #eee">
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px dashed #ccc;">
+                    <h4 style="margin-bottom:10px; color:#555">1. إضافة صف/شعبة جديدة:</h4>
+                    <div style="display:flex; gap:10px">
+                        <input type="text" id="newClassInput" class="form-input" placeholder="مثال: أول متوسط - أ" style="margin:0">
+                        <button class="btn-3d" style="width:auto; padding:0 30px; margin:0; background:var(--c-blue)" onclick="addNewClass()"><i class="fas fa-plus-circle"></i> إضافة الشعبة</button>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px">
+                    <button class="btn-3d" style="background:#f1f1f1; color:#333; box-shadow:0 4px 0 #ccc" onclick="triggerImp('std')"><i class="fas fa-file-excel" style="color:green"></i> استيراد طلاب (Excel)</button>
+                    <div style="display:flex; flex-direction:column; gap:10px">
+                        <label>2. إضافة طالب للشعبة المختارة:</label>
+                        <select id="settingsClsSel" class="form-input" style="margin:0" onchange="renderStudentsInSettings()"></select>
+                        <div style="display:flex; gap:10px">
+                            <input type="text" id="manS" class="form-input" placeholder="اسم الطالب">
+                            <button class="btn-3d" style="width:auto; padding:0 30px; margin:0; background:var(--secondary); color:#000" onclick="addStudentManual()"><i class="fas fa-plus"></i> إضافة طالب</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="settingsSList" style="max-height:250px; overflow-y:auto; margin-top:20px; border:1px solid #eee; border-radius:15px; padding:10px"></div>
+            </div>
+            
+            <div class="card" style="border:1px solid #ffcccc">
+                <button class="btn-3d" style="background:var(--danger)" onclick="factoryReset()">مسح كافة البيانات (ضبط مصنع)</button>
+            </div>
+        </div>
+
+        <div id="viewMonitor" class="view-section">
+            <h2 style="color:var(--primary); margin-bottom:20px">لوحة المتابعة الحية</h2>
+            <div id="monitorGrid" class="monitor-grid"></div>
+        </div>
+        
+        <div id="viewReports" class="view-section">
+            <div class="card">
+                <canvas id="analyticsChart" style="height:350px"></canvas>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap:20px">
+                <div class="card" style="padding:0; overflow:hidden">
+                    <div class="report-header rh-red">🚨 الأكثر خروجاً (تجاوز الحد)</div>
+                    <div id="reportRedList" style="max-height:300px; overflow-y:auto"></div>
+                </div>
+                <div class="card" style="padding:0; overflow:hidden">
+                    <div class="report-header rh-yellow">⚠️ كثيرو الاستئذان</div>
+                    <div id="reportYellowList" style="max-height:300px; overflow-y:auto"></div>
+                </div>
+                <div class="card" style="padding:0; overflow:hidden">
+                    <div class="report-header rh-green">🌟 نجوم الانضباط (نادر جداً)</div>
+                    <div id="reportGreenList" style="max-height:300px; overflow-y:auto"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="viewCert" class="view-section">
+            <div class="card" style="text-align:center">
+                <h2>إصدار شهادة تقدير</h2>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; max-width:600px; margin:20px auto">
+                    <select id="certIndivClass" class="form-input" onchange="loadStudentsForCert()"></select>
+                    <select id="certIndivStudent" class="form-input"></select>
+                </div>
+                <button class="btn-3d" style="background:var(--primary); width:auto; padding:15px 50px; margin:0 auto" onclick="printStudentCert()">طباعة الشهادة</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="certificateToPrint" class="certificate-frame">
+        <h1 class="cert-header-img">شهادة شكر وتقدير</h1>
+        <div class="cert-content" style="font-size:2.2rem; margin-top:30px">تتقدم متوسطة الإمام النووي بخالص الشكر للطالب:<br><strong id="certTargetName" class="student-name-cert"></strong><br>نظير انضباطه المثالي وسلوكه القويم.</div>
+        <div style="display:flex; justify-content:space-around; margin-top:50px">
+            <div><p>يعتمد مدير المدرسة</p><strong>إبراهيم بن يحيى جابر اللغبي</strong></div>
+        </div>
+    </div>
+
+    <script>
+        const toAr = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+        let currentRole = ''; let adminPass = "2025"; let chartInstance = null; let impType = '';
+        let soundEnabled = false; 
+
+        let db = {
+            students: JSON.parse(localStorage.getItem('db_v10_s')) || {},
+            teachers: JSON.parse(localStorage.getItem('db_v10_t')) || [],
+            logs: JSON.parse(localStorage.getItem('db_v10_l')) || [],
+            dailyCode: localStorage.getItem('db_v10_c') || "1234"
+        };
+
+        function pickRole(r) { currentRole = r; document.getElementById('roleSelector').style.display='none'; document.getElementById('passPanel').style.display='block'; }
+        function verifyLogin() {
+            const val = document.getElementById('passInput').value;
+            if ((currentRole === 'admin' && val === adminPass) || (currentRole === 'teacher' && val === db.dailyCode)) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                if(currentRole === 'admin') { document.getElementById('adminNavBar').style.display='flex'; goTab('home'); }
+                else { document.getElementById('teacherNavBar').style.display='flex'; goTab('teacherForm'); }
+                initApp();
+            } else alert("خطأ في البيانات!");
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('globalSoundBtn');
+            const icon = document.getElementById('soundIcon');
+            const audio = document.getElementById('alertSound');
+            if(soundEnabled) {
+                btn.classList.add('active'); icon.className = "fas fa-volume-up";
+                audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(() => {});
+            } else { btn.classList.remove('active'); icon.className = "fas fa-volume-mute"; }
+        }
+
+        function initApp() { refresh(); setInterval(refresh, 5000); setInterval(() => { document.getElementById('clockAr').innerText = toAr(new Date().toLocaleTimeString('ar-SA')); }, 1000); syncAllDropdowns(); }
+
+        function syncAllDropdowns() {
+            const tOps = db.teachers.map(t => `<option>${t}</option>`).join('');
+            const classKeys = Object.keys(db.students).sort();
+            const cOps = '<option value="">اختر الشعبة</option>' + classKeys.map(c => `<option>${c}</option>`).join('');
+            if(document.getElementById('teacherSel')) document.getElementById('teacherSel').innerHTML = tOps;
+            ['classSel', 'settingsClsSel', 'certIndivClass'].forEach(id => { 
+                const el = document.getElementById(id); if(el) { const v = el.value; el.innerHTML = cOps; if(classKeys.includes(v)) el.value = v; }
+            });
+        }
+
+        function goTab(tab) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            let tid = (tab === 'teacherForm') ? 'viewTeacherForm' : 'view' + tab.charAt(0).toUpperCase() + tab.slice(1);
+            document.getElementById(tid).classList.add('active');
+            if(tab === 'reports') { renderAnalytics(); renderDetailedReports(); }
+            if(tab === 'settings') renderSettingsLists();
+            refresh();
+        }
+
+        function refresh() {
+            const out = db.logs.filter(l => !l.returned);
+            const curT = document.getElementById('teacherSel')?.value;
+            let hasLate = false;
+            out.forEach(l => { if(Math.floor((new Date() - new Date(l.out))/60000) >= l.max) hasLate = true; });
+            if(hasLate && soundEnabled) document.getElementById('alertSound').play().catch(()=>{});
+
+            if(currentRole === 'admin') {
+                document.getElementById('liveBadge').innerText = toAr(out.length);
+                document.getElementById('dailyCodeVal').innerText = toAr(db.dailyCode);
+                document.getElementById('sOut').innerText = toAr(out.length);
+                document.getElementById('sToday').innerText = toAr(db.logs.filter(l => new Date(l.out).toDateString() === new Date().toDateString()).length);
+                renderMonitorGrid(out);
+            } else {
+                const myOut = out.filter(l => l.teacher === curT);
+                document.getElementById('liveBadge').innerText = toAr(myOut.length);
+                renderMonitorGrid(myOut);
+                renderTeacherList(out, curT);
+            }
+        }
+
+        function renderMonitorGrid(logs) {
+            const grid = document.getElementById('monitorGrid'); if(!grid) return;
+            grid.innerHTML = logs.slice().reverse().map(l => {
+                const diff = Math.floor((new Date() - new Date(l.out))/60000);
+                return `<div class="monitor-card ${diff >= l.max?'late':''}"><h2>${l.student}</h2><p>${l.class} | ${l.dest}</p><h3>${toAr(diff)} دقيقة</h3></div>`;
+            }).join('') || '<p style="text-align:center; padding:50px">لا يوجد طلاب بالخارج حالياً</p>';
+        }
+
+        function renderTeacherList(logs, tName) {
+            const myOut = logs.filter(l => !l.returned && l.teacher === tName);
+            document.getElementById('teacherActiveList').innerHTML = myOut.map(l => `
+                <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:1.5rem">
+                    <div><strong>${l.student}</strong> <br><small>${l.class}</small></div>
+                    <button class="btn-3d" style="background:var(--primary); width:auto; padding:5px 20px" onclick="setReturn(${l.id})">تأكيد العودة</button>
+                </div>`).join('');
+        }
+
+        function issuePerm() {
+            const s = document.getElementById('studentSel').value;
+            const c = document.getElementById('classSel').value;
+            if(!s || !c) return alert("يرجى اختيار الطالب والشعبة");
+            db.logs.push({ id:Date.now(), student:s, class:c, teacher:document.getElementById('teacherSel').value, dest:document.getElementById('destSel').value, out:new Date(), returned:false, max:parseInt(document.getElementById('maxLimit').value) });
+            save(); refresh(); alert("تم تسجيل الإذن بنجاح");
+        }
+
+        function setReturn(id) { const l = db.logs.find(x => x.id===id); if(l) { l.returned=true; save(); refresh(); } }
+
+        function renderDetailedReports() {
+            let stats = {};
+            Object.keys(db.students).forEach(cls => { db.students[cls].forEach(stu => { stats[stu] = { count: 0, class: cls }; }); });
+            db.logs.forEach(l => { if(stats[l.student]) stats[l.student].count++; });
+            let red = [], yellow = [], green = [];
+            Object.keys(stats).forEach(name => {
+                let s = stats[name];
+                if(s.count >= 5) red.push({name, ...s});
+                else if(s.count >= 2) yellow.push({name, ...s});
+                else green.push({name, ...s});
+            });
+            const drawRow = (s) => `<div class="report-row"><span>${s.name} <small>(${s.class})</small></span> <strong>${toAr(s.count)}</strong></div>`;
+            document.getElementById('reportRedList').innerHTML = red.sort((a,b)=>b.count-a.count).map(drawRow).join('');
+            document.getElementById('reportYellowList').innerHTML = yellow.sort((a,b)=>b.count-a.count).map(drawRow).join('');
+            document.getElementById('reportGreenList').innerHTML = green.sort((a,b)=>a.count-b.count).map(drawRow).join('');
+        }
+
+        function renderAnalytics() {
+            const ctx = document.getElementById('analyticsChart'); if(chartInstance) chartInstance.destroy();
+            let clsCounts = {}; db.logs.forEach(l => { clsCounts[l.class] = (clsCounts[l.class] || 0) + 1; });
+            chartInstance = new Chart(ctx, { type: 'bar', data: { labels: Object.keys(clsCounts), datasets: [{ label: 'مرات الاستئذان', data: Object.values(clsCounts), backgroundColor: '#1a5f3f' }] } });
+        }
+
+        function addTeacherManual() { const v = document.getElementById('manT').value; if(v) { db.teachers.push(v); save(); renderSettingsLists(); document.getElementById('manT').value=""; } }
+        function addNewClass() { const v = document.getElementById('newClassInput').value; if(v) { db.students[v] = []; save(); syncAllDropdowns(); document.getElementById('newClassInput').value=""; } }
+        function addStudentManual() {
+            const c = document.getElementById('settingsClsSel').value;
+            const v = document.getElementById('manS').value;
+            if(c && v) { db.students[c].push(v); save(); renderStudentsInSettings(); document.getElementById('manS').value=""; }
+        }
+
+        function renderSettingsLists() {
+            document.getElementById('settingsTList').innerHTML = db.teachers.map((t,i) => `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee"><span>${t}</span><button onclick="delT(${i})" style="color:red">حذف</button></div>`).join('');
+            syncAllDropdowns();
+        }
+
+        function renderStudentsInSettings() {
+            const cls = document.getElementById('settingsClsSel').value;
+            if(cls && db.students[cls]) document.getElementById('settingsSList').innerHTML = db.students[cls].map((s,i) => `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee"><span>${s}</span><button onclick="delS('${cls}', ${i})" style="color:red">حذف</button></div>`).join('');
+        }
+
+        function delT(i) { if(confirm("حذف المعلم؟")) { db.teachers.splice(i,1); save(); renderSettingsLists(); } }
+        function delS(c, i) { if(confirm("حذف الطالب؟")) { db.students[c].splice(i,1); save(); renderStudentsInSettings(); } }
+
+        function triggerImp(t) { impType = t; document.getElementById('xlIn').click(); }
+        function handleXL(e) {
+            const r = new FileReader(); r.onload = (evt) => {
+                const wb = XLSX.read(evt.target.result, {type: 'binary'});
+                const d = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                if(impType === 'tch') db.teachers = d.map(r => r['الاسم'] || r['اسم المعلم']).filter(n => n);
+                else { const c = prompt("أدخل اسم الشعبة:"); if(c) db.students[c] = d.map(r => r['الاسم'] || r['اسم الطالب']).filter(n => n); }
+                save(); syncAllDropdowns(); alert("تم الاستيراد بنجاح");
+            }; r.readAsBinaryString(e.target.files[0]);
+        }
+
+        function loadStudentsForTeacher() { const c = document.getElementById('classSel').value; if(c) document.getElementById('studentSel').innerHTML = db.students[c].map(s => `<option>${s}</option>`).join(''); }
+        function loadStudentsForCert() { const c = document.getElementById('certIndivClass').value; if(c) document.getElementById('certIndivStudent').innerHTML = db.students[c].map(s => `<option>${s}</option>`).join(''); }
+        function printStudentCert() { document.getElementById('certTargetName').innerText = document.getElementById('certIndivStudent').value; window.print(); }
+        function newDailyCode() { db.dailyCode = Math.floor(1000+Math.random()*9000).toString(); save(); refresh(); }
+        function factoryReset() { if(confirm("هل أنت متأكد من حذف كافة البيانات؟")) { localStorage.clear(); location.reload(); } }
+        function save() { 
+            localStorage.setItem('db_v10_s', JSON.stringify(db.students)); 
+            localStorage.setItem('db_v10_t', JSON.stringify(db.teachers)); 
+            localStorage.setItem('db_v10_l', JSON.stringify(db.logs)); 
+            localStorage.setItem('db_v10_c', db.dailyCode); 
+        }
+    </script>
+    <input type="file" id="xlIn" hidden onchange="handleXL(event)">
+</body>
+</html>

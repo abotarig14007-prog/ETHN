@@ -461,5 +461,49 @@
         }
     </script>
     <input type="file" id="xlIn" hidden onchange="handleXL(event)">
+    <script type="module">
+    // استيراد مكتبات Firebase للمزامنة اللحظية
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // إعدادات الربط بمشروعك "إذن"
+    const firebaseConfig = { projectId: "edin-377b2" };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // دالة إصدار الإذن وإرساله للسحابة فوراً
+    window.issuePerm = async () => {
+        const student = document.getElementById('studentSel').value;
+        const teacher = document.getElementById('teacherSel').value;
+        const className = document.getElementById('classSel').value;
+
+        if(!student || !className) return alert("يرجى اختيار الطالب والشعبة");
+
+        try {
+            await addDoc(collection(db, "perms"), {
+                student: student,
+                teacher: teacher,
+                class: className,
+                outTime: serverTimestamp(),
+                status: "out"
+            });
+            alert("تم تسجيل الإذن ومزامنته سحابياً بنجاح");
+        } catch (e) {
+            console.error("خطأ في المزامنة: ", e);
+        }
+    };
+
+    // دالة المتابعة الحية (تحدث الشاشة تلقائياً عند أي تغيير)
+    const q = query(collection(db, "perms"), orderBy("outTime", "desc"));
+    onSnapshot(q, (snapshot) => {
+        const outList = [];
+        snapshot.forEach((doc) => {
+            if(doc.data().status === "out") outList.push({id: doc.id, ...doc.data()});
+        });
+        
+        // هنا يتم تحديث شاشة المتابعة لديك فوراً
+        renderMonitorGrid(outList);
+    });
+</script>
 </body>
 </html>

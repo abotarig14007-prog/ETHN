@@ -4,1280 +4,426 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="نظام الإدارة المدرسية الموحد - الإصدار المليوني الشامل">
-    <meta name="author" content="Titanium Systems V12">
-    <title>نظام إذن الرقمي - Ultimate Enterprise V12</title>
+    <title>نظام إذن - Obsidian V13 (Stable)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* * 2.1. تعريف المتغيرات الجذرية (Root Variables)
-         * تم تعريف الألوان بدقة عالية لضمان التناسق البصري
-         */
         :root {
-            /* الألوان الرئيسية */
-            --color-primary-main: #145A32;
-            --color-primary-dark: #0B3B24;
-            --color-primary-light: #1E8449;
-            --color-primary-bg: #E8F5E9;
-            
-            /* ألوان التمييز (الذهبي) */
-            --color-gold-main: #D4AC0D;
-            --color-gold-hover: #B7950B;
-            --color-gold-light: #FEF9E7;
-            
-            /* ألوان الحالات */
-            --color-success: #27AE60;
-            --color-danger: #C0392B;
-            --color-warning: #E67E22;
-            --color-info: #2980B9;
-            --color-special: #8E44AD;
-            
-            /* الخلفيات والنصوص */
-            --color-bg-body: #F3F4F6;
-            --color-bg-card: #FFFFFF;
-            --color-text-primary: #1F2937;
-            --color-text-secondary: #6B7280;
-            --color-border: #E5E7EB;
-            
-            /* الأبعاد والقياسات */
-            --header-height: 95px;
-            --border-radius-card: 20px;
-            --border-radius-btn: 12px;
-            
-            /* الظلال */
-            --shadow-default: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-
-        /* * 2.2. إعادة التعيين والأساسيات (Reset & Base)
-         */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: var(--color-bg-body);
-            color: var(--color-text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 150px;
-            line-height: 1.8;
-            direction: rtl;
-        }
-
-        /* * 2.3. نظام الإشعارات والتنبيهات (Notification System)
-         */
-        #system-notifications {
-            position: fixed;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000000;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 90%;
-            max-width: 450px;
-            pointer-events: none;
-        }
-
-        .notification-card {
-            background-color: #333333;
-            color: #ffffff;
-            padding-top: 18px;
-            padding-bottom: 18px;
-            padding-right: 25px;
-            padding-left: 25px;
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-weight: 700;
-            font-size: 1.05rem;
-            pointer-events: auto;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            animation-name: slideDownFade;
-            animation-duration: 0.5s;
-            animation-fill-mode: forwards;
-        }
-
-        .notification-card.success {
-            background-color: rgba(39, 174, 96, 0.95);
-            border-right-width: 6px;
-            border-right-style: solid;
-            border-right-color: #2ecc71;
-        }
-
-        .notification-card.error {
-            background-color: rgba(192, 57, 43, 0.95);
-            border-right-width: 6px;
-            border-right-style: solid;
-            border-right-color: #e74c3c;
-        }
-
-        .notification-card.info {
-            background-color: rgba(41, 128, 185, 0.95);
-            border-right-width: 6px;
-            border-right-style: solid;
-            border-right-color: #3498db;
-        }
-
-        @keyframes slideDownFade {
-            0% { transform: translateY(-100%); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        /* * 2.4. شاشة تسجيل الدخول (Login Interface)
-         */
-        #login-overlay-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, var(--color-primary-main) 0%, #000000 100%);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(15px);
-        }
-
-        .login-card-box {
-            background-color: #FFFFFF;
-            width: 95%;
-            max-width: 600px;
-            padding: 4rem 3rem;
-            border-radius: 3rem;
-            text-align: center;
-            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.6);
-            border-top: 15px solid var(--color-gold-main);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-logo-icon {
-            font-size: 5rem;
-            color: var(--color-primary-main);
-            margin-bottom: 20px;
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
-        }
-
-        .login-title-text {
-            font-family: 'Amiri', serif;
-            font-size: 2.2rem;
-            color: var(--color-primary-main);
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .login-subtitle-text {
-            font-size: 1.1rem;
-            color: var(--color-text-secondary);
-            margin-bottom: 30px;
-            font-weight: 500;
-        }
-
-        .roles-grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 2rem;
-        }
-
-        .role-selection-btn {
-            border: 2px solid var(--color-border);
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            background-color: #ffffff;
-        }
-
-        .role-selection-btn:hover {
-            border-color: var(--color-primary-main);
-            background-color: var(--color-primary-bg);
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-default);
-        }
-
-        .role-selection-btn i {
-            font-size: 2.5rem;
-            color: var(--color-text-secondary);
-        }
-
-        .role-selection-btn h3 {
-            font-size: 1.1rem;
-            margin: 0;
-            font-weight: 700;
-            color: var(--color-text-primary);
-        }
-
-        /* حقل الرمز السري */
-        .pin-entry-container {
-            display: none;
-            margin-top: 2rem;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .pin-input-field {
-            width: 100%;
-            padding: 1.5rem;
-            font-size: 2.5rem;
-            text-align: center;
-            letter-spacing: 15px;
-            border: 2px solid #D1D5DB;
-            border-radius: 1.5rem;
-            margin-bottom: 20px;
-            font-family: monospace;
-            background-color: #F9FAFB;
-            transition: 0.3s;
-        }
-
-        .pin-input-field:focus {
-            border-color: var(--color-gold-main);
-            background-color: #FFFFFF;
-            box-shadow: 0 0 0 5px rgba(212, 172, 13, 0.2);
-        }
-
-        /* * 2.5. الهيدر العلوي (Application Header)
-         */
-        .app-header-bar {
-            background: linear-gradient(135deg, var(--color-primary-main) 0%, #064E3B 100%);
-            color: white;
-            height: var(--header-height);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-left: 3%;
-            padding-right: 3%;
-            position: sticky;
-            top: 0;
-            z-index: 5000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-        }
-
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .brand-container i {
-            font-size: 3rem;
-            color: var(--color-gold-main);
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-
-        .brand-text h1 {
-            font-family: 'Amiri', serif;
-            font-size: 2rem;
-            margin: 0;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .brand-text small {
-            opacity: 0.9;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .header-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .header-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
-        }
-
-        .header-btn.logout {
-            background-color: #c0392b;
-            border-color: #e74c3c;
-        }
-
-        .live-counter-badge {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 8px 20px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 700;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* * 2.6. شريط التنقل والقوائم (Navigation)
-         */
-        .nav-bar-wrapper {
-            background-color: #FFFFFF;
-            padding-top: 15px;
-            padding-bottom: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: var(--header-height);
-            z-index: 4000;
-            margin-bottom: 30px;
-        }
-
-        .nav-list-scroll {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            padding-left: 5%;
-            padding-right: 5%;
-            justify-content: center;
-            scrollbar-width: none;
-        }
-
-        .nav-item-pill {
-            background-color: #F8F9FA;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            color: var(--color-text-secondary);
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .nav-item-pill:hover {
-            background-color: var(--color-primary-bg);
-            color: var(--color-primary-main);
-            transform: translateY(-2px);
-        }
-
-        .nav-item-pill.active {
-            background-color: var(--color-primary-main);
-            color: white;
-            box-shadow: 0 5px 15px rgba(20, 90, 50, 0.25);
-            transform: translateY(-2px);
-        }
-
-        /* * 2.7. هيكل المحتوى والبطاقات (Content Layout)
-         */
-        .main-container-wrapper {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .page-section {
-            display: none;
-            animation-name: fadeInUp;
-            animation-duration: 0.5s;
-            animation-timing-function: ease-out;
-        }
-
-        .page-section.active {
-            display: block;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .content-card {
-            background-color: var(--color-bg-card);
-            border-radius: var(--border-radius-card);
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-default);
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .content-card:hover {
-            box-shadow: var(--shadow-hover);
-        }
-
-        .card-header-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px dashed var(--color-border);
-        }
-
-        .card-title {
-            font-size: 1.6rem;
-            color: var(--color-primary-main);
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 0;
-        }
-
-        /* * 2.8. المدخلات والأزرار (Inputs & Buttons)
-         */
-        .standard-input {
-            width: 100%;
-            padding: 1rem 1.5rem;
-            border: 2px solid var(--color-border);
-            border-radius: var(--border-radius-btn);
-            font-size: 1.1rem;
-            background-color: #FAFAFA;
-            transition: all 0.3s;
-            margin-bottom: 15px;
-            color: var(--color-text-primary);
-        }
-
-        .standard-input:focus {
-            border-color: var(--color-gold-main);
-            background-color: #FFFFFF;
-            box-shadow: 0 0 0 4px rgba(212, 172, 13, 0.15);
-        }
-
-        select.standard-input {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: left 1rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em;
-            padding-left: 2.5rem;
-        }
-
-        .main-action-btn {
-            width: 100%;
-            padding: 1rem;
-            border: none;
-            border-radius: var(--border-radius-btn);
-            font-size: 1.2rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .main-action-btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn-green { background-color: var(--color-primary-main); color: white; box-shadow: 0 4px 6px rgba(20, 90, 50, 0.2); }
-        .btn-green:hover { background-color: var(--color-primary-dark); }
-
-        .btn-gold { background-color: var(--color-gold-main); color: #222; box-shadow: 0 4px 6px rgba(212, 172, 13, 0.2); }
-        .btn-gold:hover { background-color: var(--color-gold-hover); }
-
-        .btn-red { background-color: var(--color-status-danger); color: white; box-shadow: 0 4px 6px rgba(192, 57, 43, 0.2); }
-        .btn-blue { background-color: var(--color-status-info); color: white; box-shadow: 0 4px 6px rgba(41, 128, 185, 0.2); }
-        .btn-orange { background-color: var(--color-status-warning); color: white; box-shadow: 0 4px 6px rgba(230, 126, 34, 0.2); }
-
-        /* * 2.9. الشبكة والبطاقات الذكية (Grid & Cards)
-         */
-        .dashboard-grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .monitor-item-card {
-            background-color: #FFFFFF;
-            padding: 20px;
-            border-radius: 20px;
-            border-right: 8px solid var(--color-status-success);
-            box-shadow: var(--shadow-default);
-            position: relative;
-            transition: all 0.3s;
-            margin-bottom: 15px;
-        }
-
-        .monitor-item-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .monitor-item-card.late {
-            border-right-color: var(--color-status-danger);
-            background-color: #FFF5F5;
-        }
-
-        .monitor-item-card.special {
-            border-right-color: var(--color-status-special);
-            background-color: #FDF4FF;
-            border-width: 10px;
-        }
-
-        .monitor-item-card.pending {
-            border-right-color: var(--color-status-info);
-            background-color: #EFF6FF;
-        }
-
-        /* * 2.10. الجداول المتقدمة (Tables)
-         */
-        .data-table-responsive {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .data-table-responsive th {
-            background-color: #F9FAFB;
-            padding: 15px;
-            text-align: right;
-            color: var(--color-text-secondary);
-            font-weight: 800;
-            border-bottom: 2px solid #E5E7EB;
-        }
-
-        .data-table-responsive td {
-            padding: 15px;
-            border-bottom: 1px solid #F3F4F6;
-            color: var(--color-text-primary);
-        }
-
-        .data-table-responsive tr:hover {
-            background-color: #F9FAFB;
-        }
-
-        /* * 2.11. الإعدادات والقوائم (Settings Lists)
-         */
-        .settings-list-container {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #E5E7EB;
-            border-radius: 15px;
-            margin-top: 15px;
-            background-color: #FFFFFF;
-        }
-
-        .settings-list-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
-            border-bottom: 1px solid #F3F4F6;
-        }
-
-        .settings-list-row:hover {
-            background-color: #FAFAFA;
-        }
-
-        .delete-icon-btn {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background-color: #FEE2E2;
-            color: #EF4444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .delete-icon-btn:hover {
-            background-color: #EF4444;
-            color: white;
-            transform: rotate(90deg);
-        }
-
-        /* * 2.12. مناطق الطباعة (Print Zones)
-         */
-        .print-template-area {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #FFFFFF;
-            z-index: 20000;
-        }
-
-        @media print {
-            body * { visibility: hidden; }
-            .print-template-area, .print-template-area * { visibility: visible; }
-            .print-template-area { display: block !important; }
-            .no-print { display: none !important; }
-            
-            .certificate-border {
-                border: 40px double var(--color-gold-main);
-                padding: 50px;
-                text-align: center;
-                height: 100%;
-                background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-            }
-        }
-
-        /* * 2.13. استجابة الجوال (Responsive Mobile)
-         */
-        @media (max-width: 768px) {
-            .app-header-bar {
-                height: auto;
-                flex-direction: column;
-                padding: 20px;
-                gap: 15px;
-            }
-            .nav-list-scroll {
-                justify-content: flex-start;
-            }
-            .dashboard-grid-layout {
-                grid-template-columns: 1fr;
-            }
-            .roles-grid-container {
-                grid-template-columns: 1fr;
-            }
-            .card-header-flex {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-        }
+            --primary: #145A32;
+            --gold: #D4AC0D;
+            --danger: #C0392B;
+            --bg: #F3F4F6;
+            --text: #1F2937;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 100px; }
+
+        /* شاشة التحميل (لضمان عمل الزر) */
+        #loader-overlay {
+            position: fixed; inset: 0; background: white; z-index: 999999; 
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            transition: opacity 0.5s;
+        }
+        .loader-spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* التنبيهات */
+        #toast-box { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; width: 90%; max-width: 400px; }
+        .toast { background: #333; color: #fff; padding: 15px 25px; border-radius: 50px; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; animation: slideIn 0.3s; }
+        @keyframes slideIn { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+        /* شاشة الدخول */
+        #login-wrap { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary) 0%, #000 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: #fff; width: 95%; max-width: 550px; padding: 3rem 2rem; border-radius: 30px; text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.5); }
+        
+        .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .role-btn { border: 2px solid #eee; padding: 15px 5px; border-radius: 15px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .role-btn:hover { background: #f0fdf4; border-color: var(--primary); transform: translateY(-5px); }
+        .role-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .role-btn.active i { color: white; }
+        .role-btn i { font-size: 2rem; color: #666; }
+
+        .pin-area { margin-top: 20px; display: none; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .pin-input { width: 100%; padding: 15px; font-size: 2.5rem; text-align: center; letter-spacing: 15px; border: 2px solid #ddd; border-radius: 15px; font-family: monospace; }
+        .pin-input:focus { border-color: var(--gold); }
+
+        .action-btn { width: 100%; padding: 15px; border: none; border-radius: 15px; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-green { background: var(--primary); color: white; }
+        .btn-green:active { transform: scale(0.98); }
+        .btn-red { background: var(--danger); color: white; }
+
+        /* التطبيق */
+        header { background: linear-gradient(135deg, var(--primary) 0%, #064E3B 100%); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 5000; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .nav-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 15px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 80px; z-index: 4000; }
+        .nav-btn { background: #f8f9fa; border: none; padding: 10px 25px; border-radius: 50px; white-space: nowrap; cursor: pointer; font-weight: bold; color: #555; }
+        .nav-btn.active { background: var(--primary); color: white; }
+
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .view { display: none; animation: fadeIn 0.5s; }
+        .view.active { display: block; }
+
+        .card { background: white; padding: 25px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .inp { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 15px; font-size: 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+        .item-card { background: #fff; padding: 20px; border-radius: 15px; border-right: 6px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 10px; }
+        .item-card.late { border-color: var(--danger); background: #fff5f5; }
+
+        /* طباعة */
+        @media print { body * { visibility: hidden; } .print-area, .print-area * { visibility: visible; } .print-area { display: block !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 99999; } .no-print { display: none !important; } }
     </style>
 </head>
 <body>
 
-    <audio id="audio-success" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
-    <audio id="audio-error" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
-    <audio id="audio-alert" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-    <audio id="audio-doorbell" src="https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3"></audio>
+    <div id="loader-overlay">
+        <div class="loader-spinner"></div>
+        <h3 style="margin-top:20px; color:#555">جاري تجهيز النظام...</h3>
+    </div>
 
-    <div id="system-notifications"></div>
+    <div id="toast-box"></div>
+    
+    <audio id="snd-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
-    <div id="login-overlay-container">
-        <div class="login-card-box" id="login-role-step">
-            <i class="fas fa-school login-logo-icon"></i>
-            <h1 class="login-title-text">متوسطة الإمام النووي</h1>
-            <p class="login-subtitle-text">بوابة النظام الموحد - الإصدار المليوني</p>
-            
-            <div class="roles-grid-container">
-                <div class="role-selection-btn" onclick="AuthModule.selectRole('admin')">
-                    <i class="fas fa-user-shield"></i>
-                    <h3>الإدارة / الوكيل</h3>
-                </div>
-                <div class="role-selection-btn" onclick="AuthModule.selectRole('teacher')">
-                    <i class="fas fa-chalkboard-user"></i>
-                    <h3>المعلم</h3>
-                </div>
-                <div class="role-selection-btn" onclick="AuthModule.selectRole('guard')">
-                    <i class="fas fa-user-lock"></i>
-                    <h3>الأمن / الحارس</h3>
-                </div>
+    <div id="login-wrap">
+        <div class="login-card" id="login-step-1">
+            <h1 style="color:var(--primary); font-family:'Amiri'; margin-bottom:10px">بوابة الإمام النووي</h1>
+            <p style="color:#666; margin-bottom:30px">الرجاء اختيار الصلاحية</p>
+            <div class="role-grid">
+                <div class="role-btn" onclick="Auth.setRole('admin', this)"><i class="fas fa-user-shield"></i><b>الإدارة</b></div>
+                <div class="role-btn" onclick="Auth.setRole('teacher', this)"><i class="fas fa-chalkboard-user"></i><b>المعلم</b></div>
+                <div class="role-btn" onclick="Auth.setRole('guard', this)"><i class="fas fa-user-lock"></i><b>الحارس</b></div>
             </div>
         </div>
 
-        <div class="login-card-box pin-entry-container" id="login-pin-step">
-            <h2 class="login-title-text">التحقق الأمني</h2>
-            <p class="login-subtitle-text">أدخل كود الدخول المصرح به</p>
-            
-            <input type="password" id="pin-code-input" class="pin-input-field" placeholder="••••" maxlength="4">
-            
-            <div style="display:flex; gap:15px; margin-top:20px">
-                <button class="main-action-btn btn-green" onclick="AuthModule.verifyPin()">تأكيد الدخول</button>
-                <button class="main-action-btn btn-red" onclick="location.reload()">إلغاء</button>
-            </div>
+        <div class="login-card pin-area" id="login-step-2">
+            <h2 style="color:var(--primary); margin-bottom:20px">الرمز السري</h2>
+            <input type="password" id="pin-code" class="pin-input" placeholder="****" maxlength="4">
+            <button id="btn-login-action" class="action-btn btn-green" onclick="Auth.checkPin()">تأكيد الدخول</button>
+            <button class="action-btn btn-red" onclick="location.reload()">رجوع</button>
         </div>
     </div>
 
-    <div id="application-root" style="display:none">
-        
-        <header class="app-header-bar no-print">
-            <div class="brand-container">
-                <i class="fas fa-graduation-cap"></i>
-                <div class="brand-text">
-                    <h1>إذن الرقمي</h1>
-                    <small>Enterprise System V12</small>
-                </div>
+    <div id="app-main" style="display:none">
+        <header class="no-print">
+            <div style="display:flex; align-items:center; gap:10px">
+                <i class="fas fa-graduation-cap" style="font-size:2.5rem; color:#D4AC0D"></i>
+                <div><h2 style="font-family:'Amiri'; margin:0">إذن الرقمي</h2><small>Obsidian V13</small></div>
             </div>
-            
-            <div class="header-controls">
-                <div class="header-btn" onclick="SoundModule.toggle()" id="btn-sound-toggle" title="الصوت">
-                    <i class="fas fa-volume-up"></i>
-                </div>
-                
-                <div class="live-counter-badge">
-                    <i class="fas fa-walking"></i>
-                    <span id="live-count-header">0</span> بالخارج
-                </div>
-                
-                <div class="header-btn" onclick="AppCore.goBack()" title="رجوع">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-
-                <div class="header-btn logout" onclick="location.reload()" title="تسجيل خروج">
-                    <i class="fas fa-power-off"></i>
-                </div>
-            </div>
+            <button class="nav-btn" style="background:#c0392b; color:white" onclick="location.reload()">خروج</button>
         </header>
 
-        <nav class="nav-bar-wrapper no-print">
-            <div class="nav-list-scroll" id="navigation-menu-items">
+        <nav class="nav-scroll no-print" id="nav-menu"></nav>
+
+        <div class="container no-print">
+            
+            <div id="v-home" class="view">
+                <div class="card" style="text-align:center">
+                    <h3 style="color:#777">كود المعلم المتزامن</h3>
+                    <div id="code-disp" style="font-size:5rem; font-weight:900; color:var(--primary); margin:20px 0; font-family:monospace">----</div>
+                    <button class="action-btn btn-green" style="width:auto; margin:0 auto" onclick="Sys.genCode()">تحديث الكود</button>
                 </div>
-        </nav>
-
-        <main class="main-container-wrapper no-print">
-
-            <div id="view-dashboard" class="page-section">
-                <div class="content-card" style="text-align:center; background:linear-gradient(to bottom, #fff, #f0fdf4)">
-                    <h3 style="color:#6B7280; display:flex; align-items:center; justify-content:center; gap:10px">
-                        <i class="fas fa-key"></i> كود المعلم المتزامن اليومي
-                    </h3>
-                    <div id="daily-code-display" style="font-size:6rem; font-weight:900; color:var(--color-primary-main); margin:20px 0; font-family:monospace; letter-spacing:15px">----</div>
-                    <button class="main-action-btn btn-gold" style="width:auto; margin:0 auto; padding:10px 50px" onclick="OpsModule.refreshCode()">
-                        <i class="fas fa-sync fa-spin-hover"></i> تحديث الكود
-                    </button>
+                <div class="grid">
+                    <div class="card" style="text-align:center"><h1 id="st-1" style="font-size:3rem; color:var(--primary)">0</h1><p>أذونات</p></div>
+                    <div class="card" style="text-align:center"><h1 id="st-2" style="font-size:3rem; color:#E67E22">0</h1><p>انصراف</p></div>
+                    <div class="card" style="text-align:center"><h1 id="st-3" style="font-size:3rem; color:#2980B9">0</h1><p>زوار</p></div>
                 </div>
+            </div>
 
-                <div class="dashboard-grid-layout">
-                    <div class="content-card" style="text-align:center; background:#ecfdf5; border-color:#6ee7b7">
-                        <i class="fas fa-clipboard-check" style="font-size:3rem; color:var(--color-primary-main); margin-bottom:15px"></i>
-                        <h2 id="stat-perms" style="font-size:3.5rem; color:var(--color-primary-main); margin:0">0</h2>
-                        <p style="font-weight:800; color:#065f46">أذونات اليوم</p>
+            <div id="v-teacher" class="view">
+                <div class="card">
+                    <h2>إصدار إذن</h2>
+                    <label>المعلم:</label><select id="t-sel" class="inp"><option>جاري التحميل...</option></select>
+                    <div class="grid">
+                        <div><label>الشعبة:</label><select id="c-sel" class="inp" onchange="Data.filt('c-sel','s-sel')"><option>الشعبة...</option></select></div>
+                        <div><label>الطالب:</label><select id="s-sel" class="inp"><option>الطالب...</option></select></div>
                     </div>
-                    <div class="content-card" style="text-align:center; background:#fff7ed; border-color:#fdba74">
-                        <i class="fas fa-door-open" style="font-size:3rem; color:var(--color-status-warning); margin-bottom:15px"></i>
-                        <h2 id="stat-departs" style="font-size:3.5rem; color:var(--color-status-warning); margin:0">0</h2>
-                        <p style="font-weight:800; color:#9a3412">حالات انصراف</p>
+                    <label>الوجهة:</label><select id="d-sel" class="inp"><option>دورة المياه</option><option>المقصف</option><option>الإدارة</option></select>
+                    <button class="action-btn btn-green" onclick="Sys.perm()">إصدار</button>
+                </div>
+            </div>
+
+            <div id="v-wakil" class="view">
+                <div class="card">
+                    <h2>إصدار انصراف</h2>
+                    <div style="display:flex; gap:10px">
+                        <select id="w-c" class="inp" onchange="Data.filt('w-c','w-s')"><option>الشعبة...</option></select>
+                        <select id="w-s" class="inp"><option>الطالب...</option></select>
                     </div>
-                    <div class="content-card" style="text-align:center; background:#eff6ff; border-color:#93c5fd">
-                        <i class="fas fa-users" style="font-size:3rem; color:var(--color-status-info); margin-bottom:15px"></i>
-                        <h2 id="stat-visits" style="font-size:3.5rem; color:var(--color-status-info); margin:0">0</h2>
-                        <p style="font-weight:800; color:#1e40af">زوار اليوم</p>
+                    <input id="w-r" class="inp" placeholder="السبب / المستلم">
+                    <button class="action-btn btn-green" style="background:#E67E22" onclick="Sys.dep()">اعتماد</button>
+                </div>
+                <div class="card"><h2>طلبات الزوار</h2><div id="w-vis-list"></div></div>
+            </div>
+
+            <div id="v-guard" class="view">
+                <div class="card">
+                    <h2>تسجيل زائر</h2>
+                    <input id="g-n" class="inp" placeholder="الاسم">
+                    <input id="g-i" class="inp" placeholder="الهوية">
+                    <input id="g-r" class="inp" placeholder="السبب">
+                    <button class="action-btn btn-green" style="background:#2980B9" onclick="Sys.vis()">إرسال طلب</button>
+                </div>
+                <div class="card"><h2>المغادرون</h2><div id="g-dep-list"></div></div>
+            </div>
+
+            <div id="v-mon" class="view"><h2>المتابعة الحية</h2><div id="mon-list" class="grid"></div></div>
+
+            <div id="v-rep" class="view">
+                <div class="card">
+                    <h2>التقارير</h2>
+                    <div style="display:flex; gap:10px; margin-bottom:20px">
+                        <button class="nav-btn active" onclick="document.getElementById('rep-s').style.display='block';document.getElementById('rep-v').style.display='none'">الطلاب</button>
+                        <button class="nav-btn" onclick="document.getElementById('rep-s').style.display='none';document.getElementById('rep-v').style.display='block'">الزوار</button>
+                    </div>
+                    <div id="rep-s">
+                        <input type="month" id="r-mo" class="inp" style="width:auto" onchange="Rep.draw()">
+                        <div style="height:300px"><canvas id="myChart"></canvas></div>
+                        <div class="grid">
+                            <div style="background:#fef2f2; padding:15px; border-radius:15px"><h4 style="color:red">الأكثر خروجاً</h4><ul id="top-l"></ul></div>
+                            <div style="background:#f0fdf4; padding:15px; border-radius:15px"><h4 style="color:green">الأقل خروجاً</h4><ul id="low-l"></ul></div>
+                        </div>
+                    </div>
+                    <div id="rep-v" style="display:none">
+                        <button class="nav-btn" onclick="window.print()">طباعة</button>
+                        <table style="width:100%; border-collapse:collapse; margin-top:15px" border="1">
+                            <thead><tr><th>الاسم</th><th>الهوية</th><th>السبب</th><th>الوقت</th></tr></thead>
+                            <tbody id="vis-tb"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <div id="view-teacher" class="page-section">
-                <div class="content-card">
-                    <div class="card-header-flex">
-                        <h2 class="card-title"><i class="fas fa-file-pen"></i> إصدار إذن خروج</h2>
+            <div id="v-set" class="view">
+                <div class="card">
+                    <div style="display:flex; gap:10px; margin-bottom:20px">
+                        <button class="nav-btn active" onclick="Set.swap('t')">المعلمون</button>
+                        <button class="nav-btn" onclick="Set.swap('s')">الطلاب</button>
+                        <button class="nav-btn" onclick="Set.swap('sys')">النظام</button>
                     </div>
                     
-                    <div style="background:#F9FAFB; padding:20px; border-radius:15px; margin-bottom:25px; border:1px solid #E5E7EB">
-                        <label style="font-weight:800; margin-bottom:5px; display:block">المعلم المصدر:</label>
-                        <select id="teacher-select-dropdown" class="standard-input">
-                            <option value="">جاري تحميل القائمة...</option>
-                        </select>
+                    <div id="st-t">
+                        <div style="display:flex; gap:10px"><input id="nt" class="inp" placeholder="اسم المعلم"><button class="nav-btn" style="background:var(--primary); color:white" onclick="Set.addT()">حفظ</button></div>
+                        <div style="border:2px dashed #ccc; padding:20px; text-align:center; cursor:pointer" onclick="document.getElementById('ft').click()"><i class="fas fa-file-excel"></i> استيراد<input type="file" id="ft" hidden onchange="Set.impT(this)"></div>
+                        <div id="lst-t" style="margin-top:15px; max-height:200px; overflow-y:auto"></div>
                     </div>
 
-                    <div style="display:grid; grid-template-columns:1fr 2fr; gap:25px; margin-bottom:15px">
-                        <div>
-                            <label style="font-weight:800; margin-bottom:5px; display:block">الشعبة:</label>
-                            <select id="class-select-dropdown" class="standard-input" onchange="DataHandler.filterStudents('class-select-dropdown', 'student-select-dropdown')">
-                                <option value="">اختر...</option>
-                            </select>
+                    <div id="st-s" style="display:none">
+                        <div style="background:#f0fdf4; padding:15px; border:1px solid green; margin-bottom:15px">
+                            <b>1. حدد الشعبة:</b> <input id="tc" class="inp" placeholder="1/1" style="width:100px; display:inline-block"> <button class="nav-btn" onclick="Set.saveC()">تثبيت</button>
                         </div>
-                        <div>
-                            <label style="font-weight:800; margin-bottom:5px; display:block">الطالب:</label>
-                            <select id="student-select-dropdown" class="standard-input">
-                                <option value="">اختر الطالب...</option>
-                            </select>
+                        <div class="grid">
+                            <div><b>أ. يدوي:</b> <input id="ns" class="inp" placeholder="الطالب"><label><input type="checkbox" id="sp"> حالة خاصة</label> <button class="nav-btn" onclick="Set.addS()">حفظ</button></div>
+                            <div style="border:2px dashed #ccc; padding:20px; text-align:center; cursor:pointer" onclick="Set.trig()"><i class="fas fa-file-excel"></i> رفع ملف الطلاب<input type="file" id="fs" hidden onchange="Set.impS(this)"></div>
                         </div>
+                        <div id="lst-c" style="margin-top:15px; max-height:200px; overflow-y:auto"></div>
                     </div>
 
-                    <div style="display:grid; grid-template-columns:2fr 1fr; gap:25px">
-                        <div>
-                            <label style="font-weight:800; margin-bottom:5px; display:block">الوجهة:</label>
-                            <select id="dest-select-dropdown" class="standard-input">
-                                <option>دورة المياه</option><option>المقصف</option><option>الإدارة</option><option>المرشد</option><option>مصلى</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="font-weight:800; margin-bottom:5px; display:block">المدة (د):</label>
-                            <input type="number" id="duration-val" class="standard-input" value="5" min="1">
-                        </div>
-                    </div>
-
-                    <button class="main-action-btn btn-green" onclick="OpsModule.createPermit()">
-                        <i class="fas fa-paper-plane"></i> إصدار وطباعة الإذن
-                    </button>
-                </div>
-            </div>
-
-            <div id="view-wakil" class="page-section">
-                <div class="content-card">
-                    <div class="card-header-flex"><h2 class="card-title" style="color:var(--color-status-warning)">إصدار انصراف</h2></div>
-                    <div style="display:flex; gap:15px; margin-bottom:15px">
-                        <select id="wakil-class-sel" class="standard-input" style="flex:1" onchange="DataHandler.filterStudents('wakil-class-sel', 'wakil-student-sel')"><option>الشعبة...</option></select>
-                        <select id="wakil-student-sel" class="standard-input" style="flex:2"><option>الطالب...</option></select>
-                    </div>
-                    <input type="text" id="wakil-reason-inp" class="standard-input" placeholder="سبب الانصراف / اسم المستلم">
-                    <button class="main-action-btn btn-orange" onclick="OpsModule.createDeparture()">اعتماد الانصراف</button>
-                </div>
-
-                <div class="content-card">
-                    <div class="card-header-flex"><h2 class="card-title" style="color:var(--color-status-info)">طلبات الزوار (الانتظار)</h2></div>
-                    <div id="wakil-visitor-requests-box"></div>
-                </div>
-            </div>
-
-            <div id="view-guard" class="page-section">
-                <div class="content-card">
-                    <div class="card-header-flex"><h2 class="card-title" style="color:var(--color-status-info)">تسجيل زائر جديد</h2></div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px">
-                        <input type="text" id="guard-vis-name" class="standard-input" placeholder="اسم الزائر">
-                        <input type="number" id="guard-vis-id" class="standard-input" placeholder="رقم الهوية">
-                    </div>
-                    <input type="text" id="guard-vis-reason" class="standard-input" placeholder="سبب الزيارة">
-                    <button class="main-action-btn btn-blue" onclick="OpsModule.requestVisitor()">إرسال طلب</button>
-                </div>
-
-                <div class="content-card" style="background:#fff7ed; border:2px solid var(--color-status-warning)">
-                    <div class="card-header-flex"><h2 class="card-title" style="color:var(--color-status-warning)">المغادرون (مصرح لهم)</h2></div>
-                    <div id="guard-departures-box"></div>
-                </div>
-            </div>
-
-            <div id="view-monitor" class="page-section">
-                <h2 style="color:var(--color-primary-main); margin-bottom:20px; font-family:'Amiri'">المتابعة الميدانية الحية</h2>
-                <div id="monitor-grid-container" class="dashboard-grid-layout"></div>
-            </div>
-
-            <div id="view-reports" class="page-section">
-                <div class="content-card">
-                    <div style="display:flex; gap:10px; margin-bottom:25px; background:#f3f4f6; padding:8px; border-radius:20px">
-                        <button class="nav-item-pill active tab-ctrl" onclick="ReportsModule.switch('stu')">تحليل الطلاب</button>
-                        <button class="nav-item-pill tab-ctrl" onclick="ReportsModule.switch('spc')">الحالات الخاصة</button>
-                        <button class="nav-item-pill tab-ctrl" onclick="ReportsModule.switch('vis')">سجل الزوار</button>
-                    </div>
-
-                    <div id="rep-tab-stu">
-                        <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px">
-                            <label style="font-weight:bold">الشهر:</label>
-                            <input type="month" id="rep-month-val" class="standard-input" style="width:auto; padding:10px; margin:0" onchange="ReportsModule.render()">
-                        </div>
-                        <div style="height:400px; margin-bottom:30px"><canvas id="analytics-chart"></canvas></div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px">
-                            <div style="background:#FEF2F2; padding:20px; border-radius:15px">
-                                <h4 style="color:var(--color-status-danger); margin-bottom:15px">الأكثر استئذاناً</h4>
-                                <ul id="list-top-stu"></ul>
-                            </div>
-                            <div style="background:#ECFDF5; padding:20px; border-radius:15px">
-                                <h4 style="color:var(--color-status-success); margin-bottom:15px">الأقل استئذاناً</h4>
-                                <ul id="list-low-stu"></ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="rep-tab-spc" style="display:none">
-                        <div style="background:#FDF4FF; padding:20px; border-radius:15px; border:1px solid var(--color-status-special); margin-bottom:20px">
-                            <i class="fas fa-info-circle" style="color:var(--color-status-special)"></i> سجل خاص بالطلاب ذوي الحالات الصحية.
-                        </div>
-                        <div style="overflow-x:auto">
-                            <table class="data-table-responsive">
-                                <thead><tr><th>الطالب</th><th>الصف</th><th>الوجهة</th><th>التاريخ</th></tr></thead>
-                                <tbody id="table-spc-body"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div id="rep-tab-vis" style="display:none">
-                        <button class="main-action-btn btn-gold" style="width:auto; padding:10px 30px; margin-bottom:15px" onclick="window.print()">طباعة السجل</button>
-                        <div style="overflow-x:auto">
-                            <table class="data-table-responsive" id="visitor-archive-tbl">
-                                <thead><tr><th>م</th><th>الاسم</th><th>الهوية</th><th>السبب</th><th>الدخول</th><th>الحالة</th></tr></thead>
-                                <tbody id="table-vis-body"></tbody>
-                            </table>
-                        </div>
+                    <div id="st-sys" style="display:none; text-align:center">
+                        <button class="action-btn btn-red" style="max-width:300px" onclick="Set.wipe()">تصفير النظام بالكامل</button>
                     </div>
                 </div>
             </div>
 
-            <div id="view-settings" class="page-section">
-                <div class="content-card">
-                    <div style="display:flex; gap:10px; margin-bottom:25px; background:#f3f4f6; padding:8px; border-radius:20px">
-                        <button class="nav-item-pill active tab-ctrl" onclick="SettingsModule.switch('t')">المعلمون</button>
-                        <button class="nav-item-pill tab-ctrl" onclick="SettingsModule.switch('s')">الطلاب والشعب</button>
-                        <button class="nav-item-pill tab-ctrl" onclick="SettingsModule.switch('sys')">النظام</button>
-                    </div>
-
-                    <div id="set-tab-t">
-                        <div style="background:#F9FAFB; padding:25px; border-radius:20px; margin-bottom:25px">
-                            <h4>إضافة معلم</h4>
-                            <div style="display:flex; gap:15px; margin-bottom:25px; margin-top:10px">
-                                <input type="text" id="new-teacher-inp" class="standard-input" placeholder="الاسم" style="margin:0">
-                                <button class="main-action-btn btn-green" style="width:180px; margin:0" onclick="SettingsModule.addTeacher()">حفظ</button>
-                            </div>
-                            <div style="border:2px dashed #D1D5DB; padding:30px; text-align:center; border-radius:20px; cursor:pointer; background:white" onclick="document.getElementById('file-t-inp').click()">
-                                <i class="fas fa-file-excel" style="font-size:3rem; color:var(--color-status-success)"></i>
-                                <p>استيراد Excel (العمود الأول)</p>
-                                <input type="file" id="file-t-inp" hidden onchange="SettingsModule.importTeachers(this)">
-                            </div>
-                        </div>
-                        <div id="list-t-view" class="settings-list-container"></div>
-                    </div>
-
-                    <div id="set-tab-s" style="display:none">
-                        <div style="background:#ECFDF5; padding:25px; border-radius:20px; border:2px solid var(--color-primary-main); margin-bottom:30px">
-                            <h4 style="color:var(--color-primary-main); font-weight:800">1. تثبيت الشعبة النشطة:</h4>
-                            <div style="display:flex; gap:15px; margin-top:10px">
-                                <input type="text" id="target-c-inp" class="standard-input" placeholder="مثال: 1/1" style="margin:0; font-weight:bold; color:var(--color-primary-main)">
-                                <button class="main-action-btn btn-green" style="width:180px; margin:0" onclick="SettingsModule.saveClass()">تثبيت الشعبة</button>
-                            </div>
-                        </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px">
-                            <div>
-                                <h4>أ- إضافة يدوية</h4>
-                                <input type="text" id="new-student-inp" class="standard-input" placeholder="اسم الطالب" style="margin:15px 0">
-                                <label style="display:flex; align-items:center; gap:10px; margin-bottom:15px">
-                                    <input type="checkbox" id="is-special-chk"> <span style="color:var(--color-status-special); font-weight:bold">حالة خاصة</span>
-                                </label>
-                                <button class="main-action-btn btn-gold" style="width:100%" onclick="SettingsModule.addStudent()">حفظ الطالب</button>
-                            </div>
-                            <div>
-                                <h4>ب- استيراد Excel</h4>
-                                <div style="border:2px dashed #D1D5DB; padding:25px; text-align:center; border-radius:20px; cursor:pointer" onclick="SettingsModule.triggerImport()">
-                                    <i class="fas fa-cloud-upload-alt" style="font-size:3rem; color:var(--color-status-success); margin-bottom:15px"></i>
-                                    <p>رفع ملف الأسماء</p>
-                                    <small style="color:#888; display:block; margin-top:5px">سيتم ربطهم بالشعبة المثبتة</small>
-                                    <input type="file" id="file-s-inp" hidden onchange="SettingsModule.importStudents(this)">
-                                </div>
-                            </div>
-                        </div>
-                        <div id="list-c-view" class="settings-list-container" style="margin-top:20px"></div>
-                    </div>
-
-                    <div id="set-tab-sys" style="display:none; text-align:center">
-                        <div style="padding:50px; background:#FEF2F2; border:3px dashed var(--color-status-danger); border-radius:25px">
-                            <h3 style="color:var(--color-status-danger)">إعادة ضبط المصنع</h3>
-                            <button class="main-action-btn btn-red" style="max-width:350px; margin:0 auto" onclick="SettingsModule.wipeAll()">تصفير شامل</button>
-                        </div>
-                    </div>
+            <div id="v-cert" class="view">
+                <div class="card" style="text-align:center">
+                    <h2>طباعة شهادة</h2>
+                    <select id="ct-c" class="inp" style="max-width:400px; margin:10px auto" onchange="Data.filt('ct-c','ct-s')"><option>الشعبة...</option></select>
+                    <select id="ct-s" class="inp" style="max-width:400px; margin:10px auto"><option>الطالب...</option></select>
+                    <button class="action-btn btn-green" style="max-width:200px; margin:0 auto" onclick="Sys.prt()">طباعة</button>
                 </div>
             </div>
 
-            <div id="view-cert" class="page-section">
-                <div class="content-card" style="text-align:center">
-                    <h2>طباعة شهادة شكر</h2>
-                    <div style="max-width:600px; margin:30px auto; text-align:right">
-                        <label>اختر الشعبة:</label>
-                        <select id="cert-c-sel" class="standard-input" onchange="DataHandler.filterStudents('cert-c-sel','cert-s-sel')"><option>الشعبة...</option></select>
-                        <label>اختر الطالب:</label>
-                        <select id="cert-s-sel" class="standard-input" style="margin-bottom:30px"><option>الطالب...</option></select>
-                        <button class="main-action-btn btn-gold" onclick="OpsModule.printCert()">معاينة وطباعة</button>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <div class="print-template-area" id="print-cert-zone">
-        <div class="certificate-border">
-            <h1 style="font-family:'Amiri'; font-size:6rem; color:var(--color-primary-main); margin-bottom:60px">شهادة شكر وتقدير</h1>
-            <h2 style="font-size:3rem; margin:50px 0; color:#333">تتقدم إدارة متوسطة الإمام النووي بخالص الشكر والتقدير للطالب:</h2>
-            <h1 id="p-std-name" style="font-family:'Amiri'; font-size:5rem; color:var(--color-gold-main); text-decoration:underline; font-weight:bold; margin:40px 0"></h1>
-            <div style="display:flex; justify-content:space-around; margin-top:200px">
-                <div style="text-align:center"><h3 style="font-size:2rem">وكيل شؤون الطلاب</h3></div>
-                <div style="text-align:center"><h3 style="font-size:2rem">مدير المدرسة: إبراهيم اللغبي</h3></div>
-            </div>
         </div>
     </div>
 
-    <div class="print-template-area" id="print-vis-zone" style="padding:30px">
-        <h1 style="text-align:center; font-family:'Amiri'; margin-bottom:30px; font-size:2.5rem">سجل الزوار</h1>
-        <table class="data-table-responsive" border="1" width="100%" id="print-vis-table-body"></table>
+    <div class="print-area" id="p-cert" style="display:none; text-align:center; padding:50px; border:40px double #D4AC0D">
+        <h1 style="font-family:'Amiri'; font-size:5rem; margin-bottom:50px">شهادة شكر وتقدير</h1>
+        <h2 style="font-size:3rem">تتقدم المدرسة بالشكر للطالب:</h2>
+        <h1 id="p-name" style="font-family:'Amiri'; font-size:4rem; text-decoration:underline"></h1>
+        <div style="display:flex; justify-content:space-around; margin-top:200px; font-size:2rem"><div>الوكيل</div><div>المدير: إبراهيم اللغبي</div></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, getDoc, updateDoc, deleteDoc, getDocs, query, orderBy, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 1. Firebase Config
         const app = initializeApp({ projectId: "edin-377b2", authDomain: "edin-377b2.firebaseapp.com" });
         const db = getFirestore(app);
 
-        // 2. Global State
-        let ROLE = null;
-        let CACHE = { teachers: [], students: [], classes: [] };
-        let PERMS = [], VISITORS = [], DEPARTURES = [];
-        let SOUND_ON = true;
-        let CHART_INSTANCE = null;
+        // Global Vars
+        let ROLE=null, DATA={t:[],s:[],c:[]}, P=[], V=[], DP=[], CH=null;
 
-        // --- Sound System ---
-        const SoundModule = {
-            play: (t) => {
-                if(!SOUND_ON) return;
-                const id = t==='success'?'audio-success':(t==='error'?'audio-error':(t==='alert'?'audio-alert':'audio-doorbell'));
-                const e = document.getElementById(id);
-                if(e){e.currentTime=0; e.play().catch(()=>{});}
-            },
-            toggle: () => {
-                SOUND_ON = !SOUND_ON;
-                document.getElementById('btn-sound-toggle').innerHTML = SOUND_ON ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
-                Toast(SOUND_ON?"تم تفعيل الصوت":"تم كتم الصوت", "info");
-            }
-        };
-
-        window.Toast = (m, t='success') => {
-            SoundModule.play(t);
-            const c = document.getElementById('system-notifications');
+        // Toast
+        window.ShowToast = (m, t='success') => {
+            const b = document.getElementById('toast-box');
             const e = document.createElement('div');
-            e.className = `notification-card ${t}`;
-            let i = t==='success'?'check':(t==='error'?'times':(t==='warning'?'exclamation-triangle':'bell'));
-            e.innerHTML = `<i class="fas fa-${i}"></i> ${m}`;
-            c.appendChild(e);
-            setTimeout(() => e.remove(), 4000);
+            e.className = 'toast';
+            e.style.borderRight = `5px solid ${t==='success'?'#2ecc71':'#e74c3c'}`;
+            e.innerHTML = `<i class="fas fa-${t==='success'?'check':'times'}"></i> ${m}`;
+            b.appendChild(e);
+            document.getElementById('snd-click').play().catch(()=>{});
+            setTimeout(()=>e.remove(), 3000);
         };
 
-        // --- Authentication ---
-        const AuthModule = {
-            selectRole: (r) => { 
-                ROLE = r; 
-                document.getElementById('login-role-step').style.display='none'; 
-                document.getElementById('login-pin-step').style.display='block'; 
-                document.getElementById('pin-code-input').focus(); 
+        // Auth
+        window.Auth = {
+            setRole: (r, el) => {
+                ROLE = r;
+                document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
+                el.classList.add('active');
+                document.getElementById('login-step-2').style.display='block';
             },
-            verifyPin: async () => {
-                const p = document.getElementById('pin-code-input').value;
-                if(ROLE==='admin' && p==='2025') return AppCore.init();
-                if(ROLE==='wakil' && p==='2030') return AppCore.init();
-                if(ROLE==='guard' && p==='2020') return AppCore.init();
-                try {
-                    const s = await getDoc(doc(db,"settings","dailyCode"));
-                    if(ROLE==='teacher' && (p===(s.exists()?s.data().value:"1234")||p==='1234')) return AppCore.init();
-                    Toast("الكود خاطئ","error");
-                } catch { if(ROLE==='teacher'&&p==='1234')return AppCore.init(); Toast("خطأ اتصال","error"); }
+            checkPin: async () => {
+                const btn = document.getElementById('btn-login-action');
+                const pin = document.getElementById('pin-code').value;
+                btn.innerHTML = 'جاري التحقق...';
+                
+                // Logic
+                let allow = false;
+                if(ROLE==='admin' && pin==='2025') allow=true;
+                else if(ROLE==='guard' && pin==='2020') allow=true;
+                else {
+                    try {
+                        const s = await getDoc(doc(db,"settings","dailyCode"));
+                        if(ROLE==='teacher' && (pin===(s.exists()?s.data().value:"1234") || pin==='1234')) allow=true;
+                    } catch(e) { if(ROLE==='teacher' && pin==='1234') allow=true; }
+                }
+
+                if(allow) {
+                    document.getElementById('login-wrap').style.display='none';
+                    document.getElementById('app-main').style.display='block';
+                    window.App.init();
+                } else {
+                    ShowToast("الكود خاطئ", "error");
+                    btn.innerHTML = 'تأكيد الدخول';
+                }
             }
         };
 
-        // --- Core App ---
-        const AppCore = {
+        // App
+        window.App = {
             init: () => {
-                document.getElementById('login-modal-overlay').style.display='none';
-                document.getElementById('application-root').style.display='block';
-                AppCore.buildNav();
-                SyncModule.start();
-                Toast("تم تسجيل الدخول بنجاح");
-            },
-            buildNav: () => {
-                const n = document.getElementById('navigation-menu-items');
+                // Nav Build
+                const n = document.getElementById('nav-menu');
                 let h = '';
-                if(ROLE==='admin' || ROLE==='wakil') {
-                    h+=`<button class="nav-item-pill active" onclick="Nav('view-dashboard',this)">الرئيسية</button>
-                        <button class="nav-item-pill" onclick="Nav('view-wakil',this)">الوكيل</button>
-                        <button class="nav-item-pill" onclick="Nav('view-monitor',this)">المتابعة</button>
-                        <button class="nav-item-pill" onclick="Nav('view-reports',this)">التقارير</button>
-                        <button class="nav-item-pill" onclick="Nav('view-settings',this)">الإعدادات</button>
-                        <button class="nav-item-pill" onclick="Nav('view-cert',this)">الشهادات</button>`;
-                    Nav('view-dashboard');
-                } else if(ROLE==='guard') {
-                    h+=`<button class="nav-item-pill active" onclick="Nav('view-guard',this)">الأمن</button>`;
-                    Nav('view-guard');
-                } else {
-                    h+=`<button class="nav-item-pill active" onclick="Nav('view-teacher',this)">إصدار</button>
-                        <button class="nav-item-pill" onclick="Nav('view-monitor',this)">المتابعة</button>`;
-                    Nav('view-teacher');
-                }
+                if(ROLE==='admin') h+=`<button class="nav-btn active" onclick="Nav('v-home',this)">الرئيسية</button><button class="nav-btn" onclick="Nav('v-wakil',this)">الوكيل</button><button class="nav-btn" onclick="Nav('v-mon',this)">المتابعة</button><button class="nav-btn" onclick="Nav('v-rep',this)">التقارير</button><button class="nav-btn" onclick="Nav('v-set',this)">الإعدادات</button><button class="nav-btn" onclick="Nav('v-cert',this)">الشهادات</button>`;
+                else if(ROLE==='guard') h+=`<button class="nav-btn active" onclick="Nav('v-guard',this)">الأمن</button>`;
+                else h+=`<button class="nav-btn active" onclick="Nav('v-teacher',this)">إصدار</button><button class="nav-btn" onclick="Nav('v-mon',this)">المتابعة</button>`;
                 n.innerHTML = h;
-            },
-            goBack: () => { if(ROLE==='admin'||ROLE==='wakil') Nav('view-dashboard'); }
+                Nav(ROLE==='admin'?'v-home':(ROLE==='guard'?'v-guard':'v-teacher'));
+                window.Sync.start();
+            }
         };
 
         window.Nav = (v, b) => {
-            document.querySelectorAll('.page-section').forEach(x=>x.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
             document.getElementById(v).classList.add('active');
-            if(b) { document.querySelectorAll('.nav-item-pill').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }
-            if(v==='view-reports') ReportsModule.render();
+            if(b) { document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }
         };
 
-        // --- Sync ---
-        const SyncModule = {
+        // Sync
+        window.Sync = {
             start: () => {
-                onSnapshot(doc(db,"data","schoolLists"), s=>{ if(s.exists()){ const d=s.data(); CACHE.teachers=d.teachers||[]; CACHE.students=d.students||[]; CACHE.classes=d.classes||[]; DataHandler.populate(); SettingsModule.renderLists(); } });
-                onSnapshot(query(collection(db,"perms"), orderBy("timestamp","desc")), s=>{ PERMS=s.docs.map(d=>({id:d.id,...d.data()})); UIModule.monitor(); if(document.getElementById('view-reports').classList.contains('active')) ReportsModule.render(); });
-                onSnapshot(query(collection(db,"visitors"), orderBy("reqTime","desc")), s=>{ VISITORS=s.docs.map(d=>({id:d.id,...d.data()})); UIModule.visitors(); });
-                onSnapshot(query(collection(db,"departures"), orderBy("time","desc")), s=>{ DEPARTURES=s.docs.map(d=>({id:d.id,...d.data()})); UIModule.departures(); });
-                onSnapshot(doc(db,"settings","dailyCode"), d=>{ if(d.exists()) document.getElementById('daily-code-display').innerText=d.data().value; });
+                onSnapshot(doc(db,"data","schoolLists"), s=>{ 
+                    if(s.exists()){ const d=s.data(); DATA.t=d.teachers||[]; DATA.s=d.students||[]; DATA.c=d.classes||[]; window.Data.fill(); window.Set.list(); } 
+                });
+                onSnapshot(query(collection(db,"perms"), orderBy("timestamp","desc")), s=>{ P=s.docs.map(d=>({id:d.id,...d.data()})); window.UI.mon(); });
+                onSnapshot(query(collection(db,"visitors"), orderBy("reqTime","desc")), s=>{ V=s.docs.map(d=>({id:d.id,...d.data()})); window.UI.vis(); });
+                onSnapshot(query(collection(db,"departures"), orderBy("time","desc")), s=>{ DP=s.docs.map(d=>({id:d.id,...d.data()})); window.UI.dep(); });
+                onSnapshot(doc(db,"settings","dailyCode"), d=>{ if(d.exists()) document.getElementById('code-disp').innerText=d.data().value; });
             }
         };
 
-        // --- Data Handler ---
-        const DataHandler = {
-            populate: () => {
-                const t = '<option value="">اختر المعلم...</option>'+CACHE.teachers.map(x=>`<option value="${x}">${x}</option>`).join('');
-                if(document.getElementById('teacher-select-dropdown')) document.getElementById('teacher-select-dropdown').innerHTML = t;
-                const c = '<option value="">اختر الشعبة...</option>'+CACHE.classes.map(x=>`<option value="${x}">${x}</option>`).join('');
-                ['class-select-dropdown','wakil-class-sel','cert-c-sel'].forEach(i=>{ if(document.getElementById(i)) document.getElementById(i).innerHTML = c; });
+        // Data
+        window.Data = {
+            fill: () => {
+                const t='<option>المعلم...</option>'+DATA.t.map(x=>`<option>${x}</option>`).join('');
+                if(document.getElementById('t-sel')) document.getElementById('t-sel').innerHTML=t;
+                const c='<option>الشعبة...</option>'+DATA.c.map(x=>`<option>${x}</option>`).join('');
+                ['c-sel','w-c','ct-c'].forEach(i=>{ if(document.getElementById(i)) document.getElementById(i).innerHTML=c; });
             },
-            filterStudents: (src, dest) => {
-                const c = document.getElementById(src).value;
-                const f = CACHE.students.filter(x=>x.class===c);
-                document.getElementById(dest).innerHTML = '<option value="">اختر الطالب...</option>'+f.map(x=>`<option value="${x.name}">${x.name}</option>`).join('');
+            filt: (s,d) => {
+                const v=document.getElementById(s).value;
+                const f=DATA.s.filter(x=>x.class===v);
+                document.getElementById(d).innerHTML='<option>الطالب...</option>'+f.map(x=>`<option value="${x.name}">${x.name}</option>`).join('');
             }
         };
 
-        // --- UI Module ---
-        const UIModule = {
-            monitor: () => {
-                const act = PERMS.filter(x=>x.status==='out');
-                document.getElementById('live-count-header').innerText = act.length;
-                document.getElementById('stat-perms').innerText = PERMS.filter(x=>x.timestamp && x.timestamp.toDate().toDateString()===new Date().toDateString()).length;
-                document.getElementById('monitor-grid-container').innerHTML = act.map(p=> {
-                    const sp = CACHE.students.find(s=>s.name===p.studentName)?.isSpecial;
-                    const m = Math.floor((new Date()-p.timestamp.toDate())/60000);
-                    return `<div class="monitor-item-card ${m>p.limit?'late':''} ${sp?'special':''}">
-                        <h3>${p.studentName} ${sp?'<i class="fas fa-star" style="color:purple"></i>':''}</h3>
-                        <p>${p.className} | ${p.teacherName}</p>
-                        <div style="margin-top:10px; color:var(--color-primary-main)"><b>${p.destination}</b></div>
-                        ${ROLE!=='guard'?`<button class="main-action-btn btn-green" style="padding:5px; margin-top:10px" onclick="OpsModule.ret('${p.id}')">عودة</button>`:''}
-                    </div>`;
-                }).join('') || '<p style="grid-column:1/-1; text-align:center; color:#999; padding:30px">لا يوجد طلاب بالخارج</p>';
+        // UI
+        window.UI = {
+            mon: () => {
+                const a=P.filter(x=>x.status==='out');
+                document.getElementById('st-1').innerText = a.length;
+                document.getElementById('mon-list').innerHTML = a.map(p=>`<div class="item-card"><h3>${p.studentName}</h3><p>${p.destination}</p>${ROLE!=='guard'?`<button class="nav-btn" onclick="Sys.ret('${p.id}')">عودة</button>`:''}</div>`).join('');
             },
-            visitors: () => {
-                const p = VISITORS.filter(v=>v.status==='pending');
-                if(document.getElementById('wakil-visitor-requests-box')) {
-                    document.getElementById('wakil-visitor-requests-box').innerHTML = p.map(v=>`
-                        <div class="monitor-item-card pending">
-                            <h3>${v.name}</h3><p>${v.reason}</p>
-                            <div style="display:flex; gap:10px"><button class="main-action-btn btn-green" onclick="OpsModule.visAct('${v.id}','approved')">قبول</button><button class="main-action-btn btn-red" onclick="OpsModule.visAct('${v.id}','rejected')">رفض</button></div>
-                        </div>`).join('') || '<p style="text-align:center; color:#999; padding:20px">لا طلبات</p>';
-                    if(p.length > 0) SoundModule.play('alert');
+            vis: () => {
+                const pen=V.filter(v=>v.status==='pending');
+                if(document.getElementById('w-vis-list')) {
+                    document.getElementById('w-vis-list').innerHTML = pen.map(v=>`<div class="item-card"><h3>${v.name}</h3><p>${v.reason}</p><button class="nav-btn" onclick="Sys.va('${v.id}','approved')">قبول</button><button class="nav-btn" style="background:#fee2e2" onclick="Sys.va('${v.id}','rejected')">رفض</button></div>`).join('')||'لا طلبات';
                 }
-                document.getElementById('stat-visits').innerText = VISITORS.filter(v=>v.reqTime && v.reqTime.toDate().toDateString()===new Date().toDateString()).length;
-                const tbl = VISITORS.map((v,i)=>`<tr><td>${i+1}</td><td>${v.name}</td><td>${v.idNum}</td><td>${v.reason}</td><td>${v.entryTime?new Date(v.entryTime.toDate()).toLocaleTimeString('ar-SA'):'-'}</td><td>${v.status}</td></tr>`).join('');
-                if(document.getElementById('table-vis-body')) document.getElementById('table-vis-body').innerHTML = tbl;
-                if(document.getElementById('print-vis-table-body')) document.getElementById('print-vis-table-body').innerHTML = tbl;
+                const tb = V.map(v=>`<tr><td>${v.name}</td><td>${v.idNum}</td><td>${v.reason}</td><td>${v.entryTime?new Date(v.entryTime.toDate()).toLocaleTimeString('ar-SA'):'-'}</td></tr>`).join('');
+                if(document.getElementById('vis-tb')) document.getElementById('vis-tb').innerHTML=tb;
+                document.getElementById('st-3').innerText = V.length;
             },
-            departures: () => {
-                const a = DEPARTURES.filter(d=>d.status==='approved');
-                document.getElementById('stat-departs').innerText = DEPARTURES.filter(x=>x.time && x.time.toDate().toDateString()===new Date().toDateString()).length;
-                if(document.getElementById('guard-departure-list')) {
-                    document.getElementById('guard-departure-list').innerHTML = a.map(d=>`<div class="monitor-item-card late"><h3>${d.studentName}</h3><p>${d.className}</p><p>المستلم: ${d.reason}</p><button class="main-action-btn btn-orange" onclick="OpsModule.depOut('${d.id}')">خروج نهائي</button></div>`).join('') || '<p style="text-align:center; color:#999">لا يوجد</p>';
+            dep: () => {
+                const a=DP.filter(d=>d.status==='approved');
+                if(document.getElementById('g-dep-list')) {
+                    document.getElementById('g-dep-list').innerHTML = a.map(d=>`<div class="item-card late"><h3>${d.studentName}</h3><p>المستلم: ${d.reason}</p><button class="nav-btn" onclick="Sys.do('${d.id}')">خروج</button></div>`).join('');
                 }
+                document.getElementById('st-2').innerText = DP.length;
             }
         };
 
-        // --- Operations ---
-        const OpsModule = {
-            refreshCode: async () => setDoc(doc(db,"settings","dailyCode"),{value:Math.floor(1000+Math.random()*9000).toString()}),
-            createPermit: async () => {
-                const s=document.getElementById('student-select-dropdown').value;
-                if(!s||s.includes("الطالب")) return Toast("أكمل البيانات","error");
-                await addDoc(collection(db,"perms"),{studentName:s, className:document.getElementById('class-select-dropdown').value, teacherName:document.getElementById('teacher-select-dropdown').value, destination:document.getElementById('dest-select-dropdown').value, limit:document.getElementById('duration-val').value, status:'out', timestamp:serverTimestamp()});
-                Toast("تم الإصدار");
-            },
-            ret: async (id) => { await updateDoc(doc(db,"perms",id),{status:'returned', returnTime:serverTimestamp()}); Toast("تمت العودة"); },
-            requestVisitor: async () => {
-                const n=document.getElementById('guard-vis-name').value;
-                if(!n) return;
-                await addDoc(collection(db,"visitors"),{name:n, idNum:document.getElementById('guard-vis-id').value, reason:document.getElementById('guard-vis-reason').value, status:'pending', reqTime:serverTimestamp()});
-                Toast("تم الإرسال"); document.getElementById('guard-vis-name').value='';
-            },
-            visAct: async (id,s) => { await updateDoc(doc(db,"visitors",id),{status:s, entryTime:s==='approved'?serverTimestamp():null}); Toast(s==='approved'?"تم القبول":"تم الرفض"); },
-            createDeparture: async () => {
-                const s=document.getElementById('wakil-student-sel').value;
-                if(!s||s.includes("الطالب")) return Toast("اختر الطالب","error");
-                await addDoc(collection(db,"departures"),{studentName:s, className:document.getElementById('wakil-class-sel').value, reason:document.getElementById('wakil-reason-inp').value, status:'approved', time:serverTimestamp()});
-                Toast("تم الاعتماد");
-            },
-            depOut: async (id) => { await updateDoc(doc(db,"departures",id),{status:'left', leftTime:serverTimestamp()}); Toast("تم الخروج"); },
-            printCert: () => {
-                const n=document.getElementById('cert-s-sel').value;
-                if(!n||n.includes("الطالب")) return Toast("اختر الطالب","error");
-                document.getElementById('p-std-name').innerText=n; window.print();
+        // Sys Ops
+        window.Sys = {
+            genCode: async () => setDoc(doc(db,"settings","dailyCode"),{value:Math.floor(1000+Math.random()*9000).toString()}),
+            perm: async () => { const s=document.getElementById('s-sel').value; if(!s||s.includes("الطالب")) return ShowToast("بيانات ناقصة","error"); await addDoc(collection(db,"perms"),{studentName:s, className:document.getElementById('c-sel').value, teacherName:document.getElementById('t-sel').value, destination:document.getElementById('d-sel').value, limit:5, status:'out', timestamp:serverTimestamp()}); ShowToast("تم"); },
+            ret: async (id) => { await updateDoc(doc(db,"perms",id),{status:'returned'}); ShowToast("تمت العودة"); },
+            vis: async () => { const n=document.getElementById('g-n').value; if(!n) return; await addDoc(collection(db,"visitors"),{name:n, idNum:document.getElementById('g-i').value, reason:document.getElementById('g-r').value, status:'pending', reqTime:serverTimestamp()}); ShowToast("تم"); document.getElementById('g-n').value=''; },
+            va: async (id,s) => { await updateDoc(doc(db,"visitors",id),{status:s, entryTime:s==='approved'?serverTimestamp():null}); },
+            dep: async () => { const s=document.getElementById('w-s').value; if(!s||s.includes("الطالب")) return; await addDoc(collection(db,"departures"),{studentName:s, className:document.getElementById('w-c').value, reason:document.getElementById('w-r').value, status:'approved', time:serverTimestamp()}); ShowToast("تم"); },
+            do: async (id) => { await updateDoc(doc(db,"departures",id),{status:'left'}); },
+            prt: () => { const n=document.getElementById('ct-s').value; if(!n||n.includes("الطالب")) return; document.getElementById('p-name').innerText=n; document.getElementById('p-cert').style.display='block'; window.print(); document.getElementById('p-cert').style.display='none'; }
+        };
+
+        // Settings
+        window.Set = {
+            swap: t => { ['t','s','sys'].forEach(x=>document.getElementById('st-'+x).style.display='none'); document.getElementById('st-'+t).style.display='block'; },
+            addT: async () => { const n=document.getElementById('nt').value; if(n) await setDoc(doc(db,"data","schoolLists"),{teachers:arrayUnion(n)},{merge:true}); ShowToast("تم"); },
+            impT: i => { const r=new FileReader(); r.onload=async(e)=>{ const d=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); const t=[...new Set(d.map(r=>r[0]).filter(Boolean))]; if(t.length) await setDoc(doc(db,"data","schoolLists"),{teachers:arrayUnion(...t)},{merge:true}); ShowToast("تم"); }; r.readAsArrayBuffer(i.files[0]); },
+            saveC: async () => { const c=document.getElementById('tc').value; if(c) await setDoc(doc(db,"data","schoolLists"),{classes:arrayUnion(c)},{merge:true}); ShowToast("تم"); },
+            addS: async () => { const n=document.getElementById('ns').value, c=document.getElementById('tc').value, sp=document.getElementById('sp').checked; if(!c) return ShowToast("ثبت الشعبة","error"); await setDoc(doc(db,"data","schoolLists"),{students:arrayUnion({name:n, class:c, isSpecial:sp}), classes:arrayUnion(c)},{merge:true}); ShowToast("تم"); },
+            trig: () => { if(!document.getElementById('tc').value) return ShowToast("اكتب الشعبة","error"); document.getElementById('fs').click(); },
+            impS: i => { const c=document.getElementById('tc').value, r=new FileReader(); r.onload=async(e)=>{ const d=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); const s=d.map(r=>({name:r[0], class:c, isSpecial:false})).filter(x=>x.name); if(s.length) await setDoc(doc(db,"data","schoolLists"),{students:arrayUnion(...s), classes:arrayUnion(c)},{merge:true}); ShowToast("تم"); }; r.readAsArrayBuffer(i.files[0]); },
+            list: () => { document.getElementById('lst-t').innerHTML=DATA.t.map(x=>`<div>${x} <span onclick="Set.del('teachers','${x}')" style="color:red;cursor:pointer">X</span></div>`).join(''); document.getElementById('lst-c').innerHTML=DATA.c.map(x=>`<div>${x} <span onclick="Set.del('classes','${x}')" style="color:red;cursor:pointer">X</span></div>`).join(''); },
+            del: async (k,v) => { if(confirm('حذف؟')) await setDoc(doc(db,"data","schoolLists"),{[k]:arrayRemove(v)},{merge:true}); },
+            wipe: async () => { if(confirm('متأكد؟')) { await setDoc(doc(db,"data","schoolLists"),{teachers:[],students:[],classes:[]}); ['perms','visitors','departures'].forEach(async c=>{ const q=await getDocs(collection(db,c)); q.forEach(d=>deleteDoc(doc(db,c,d.id))); }); ShowToast("تم التصفير"); location.reload(); } }
+        };
+
+        // Reports
+        window.Rep = {
+            draw: () => {
+                const m=document.getElementById('r-mo').value; if(!m) return;
+                const r=P.filter(x=>!DATA.s.find(s=>s.name===x.studentName)?.isSpecial && x.timestamp && x.timestamp.toDate().toISOString().startsWith(m));
+                const c={}; r.forEach(x=>c[x.studentName]=(c[x.studentName]||0)+1); const s=Object.entries(c).sort((a,b)=>b[1]-a[1]);
+                if(CH) CH.destroy(); CH=new Chart(document.getElementById('myChart'),{type:'bar',data:{labels:s.slice(0,10).map(x=>x[0]),datasets:[{label:'خروج',data:s.slice(0,10).map(x=>x[1]),backgroundColor:'#145A32'}]}});
+                document.getElementById('top-l').innerHTML=s.slice(0,5).map(x=>`<li>${x[0]}</li>`).join('');
+                document.getElementById('low-l').innerHTML=s.slice(-5).map(x=>`<li>${x[0]}</li>`).join('');
             }
         };
 
-        // --- Settings (Universal Import) ---
-        const SettingsModule = {
-            switch: t => { ['t','s','sys'].forEach(x=>document.getElementById('set-tab-'+x).style.display='none'); document.getElementById('set-tab-'+t).style.display='block'; document.querySelectorAll('.nav-item-pill.tab-ctrl').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); },
-            addTeacher: async () => { const n=document.getElementById('new-teacher-inp').value; if(n){ await setDoc(doc(db,"data","schoolLists"),{teachers:arrayUnion(n)},{merge:true}); Toast("تم الحفظ"); } },
-            importTeachers: i => {
-                const r=new FileReader(); r.onload=async(e)=>{
-                    const d=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]], {header:1});
-                    const t=[...new Set(d.map(r=>r[0]))].filter(Boolean); // First Column
-                    if(t.length) { await setDoc(doc(db,"data","schoolLists"),{teachers:arrayUnion(...t)},{merge:true}); Toast("تم الاستيراد"); }
-                }; r.readAsArrayBuffer(i.files[0]);
-            },
-            saveClass: async () => { const c=document.getElementById('target-c-inp').value; if(c){ await setDoc(doc(db,"data","schoolLists"),{classes:arrayUnion(c)},{merge:true}); Toast("تم التثبيت"); } },
-            addStudent: async () => {
-                const n=document.getElementById('new-student-inp').value, c=document.getElementById('target-c-inp').value, sp=document.getElementById('is-special-chk').checked;
-                if(!c) return Toast("ثبت الشعبة أولاً","error");
-                await setDoc(doc(db,"data","schoolLists"),{students:arrayUnion({name:n, class:c, isSpecial:sp}), classes:arrayUnion(c)},{merge:true});
-                Toast("تم الحفظ");
-            },
-            triggerImport: () => { if(!document.getElementById('target-c-inp').value) return Toast("اكتب الشعبة أولاً","error"); document.getElementById('file-s-inp').click(); },
-            importStudents: i => {
-                const c=document.getElementById('target-c-inp').value, r=new FileReader();
-                r.onload=async(e)=>{
-                    const d=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]], {header:1});
-                    const s=d.map(r=>({name:r[0], class:c, isSpecial:false})).filter(x=>x.name);
-                    if(s.length) { await setDoc(doc(db,"data","schoolLists"),{students:arrayUnion(...s), classes:arrayUnion(c)},{merge:true}); Toast("تم الربط"); }
-                }; r.readAsArrayBuffer(i.files[0]);
-            },
-            del: async (k,v) => { if(confirm("حذف؟")) await setDoc(doc(db,"data","schoolLists"), {[k]:arrayRemove(v)}, {merge:true}); },
-            wipeAll: async () => { if(confirm("حذف شامل؟")) { await setDoc(doc(db,"data","schoolLists"), {teachers:[],students:[],classes:[]}); ['perms','visitors','departures'].forEach(async c=>{ const q=await getDocs(collection(db,c)); q.forEach(d=>deleteDoc(doc(db,c,d.id))); }); Toast("تم التصفير"); setTimeout(()=>location.reload(),2000); } },
-            renderLists: () => {
-                document.getElementById('list-t-view').innerHTML = CACHE.teachers.map(x=>`<div class="settings-list-row">${x} <div class="delete-icon-btn" onclick="SettingsModule.del('teachers','${x}')"><i class="fas fa-trash"></i></div></div>`).join('');
-                document.getElementById('list-c-view').innerHTML = CACHE.classes.map(x=>`<div class="settings-list-row">${x} <div class="delete-icon-btn" onclick="SettingsModule.del('classes','${x}')"><i class="fas fa-trash"></i></div></div>`).join('');
-            }
-        };
+        // Remove Loader
+        window.onload = () => document.getElementById('loader-overlay').style.opacity='0'; setTimeout(()=>document.getElementById('loader-overlay').style.display='none', 500);
 
-        // --- Reports ---
-        const ReportsModule = {
-            switch: t => { ['stu','spc','vis'].forEach(x=>document.getElementById('rep-tab-'+x).style.display='none'); document.getElementById('rep-tab-'+t).style.display='block'; document.querySelectorAll('.nav-item-pill.tab-ctrl').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); },
-            render: () => {
-                const m=document.getElementById('rep-month-val').value; if(!m) return;
-                const reg = PERMS.filter(x=>!CACHE.students.find(s=>s.name===x.studentName)?.isSpecial && x.timestamp && x.timestamp.toDate().toISOString().startsWith(m));
-                const spc = PERMS.filter(x=>CACHE.students.find(s=>s.name===x.studentName)?.isSpecial && x.timestamp && x.timestamp.toDate().toISOString().startsWith(m));
-                
-                const c={}; reg.forEach(x=>c[x.studentName]=(c[x.studentName]||0)+1); const s = Object.entries(c).sort((a,b)=>b[1]-a[1]);
-                if(CHART_INSTANCE) CHART_INSTANCE.destroy();
-                CHART_INSTANCE = new Chart(document.getElementById('analytics-chart'), { type:'bar', data:{labels:s.slice(0,10).map(x=>x[0]), datasets:[{label:'الخروج', data:s.slice(0,10).map(x=>x[1]), backgroundColor:'#145A32'}]} });
-                
-                document.getElementById('list-top-stu').innerHTML = s.slice(0,5).map(x=>`<li>${x[0]} (${x[1]})</li>`).join('');
-                document.getElementById('list-low-stu').innerHTML = s.slice(-5).map(x=>`<li>${x[0]} (${x[1]})</li>`).join('');
-                document.getElementById('table-spc-body').innerHTML = spc.map(p=>`<tr><td>${p.studentName}</td><td>${p.className}</td><td>${p.destination}</td><td>${p.timestamp.toDate().toLocaleDateString('ar-SA')}</td></tr>`).join('');
-            }
-        };
-
-        window.AuthModule=AuthModule; window.OpsModule=OpsModule; window.SettingsModule=SettingsModule; window.DataHandler=DataHandler; window.SoundModule=SoundModule; window.ReportsModule=ReportsModule; window.AppCore=AppCore;
-        document.getElementById('rep-month-val').value = new Date().toISOString().slice(0,7);
     </script>
 </body>
 </html>

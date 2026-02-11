@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>نظام إذن - Obsidian V13 (Stable)</title>
+    <title>نظام الإدارة المدرسية الموحد - V14 Stable</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,238 +18,273 @@
             --primary: #145A32;
             --gold: #D4AC0D;
             --danger: #C0392B;
+            --info: #2980B9;
+            --warn: #E67E22;
             --bg: #F3F4F6;
-            --text: #1F2937;
+            --card: #FFFFFF;
         }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 100px; }
 
-        /* شاشة التحميل (لضمان عمل الزر) */
-        #loader-overlay {
-            position: fixed; inset: 0; background: white; z-index: 999999; 
-            display: flex; align-items: center; justify-content: center; flex-direction: column;
-            transition: opacity 0.5s;
-        }
-        .loader-spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: #1F2937; min-height: 100vh; padding-bottom: 100px; }
 
         /* التنبيهات */
-        #toast-box { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; width: 90%; max-width: 400px; }
-        .toast { background: #333; color: #fff; padding: 15px 25px; border-radius: 50px; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; animation: slideIn 0.3s; }
+        #toast-box { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 400px; }
+        .toast { background: #333; color: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); pointer-events: auto; animation: slideIn 0.3s; display: flex; align-items: center; gap: 10px; }
+        .toast.success { border-right: 5px solid #2ecc71; }
+        .toast.error { border-right: 5px solid #e74c3c; }
         @keyframes slideIn { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
         /* شاشة الدخول */
-        #login-wrap { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary) 0%, #000 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: #fff; width: 95%; max-width: 550px; padding: 3rem 2rem; border-radius: 30px; text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.5); }
-        
-        .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        #login-overlay { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary) 0%, #000 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .login-card { background: white; width: 90%; max-width: 500px; padding: 3rem 2rem; border-radius: 30px; text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.5); border-top: 10px solid var(--gold); }
+        .role-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 20px; }
         .role-btn { border: 2px solid #eee; padding: 15px 5px; border-radius: 15px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .role-btn:hover { background: #f0fdf4; border-color: var(--primary); transform: translateY(-5px); }
-        .role-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .role-btn.active i { color: white; }
         .role-btn i { font-size: 2rem; color: #666; }
+        .pin-input { width: 100%; padding: 15px; font-size: 2.5rem; text-align: center; letter-spacing: 15px; border: 2px solid #ddd; border-radius: 15px; margin: 20px 0; font-family: monospace; }
 
-        .pin-area { margin-top: 20px; display: none; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* الهيدر */
+        header { background: linear-gradient(135deg, var(--primary) 0%, #064E3B 100%); color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 5000; box-shadow: 0 5px 20px rgba(0,0,0,0.2); height: 90px; }
+        .header-brand h1 { font-family: 'Amiri'; margin: 0; font-size: 1.8rem; }
+        .header-tools { display: flex; gap: 15px; align-items: center; }
+        .icon-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .icon-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* القوائم */
+        .nav-wrapper { background: white; padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 90px; z-index: 4000; margin-bottom: 20px; }
+        .nav-list { display: flex; gap: 10px; overflow-x: auto; padding: 0 5%; justify-content: center; scrollbar-width: none; }
+        .nav-btn { background: #f8f9fa; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; color: #555; white-space: nowrap; transition: 0.3s; }
+        .nav-btn.active { background: var(--primary); color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(20, 90, 50, 0.2); }
+
+        /* المحتوى */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .view-section { display: none; animation: fadeIn 0.5s; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: white; padding: 25px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #ddd; padding-bottom: 15px; margin-bottom: 20px; }
+        .card-title { font-size: 1.4rem; color: var(--primary); font-weight: 800; display: flex; align-items: center; gap: 10px; }
+
+        /* العناصر */
+        .inp { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px; font-size: 1rem; margin-bottom: 15px; transition: 0.3s; }
+        .inp:focus { border-color: var(--gold); background: #fafafa; }
         
-        .pin-input { width: 100%; padding: 15px; font-size: 2.5rem; text-align: center; letter-spacing: 15px; border: 2px solid #ddd; border-radius: 15px; font-family: monospace; }
-        .pin-input:focus { border-color: var(--gold); }
-
-        .action-btn { width: 100%; padding: 15px; border: none; border-radius: 15px; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+        .btn:active { transform: scale(0.98); }
         .btn-green { background: var(--primary); color: white; }
-        .btn-green:active { transform: scale(0.98); }
+        .btn-gold { background: var(--gold); color: #222; }
         .btn-red { background: var(--danger); color: white; }
+        .btn-blue { background: var(--info); color: white; }
+        .btn-orange { background: var(--warn); color: white; }
 
-        /* التطبيق */
-        header { background: linear-gradient(135deg, var(--primary) 0%, #064E3B 100%); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 5000; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
-        .nav-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 15px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 80px; z-index: 4000; }
-        .nav-btn { background: #f8f9fa; border: none; padding: 10px 25px; border-radius: 50px; white-space: nowrap; cursor: pointer; font-weight: bold; color: #555; }
-        .nav-btn.active { background: var(--primary); color: white; }
-
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
-        .view { display: none; animation: fadeIn 0.5s; }
-        .view.active { display: block; }
-
-        .card { background: white; padding: 25px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .inp { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 15px; font-size: 1rem; }
+        /* الشبكة */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-
-        .item-card { background: #fff; padding: 20px; border-radius: 15px; border-right: 6px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 10px; }
-        .item-card.late { border-color: var(--danger); background: #fff5f5; }
+        .stat-card { background: white; padding: 20px; border-radius: 15px; text-align: center; border: 1px solid #eee; }
+        .stat-card h2 { font-size: 3rem; margin: 10px 0; }
+        
+        .mon-card { background: white; padding: 20px; border-radius: 15px; border-right: 6px solid var(--success); box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; }
+        .mon-card.late { border-color: var(--danger); background: #fff5f5; }
+        .mon-card.special { border-color: #8E44AD; background: #fdf4ff; }
 
         /* طباعة */
-        @media print { body * { visibility: hidden; } .print-area, .print-area * { visibility: visible; } .print-area { display: block !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 99999; } .no-print { display: none !important; } }
+        .print-only { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 20000; }
+        @media print { body * { visibility: hidden; } .print-only, .print-only * { visibility: visible; } .print-only { display: block !important; } .no-print { display: none !important; } }
+
+        /* الجوال */
+        @media (max-width: 768px) { header { height: auto; flex-direction: column; padding: 15px; gap: 15px; } .nav-list { justify-content: flex-start; } }
     </style>
 </head>
 <body>
 
-    <div id="loader-overlay">
-        <div class="loader-spinner"></div>
-        <h3 style="margin-top:20px; color:#555">جاري تجهيز النظام...</h3>
-    </div>
+    <audio id="sfx-ok" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+    <audio id="sfx-err" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
 
     <div id="toast-box"></div>
-    
-    <audio id="snd-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
-    <div id="login-wrap">
-        <div class="login-card" id="login-step-1">
-            <h1 style="color:var(--primary); font-family:'Amiri'; margin-bottom:10px">بوابة الإمام النووي</h1>
-            <p style="color:#666; margin-bottom:30px">الرجاء اختيار الصلاحية</p>
+    <div id="login-overlay">
+        <div class="login-card" id="step-role">
+            <h1 style="font-family:'Amiri'; color:var(--primary)">متوسطة الإمام النووي</h1>
+            <p style="color:#666; margin-bottom:20px">بوابة الإدارة الموحدة V14</p>
             <div class="role-grid">
-                <div class="role-btn" onclick="Auth.setRole('admin', this)"><i class="fas fa-user-shield"></i><b>الإدارة</b></div>
-                <div class="role-btn" onclick="Auth.setRole('teacher', this)"><i class="fas fa-chalkboard-user"></i><b>المعلم</b></div>
-                <div class="role-btn" onclick="Auth.setRole('guard', this)"><i class="fas fa-user-lock"></i><b>الحارس</b></div>
+                <div class="role-btn" onclick="window.Auth.select('admin')"><i class="fas fa-user-shield"></i><b>الإدارة</b></div>
+                <div class="role-btn" onclick="window.Auth.select('teacher')"><i class="fas fa-chalkboard-user"></i><b>المعلم</b></div>
+                <div class="role-btn" onclick="window.Auth.select('guard')"><i class="fas fa-user-lock"></i><b>الحارس</b></div>
             </div>
         </div>
-
-        <div class="login-card pin-area" id="login-step-2">
-            <h2 style="color:var(--primary); margin-bottom:20px">الرمز السري</h2>
-            <input type="password" id="pin-code" class="pin-input" placeholder="****" maxlength="4">
-            <button id="btn-login-action" class="action-btn btn-green" onclick="Auth.checkPin()">تأكيد الدخول</button>
-            <button class="action-btn btn-red" onclick="location.reload()">رجوع</button>
+        <div class="login-card" id="step-pin" style="display:none">
+            <h2 style="color:var(--primary)">الرمز السري</h2>
+            <input type="password" id="pin-in" class="pin-input" placeholder="••••" maxlength="4">
+            <div style="display:flex; gap:10px">
+                <button class="btn btn-green" onclick="window.Auth.login()">دخول</button>
+                <button class="btn btn-red" onclick="location.reload()">رجوع</button>
+            </div>
         </div>
     </div>
 
-    <div id="app-main" style="display:none">
+    <div id="app-wrap" style="display:none">
+        
         <header class="no-print">
-            <div style="display:flex; align-items:center; gap:10px">
-                <i class="fas fa-graduation-cap" style="font-size:2.5rem; color:#D4AC0D"></i>
-                <div><h2 style="font-family:'Amiri'; margin:0">إذن الرقمي</h2><small>Obsidian V13</small></div>
+            <div class="header-brand">
+                <h1>إذن الرقمي</h1>
+                <small>Ultimate Stable V14</small>
             </div>
-            <button class="nav-btn" style="background:#c0392b; color:white" onclick="location.reload()">خروج</button>
+            <div class="header-tools">
+                <div class="icon-btn" onclick="window.Sound.toggle()"><i id="snd-ico" class="fas fa-volume-up"></i></div>
+                <div style="background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:20px; font-weight:bold"><span id="live-cnt">0</span> بالخارج</div>
+                <div class="icon-btn" style="background:#c0392b" onclick="location.reload()"><i class="fas fa-power-off"></i></div>
+            </div>
         </header>
 
-        <nav class="nav-scroll no-print" id="nav-menu"></nav>
+        <nav class="nav-wrapper no-print">
+            <div class="nav-list" id="nav-menu"></div>
+        </nav>
 
         <div class="container no-print">
-            
-            <div id="v-home" class="view">
-                <div class="card" style="text-align:center">
+
+            <div id="v-home" class="view-section">
+                <div class="card" style="text-align:center; background:linear-gradient(to bottom, #fff, #f0fdf4)">
                     <h3 style="color:#777">كود المعلم المتزامن</h3>
-                    <div id="code-disp" style="font-size:5rem; font-weight:900; color:var(--primary); margin:20px 0; font-family:monospace">----</div>
-                    <button class="action-btn btn-green" style="width:auto; margin:0 auto" onclick="Sys.genCode()">تحديث الكود</button>
+                    <div id="day-code" style="font-size:6rem; font-weight:900; color:var(--primary); margin:20px 0; font-family:monospace">----</div>
+                    <button class="btn btn-gold" style="width:auto; margin:0 auto; padding:10px 50px" onclick="window.Ops.genCode()">تحديث الكود</button>
                 </div>
                 <div class="grid">
-                    <div class="card" style="text-align:center"><h1 id="st-1" style="font-size:3rem; color:var(--primary)">0</h1><p>أذونات</p></div>
-                    <div class="card" style="text-align:center"><h1 id="st-2" style="font-size:3rem; color:#E67E22">0</h1><p>انصراف</p></div>
-                    <div class="card" style="text-align:center"><h1 id="st-3" style="font-size:3rem; color:#2980B9">0</h1><p>زوار</p></div>
+                    <div class="stat-card" style="border-color:#6ee7b7"><h2 id="s-perm" style="color:var(--primary)">0</h2><p>أذونات</p></div>
+                    <div class="stat-card" style="border-color:#fdba74"><h2 id="s-dep" style="color:var(--warn)">0</h2><p>انصراف</p></div>
+                    <div class="stat-card" style="border-color:#93c5fd"><h2 id="s-vis" style="color:var(--info)">0</h2><p>زوار</p></div>
                 </div>
             </div>
 
-            <div id="v-teacher" class="view">
+            <div id="v-teacher" class="view-section">
                 <div class="card">
-                    <h2>إصدار إذن</h2>
-                    <label>المعلم:</label><select id="t-sel" class="inp"><option>جاري التحميل...</option></select>
-                    <div class="grid">
-                        <div><label>الشعبة:</label><select id="c-sel" class="inp" onchange="Data.filt('c-sel','s-sel')"><option>الشعبة...</option></select></div>
-                        <div><label>الطالب:</label><select id="s-sel" class="inp"><option>الطالب...</option></select></div>
+                    <div class="card-header"><h2 class="card-title">إصدار إذن خروج</h2></div>
+                    
+                    <div style="background:#f9fafb; padding:15px; border-radius:15px; border:1px solid #eee; margin-bottom:20px">
+                        <label><b>المعلم المصدر:</b></label>
+                        <select id="t-sel" class="inp"><option value="">جاري تحميل القائمة...</option></select>
                     </div>
-                    <label>الوجهة:</label><select id="d-sel" class="inp"><option>دورة المياه</option><option>المقصف</option><option>الإدارة</option></select>
-                    <button class="action-btn btn-green" onclick="Sys.perm()">إصدار</button>
+
+                    <div style="display:grid; grid-template-columns:1fr 2fr; gap:15px">
+                        <div><label><b>الشعبة:</b></label><select id="c-sel" class="inp" onchange="window.Data.filt('c-sel','s-sel')"><option value="">اختر...</option></select></div>
+                        <div><label><b>الطالب:</b></label><select id="s-sel" class="inp"><option value="">اختر الطالب...</option></select></div>
+                    </div>
+
+                    <label><b>الوجهة:</b></label>
+                    <select id="d-sel" class="inp"><option>دورة المياه</option><option>المقصف</option><option>الإدارة</option><option>المرشد</option></select>
+                    
+                    <button class="btn btn-green" onclick="window.Ops.perm()">إصدار وطباعة</button>
                 </div>
             </div>
 
-            <div id="v-wakil" class="view">
+            <div id="v-wakil" class="view-section">
                 <div class="card">
-                    <h2>إصدار انصراف</h2>
+                    <div class="card-header"><h2 class="card-title" style="color:var(--warn)">إصدار انصراف</h2></div>
                     <div style="display:flex; gap:10px">
-                        <select id="w-c" class="inp" onchange="Data.filt('w-c','w-s')"><option>الشعبة...</option></select>
-                        <select id="w-s" class="inp"><option>الطالب...</option></select>
+                        <select id="w-c" class="inp" style="flex:1" onchange="window.Data.filt('w-c','w-s')"><option>الشعبة...</option></select>
+                        <select id="w-s" class="inp" style="flex:2"><option>الطالب...</option></select>
                     </div>
                     <input id="w-r" class="inp" placeholder="السبب / المستلم">
-                    <button class="action-btn btn-green" style="background:#E67E22" onclick="Sys.dep()">اعتماد</button>
+                    <button class="btn btn-orange" onclick="window.Ops.dep()">اعتماد</button>
                 </div>
-                <div class="card"><h2>طلبات الزوار</h2><div id="w-vis-list"></div></div>
+                <div class="card"><div class="card-header"><h2 class="card-title" style="color:var(--info)">طلبات الزوار</h2></div><div id="w-vis-list"></div></div>
             </div>
 
-            <div id="v-guard" class="view">
+            <div id="v-guard" class="view-section">
                 <div class="card">
-                    <h2>تسجيل زائر</h2>
-                    <input id="g-n" class="inp" placeholder="الاسم">
-                    <input id="g-i" class="inp" placeholder="الهوية">
-                    <input id="g-r" class="inp" placeholder="السبب">
-                    <button class="action-btn btn-green" style="background:#2980B9" onclick="Sys.vis()">إرسال طلب</button>
+                    <div class="card-header"><h2 class="card-title" style="color:var(--info)">تسجيل زائر</h2></div>
+                    <input id="g-nm" class="inp" placeholder="الاسم">
+                    <input id="g-id" class="inp" placeholder="الهوية">
+                    <input id="g-rs" class="inp" placeholder="السبب">
+                    <button class="btn btn-blue" onclick="window.Ops.visReq()">إرسال طلب</button>
                 </div>
-                <div class="card"><h2>المغادرون</h2><div id="g-dep-list"></div></div>
+                <div class="card" style="background:#fff7ed"><div class="card-header"><h2 class="card-title" style="color:var(--warn)">المغادرون</h2></div><div id="g-dep-list"></div></div>
             </div>
 
-            <div id="v-mon" class="view"><h2>المتابعة الحية</h2><div id="mon-list" class="grid"></div></div>
+            <div id="v-mon" class="view-section">
+                <h2 style="color:var(--primary); margin-bottom:20px">المتابعة الحية</h2>
+                <div id="mon-grid" class="grid"></div>
+            </div>
 
-            <div id="v-rep" class="view">
+            <div id="v-rep" class="view-section">
                 <div class="card">
-                    <h2>التقارير</h2>
                     <div style="display:flex; gap:10px; margin-bottom:20px">
-                        <button class="nav-btn active" onclick="document.getElementById('rep-s').style.display='block';document.getElementById('rep-v').style.display='none'">الطلاب</button>
-                        <button class="nav-btn" onclick="document.getElementById('rep-s').style.display='none';document.getElementById('rep-v').style.display='block'">الزوار</button>
+                        <button class="nav-btn active rep-tab" onclick="window.Rep.sw('stu')">الطلاب</button>
+                        <button class="nav-btn rep-tab" onclick="window.Rep.sw('vis')">الزوار</button>
                     </div>
-                    <div id="rep-s">
-                        <input type="month" id="r-mo" class="inp" style="width:auto" onchange="Rep.draw()">
-                        <div style="height:300px"><canvas id="myChart"></canvas></div>
-                        <div class="grid">
-                            <div style="background:#fef2f2; padding:15px; border-radius:15px"><h4 style="color:red">الأكثر خروجاً</h4><ul id="top-l"></ul></div>
-                            <div style="background:#f0fdf4; padding:15px; border-radius:15px"><h4 style="color:green">الأقل خروجاً</h4><ul id="low-l"></ul></div>
+                    <div id="rep-stu">
+                        <input type="month" id="r-mo" class="inp" style="width:auto" onchange="window.Rep.draw()">
+                        <div style="height:300px"><canvas id="chrt"></canvas></div>
+                        <div class="grid" style="margin-top:20px">
+                            <div style="background:#fef2f2; padding:15px; border-radius:15px"><h4 style="color:red">الأكثر خروجاً</h4><ul id="top-list"></ul></div>
+                            <div style="background:#ecfdf5; padding:15px; border-radius:15px"><h4 style="color:green">الأقل خروجاً</h4><ul id="low-list"></ul></div>
                         </div>
                     </div>
-                    <div id="rep-v" style="display:none">
-                        <button class="nav-btn" onclick="window.print()">طباعة</button>
-                        <table style="width:100%; border-collapse:collapse; margin-top:15px" border="1">
-                            <thead><tr><th>الاسم</th><th>الهوية</th><th>السبب</th><th>الوقت</th></tr></thead>
-                            <tbody id="vis-tb"></tbody>
+                    <div id="rep-vis" style="display:none">
+                        <button class="btn btn-gold" style="width:auto; margin-bottom:15px" onclick="window.print()">طباعة السجل</button>
+                        <table style="width:100%; border-collapse:collapse" border="1">
+                            <thead><tr><th>م</th><th>الاسم</th><th>الهوية</th><th>السبب</th><th>الوقت</th></tr></thead>
+                            <tbody id="vis-tbl"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <div id="v-set" class="view">
+            <div id="v-set" class="view-section">
                 <div class="card">
                     <div style="display:flex; gap:10px; margin-bottom:20px">
-                        <button class="nav-btn active" onclick="Set.swap('t')">المعلمون</button>
-                        <button class="nav-btn" onclick="Set.swap('s')">الطلاب</button>
-                        <button class="nav-btn" onclick="Set.swap('sys')">النظام</button>
+                        <button class="nav-btn active set-tab" onclick="window.Set.sw('t')">المعلمون</button>
+                        <button class="nav-btn set-tab" onclick="window.Set.sw('s')">الطلاب</button>
+                        <button class="nav-btn set-tab" onclick="window.Set.sw('sys')">النظام</button>
                     </div>
-                    
+
                     <div id="st-t">
-                        <div style="display:flex; gap:10px"><input id="nt" class="inp" placeholder="اسم المعلم"><button class="nav-btn" style="background:var(--primary); color:white" onclick="Set.addT()">حفظ</button></div>
-                        <div style="border:2px dashed #ccc; padding:20px; text-align:center; cursor:pointer" onclick="document.getElementById('ft').click()"><i class="fas fa-file-excel"></i> استيراد<input type="file" id="ft" hidden onchange="Set.impT(this)"></div>
+                        <div style="display:flex; gap:10px"><input id="nt" class="inp" placeholder="اسم المعلم"><button class="btn btn-green" style="width:150px" onclick="window.Set.addT()">حفظ</button></div>
+                        <div style="border:2px dashed #ccc; padding:20px; text-align:center; border-radius:15px; cursor:pointer; margin-top:15px" onclick="document.getElementById('ft').click()">
+                            <i class="fas fa-file-excel" style="font-size:2rem; color:green"></i><br>استيراد المعلمين
+                            <input type="file" id="ft" hidden onchange="window.Set.impT(this)">
+                        </div>
                         <div id="lst-t" style="margin-top:15px; max-height:200px; overflow-y:auto"></div>
                     </div>
 
                     <div id="st-s" style="display:none">
-                        <div style="background:#f0fdf4; padding:15px; border:1px solid green; margin-bottom:15px">
-                            <b>1. حدد الشعبة:</b> <input id="tc" class="inp" placeholder="1/1" style="width:100px; display:inline-block"> <button class="nav-btn" onclick="Set.saveC()">تثبيت</button>
+                        <div style="background:#ecfdf5; padding:15px; border:1px solid green; border-radius:15px; margin-bottom:20px">
+                            <b>1. حدد الشعبة:</b> <input id="tc" class="inp" placeholder="1/1" style="width:150px; display:inline-block; margin:0"> <button class="btn btn-green" style="width:100px; display:inline-block; margin:0" onclick="window.Set.saveC()">تثبيت</button>
                         </div>
                         <div class="grid">
-                            <div><b>أ. يدوي:</b> <input id="ns" class="inp" placeholder="الطالب"><label><input type="checkbox" id="sp"> حالة خاصة</label> <button class="nav-btn" onclick="Set.addS()">حفظ</button></div>
-                            <div style="border:2px dashed #ccc; padding:20px; text-align:center; cursor:pointer" onclick="Set.trig()"><i class="fas fa-file-excel"></i> رفع ملف الطلاب<input type="file" id="fs" hidden onchange="Set.impS(this)"></div>
+                            <div><b>أ. يدوي:</b> <input id="ns" class="inp" placeholder="الطالب"><label><input type="checkbox" id="sp"> حالة خاصة</label><button class="btn btn-gold" onclick="window.Set.addS()">حفظ</button></div>
+                            <div style="border:2px dashed #ccc; padding:20px; text-align:center; cursor:pointer" onclick="window.Set.trig()"><i class="fas fa-cloud-upload-alt"></i> رفع ملف الطلاب<input type="file" id="fs" hidden onchange="window.Set.impS(this)"></div>
                         </div>
                         <div id="lst-c" style="margin-top:15px; max-height:200px; overflow-y:auto"></div>
                     </div>
 
                     <div id="st-sys" style="display:none; text-align:center">
-                        <button class="action-btn btn-red" style="max-width:300px" onclick="Set.wipe()">تصفير النظام بالكامل</button>
+                        <button class="btn btn-red" style="max-width:300px; margin:0 auto" onclick="window.Set.wipe()">تصفير النظام بالكامل</button>
                     </div>
                 </div>
             </div>
 
-            <div id="v-cert" class="view">
+            <div id="v-cert" class="view-section">
                 <div class="card" style="text-align:center">
                     <h2>طباعة شهادة</h2>
-                    <select id="ct-c" class="inp" style="max-width:400px; margin:10px auto" onchange="Data.filt('ct-c','ct-s')"><option>الشعبة...</option></select>
+                    <select id="ct-c" class="inp" style="max-width:400px; margin:10px auto" onchange="window.Data.filt('ct-c','ct-s')"><option>الشعبة...</option></select>
                     <select id="ct-s" class="inp" style="max-width:400px; margin:10px auto"><option>الطالب...</option></select>
-                    <button class="action-btn btn-green" style="max-width:200px; margin:0 auto" onclick="Sys.prt()">طباعة</button>
+                    <button class="btn btn-gold" style="max-width:200px; margin:0 auto" onclick="window.Ops.prt()">طباعة</button>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <div class="print-area" id="p-cert" style="display:none; text-align:center; padding:50px; border:40px double #D4AC0D">
+    <div class="print-only" id="p-cert" style="text-align:center; padding:50px; border:40px double #D4AC0D">
         <h1 style="font-family:'Amiri'; font-size:5rem; margin-bottom:50px">شهادة شكر وتقدير</h1>
         <h2 style="font-size:3rem">تتقدم المدرسة بالشكر للطالب:</h2>
         <h1 id="p-name" style="font-family:'Amiri'; font-size:4rem; text-decoration:underline"></h1>
         <div style="display:flex; justify-content:space-around; margin-top:200px; font-size:2rem"><div>الوكيل</div><div>المدير: إبراهيم اللغبي</div></div>
+    </div>
+
+    <div class="print-only" id="p-vis">
+        <h1 style="text-align:center; font-family:'Amiri'">سجل الزوار</h1>
+        <table style="width:100%; border-collapse:collapse; margin-top:20px" border="1" id="p-vis-tb"></table>
     </div>
 
     <script type="module">
@@ -259,161 +294,137 @@
         const app = initializeApp({ projectId: "edin-377b2", authDomain: "edin-377b2.firebaseapp.com" });
         const db = getFirestore(app);
 
-        // Global Vars
-        let ROLE=null, DATA={t:[],s:[],c:[]}, P=[], V=[], DP=[], CH=null;
+        // State
+        let ROLE=null, CACHE={teachers:[],students:[],classes:[]}, PERMS=[], VIS=[], DEP=[], SND=true, CH=null;
 
-        // Toast
-        window.ShowToast = (m, t='success') => {
-            const b = document.getElementById('toast-box');
-            const e = document.createElement('div');
-            e.className = 'toast';
-            e.style.borderRight = `5px solid ${t==='success'?'#2ecc71':'#e74c3c'}`;
-            e.innerHTML = `<i class="fas fa-${t==='success'?'check':'times'}"></i> ${m}`;
-            b.appendChild(e);
-            document.getElementById('snd-click').play().catch(()=>{});
-            setTimeout(()=>e.remove(), 3000);
+        // Sound
+        window.Sound = {
+            play: t => { if(SND && document.getElementById(t==='ok'?'sfx-ok':'sfx-err')) document.getElementById(t==='ok'?'sfx-ok':'sfx-err').play().catch(()=>{}) },
+            toggle: () => { SND=!SND; document.getElementById('snd-ico').className=SND?'fas fa-volume-up':'fas fa-volume-mute'; }
+        };
+        window.Toast = (m, t='success') => {
+            window.Sound.play(t==='success'?'ok':'err');
+            const b=document.getElementById('toast-box'), e=document.createElement('div');
+            e.className=`toast ${t}`; e.innerHTML=`<i class="fas fa-${t==='success'?'check':'times'}"></i> ${m}`;
+            b.appendChild(e); setTimeout(()=>e.remove(),3000);
         };
 
         // Auth
         window.Auth = {
-            setRole: (r, el) => {
-                ROLE = r;
-                document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
-                el.classList.add('active');
-                document.getElementById('login-step-2').style.display='block';
-            },
-            checkPin: async () => {
-                const btn = document.getElementById('btn-login-action');
-                const pin = document.getElementById('pin-code').value;
-                btn.innerHTML = 'جاري التحقق...';
-                
-                // Logic
-                let allow = false;
-                if(ROLE==='admin' && pin==='2025') allow=true;
-                else if(ROLE==='guard' && pin==='2020') allow=true;
-                else {
-                    try {
-                        const s = await getDoc(doc(db,"settings","dailyCode"));
-                        if(ROLE==='teacher' && (pin===(s.exists()?s.data().value:"1234") || pin==='1234')) allow=true;
-                    } catch(e) { if(ROLE==='teacher' && pin==='1234') allow=true; }
-                }
-
-                if(allow) {
-                    document.getElementById('login-wrap').style.display='none';
-                    document.getElementById('app-main').style.display='block';
-                    window.App.init();
-                } else {
-                    ShowToast("الكود خاطئ", "error");
-                    btn.innerHTML = 'تأكيد الدخول';
-                }
+            select: r => { ROLE=r; document.getElementById('step-role').style.display='none'; document.getElementById('step-pin').style.display='block'; },
+            login: async () => {
+                const p = document.getElementById('pin-in').value;
+                if(ROLE==='admin'&&p==='2025') return window.App.go();
+                if(ROLE==='wakil'&&p==='2030') return window.App.go();
+                if(ROLE==='guard'&&p==='2020') return window.App.go();
+                try {
+                    const s = await getDoc(doc(db,"settings","dailyCode"));
+                    if(ROLE==='teacher'&&(p===(s.exists()?s.data().value:"1234")||p==='1234')) return window.App.go();
+                    window.Toast("الكود خاطئ","error");
+                } catch { if(ROLE==='teacher'&&p==='1234')return window.App.go(); window.Toast("خطأ اتصال","error"); }
             }
         };
 
         // App
         window.App = {
-            init: () => {
-                // Nav Build
-                const n = document.getElementById('nav-menu');
-                let h = '';
-                if(ROLE==='admin') h+=`<button class="nav-btn active" onclick="Nav('v-home',this)">الرئيسية</button><button class="nav-btn" onclick="Nav('v-wakil',this)">الوكيل</button><button class="nav-btn" onclick="Nav('v-mon',this)">المتابعة</button><button class="nav-btn" onclick="Nav('v-rep',this)">التقارير</button><button class="nav-btn" onclick="Nav('v-set',this)">الإعدادات</button><button class="nav-btn" onclick="Nav('v-cert',this)">الشهادات</button>`;
+            go: () => {
+                document.getElementById('login-overlay').style.display='none';
+                document.getElementById('app-wrap').style.display='block';
+                window.App.nav(); window.Sync.start();
+                window.Toast("تم الدخول بنجاح");
+            },
+            nav: () => {
+                const n = document.getElementById('nav-menu'); let h = '';
+                if(ROLE==='admin'||ROLE==='wakil') h+=`<button class="nav-btn active" onclick="Nav('v-home',this)">الرئيسية</button><button class="nav-btn" onclick="Nav('v-wakil',this)">الوكيل</button><button class="nav-btn" onclick="Nav('v-mon',this)">المتابعة</button><button class="nav-btn" onclick="Nav('v-rep',this)">التقارير</button><button class="nav-btn" onclick="Nav('v-set',this)">الإعدادات</button><button class="nav-btn" onclick="Nav('v-cert',this)">الشهادات</button>`;
                 else if(ROLE==='guard') h+=`<button class="nav-btn active" onclick="Nav('v-guard',this)">الأمن</button>`;
                 else h+=`<button class="nav-btn active" onclick="Nav('v-teacher',this)">إصدار</button><button class="nav-btn" onclick="Nav('v-mon',this)">المتابعة</button>`;
-                n.innerHTML = h;
-                Nav(ROLE==='admin'?'v-home':(ROLE==='guard'?'v-guard':'v-teacher'));
-                window.Sync.start();
+                n.innerHTML=h; window.Nav(ROLE==='admin'||ROLE==='wakil'?'v-home':(ROLE==='guard'?'v-guard':'v-teacher'));
             }
         };
-
-        window.Nav = (v, b) => {
-            document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-            document.getElementById(v).classList.add('active');
-            if(b) { document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }
-        };
+        window.Nav = (v, b) => { document.querySelectorAll('.view-section').forEach(x=>x.classList.remove('active')); document.getElementById(v).classList.add('active'); if(b){ document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); } if(v==='v-rep') window.Rep.draw(); };
 
         // Sync
         window.Sync = {
             start: () => {
                 onSnapshot(doc(db,"data","schoolLists"), s=>{ 
-                    if(s.exists()){ const d=s.data(); DATA.t=d.teachers||[]; DATA.s=d.students||[]; DATA.c=d.classes||[]; window.Data.fill(); window.Set.list(); } 
+                    if(s.exists()){ const d=s.data(); CACHE.teachers=d.teachers||[]; CACHE.students=d.students||[]; CACHE.classes=d.classes||[]; window.Data.fill(); window.Set.list(); } 
                 });
-                onSnapshot(query(collection(db,"perms"), orderBy("timestamp","desc")), s=>{ P=s.docs.map(d=>({id:d.id,...d.data()})); window.UI.mon(); });
-                onSnapshot(query(collection(db,"visitors"), orderBy("reqTime","desc")), s=>{ V=s.docs.map(d=>({id:d.id,...d.data()})); window.UI.vis(); });
-                onSnapshot(query(collection(db,"departures"), orderBy("time","desc")), s=>{ DP=s.docs.map(d=>({id:d.id,...d.data()})); window.UI.dep(); });
-                onSnapshot(doc(db,"settings","dailyCode"), d=>{ if(d.exists()) document.getElementById('code-disp').innerText=d.data().value; });
+                onSnapshot(query(collection(db,"perms"), orderBy("timestamp","desc")), s=>{ PERMS=s.docs.map(d=>({id:d.id,...d.data()})); window.UI.mon(); });
+                onSnapshot(query(collection(db,"visitors"), orderBy("reqTime","desc")), s=>{ VISITORS=s.docs.map(d=>({id:d.id,...d.data()})); window.UI.vis(); });
+                onSnapshot(query(collection(db,"departures"), orderBy("time","desc")), s=>{ DEPARTURES=s.docs.map(d=>({id:d.id,...d.data()})); window.UI.dep(); });
+                onSnapshot(doc(db,"settings","dailyCode"), d=>{ if(d.exists()) document.getElementById('day-code').innerText=d.data().value; });
             }
         };
 
         // Data
         window.Data = {
             fill: () => {
-                const t='<option>المعلم...</option>'+DATA.t.map(x=>`<option>${x}</option>`).join('');
+                const t='<option value="">اختر المعلم...</option>'+CACHE.teachers.map(x=>`<option value="${x}">${x}</option>`).join('');
                 if(document.getElementById('t-sel')) document.getElementById('t-sel').innerHTML=t;
-                const c='<option>الشعبة...</option>'+DATA.c.map(x=>`<option>${x}</option>`).join('');
+                const c='<option value="">الشعبة...</option>'+CACHE.classes.map(x=>`<option value="${x}">${x}</option>`).join('');
                 ['c-sel','w-c','ct-c'].forEach(i=>{ if(document.getElementById(i)) document.getElementById(i).innerHTML=c; });
+                // Force UI update
+                if(document.getElementById('c-sel').value) window.Data.filt('c-sel','s-sel');
             },
-            filt: (s,d) => {
-                const v=document.getElementById(s).value;
-                const f=DATA.s.filter(x=>x.class===v);
-                document.getElementById(d).innerHTML='<option>الطالب...</option>'+f.map(x=>`<option value="${x.name}">${x.name}</option>`).join('');
-            }
+            filt: (s, d) => { const c=document.getElementById(s).value; const f=CACHE.students.filter(x=>x.class===c); document.getElementById(d).innerHTML='<option value="">اختر الطالب...</option>'+f.map(x=>`<option value="${x.name}">${x.name}</option>`).join(''); }
         };
 
         // UI
         window.UI = {
             mon: () => {
-                const a=P.filter(x=>x.status==='out');
-                document.getElementById('st-1').innerText = a.length;
-                document.getElementById('mon-list').innerHTML = a.map(p=>`<div class="item-card"><h3>${p.studentName}</h3><p>${p.destination}</p>${ROLE!=='guard'?`<button class="nav-btn" onclick="Sys.ret('${p.id}')">عودة</button>`:''}</div>`).join('');
+                const a=PERMS.filter(x=>x.status==='out'); document.getElementById('live-cnt').innerText=a.length;
+                document.getElementById('mon-grid').innerHTML=a.map(p=>{
+                    const sp=CACHE.students.find(s=>s.name===p.studentName)?.isSpecial;
+                    const m=Math.floor((new Date()-p.timestamp.toDate())/60000);
+                    return `<div class="mon-card ${m>p.limit?'late':''} ${sp?'special':''}"><h3>${p.studentName} ${sp?'⭐':''}</h3><p>${p.className} | ${p.teacherName}</p><div style="margin-top:10px;color:var(--primary)"><b>${p.destination}</b></div>${ROLE!=='guard'?`<button class="btn btn-green" style="padding:5px" onclick="window.Ops.ret('${p.id}')">عودة</button>`:''}</div>`;
+                }).join('')||'<p style="grid-column:1/-1;text-align:center;color:#999">لا يوجد طلاب</p>';
+                document.getElementById('s-perm').innerText=PERMS.filter(x=>x.timestamp&&x.timestamp.toDate().toDateString()===new Date().toDateString()).length;
             },
             vis: () => {
-                const pen=V.filter(v=>v.status==='pending');
-                if(document.getElementById('w-vis-list')) {
-                    document.getElementById('w-vis-list').innerHTML = pen.map(v=>`<div class="item-card"><h3>${v.name}</h3><p>${v.reason}</p><button class="nav-btn" onclick="Sys.va('${v.id}','approved')">قبول</button><button class="nav-btn" style="background:#fee2e2" onclick="Sys.va('${v.id}','rejected')">رفض</button></div>`).join('')||'لا طلبات';
-                }
-                const tb = V.map(v=>`<tr><td>${v.name}</td><td>${v.idNum}</td><td>${v.reason}</td><td>${v.entryTime?new Date(v.entryTime.toDate()).toLocaleTimeString('ar-SA'):'-'}</td></tr>`).join('');
-                if(document.getElementById('vis-tb')) document.getElementById('vis-tb').innerHTML=tb;
-                document.getElementById('st-3').innerText = V.length;
+                const p=VISITORS.filter(v=>v.status==='pending');
+                if(document.getElementById('w-vis-list')) document.getElementById('w-vis-list').innerHTML=p.map(v=>`<div class="mon-card" style="border-color:var(--info)"><h3>${v.name}</h3><p>${v.reason}</p><div style="display:flex;gap:10px"><button class="btn btn-green" onclick="window.Ops.va('${v.id}','approved')">قبول</button><button class="btn btn-red" onclick="window.Ops.va('${v.id}','rejected')">رفض</button></div></div>`).join('')||'لا طلبات';
+                document.getElementById('s-vis').innerText=VISITORS.filter(v=>v.reqTime&&v.reqTime.toDate().toDateString()===new Date().toDateString()).length;
+                const t=VISITORS.map((v,i)=>`<tr><td>${i+1}</td><td>${v.name}</td><td>${v.idNum}</td><td>${v.reason}</td><td>${v.entryTime?new Date(v.entryTime.toDate()).toLocaleTimeString('ar-SA'):'-'}</td></tr>`).join('');
+                if(document.getElementById('vis-tbl')){ document.getElementById('vis-tbl').innerHTML=t; document.getElementById('p-vis-tb').innerHTML=t; }
             },
             dep: () => {
-                const a=DP.filter(d=>d.status==='approved');
-                if(document.getElementById('g-dep-list')) {
-                    document.getElementById('g-dep-list').innerHTML = a.map(d=>`<div class="item-card late"><h3>${d.studentName}</h3><p>المستلم: ${d.reason}</p><button class="nav-btn" onclick="Sys.do('${d.id}')">خروج</button></div>`).join('');
-                }
-                document.getElementById('st-2').innerText = DP.length;
+                const a=DEPARTURES.filter(d=>d.status==='approved');
+                document.getElementById('s-dep').innerText=DEPARTURES.filter(x=>x.time&&x.time.toDate().toDateString()===new Date().toDateString()).length;
+                if(document.getElementById('g-dep-list')) document.getElementById('g-dep-list').innerHTML=a.map(d=>`<div class="mon-card late"><h3>${d.studentName}</h3><p>${d.className}</p><button class="btn btn-orange" onclick="window.Ops.do('${d.id}')">خروج نهائي</button></div>`).join('')||'لا يوجد';
             }
         };
 
-        // Sys Ops
-        window.Sys = {
+        // Ops
+        window.Ops = {
             genCode: async () => setDoc(doc(db,"settings","dailyCode"),{value:Math.floor(1000+Math.random()*9000).toString()}),
-            perm: async () => { const s=document.getElementById('s-sel').value; if(!s||s.includes("الطالب")) return ShowToast("بيانات ناقصة","error"); await addDoc(collection(db,"perms"),{studentName:s, className:document.getElementById('c-sel').value, teacherName:document.getElementById('t-sel').value, destination:document.getElementById('d-sel').value, limit:5, status:'out', timestamp:serverTimestamp()}); ShowToast("تم"); },
-            ret: async (id) => { await updateDoc(doc(db,"perms",id),{status:'returned'}); ShowToast("تمت العودة"); },
-            vis: async () => { const n=document.getElementById('g-n').value; if(!n) return; await addDoc(collection(db,"visitors"),{name:n, idNum:document.getElementById('g-i').value, reason:document.getElementById('g-r').value, status:'pending', reqTime:serverTimestamp()}); ShowToast("تم"); document.getElementById('g-n').value=''; },
+            perm: async () => { const s=document.getElementById('s-sel').value; if(!s||s.includes("الطالب")) return window.Toast("بيانات ناقصة","error"); await addDoc(collection(db,"perms"),{studentName:s, className:document.getElementById('c-sel').value, teacherName:document.getElementById('t-sel').value, destination:document.getElementById('d-sel').value, limit:5, status:'out', timestamp:serverTimestamp()}); window.Toast("تم الإصدار"); },
+            ret: async (id) => { await updateDoc(doc(db,"perms",id),{status:'returned'}); window.Toast("تمت العودة"); },
+            visReq: async () => { const n=document.getElementById('g-nm').value; if(!n) return; await addDoc(collection(db,"visitors"),{name:n, idNum:document.getElementById('g-id').value, reason:document.getElementById('g-rs').value, status:'pending', reqTime:serverTimestamp()}); window.Toast("تم الإرسال"); document.getElementById('g-nm').value=''; },
             va: async (id,s) => { await updateDoc(doc(db,"visitors",id),{status:s, entryTime:s==='approved'?serverTimestamp():null}); },
-            dep: async () => { const s=document.getElementById('w-s').value; if(!s||s.includes("الطالب")) return; await addDoc(collection(db,"departures"),{studentName:s, className:document.getElementById('w-c').value, reason:document.getElementById('w-r').value, status:'approved', time:serverTimestamp()}); ShowToast("تم"); },
-            do: async (id) => { await updateDoc(doc(db,"departures",id),{status:'left'}); },
+            dep: async () => { const s=document.getElementById('w-s').value; if(!s||s.includes("الطالب")) return; await addDoc(collection(db,"departures"),{studentName:s, className:document.getElementById('w-c').value, reason:document.getElementById('w-r').value, status:'approved', time:serverTimestamp()}); window.Toast("تم الاعتماد"); },
+            do: async (id) => { await updateDoc(doc(db,"departures",id),{status:'left'}); window.Toast("تم الخروج"); },
             prt: () => { const n=document.getElementById('ct-s').value; if(!n||n.includes("الطالب")) return; document.getElementById('p-name').innerText=n; document.getElementById('p-cert').style.display='block'; window.print(); document.getElementById('p-cert').style.display='none'; }
         };
 
-        // Settings
+        // Settings (Universal Import)
         window.Set = {
             swap: t => { ['t','s','sys'].forEach(x=>document.getElementById('st-'+x).style.display='none'); document.getElementById('st-'+t).style.display='block'; },
-            addT: async () => { const n=document.getElementById('nt').value; if(n) await setDoc(doc(db,"data","schoolLists"),{teachers:arrayUnion(n)},{merge:true}); ShowToast("تم"); },
-            impT: i => { const r=new FileReader(); r.onload=async(e)=>{ const d=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); const t=[...new Set(d.map(r=>r[0]).filter(Boolean))]; if(t.length) await setDoc(doc(db,"data","schoolLists"),{teachers:arrayUnion(...t)},{merge:true}); ShowToast("تم"); }; r.readAsArrayBuffer(i.files[0]); },
-            saveC: async () => { const c=document.getElementById('tc').value; if(c) await setDoc(doc(db,"data","schoolLists"),{classes:arrayUnion(c)},{merge:true}); ShowToast("تم"); },
-            addS: async () => { const n=document.getElementById('ns').value, c=document.getElementById('tc').value, sp=document.getElementById('sp').checked; if(!c) return ShowToast("ثبت الشعبة","error"); await setDoc(doc(db,"data","schoolLists"),{students:arrayUnion({name:n, class:c, isSpecial:sp}), classes:arrayUnion(c)},{merge:true}); ShowToast("تم"); },
-            trig: () => { if(!document.getElementById('tc').value) return ShowToast("اكتب الشعبة","error"); document.getElementById('fs').click(); },
-            impS: i => { const c=document.getElementById('tc').value, r=new FileReader(); r.onload=async(e)=>{ const d=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); const s=d.map(r=>({name:r[0], class:c, isSpecial:false})).filter(x=>x.name); if(s.length) await setDoc(doc(db,"data","schoolLists"),{students:arrayUnion(...s), classes:arrayUnion(c)},{merge:true}); ShowToast("تم"); }; r.readAsArrayBuffer(i.files[0]); },
-            list: () => { document.getElementById('lst-t').innerHTML=DATA.t.map(x=>`<div>${x} <span onclick="Set.del('teachers','${x}')" style="color:red;cursor:pointer">X</span></div>`).join(''); document.getElementById('lst-c').innerHTML=DATA.c.map(x=>`<div>${x} <span onclick="Set.del('classes','${x}')" style="color:red;cursor:pointer">X</span></div>`).join(''); },
+            addT: async () => { const n=document.getElementById('nt').value; if(n) await setDoc(doc(db,"data","schoolLists"),{teachers:arrayUnion(n)},{merge:true}); window.Toast("تم الحفظ"); },
+            impT: i => { const r=new FileReader(); r.onload=async(e)=>{ const d=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]], {header:1}); const t=[...new Set(d.map(r=>r[0]).filter(Boolean))]; if(t.length) await setDoc(doc(db,"data","schoolLists"),{teachers:arrayUnion(...t)},{merge:true}); window.Toast("تم الاستيراد: "+t.length); }; r.readAsArrayBuffer(i.files[0]); },
+            saveC: async () => { const c=document.getElementById('tc').value; if(c) await setDoc(doc(db,"data","schoolLists"),{classes:arrayUnion(c)},{merge:true}); window.Toast("تم التثبيت"); },
+            addS: async () => { const n=document.getElementById('ns').value, c=document.getElementById('tc').value, sp=document.getElementById('sp').checked; if(!c) return window.Toast("ثبت الشعبة","error"); await setDoc(doc(db,"data","schoolLists"),{students:arrayUnion({name:n, class:c, isSpecial:sp}), classes:arrayUnion(c)},{merge:true}); window.Toast("تم الحفظ"); },
+            trig: () => { if(!document.getElementById('tc').value) return window.Toast("ثبت الشعبة أولاً","error"); document.getElementById('fs').click(); },
+            impS: i => { const c=document.getElementById('tc').value, r=new FileReader(); r.onload=async(e)=>{ const d=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]], {header:1}); const s=d.map(r=>({name:r[0], class:c, isSpecial:false})).filter(x=>x.name); if(s.length) await setDoc(doc(db,"data","schoolLists"),{students:arrayUnion(...s), classes:arrayUnion(c)},{merge:true}); window.Toast("تم الربط: "+s.length); }; r.readAsArrayBuffer(i.files[0]); },
+            list: () => { document.getElementById('lst-t').innerHTML=CACHE.teachers.map(x=>`<div>${x} <i class="fas fa-trash" onclick="Set.del('teachers','${x}')" style="color:red;cursor:pointer"></i></div>`).join(''); document.getElementById('lst-c').innerHTML=CACHE.classes.map(x=>`<div>${x} <i class="fas fa-trash" onclick="Set.del('classes','${x}')" style="color:red;cursor:pointer"></i></div>`).join(''); },
             del: async (k,v) => { if(confirm('حذف؟')) await setDoc(doc(db,"data","schoolLists"),{[k]:arrayRemove(v)},{merge:true}); },
-            wipe: async () => { if(confirm('متأكد؟')) { await setDoc(doc(db,"data","schoolLists"),{teachers:[],students:[],classes:[]}); ['perms','visitors','departures'].forEach(async c=>{ const q=await getDocs(collection(db,c)); q.forEach(d=>deleteDoc(doc(db,c,d.id))); }); ShowToast("تم التصفير"); location.reload(); } }
+            wipe: async () => { if(confirm('متأكد؟')) { await setDoc(doc(db,"data","schoolLists"),{teachers:[],students:[],classes:[]}); ['perms','visitors','departures'].forEach(async c=>{ const q=await getDocs(collection(db,c)); q.forEach(d=>deleteDoc(doc(db,c,d.id))); }); window.Toast("تم التصفير"); location.reload(); } }
         };
 
         // Reports
         window.Rep = {
             draw: () => {
                 const m=document.getElementById('r-mo').value; if(!m) return;
-                const r=P.filter(x=>!DATA.s.find(s=>s.name===x.studentName)?.isSpecial && x.timestamp && x.timestamp.toDate().toISOString().startsWith(m));
+                const r=PERMS.filter(x=>!CACHE.students.find(s=>s.name===x.studentName)?.isSpecial && x.timestamp && x.timestamp.toDate().toISOString().startsWith(m));
                 const c={}; r.forEach(x=>c[x.studentName]=(c[x.studentName]||0)+1); const s=Object.entries(c).sort((a,b)=>b[1]-a[1]);
                 if(CH) CH.destroy(); CH=new Chart(document.getElementById('myChart'),{type:'bar',data:{labels:s.slice(0,10).map(x=>x[0]),datasets:[{label:'خروج',data:s.slice(0,10).map(x=>x[1]),backgroundColor:'#145A32'}]}});
                 document.getElementById('top-l').innerHTML=s.slice(0,5).map(x=>`<li>${x[0]}</li>`).join('');
@@ -421,9 +432,7 @@
             }
         };
 
-        // Remove Loader
-        window.onload = () => document.getElementById('loader-overlay').style.opacity='0'; setTimeout(()=>document.getElementById('loader-overlay').style.display='none', 500);
-
+        document.getElementById('r-mo').value = new Date().toISOString().slice(0,7);
     </script>
 </body>
 </html>

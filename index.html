@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0f4c3a">
-    <title>نظام إذن الشامل (V36 Final)</title>
+    <meta name="theme-color" content="#ffffff">
+    <title>نظام إذن (V37 المتزامن)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,62 +17,120 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        :root { --primary: #0f4c3a; --gold: #d4af37; --bg: #f4f7f6; --danger: #dc3545; --info: #0dcaf0; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); padding-bottom: 80px; }
-
-        /* Login */
-        #auth-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(135deg, var(--primary), #000); z-index:9999; display:flex; align-items:center; justify-content:center; }
-        .auth-card { background:white; padding:40px; border-radius:20px; width:400px; text-align:center; border-top:5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        /* Sidebar & Layout */
-        .sidebar { width:260px; height:100vh; background:#072b21; color:white; position:fixed; right:0; top:0; padding-top:20px; z-index:1000; overflow-y:auto; transition:0.3s; }
-        .main-content { margin-right:260px; padding:25px; transition:0.3s; }
-        @media (max-width: 768px) { 
-            .sidebar { transform: translateX(100%); width:100%; } 
-            .sidebar.active { transform: translateX(0); } 
-            .main-content { margin-right:0; padding:15px; } 
-            .mobile-header { display:flex !important; } 
+        :root {
+            --primary: #0f4c3a; /* الهوية: أخضر */
+            --gold: #d4af37;    /* الهوية: ذهبي */
+            --bg-light: #f8f9fa; /* خلفية فاتحة */
+            --text-dark: #212529;
         }
-        .mobile-header { display:none; background:var(--primary); color:white; padding:15px; justify-content:space-between; margin:-15px -15px 15px -15px; align-items: center; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg-light); color: var(--text-dark); padding-bottom: 80px; }
 
-        /* Custom UI */
-        .nav-link { color:rgba(255,255,255,0.8); padding:12px 20px; border-right:4px solid transparent; cursor:pointer; display:flex; align-items:center; margin-bottom: 5px; }
-        .nav-link:hover, .nav-link.active { background:rgba(255,255,255,0.1); color:white; border-right-color:var(--gold); }
+        /* --- شاشة الدخول (تصميم جديد فاتح وكبير) --- */
+        #auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff; /* خلفية بيضاء بالكامل */
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .auth-card {
+            background: white; padding: 40px; border-radius: 25px; width: 90%; max-width: 500px;
+            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.1); border: 1px solid #eee;
+        }
+        .role-btn {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 25px; margin-bottom: 15px; border-radius: 15px;
+            background: #fff; border: 2px solid #eee; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+        .role-btn:hover {
+            transform: translateY(-5px); border-color: var(--primary);
+            box-shadow: 0 10px 25px rgba(15, 76, 58, 0.15);
+        }
+        .role-btn h4 { margin: 0; font-weight: 800; color: var(--primary); }
+        .role-btn i { font-size: 2.5rem; color: var(--gold); }
+
+        /* --- التخطيط --- */
+        .sidebar {
+            width: 260px; height: 100vh; background: var(--primary); color: white;
+            position: fixed; right: 0; top: 0; padding-top: 20px; z-index: 1000; overflow-y: auto;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1); transition: 0.3s;
+        }
+        .main-content { margin-right: 260px; padding: 30px; transition: 0.3s; }
         
-        .card-custom { border:none; border-radius:15px; background:white; box-shadow:0 5px 15px rgba(0,0,0,0.05); overflow:hidden; margin-bottom:20px; }
-        .card-header-c { background:var(--primary); color:white; padding:15px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(100%); width: 100%; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-right: 0; padding: 15px; }
+            .mobile-header { display: flex !important; }
+        }
+        .mobile-header {
+            display: none; justify-content: space-between; align-items: center;
+            background: var(--primary); color: white; padding: 15px;
+            margin: -15px -15px 20px -15px; border-radius: 0 0 20px 20px;
+        }
+
+        /* --- العناصر --- */
+        .card-custom { border: none; border-radius: 18px; background: white; box-shadow: 0 8px 20px rgba(0,0,0,0.04); overflow: hidden; margin-bottom: 25px; }
+        .card-header-c { background: #fff; border-bottom: 1px solid #f0f0f0; padding: 20px; font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .nav-link { color: rgba(255,255,255,0.8); padding: 15px 25px; border-right: 5px solid transparent; font-size: 1.1rem; }
+        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: white; border-right-color: var(--gold); }
         
-        /* Icons Buttons */
-        .action-btn { cursor:pointer; padding:5px 8px; border-radius:5px; transition:0.2s; margin: 0 2px; }
-        .action-btn.delete { color: var(--danger); background: #fee2e2; }
-        .action-btn.transfer { color: var(--primary); background: #d1fae5; }
-        .action-btn:hover { transform: scale(1.1); }
+        .monitor-card { background: white; padding: 20px; border-radius: 15px; border-right: 6px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .monitor-card.safe { border-right-color: #198754; }
+        .monitor-card.danger { border-right-color: #dc3545; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(220,53,69,0.4); } 70% { box-shadow: 0 0 0 15px rgba(220,53,69,0); } }
 
-        /* Monitor Cards */
-        .monitor-card { background:white; padding:15px; border-radius:12px; border-right:5px solid #ccc; box-shadow:0 3px 10px rgba(0,0,0,0.05); margin-bottom:10px; position: relative; }
-        .monitor-card.safe { border-right-color:#198754; }
-        .monitor-card.danger { border-right-color:var(--danger); animation:pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow:0 0 0 0 rgba(220,53,69,0.4); } 70% { box-shadow:0 0 0 10px rgba(220,53,69,0); } 100% { box-shadow:0 0 0 0 rgba(220,53,69,0); } }
+        /* أزرار العمليات */
+        .action-btn { width: 35px; height: 35px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin: 0 2px; transition: 0.2s; border: none; }
+        .action-btn.del { background: #fee2e2; color: #dc3545; }
+        .action-btn.move { background: #e0f2fe; color: #0284c7; }
+        .action-btn:hover { transform: scale(1.15); }
 
-        .hidden { display:none !important; }
-        @media print { .no-print, .sidebar { display:none !important; } .main-content { margin:0; } }
+        .hidden { display: none !important; }
+        @media print { .no-print, .sidebar { display: none !important; } .main-content { margin: 0; } }
     </style>
 </head>
 <body>
 
     <div id="auth-overlay">
         <div id="role-selection" class="auth-card">
-            <h3 class="fw-bold mb-4 text-dark">نظام إذن (V36)</h3>
-            <div class="d-grid gap-3">
-                <button class="btn btn-outline-success py-2 fw-bold" onclick="showPin('teacher')"><i class="fas fa-chalkboard-teacher me-2"></i> المعلم</button>
-                <button class="btn btn-outline-primary py-2 fw-bold" onclick="showPin('admin')"><i class="fas fa-user-tie me-2"></i> الإدارة</button>
-                <button class="btn btn-outline-dark py-2 fw-bold" onclick="showPin('guard')"><i class="fas fa-user-shield me-2"></i> الحارس</button>
+            <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" width="90" class="mb-4">
+            <h2 class="mb-2 fw-bold text-dark">نظام إذن</h2>
+            <p class="text-muted mb-4">المزامنة السحابية V37</p>
+            
+            <div class="role-btn" onclick="showPin('admin')">
+                <div>
+                    <h4>الإدارة</h4>
+                    <small class="text-muted">التحكم والتقارير</small>
+                </div>
+                <i class="fas fa-user-tie"></i>
+            </div>
+
+            <div class="role-btn" onclick="showPin('teacher')">
+                <div>
+                    <h4>المعلم</h4>
+                    <small class="text-muted">إصدار الأذونات</small>
+                </div>
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+
+            <div class="role-btn" onclick="showPin('guard')">
+                <div>
+                    <h4>الزوار</h4>
+                    <small class="text-muted">بوابة الحارس</small>
+                </div>
+                <i class="fas fa-user-shield"></i>
             </div>
         </div>
+
         <div id="pin-entry" class="auth-card hidden">
-            <div class="d-flex justify-content-between mb-3"><h5 class="m-0">الرمز السري</h5><button class="btn btn-sm btn-light" onclick="resetLogin()">&times;</button></div>
-            <input type="password" id="pin-input" class="form-control text-center mb-3 fs-3" placeholder="****" inputmode="numeric">
-            <button class="btn btn-success w-100" onclick="attemptLogin()">دخول</button>
+            <div class="d-flex justify-content-between mb-4">
+                <h3 class="m-0 fw-bold">التحقق</h3>
+                <button class="btn btn-light rounded-circle" onclick="resetLogin()"><i class="fas fa-times"></i></button>
+            </div>
+            <input type="password" id="pin-input" class="form-control form-control-lg text-center fs-2 mb-4" placeholder="****" inputmode="numeric">
+            <button class="btn btn-success w-100 py-3 fs-5 fw-bold" onclick="attemptLogin()">دخول للنظام</button>
         </div>
     </div>
 
@@ -80,76 +138,77 @@
         
         <div class="mobile-header">
             <h5 class="m-0 fw-bold">نظام إذن</h5>
-            <button class="btn text-white" onclick="document.querySelector('.sidebar').classList.toggle('active')"><i class="fas fa-bars"></i></button>
+            <button class="btn text-white" onclick="document.querySelector('.sidebar').classList.toggle('active')"><i class="fas fa-bars fa-lg"></i></button>
         </div>
 
         <aside class="sidebar">
-            <div class="text-center p-3 border-bottom border-secondary mb-3">
-                <i class="fas fa-school fa-3x mb-2 text-white"></i>
-                <h6 class="m-0 text-white">الإمام النووي</h6>
-                <small class="text-warning" id="role-disp">--</small>
+            <div class="text-center p-4 border-bottom border-secondary mb-4">
+                <i class="fas fa-graduation-cap fa-4x mb-3 text-warning"></i>
+                <h5 class="m-0 fw-bold">الإمام النووي</h5>
+                <small class="text-white-50" id="role-disp">--</small>
             </div>
             <nav id="nav-menu"></nav>
-            <div class="p-3 mt-auto"><button class="btn btn-outline-danger w-100 btn-sm" onclick="location.reload()">خروج</button></div>
+            <div class="p-4 mt-auto">
+                <button class="btn btn-outline-danger w-100 py-2 fw-bold" onclick="location.reload()">
+                    <i class="fas fa-sign-out-alt me-2"></i> خروج
+                </button>
+            </div>
         </aside>
 
         <main class="main-content">
             
             <section id="sec-monitor" class="app-section">
-                <div class="d-flex justify-content-between mb-3 align-items-center no-print">
-                    <h4 class="fw-bold m-0"><i class="fas fa-desktop text-warning me-2"></i>المتابعة</h4>
+                <div class="d-flex justify-content-between mb-4 align-items-center no-print">
+                    <h2 class="fw-bold m-0 text-dark">المتابعة الحية</h2>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary btn-sm" id="mute-btn" onclick="toggleMute()"><i class="fas fa-volume-up"></i></button>
-                        <button class="btn btn-dark btn-sm" onclick="forceUpdate()"><i class="fas fa-sync"></i></button>
+                        <button class="btn btn-white border shadow-sm" id="mute-btn" onclick="toggleMute()"><i class="fas fa-volume-up text-primary"></i></button>
+                        <button class="btn btn-dark shadow-sm" onclick="forceUpdate()"><i class="fas fa-sync me-2"></i> تحديث</button>
                     </div>
                 </div>
-                <div id="monitor-grid" class="row g-2"></div>
-                <div id="empty-state" class="text-center text-muted py-5 hidden"><h5>الجميع في الفصول</h5></div>
+                <div id="monitor-grid" class="row g-3"></div>
+                <div id="empty-state" class="text-center text-muted py-5 hidden">
+                    <i class="fas fa-shield-alt fa-5x mb-3 text-success opacity-25"></i>
+                    <h3>الوضع مستقر</h3>
+                    <p>جميع الطلاب داخل الفصول الدراسية</p>
+                </div>
             </section>
 
             <section id="sec-management" class="app-section hidden">
-                <ul class="nav nav-tabs mb-4" id="manage-tabs">
-                    <li class="nav-item"><button class="nav-link active text-dark fw-bold" onclick="showManageTab('students')">إدارة الطلاب</button></li>
-                    <li class="nav-item"><button class="nav-link text-dark fw-bold" onclick="showManageTab('teachers')">إدارة المعلمين</button></li>
-                    <li class="nav-item"><button class="nav-link text-dark fw-bold" onclick="showManageTab('system')">إعدادات النظام</button></li>
+                <ul class="nav nav-pills mb-4 gap-3" id="manage-tabs">
+                    <li class="nav-item"><button class="nav-link active text-dark bg-white border" onclick="showManageTab('students')">الطلاب</button></li>
+                    <li class="nav-item"><button class="nav-link text-dark bg-white border" onclick="showManageTab('teachers')">المعلمون</button></li>
+                    <li class="nav-item"><button class="nav-link text-dark bg-white border" onclick="showManageTab('system')">النظام</button></li>
                 </ul>
 
                 <div id="tab-students" class="manage-content">
-                    
-                    <div class="card-custom p-3 bg-light border">
-                        <div class="row g-2 align-items-end">
-                            <div class="col-md-3">
-                                <label class="fw-bold small">1. حدد الفصل (مهم للاستيراد)</label>
-                                <input list="class-list-dl" id="stu-class-input" class="form-control" placeholder="اكتب اسم الفصل">
+                    <div class="card-custom p-4">
+                        <div class="row g-3 align-items-end mb-4">
+                            <div class="col-md-4">
+                                <label class="fw-bold mb-2">اختر أو اكتب الفصل (للاستيراد/الإضافة):</label>
+                                <input list="class-list-dl" id="stu-class-input" class="form-control form-control-lg" placeholder="مثلاً: 1/1">
+                                <datalist id="class-list-dl"></datalist>
                             </div>
-                            <div class="col-md-3">
-                                <label class="fw-bold small">2. إجراءات</label>
-                                <button class="btn btn-success w-100" onclick="document.getElementById('file-stu').click()">
-                                    <i class="fas fa-file-excel me-1"></i> استيراد من Excel
-                                </button>
+                            <div class="col-md-8">
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-success flex-grow-1 py-2" onclick="document.getElementById('file-stu').click()">
+                                        <i class="fas fa-file-excel me-2"></i> استيراد (Excel)
+                                    </button>
+                                    <button class="btn btn-primary flex-grow-1 py-2" onclick="addSingleStudent()">
+                                        <i class="fas fa-user-plus me-2"></i> إضافة فردي
+                                    </button>
+                                </div>
                                 <input type="file" id="file-stu" hidden onchange="importData(this, 'students')">
                             </div>
-                            <div class="col-md-3">
-                                <label class="fw-bold small">أو</label>
-                                <button class="btn btn-primary w-100" onclick="addSingleStudent()">
-                                    <i class="fas fa-plus me-1"></i> إضافة طالب يدوياً
-                                </button>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="fw-bold small">بحث</label>
-                                <input type="text" class="form-control" placeholder="ابحث بالاسم..." onkeyup="filterTable('stu-table', this.value)">
-                            </div>
                         </div>
-                    </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <input type="text" class="form-control w-50" placeholder="بحث عن طالب..." onkeyup="filterTable('stu-table', this.value)">
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteAll('students')">حذف الجميع</button>
+                        </div>
 
-                    <div class="card-custom">
-                        <div class="card-header-c">
-                            <span>قائمة الطلاب</span>
-                            <button class="btn btn-sm btn-outline-light" onclick="deleteAll('students')">حذف الجميع</button>
-                        </div>
                         <div class="table-responsive" style="max-height: 500px;">
-                            <table class="table table-hover align-middle mb-0" id="stu-table">
-                                <thead class="table-light"><tr><th>الاسم</th><th>الفصل</th><th>إجراءات (نقل / حذف)</th></tr></thead>
+                            <table class="table table-hover align-middle" id="stu-table">
+                                <thead class="table-light"><tr><th>الاسم</th><th>الفصل</th><th>إجراءات</th></tr></thead>
                                 <tbody id="stu-tbody"></tbody>
                             </table>
                         </div>
@@ -157,25 +216,21 @@
                 </div>
 
                 <div id="tab-teachers" class="manage-content hidden">
-                    <div class="card-custom p-3 bg-light border mb-3">
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-success" onclick="document.getElementById('file-tea').click()">
-                                <i class="fas fa-file-excel me-2"></i> استيراد قائمة المعلمين
+                    <div class="card-custom p-4">
+                        <div class="d-flex gap-3 mb-4">
+                            <button class="btn btn-success flex-grow-1 py-2" onclick="document.getElementById('file-tea').click()">
+                                <i class="fas fa-file-excel me-2"></i> استيراد معلمين (Excel)
                             </button>
-                            <input type="file" id="file-tea" hidden onchange="importData(this, 'teachers')">
-                            
-                            <button class="btn btn-primary" onclick="addSingleTeacher()">
+                            <button class="btn btn-primary flex-grow-1 py-2" onclick="addSingleTeacher()">
                                 <i class="fas fa-plus me-2"></i> إضافة معلم
                             </button>
+                            <input type="file" id="file-tea" hidden onchange="importData(this, 'teachers')">
                         </div>
-                    </div>
-                    
-                    <div class="card-custom">
-                        <div class="card-header-c">
-                            <span>قائمة المعلمين</span>
-                            <button class="btn btn-sm btn-outline-light" onclick="deleteAll('teachers')">حذف الجميع</button>
+                        <div class="d-flex justify-content-between mb-3">
+                            <input type="text" class="form-control w-50" placeholder="بحث..." onkeyup="filterTable('tea-table', this.value)">
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteAll('teachers')">حذف الجميع</button>
                         </div>
-                        <table class="table table-hover mb-0">
+                        <table class="table table-hover align-middle" id="tea-table">
                             <tbody id="tea-tbody"></tbody>
                         </table>
                     </div>
@@ -184,17 +239,17 @@
                 <div id="tab-system" class="manage-content hidden">
                     <div class="row g-4">
                         <div class="col-md-6">
-                            <div class="card-custom p-4 text-center border-warning">
-                                <h6 class="text-muted">كود دخول المعلمين</h6>
-                                <h2 class="text-primary fw-bold my-3" id="disp-code">----</h2>
-                                <button class="btn btn-sm btn-dark" onclick="newCode()">تحديث الكود</button>
+                            <div class="card-custom p-5 text-center border-warning">
+                                <h6 class="text-muted text-uppercase ls-1">كود المعلم اليومي</h6>
+                                <h1 class="text-primary fw-bolder my-3 display-4" id="disp-code">----</h1>
+                                <button class="btn btn-dark" onclick="newCode()"><i class="fas fa-sync me-2"></i>تحديث الكود</button>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="card-custom p-4 text-center border-dark">
-                                <h6 class="text-muted">كلمة مرور الحارس</h6>
-                                <h2 class="text-dark fw-bold my-3" id="disp-guard">----</h2>
-                                <button class="btn btn-sm btn-outline-dark" onclick="newGuardPass()">تغيير الكلمة</button>
+                            <div class="card-custom p-5 text-center border-dark">
+                                <h6 class="text-muted text-uppercase ls-1">كلمة مرور الزوار (الحارس)</h6>
+                                <h1 class="text-dark fw-bolder my-3 display-4" id="disp-guard">----</h1>
+                                <button class="btn btn-outline-dark" onclick="newGuardPass()"><i class="fas fa-key me-2"></i>تغيير الكلمة</button>
                             </div>
                         </div>
                     </div>
@@ -202,22 +257,22 @@
             </section>
 
             <section id="sec-reports" class="app-section hidden">
-                <div class="d-flex justify-content-between mb-3 no-print">
-                    <h4 class="fw-bold">التقارير</h4>
-                    <button class="btn btn-dark btn-sm" onclick="window.print()">طباعة</button>
+                <div class="d-flex justify-content-between mb-4 align-items-center no-print">
+                    <h2 class="fw-bold m-0">التقارير</h2>
+                    <button class="btn btn-dark" onclick="window.print()"><i class="fas fa-print me-2"></i> طباعة</button>
                 </div>
-                <div class="card-custom p-2 mb-3 no-print overflow-auto">
+                <div class="card-custom p-2 mb-4 no-print overflow-auto">
                     <div class="d-flex gap-2" style="min-width: max-content;">
-                        <button class="btn btn-outline-primary active" onclick="showReport('all', this)">1. سجل الأذونات</button>
-                        <button class="btn btn-outline-primary" onclick="showReport('least', this)">2. الأقل استئذاناً</button>
-                        <button class="btn btn-outline-primary" onclick="showReport('most', this)">3. الأكثر استئذاناً</button>
-                        <button class="btn btn-outline-primary" onclick="showReport('visitors', this)">4. سجل الزوار</button>
-                        <button class="btn btn-outline-primary" onclick="showReport('departures', this)">5. الانصراف المبكر</button>
+                        <button class="btn btn-outline-primary active px-4" onclick="showReport('all', this)">1. الأذونات</button>
+                        <button class="btn btn-outline-primary px-4" onclick="showReport('least', this)">2. الأقل خروجاً</button>
+                        <button class="btn btn-outline-primary px-4" onclick="showReport('most', this)">3. الأكثر خروجاً</button>
+                        <button class="btn btn-outline-primary px-4" onclick="showReport('visitors', this)">4. الزوار</button>
+                        <button class="btn btn-outline-primary px-4" onclick="showReport('departures', this)">5. الانصراف</button>
                     </div>
                 </div>
                 <div class="card-custom p-0">
                     <div class="table-responsive">
-                        <table class="table table-bordered text-center mb-0 table-sm" id="rep-table">
+                        <table class="table table-bordered text-center mb-0 table-hover" id="rep-table">
                             <thead class="table-light" id="rep-head"></thead>
                             <tbody id="rep-body"></tbody>
                         </table>
@@ -227,72 +282,80 @@
 
             <section id="sec-permit" class="app-section hidden">
                 <div class="card-custom">
-                    <div class="card-header-c">إصدار إذن</div>
-                    <div class="card-body p-4">
+                    <div class="card-header-c">إصدار إذن جديد</div>
+                    <div class="card-body p-5">
                         <form onsubmit="issuePermit(event)">
-                            <label class="fw-bold">الفصل</label>
-                            <input list="class-list-dl" id="t-class" class="form-control mb-3" placeholder="اختر الفصل" onchange="loadClassStudents(this.value)" required>
-                            <datalist id="class-list-dl"></datalist>
-                            
-                            <label class="fw-bold">الطالب</label>
-                            <select id="t-student" class="form-select mb-3" disabled></select>
-                            
-                            <div class="row">
-                                <div class="col-6">
-                                    <label class="fw-bold">الوجهة</label>
-                                    <select id="t-dest" class="form-select mb-3">
-                                        <option>دورة مياه</option><option>المقصف</option>
-                                        <option>الإدارة</option><option>الموجه</option>
+                            <div class="mb-4">
+                                <label class="fw-bold mb-2">1. اختر الفصل</label>
+                                <input list="class-list-dl" id="t-class" class="form-control form-control-lg" placeholder="بحث..." onchange="loadClassStudents(this.value)" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="fw-bold mb-2">2. اختر الطالب</label>
+                                <select id="t-student" class="form-select form-select-lg" disabled></select>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="fw-bold mb-2">3. الوجهة</label>
+                                    <select id="t-dest" class="form-select form-select-lg">
+                                        <option>دورة مياه</option><option>المقصف</option><option>الإدارة</option><option>الموجه</option>
                                     </select>
                                 </div>
-                                <div class="col-6">
-                                    <label class="fw-bold">الوقت (دقيقة)</label>
-                                    <input type="number" id="t-time" class="form-control mb-3" value="5">
+                                <div class="col-md-6">
+                                    <label class="fw-bold mb-2">4. المدة (دقيقة)</label>
+                                    <input type="number" id="t-time" class="form-control form-control-lg" value="5">
                                 </div>
                             </div>
-                            
-                            <div class="form-check form-switch mb-3">
+                            <div class="form-check form-switch mb-4">
                                 <input class="form-check-input" type="checkbox" id="t-special">
-                                <label class="form-check-label text-danger fw-bold" for="t-special">تجاهل النظام (حالة خاصة)</label>
+                                <label class="form-check-label text-danger fw-bold" for="t-special">حالة خاصة (تجاوز شرط الساعتين)</label>
                             </div>
-                            <button class="btn btn-success w-100 fw-bold">تسجيل خروج</button>
+                            <button class="btn btn-success w-100 py-3 fw-bold fs-5">تسجيل خروج الطالب</button>
                         </form>
                     </div>
                 </div>
             </section>
 
             <section id="sec-guard" class="app-section hidden">
-                <ul class="nav nav-pills nav-fill mb-3 gap-2">
-                    <li class="nav-item"><a class="nav-link active bg-white border" onclick="toggleGuardView('visit')">زوار</a></li>
-                    <li class="nav-item"><a class="nav-link bg-white border" onclick="toggleGuardView('exit')">مغادرة</a></li>
+                <ul class="nav nav-pills nav-fill mb-4 gap-3 p-1 bg-white rounded shadow-sm border">
+                    <li class="nav-item"><a class="nav-link active rounded" onclick="toggleGuardView('visit')">تسجيل زائر</a></li>
+                    <li class="nav-item"><a class="nav-link rounded" onclick="toggleGuardView('exit')">تسجيل انصراف</a></li>
                 </ul>
+                
                 <div id="view-visit">
-                    <div class="card-custom p-3">
-                        <h6 class="fw-bold">تسجيل زائر</h6>
-                        <input id="g-name" class="form-control mb-2" placeholder="الاسم">
-                        <input id="g-id" type="number" class="form-control mb-2" placeholder="الهوية">
-                        <input id="g-reason" class="form-control mb-2" placeholder="السبب">
-                        <input id="g-student" class="form-control mb-2" placeholder="الطالب المزار">
-                        <button class="btn btn-dark w-100" onclick="sendVisitor()">إرسال</button>
+                    <div class="card-custom p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6"><input id="g-name" class="form-control" placeholder="اسم الزائر"></div>
+                            <div class="col-md-6"><input id="g-id" type="number" class="form-control" placeholder="رقم الهوية"></div>
+                            <div class="col-md-6"><input id="g-reason" class="form-control" placeholder="سبب الزيارة"></div>
+                            <div class="col-md-6"><input id="g-student" class="form-control" placeholder="الطالب المزار (اختياري)"></div>
+                            <div class="col-12"><button class="btn btn-dark w-100 py-2" onclick="sendVisitor()">إرسال الطلب</button></div>
+                        </div>
                     </div>
+                    <h6 class="fw-bold mt-4">سجل الزوار اليومي</h6>
                     <div id="g-visit-list" class="list-group"></div>
                 </div>
+
                 <div id="view-exit" class="hidden">
                     <div id="g-exit-list" class="list-group"></div>
                 </div>
             </section>
 
             <section id="sec-agent" class="app-section hidden">
-                <h4 class="fw-bold mb-3">لوحة الوكيل</h4>
-                <div class="row g-3">
-                    <div class="col-md-6"><div class="card-custom"><div class="card-header-c bg-warning text-dark">طلبات الزوار</div><div id="agent-vis-list" class="list-group list-group-flush"></div></div></div>
+                <h3 class="fw-bold mb-4">لوحة الوكيل</h3>
+                <div class="row g-4">
                     <div class="col-md-6">
-                        <div class="card-custom">
-                            <div class="card-header-c bg-danger">أمر انصراف</div>
-                            <div class="card-body p-3">
-                                <input id="dep-name" class="form-control mb-2" placeholder="اسم الطالب">
-                                <input id="dep-reason" class="form-control mb-2" placeholder="السبب">
-                                <button class="btn btn-danger w-100" onclick="sendDeparture()">السماح بالخروج</button>
+                        <div class="card-custom h-100">
+                            <div class="card-header-c bg-warning text-dark">طلبات الزوار المعلقة</div>
+                            <div id="agent-vis-list" class="list-group list-group-flush"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-custom h-100">
+                            <div class="card-header-c bg-danger text-white">إصدار أمر انصراف</div>
+                            <div class="card-body p-4">
+                                <input id="dep-name" class="form-control mb-3" placeholder="اسم الطالب">
+                                <input id="dep-reason" class="form-control mb-3" placeholder="سبب الانصراف">
+                                <button class="btn btn-danger w-100" onclick="sendDeparture()">السماح بالانصراف</button>
                             </div>
                         </div>
                     </div>
@@ -305,7 +368,7 @@
     <audio id="alert-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
     <script>
-        // --- FIREBASE CONFIG (تأكد من وضع بياناتك هنا) ---
+        // --- 1. FIREBASE CONFIG (ضع بياناتك هنا) ---
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -319,12 +382,13 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // --- STATE ---
+        // --- 2. GLOBAL VARIABLES ---
         let role = '', localData = { code:'2026', guardPass:'1111', students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, classes:[] };
         let isMuted=false, lastSound=0;
 
-        // --- INIT ---
+        // --- 3. INIT & SYNC ---
         window.onload = () => {
+            // مزامنة فورية
             db.ref('/').on('value', snap => {
                 const val = snap.val();
                 if(val) {
@@ -333,6 +397,7 @@
                     updateUI();
                 }
             });
+            // حلقة المراقبة
             setInterval(monitorLoop, 2000);
         };
 
@@ -340,19 +405,22 @@
             document.getElementById('disp-code').innerText = localData.code;
             document.getElementById('disp-guard').innerText = localData.guardPass;
             
+            // تحديث قائمة الفصول في كل مكان
             const dl = document.getElementById('class-list-dl');
             dl.innerHTML = '';
             (localData.classes || []).forEach(c => dl.innerHTML += `<option value="${c}">`);
 
+            // تحديث الشاشات النشطة
             if(role === 'admin' && !document.getElementById('sec-management').classList.contains('hidden')) renderManageTables();
             if(role === 'admin' && !document.getElementById('sec-agent').classList.contains('hidden')) renderAgent();
             if(role === 'guard') renderGuard();
             if(!document.getElementById('sec-monitor').classList.contains('hidden')) renderMonitor();
         }
 
-        // --- AUTH ---
+        // --- 4. AUTHENTICATION ---
         function showPin(r) { role=r; document.getElementById('role-selection').style.display='none'; document.getElementById('pin-entry').classList.remove('hidden'); }
         function resetLogin() { document.getElementById('pin-entry').classList.add('hidden'); document.getElementById('role-selection').style.display='block'; }
+        
         function attemptLogin() {
             const p = document.getElementById('pin-input').value;
             let ok = false;
@@ -364,11 +432,12 @@
                 document.getElementById('auth-overlay').style.display='none';
                 document.getElementById('app-interface').classList.remove('hidden');
                 buildMenu();
+                // توجيه تلقائي حسب الدور
                 navigate(role==='guard'?'guard':(role==='admin'?'management':'monitor'));
             } else Swal.fire('خطأ','الرمز غير صحيح','error');
         }
 
-        // --- DATA MANAGEMENT ---
+        // --- 5. DATA MANAGEMENT ---
         function showManageTab(tab) {
             document.querySelectorAll('.manage-content').forEach(e => e.classList.add('hidden'));
             document.getElementById('tab-'+tab).classList.remove('hidden');
@@ -378,7 +447,7 @@
         }
 
         function renderManageTables() {
-            // Students Table
+            // Students
             const sBody = document.getElementById('stu-tbody');
             const sList = Object.entries(localData.students || {});
             sBody.innerHTML = sList.reverse().map(([key, s]) => `
@@ -386,82 +455,28 @@
                     <td>${s.name}</td>
                     <td><span class="badge bg-secondary">${s.class}</span></td>
                     <td>
-                        <button class="action-btn transfer" onclick="transferStudent('${key}', '${s.name}')" title="نقل"><i class="fas fa-exchange-alt"></i></button>
-                        <button class="action-btn delete" onclick="deleteItem('students', '${key}')" title="حذف"><i class="fas fa-trash"></i></button>
+                        <button class="action-btn move" onclick="transferStudent('${key}', '${s.name}')" title="نقل"><i class="fas fa-exchange-alt"></i></button>
+                        <button class="action-btn del" onclick="deleteItem('students', '${key}')" title="حذف"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
 
-            // Teachers Table
+            // Teachers
             const tBody = document.getElementById('tea-tbody');
             const tList = Object.entries(localData.teachers || {});
             tBody.innerHTML = tList.map(([key, t]) => `
                 <tr>
                     <td>${t.name}</td>
-                    <td><button class="action-btn delete" onclick="deleteItem('teachers', '${key}')"><i class="fas fa-trash"></i></button></td>
+                    <td><button class="action-btn del" onclick="deleteItem('teachers', '${key}')"><i class="fas fa-trash"></i></button></td>
                 </tr>
             `).join('');
         }
 
-        function addSingleStudent() {
-            Swal.fire({
-                title: 'إضافة طالب',
-                html: '<input id="swal-name" class="swal2-input" placeholder="الاسم">' +
-                      '<input id="swal-class" class="swal2-input" placeholder="الفصل">',
-                preConfirm: () => [document.getElementById('swal-name').value, document.getElementById('swal-class').value]
-            }).then((res) => {
-                if(res.value && res.value[0] && res.value[1]) {
-                    db.ref('students').push({name: res.value[0], class: res.value[1]});
-                    checkAddClass(res.value[1]);
-                    Swal.fire('تم','','success');
-                }
-            });
-        }
-
-        function addSingleTeacher() {
-            Swal.fire({input:'text', title:'اسم المعلم'}).then(r => {
-                if(r.value) { db.ref('teachers').push({name: r.value}); Swal.fire('تم','','success'); }
-            });
-        }
-
-        function transferStudent(key, name) {
-            Swal.fire({
-                title: `نقل الطالب: ${name}`,
-                input: 'text',
-                inputLabel: 'اكتب الفصل الجديد',
-                showCancelButton: true
-            }).then(r => {
-                if(r.value) {
-                    db.ref(`students/${key}`).update({class: r.value});
-                    checkAddClass(r.value);
-                    Swal.fire('تم النقل','','success');
-                }
-            });
-        }
-
-        function deleteItem(path, key) {
-            Swal.fire({title:'تأكيد الحذف؟', icon:'warning', showCancelButton:true}).then(r => {
-                if(r.isConfirmed) db.ref(`${path}/${key}`).remove();
-            });
-        }
-        
-        function deleteAll(path) {
-            Swal.fire({title:'حذف الجميع؟', text:'لا يمكن التراجع', icon:'warning', showCancelButton:true}).then(r => {
-                if(r.isConfirmed) db.ref(path).remove();
-            });
-        }
-
-        function checkAddClass(cls) {
-            let classes = localData.classes || [];
-            if(!classes.includes(cls)) {
-                classes.push(cls);
-                db.ref('classes').set(classes);
-            }
-        }
-
+        // Import Logic
         function importData(inp, type) {
             const f = inp.files[0];
             const cls = document.getElementById('stu-class-input').value;
+            // شرط: إذا كان استيراد طلاب يجب تحديد فصل
             if(type === 'students' && !cls) return Swal.fire('تنبيه', 'يجب كتابة الفصل أولاً', 'warning');
             
             const r = new FileReader();
@@ -480,11 +495,39 @@
             r.readAsArrayBuffer(f);
         }
 
-        function newCode() { db.ref('code').set(Math.floor(1000+Math.random()*9000)); }
-        function newGuardPass() { Swal.fire({input:'text', title:'جديد'}).then(r=>{if(r.value) db.ref('guardPass').set(r.value)}); }
+        // Single Add
+        function addSingleStudent() {
+            const cls = document.getElementById('stu-class-input').value;
+            if(!cls) return Swal.fire('تنبيه','اكتب الفصل في الخانة المخصصة','warning');
+            Swal.fire({input:'text', title:'اسم الطالب'}).then(r => {
+                if(r.value) { db.ref('students').push({name: r.value, class: cls}); checkAddClass(cls); Swal.fire('تم'); }
+            });
+        }
+        function addSingleTeacher() {
+            Swal.fire({input:'text', title:'اسم المعلم'}).then(r => {
+                if(r.value) { db.ref('teachers').push({name: r.value}); Swal.fire('تم'); }
+            });
+        }
+
+        // Actions
+        function transferStudent(key, name) {
+            Swal.fire({title: `نقل: ${name}`, input: 'text', inputLabel: 'الفصل الجديد', showCancelButton: true}).then(r => {
+                if(r.value) { db.ref(`students/${key}`).update({class: r.value}); checkAddClass(r.value); Swal.fire('تم النقل'); }
+            });
+        }
+        function deleteItem(path, key) {
+            Swal.fire({title:'حذف؟', icon:'warning', showCancelButton:true}).then(r => { if(r.isConfirmed) db.ref(`${path}/${key}`).remove(); });
+        }
+        function deleteAll(path) {
+            Swal.fire({title:'حذف الجميع؟', icon:'warning', showCancelButton:true}).then(r => { if(r.isConfirmed) db.ref(path).remove(); });
+        }
+        function checkAddClass(cls) {
+            let classes = localData.classes || [];
+            if(!classes.includes(cls)) { classes.push(cls); db.ref('classes').set(classes); }
+        }
         function filterTable(tid,q) { document.querySelectorAll(`#${tid} tbody tr`).forEach(r=>{r.style.display=r.innerText.toLowerCase().includes(q.toLowerCase())?'':'none'}); }
 
-        // --- TEACHER ---
+        // --- 6. TEACHER ---
         function loadClassStudents(cls) {
             const sel = document.getElementById('t-student');
             sel.innerHTML = '<option>-- اختر --</option>'; sel.disabled=false;
@@ -492,7 +535,6 @@
                 sel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
             });
         }
-
         function issuePermit(e) {
             e.preventDefault();
             const s=document.getElementById('t-student').value, c=document.getElementById('t-class').value;
@@ -508,7 +550,7 @@
             navigate('monitor'); e.target.reset();
         }
 
-        // --- MONITOR ---
+        // --- 7. MONITOR ---
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('hidden')) renderMonitor(); }
         function renderMonitor() {
             const grid = document.getElementById('monitor-grid');
@@ -525,12 +567,12 @@
             
             if(alert && !isMuted && Date.now()-lastSound > 10000) { document.getElementById('alert-sound').play().catch(()=>{}); lastSound=Date.now(); }
         }
-        function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').classList.toggle('btn-danger'); }
+        function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').classList.toggle('bg-danger'); }
 
-        // --- GUARD & AGENT ---
+        // --- 8. GUARD & AGENT ---
         function sendVisitor() {
             const v = {name:document.getElementById('g-name').value, id:document.getElementById('g-id').value, reason:document.getElementById('g-reason').value, student:document.getElementById('g-student').value, status:'pending', time:new Date().toLocaleString()};
-            if(v.name) { db.ref('visitors').push(v); Swal.fire('تم الإرسال'); document.querySelectorAll('#sec-guard input').forEach(i=>i.value=''); }
+            if(v.name) { db.ref('visitors').push(v); Swal.fire('تم الإرسال'); document.querySelectorAll('#view-visit input').forEach(i=>i.value=''); }
         }
         function renderGuard() {
             const vList = document.getElementById('g-visit-list');
@@ -544,6 +586,7 @@
             document.getElementById('view-visit').classList.toggle('hidden', v!=='visit');
             document.getElementById('view-exit').classList.toggle('hidden', v!=='exit');
         }
+        
         function sendDeparture() {
             const n=document.getElementById('dep-name').value, r=document.getElementById('dep-reason').value;
             if(n) { db.ref('departures').push({name:n, reason:r, status:'pending', time:new Date().toLocaleString()}); Swal.fire('تم'); document.getElementById('dep-name').value=''; }
@@ -554,7 +597,7 @@
             list.innerHTML = pending.map(([k,v]) => `<div class="list-group-item"><div class="d-flex justify-content-between"><strong>${v.name}</strong><small>${v.time.split(',')[1]}</small></div><p class="mb-1 small">${v.reason}</p><div class="d-flex gap-2"><button class="btn btn-success btn-sm w-50" onclick="db.ref('visitors/${k}').update({status:'approved'})">موافقة</button><button class="btn btn-danger btn-sm w-50" onclick="db.ref('visitors/${k}').update({status:'rejected'})">رفض</button></div></div>`).join('');
         }
 
-        // --- REPORTS ---
+        // --- 9. REPORTS ---
         function showReport(type, btn) {
             document.querySelectorAll('#sec-reports button').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
@@ -579,6 +622,11 @@
             }
         }
 
+        // --- 10. SYSTEM ---
+        function newCode() { db.ref('code').set(Math.floor(1000+Math.random()*9000)); }
+        function newGuardPass() { Swal.fire({input:'text', title:'جديد'}).then(r=>{if(r.value) db.ref('guardPass').set(r.value)}); }
+        function forceUpdate() { updateUI(); Swal.fire('تم التحديث', '', 'success'); }
+
         // --- MENU ---
         function buildMenu() {
             const nav = document.getElementById('nav-menu'); nav.innerHTML='';
@@ -589,7 +637,6 @@
             items.forEach(i => nav.innerHTML+=`<div class="nav-link" onclick="navigate('${i.id}')"><i class="fas fa-circle ms-2 small"></i> ${i.t}</div>`);
         }
         function navigate(id) { document.querySelectorAll('.app-section').forEach(e=>e.classList.add('hidden')); document.getElementById('sec-'+id).classList.remove('hidden'); if(id==='reports') showReport('all'); }
-        function forceUpdate() { updateUI(); }
     </script>
 </body>
 </html>

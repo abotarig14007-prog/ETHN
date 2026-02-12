@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#ffffff">
-    <title>نظام إذن (V39 Stable)</title>
+    <meta name="theme-color" content="#006C35">
+    <title>نظام إذن (رؤية 2030)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -17,223 +17,270 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        :root { --primary: #0f4c3a; --gold: #d4af37; --bg: #f8f9fa; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding-bottom: 60px; overflow-x: hidden; }
-
-        /* --- Login --- */
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 99999; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .role-card { width: 90%; max-width: 350px; padding: 20px; margin: 10px; border: 2px solid #eee; border-radius: 15px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: space-between; background: #fff; }
-        .role-card:active, .role-card:hover { border-color: var(--primary); background: #f0fdf4; transform: scale(1.02); }
-        
-        #pin-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100000; }
-        .pin-input { font-size: 2.5rem; text-align: center; width: 200px; letter-spacing: 10px; border: none; border-bottom: 3px solid var(--primary); margin: 20px 0; outline: none; }
-
-        /* --- Layout Fixes (حل مشاكل الجوال) --- */
-        .sidebar {
-            width: 260px; height: 100vh; background: var(--primary); color: white;
-            position: fixed; right: 0; top: 0; z-index: 5000; 
-            transition: transform 0.3s ease; box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-            overflow-y: auto;
+        :root {
+            /* ألوان هوية رؤية 2030 */
+            --vision-green: #006C35; 
+            --vision-light-green: #009A4E;
+            --vision-gold: #C69C6D;
+            --vision-bg: #F7F9FC;
+            --text-main: #2A2A2A;
         }
         
-        .main-content { margin-right: 260px; padding: 20px; transition: 0.3s; position: relative; z-index: 1; }
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: var(--vision-bg); 
+            color: var(--text-main); 
+            margin: 0; 
+            overflow-x: hidden; 
+        }
 
-        /* Mobile & Landscape Mode */
+        /* --- شاشة الدخول (تصميم الرؤية) --- */
+        #auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f7f4 100%);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        
+        .portal-logo { width: 140px; margin-bottom: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        .portal-title { color: var(--vision-green); font-weight: 800; font-size: 2.2rem; margin-bottom: 10px; }
+        .portal-sub { color: var(--vision-gold); font-size: 1.1rem; margin-bottom: 40px; font-weight: bold; }
+
+        .roles-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; width: 90%; max-width: 1000px; padding: 10px;
+        }
+
+        .role-card {
+            background: white; border: 1px solid #eee; border-radius: 20px;
+            padding: 30px 20px; text-align: center; cursor: pointer;
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,108,53,0.05);
+        }
+        
+        .role-card::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px;
+            background: var(--vision-green); transform: scaleX(0); transition: 0.3s;
+        }
+
+        .role-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,108,53,0.15); }
+        .role-card:hover::after { transform: scaleX(1); }
+        .role-card:active { transform: scale(0.98); } /* تأثير ضغط الزر */
+
+        .role-icon { font-size: 3.5rem; color: var(--vision-green); margin-bottom: 15px; }
+        .role-title { font-weight: 800; font-size: 1.5rem; color: #333; margin: 0; }
+        .role-desc { font-size: 0.9rem; color: #777; margin-top: 5px; }
+
+        /* شاشة الرمز السري */
+        #pin-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.98); backdrop-filter: blur(5px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000;
+        }
+        .pin-input {
+            font-size: 3rem; text-align: center; width: 280px; letter-spacing: 15px;
+            border: none; border-bottom: 4px solid var(--vision-gold);
+            background: transparent; outline: none; margin: 30px 0; color: var(--vision-green); font-weight: bold;
+        }
+
+        /* --- التطبيق الداخلي --- */
+        .sidebar {
+            width: 260px; height: 100vh; background: var(--vision-green); color: white;
+            position: fixed; right: 0; top: 0; z-index: 1000; overflow-y: auto;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: 0.3s;
+        }
+        .main-content { margin-right: 260px; padding: 30px; transition: 0.3s; min-height: 100vh; }
+
+        /* Mobile Adjustments */
         @media (max-width: 991px) {
-            .sidebar { transform: translateX(100%); } /* إخفاء كامل */
-            .sidebar.active { transform: translateX(0); } /* إظهار عند التفعيل */
-            .main-content { margin-right: 0; padding: 15px; width: 100%; }
+            .sidebar { transform: translateX(100%); width: 100%; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-right: 0; padding: 15px; }
             .mobile-header { display: flex !important; }
-            
-            /* تظليل الخلفية عند فتح القائمة */
-            .sidebar-overlay {
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.5); z-index: 4000; display: none;
-            }
-            .sidebar-overlay.active { display: block; }
+            .roles-grid { grid-template-columns: 1fr; } /* بطاقات فوق بعض في الجوال */
         }
 
         .mobile-header {
             display: none; justify-content: space-between; align-items: center;
-            background: var(--primary); color: white; padding: 15px;
-            margin: -20px -20px 20px -20px; position: sticky; top: 0; z-index: 3000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--vision-green); color: white; padding: 15px;
+            margin: -15px -15px 20px -15px; position: sticky; top: 0; z-index: 500;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* --- Components --- */
-        .nav-link { color: rgba(255,255,255,0.8); padding: 15px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
-        .nav-link:active { background: rgba(0,0,0,0.2); }
+        /* --- العناصر والبطاقات --- */
+        .card-custom { border: none; border-radius: 15px; background: white; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; border: 1px solid #eee; }
+        .card-head { padding: 15px 20px; background: white; border-bottom: 1px solid #f0f0f0; font-weight: 800; color: var(--vision-green); display: flex; justify-content: space-between; align-items: center; }
         
-        .card-custom { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; overflow: hidden; border: 1px solid #f0f0f0; }
-        .card-head { padding: 15px 20px; background: #fff; border-bottom: 1px solid #eee; font-weight: bold; color: var(--primary); }
-        .card-body { padding: 20px; }
+        .nav-link { color: rgba(255,255,255,0.85); padding: 15px 25px; border-right: 4px solid transparent; font-size: 1.1rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; }
+        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.15); color: white; border-right-color: var(--vision-gold); }
+        .nav-link i { margin-left: 15px; width: 25px; }
 
-        .monitor-card { background: #fff; padding: 15px; border-radius: 12px; border-right: 5px solid #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 10px; }
-        .monitor-card.safe { border-right-color: #198754; }
-        .monitor-card.danger { border-right-color: #dc3545; }
+        .monitor-card { background: white; padding: 20px; border-radius: 15px; border-right: 6px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.03); position: relative; }
+        .monitor-card.safe { border-right-color: #27ae60; }
+        .monitor-card.danger { border-right-color: #e74c3c; animation: pulse 2s infinite; }
+        
+        .action-btn { width: 35px; height: 35px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: 0.2s; margin: 0 3px; }
+        .action-btn:hover { transform: scale(1.1); }
+        .btn-del { background: #fee2e2; color: #e74c3c; }
+        .btn-edit { background: #e0f2fe; color: #3498db; }
 
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231,76,60,0.4); } 70% { box-shadow: 0 0 0 10px rgba(231,76,60,0); } }
         .hidden { display: none !important; }
+        @media print { .no-print, .sidebar { display: none !important; } .main-content { margin: 0; } }
     </style>
 </head>
 <body>
 
     <div id="auth-overlay">
-        <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" width="80" class="mb-4">
-        <h2 class="mb-4 fw-bold">بوابة النظام</h2>
-        
-        <div class="role-card" onclick="openPin('admin')">
-            <div><h4 class="m-0 fw-bold">الإدارة</h4><small class="text-muted">التحكم الكامل</small></div>
-            <i class="fas fa-user-tie fa-2x text-primary"></i>
-        </div>
-        <div class="role-card" onclick="openPin('teacher')">
-            <div><h4 class="m-0 fw-bold">المعلم</h4><small class="text-muted">إصدار الأذونات</small></div>
-            <i class="fas fa-chalkboard-teacher fa-2x text-warning"></i>
-        </div>
-        <div class="role-card" onclick="openPin('guard')">
-            <div><h4 class="m-0 fw-bold">الزوار</h4><small class="text-muted">بوابة الدخول</small></div>
-            <i class="fas fa-id-card-alt fa-2x text-secondary"></i>
+        <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" class="portal-logo">
+        <div class="portal-title">نظام إذن الذكي</div>
+        <div class="portal-sub">متوسطة الإمام النووي - رؤية 2030</div>
+
+        <div class="roles-grid">
+            <div class="role-card" onclick="openPin('admin')">
+                <i class="fas fa-user-tie role-icon"></i>
+                <h3 class="role-title">الإدارة</h3>
+                <p class="role-desc">التحكم والتقارير</p>
+            </div>
+            <div class="role-card" onclick="openPin('teacher')">
+                <i class="fas fa-chalkboard-teacher role-icon"></i>
+                <h3 class="role-title">المعلم</h3>
+                <p class="role-desc">إصدار الأذونات</p>
+            </div>
+            <div class="role-card" onclick="openPin('guard')">
+                <i class="fas fa-id-card-alt role-icon"></i>
+                <h3 class="role-title">الزوار</h3>
+                <p class="role-desc">بوابة الدخول</p>
+            </div>
         </div>
 
         <div id="pin-screen" class="hidden">
-            <h3>أدخل الرمز</h3>
-            <input type="password" id="pin-input" class="pin-input" inputmode="numeric">
-            <div class="d-flex gap-3">
-                <button class="btn btn-success px-4" onclick="login()">دخول</button>
-                <button class="btn btn-light px-4" onclick="closePin()">إلغاء</button>
+            <h2 class="mb-3 text-dark fw-bold" id="pin-title">الرمز السري</h2>
+            <input type="password" id="pin-input" class="pin-input" inputmode="numeric" placeholder="****">
+            <div class="d-flex gap-3 mt-4">
+                <button class="btn btn-success btn-lg px-5 rounded-pill fw-bold" onclick="login()">دخول</button>
+                <button class="btn btn-outline-secondary btn-lg px-5 rounded-pill" onclick="closePin()">إلغاء</button>
             </div>
         </div>
     </div>
 
     <div id="app-interface" class="hidden">
         
-        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
-
         <div class="mobile-header">
             <h5 class="m-0 fw-bold">نظام إذن</h5>
-            <button class="btn text-white" onclick="toggleSidebar()"><i class="fas fa-bars fa-lg"></i></button>
+            <button class="btn text-white" onclick="document.querySelector('.sidebar').classList.toggle('active')"><i class="fas fa-bars fa-lg"></i></button>
         </div>
 
-        <aside class="sidebar" id="sidebar">
-            <div class="text-center p-4 mb-2">
-                <i class="fas fa-school fa-3x text-warning mb-2"></i>
-                <h5 class="text-white fw-bold m-0">الإمام النووي</h5>
+        <aside class="sidebar">
+            <div class="text-center p-4 border-bottom border-white border-opacity-10 mb-2">
+                <i class="fas fa-school fa-4x mb-3 text-warning"></i>
+                <h5 class="fw-bold m-0">الإمام النووي</h5>
+                <small class="text-white-50" id="role-disp">--</small>
             </div>
             <nav id="menu-items"></nav>
             <div class="p-3 mt-auto">
-                <button class="btn btn-outline-danger w-100 text-white border-white" onclick="location.reload()">خروج</button>
+                <button class="btn btn-outline-light w-100 py-2 rounded-pill" onclick="location.reload()">
+                    <i class="fas fa-sign-out-alt me-2"></i> خروج
+                </button>
             </div>
         </aside>
 
         <main class="main-content">
             
             <section id="sec-monitor" class="view-sec">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="fw-bold m-0">المتابعة</h3>
-                    <button class="btn btn-sm btn-dark" onclick="forceUpdate()">تحديث</button>
+                <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+                    <h2 class="fw-bold text-dark m-0"><i class="fas fa-desktop text-warning me-2"></i>المتابعة</h2>
+                    <button class="btn btn-white border shadow-sm rounded-circle" id="mute-btn" onclick="toggleMute()"><i class="fas fa-volume-up text-success"></i></button>
                 </div>
-                <div id="live-grid" class="row g-2"></div>
-                <div id="no-active" class="text-center py-5 hidden">
-                    <i class="fas fa-check-circle fa-3x text-success opacity-25 mb-2"></i>
-                    <h5>الجميع في الفصول</h5>
-                </div>
-            </section>
-
-            <section id="sec-permit" class="view-sec hidden">
-                <div class="card-custom">
-                    <div class="card-head">إصدار إذن جديد</div>
-                    <div class="card-body">
-                        <form onsubmit="issuePermit(event)">
-                            <label class="fw-bold mb-1">الفصل</label>
-                            <input list="dl-classes" id="p-class" class="form-control mb-3" onchange="loadStudents(this.value)" placeholder="ابحث عن الفصل" required>
-                            <datalist id="dl-classes"></datalist>
-
-                            <label class="fw-bold mb-1">الطالب</label>
-                            <select id="p-student" class="form-select mb-3" required disabled>
-                                <option value="">اختر الفصل أولاً</option>
-                            </select>
-
-                            <label class="fw-bold mb-1">الوجهة</label>
-                            <select id="p-dest" class="form-select mb-3" required>
-                                <option value="">-- اختر الوجهة --</option>
-                                <option value="دورة مياه">دورة مياه</option>
-                                <option value="المقصف">المقصف</option>
-                                <option value="الإدارة">الإدارة</option>
-                                <option value="الموجه">الموجه الطلابي</option>
-                            </select>
-
-                            <label class="fw-bold mb-1">المدة (دقائق)</label>
-                            <input type="number" id="p-time" class="form-control mb-3" value="5" required min="1">
-
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="p-spec">
-                                <label class="form-check-label text-danger fw-bold">حالة طارئة (تجاوز النظام)</label>
-                            </div>
-
-                            <button type="submit" class="btn btn-success w-100 py-3 fw-bold">تسجيل خروج</button>
-                        </form>
-                    </div>
+                <div id="live-grid" class="row g-3"></div>
+                <div id="no-active" class="text-center py-5 hidden text-muted">
+                    <i class="fas fa-check-circle fa-5x mb-3 text-success opacity-50"></i>
+                    <h3>الوضع مستقر</h3>
+                    <p>جميع الطلاب داخل الفصول الدراسية</p>
                 </div>
             </section>
 
             <section id="sec-data" class="view-sec hidden">
-                <div class="card-custom">
-                    <div class="card-head">
-                        <ul class="nav nav-pills card-header-pills">
-                            <li class="nav-item"><a class="nav-link text-dark active" onclick="tabData('stu', this)">الطلاب</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" onclick="tabData('tea', this)">المعلمون</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" onclick="tabData('sys', this)">النظام</a></li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <div id="tab-stu">
-                            <div class="row g-2 mb-3">
-                                <div class="col-6"><input id="imp-cls" class="form-control" placeholder="الفصل (مهم للاستيراد)"></div>
-                                <div class="col-6"><button class="btn btn-success w-100" onclick="document.getElementById('f-stu').click()">استيراد Excel</button></div>
+                <ul class="nav nav-pills mb-4 gap-2 bg-white p-2 rounded-4 shadow-sm d-inline-flex">
+                    <li class="nav-item"><button class="nav-link text-dark active rounded-pill" onclick="tabData('stu', this)">الطلاب</button></li>
+                    <li class="nav-item"><button class="nav-link text-dark rounded-pill" onclick="tabData('tea', this)">المعلمون</button></li>
+                    <li class="nav-item"><button class="nav-link text-dark rounded-pill" onclick="tabData('sys', this)">النظام</button></li>
+                </ul>
+
+                <div id="tab-stu">
+                    <div class="card-custom p-4">
+                        <div class="row g-3 align-items-end mb-4">
+                            <div class="col-md-3">
+                                <label class="fw-bold small mb-1">الفصل (مهم للاستيراد)</label>
+                                <input list="dl-classes" id="imp-cls" class="form-control" placeholder="اكتب الفصل">
+                                <datalist id="dl-classes"></datalist>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-success w-100" onclick="document.getElementById('f-stu').click()">استيراد Excel</button>
                                 <input type="file" id="f-stu" hidden onchange="importData(this, 'students')">
                             </div>
-                            <div class="d-flex gap-2 mb-3">
-                                <button class="btn btn-primary flex-grow-1" onclick="addStudent()">+ طالب</button>
-                                <button class="btn btn-outline-danger" onclick="delAll('students')">حذف الكل</button>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary w-100" onclick="addStudent()">+ طالب فردي</button>
                             </div>
-                            <input class="form-control mb-2" placeholder="بحث..." onkeyup="filterTable('tbl-stu', this.value)">
-                            <div class="table-responsive" style="max-height: 400px;">
-                                <table class="table table-sm" id="tbl-stu"><tbody id="body-stu"></tbody></table>
+                            <div class="col-md-3">
+                                <input class="form-control" placeholder="بحث..." onkeyup="filterTable('tbl-stu', this.value)">
                             </div>
                         </div>
-                        
-                        <div id="tab-tea" class="hidden">
-                            <div class="d-flex gap-2 mb-3">
-                                <button class="btn btn-success flex-grow-1" onclick="document.getElementById('f-tea').click()">استيراد Excel</button>
-                                <button class="btn btn-primary flex-grow-1" onclick="addTeacher()">+ معلم</button>
-                                <input type="file" id="f-tea" hidden onchange="importData(this, 'teachers')">
-                            </div>
-                            <button class="btn btn-outline-danger w-100 mb-2" onclick="delAll('teachers')">حذف الكل</button>
-                            <table class="table table-sm"><tbody id="body-tea"></tbody></table>
+                        <div class="table-responsive" style="max-height: 500px;">
+                            <table class="table table-hover align-middle" id="tbl-stu">
+                                <thead class="table-light"><tr><th>الاسم</th><th>الفصل</th><th>إجراءات</th></tr></thead>
+                                <tbody id="body-stu"></tbody>
+                            </table>
                         </div>
+                    </div>
+                </div>
 
-                        <div id="tab-sys" class="hidden text-center">
-                            <h6 class="text-muted">كود المعلم</h6>
-                            <h2 class="text-primary fw-bold" id="code-disp">----</h2>
-                            <button class="btn btn-sm btn-dark mb-4" onclick="newCode()">تحديث</button>
-                            <hr>
-                            <h6 class="text-muted">كلمة الحارس</h6>
-                            <h2 class="text-dark fw-bold" id="guard-disp">----</h2>
-                            <button class="btn btn-sm btn-outline-dark" onclick="newGuard()">تغيير</button>
+                <div id="tab-tea" class="hidden">
+                    <div class="card-custom p-4">
+                        <div class="d-flex gap-3 mb-4">
+                            <button class="btn btn-success" onclick="document.getElementById('f-tea').click()">استيراد Excel</button>
+                            <input type="file" id="f-tea" hidden onchange="importData(this, 'teachers')">
+                            <button class="btn btn-primary" onclick="addTeacher()">+ معلم</button>
+                        </div>
+                        <button class="btn btn-outline-danger btn-sm mb-3" onclick="delAll('teachers')">حذف الكل</button>
+                        <table class="table table-hover" id="tbl-tea"><tbody id="body-tea"></tbody></table>
+                    </div>
+                </div>
+
+                <div id="tab-sys" class="hidden">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card-custom p-5 text-center bg-warning bg-opacity-10">
+                                <h5>كود المعلم</h5>
+                                <h1 class="display-4 fw-bold text-primary my-3" id="sys-code">----</h1>
+                                <button class="btn btn-dark" onclick="newCode()">تحديث</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-custom p-5 text-center bg-dark text-white">
+                                <h5>كلمة مرور الزوار</h5>
+                                <h1 class="display-4 fw-bold text-warning my-3" id="sys-guard">----</h1>
+                                <button class="btn btn-outline-light" onclick="newGuard()">تغيير</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
             <section id="sec-reports" class="view-sec hidden">
-                <div class="d-flex gap-2 mb-3 overflow-auto pb-2">
-                    <button class="btn btn-outline-dark btn-sm active" onclick="repView('all', this)">الأذونات</button>
-                    <button class="btn btn-outline-dark btn-sm" onclick="repView('stats', this)">الإحصاء</button>
-                    <button class="btn btn-outline-dark btn-sm" onclick="repView('vis', this)">الزوار</button>
-                    <button class="btn btn-outline-dark btn-sm" onclick="repView('dep', this)">الانصراف</button>
+                <div class="d-flex justify-content-between mb-4 no-print">
+                    <h2 class="fw-bold m-0">التقارير</h2>
+                    <button class="btn btn-dark" onclick="window.print()">طباعة</button>
+                </div>
+                <div class="d-flex gap-2 mb-4 overflow-auto no-print">
+                    <button class="btn btn-outline-success active rounded-pill px-4" onclick="repView('all', this)">الأذونات</button>
+                    <button class="btn btn-outline-success rounded-pill px-4" onclick="repView('stats', this)">الإحصائيات</button>
+                    <button class="btn btn-outline-success rounded-pill px-4" onclick="repView('vis', this)">الزوار</button>
+                    <button class="btn btn-outline-success rounded-pill px-4" onclick="repView('dep', this)">الانصراف</button>
                 </div>
                 <div class="card-custom">
+                    <div class="card-head"><h5 id="rep-title" class="m-0">البيانات</h5></div>
                     <div class="table-responsive">
-                        <table class="table table-bordered text-center mb-0 table-sm">
+                        <table class="table table-bordered text-center mb-0">
                             <thead class="table-light" id="rep-th"></thead>
                             <tbody id="rep-tb"></tbody>
                         </table>
@@ -241,32 +288,85 @@
                 </div>
             </section>
 
-            <section id="sec-guard" class="view-sec hidden">
-                <div class="card-custom mb-3">
-                    <div class="card-body p-3">
-                        <h6 class="fw-bold">تسجيل زائر</h6>
-                        <input id="g-name" class="form-control mb-2" placeholder="الاسم">
-                        <input id="g-id" type="number" class="form-control mb-2" placeholder="الهوية">
-                        <input id="g-reason" class="form-control mb-2" placeholder="السبب">
-                        <button class="btn btn-dark w-100" onclick="sendVisitor()">إرسال</button>
+            <section id="sec-permit" class="view-sec hidden">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card-custom">
+                            <div class="card-head">إصدار إذن جديد</div>
+                            <div class="card-body p-5">
+                                <form onsubmit="issuePermit(event)">
+                                    <label class="fw-bold mb-2">1. اختر الفصل</label>
+                                    <input list="dl-classes" id="p-class" class="form-control form-control-lg mb-4" onchange="loadStudents(this.value)" placeholder="ابحث..." required>
+                                    
+                                    <label class="fw-bold mb-2">2. اختر الطالب</label>
+                                    <select id="p-student" class="form-select form-select-lg mb-4" disabled required></select>
+                                    
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="fw-bold mb-2">3. الوجهة</label>
+                                            <select id="p-dest" class="form-select form-select-lg" required>
+                                                <option value="">اختر...</option>
+                                                <option>دورة مياه</option><option>المقصف</option>
+                                                <option>الإدارة</option><option>الموجه</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="fw-bold mb-2">4. المدة (دقيقة)</label>
+                                            <input type="number" id="p-time" class="form-control form-control-lg" value="5" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-check form-switch mb-4 bg-light p-2 rounded">
+                                        <input class="form-check-input ms-2" type="checkbox" id="p-spec">
+                                        <label class="form-check-label text-danger fw-bold">حالة طارئة (تجاوز النظام)</label>
+                                    </div>
+                                    
+                                    <button class="btn btn-success w-100 py-3 fw-bold fs-5">تسجيل خروج</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <h6 class="fw-bold">الحالة:</h6>
-                <div id="g-list" class="list-group"></div>
+            </section>
+
+            <section id="sec-guard" class="view-sec hidden">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="card-custom p-4">
+                            <h4 class="mb-4 fw-bold">تسجيل زائر</h4>
+                            <input id="v-name" class="form-control mb-3" placeholder="الاسم" required>
+                            <input id="v-id" type="number" class="form-control mb-3" placeholder="الهوية" required>
+                            <input id="v-reason" class="form-control mb-3" placeholder="السبب" required>
+                            <button class="btn btn-dark w-100 py-3 fw-bold" onclick="sendVisitor()">إرسال الطلب</button>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-custom">
+                            <div class="card-head">الحالة</div>
+                            <div id="g-list" class="list-group list-group-flush"></div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section id="sec-agent" class="view-sec hidden">
-                <h4 class="mb-3">الوكيل</h4>
-                <div class="card-custom mb-3">
-                    <div class="card-head bg-warning bg-opacity-10">طلبات الزوار</div>
-                    <div id="ag-list" class="list-group list-group-flush"></div>
-                </div>
-                <div class="card-custom">
-                    <div class="card-head bg-danger text-white">أمر انصراف</div>
-                    <div class="card-body">
-                        <input id="dep-n" class="form-control mb-2" placeholder="الطالب">
-                        <input id="dep-r" class="form-control mb-2" placeholder="السبب">
-                        <button class="btn btn-danger w-100" onclick="sendDep()">سماح</button>
+                <h3 class="mb-4 fw-bold">لوحة الوكيل</h3>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card-custom h-100">
+                            <div class="card-head bg-warning bg-opacity-10 text-dark">طلبات الزوار</div>
+                            <div id="ag-list" class="list-group list-group-flush"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-custom h-100">
+                            <div class="card-head bg-danger text-white">أمر انصراف</div>
+                            <div class="p-4">
+                                <input id="dep-n" class="form-control mb-3" placeholder="اسم الطالب">
+                                <input id="dep-r" class="form-control mb-3" placeholder="السبب">
+                                <button class="btn btn-danger w-100 py-2" onclick="sendDep()">سماح بالخروج</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -277,7 +377,7 @@
     <audio id="snd" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
     <script>
-        // ================= FIREBASE (هام: ضع بياناتك) =================
+        // ================= FIREBASE CONFIG (ضع بياناتك هنا) =================
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -293,34 +393,35 @@
 
         // ================= STATE =================
         let role = '', data = { code:'2026', guard:'1111', students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, classes:[] };
+        let muted=false, lastSound=0;
 
-        // ================= INIT =================
+        // ================= INIT & SYNC =================
         window.onload = () => {
             db.ref('/').on('value', snap => {
                 if(snap.val()) {
                     data = snap.val();
                     if(!data.classes) data.classes = [];
-                    render();
+                    renderUI();
                 }
             });
-            setInterval(() => {
-                if(!document.getElementById('sec-monitor').classList.contains('hidden')) renderMonitor();
-            }, 2000);
+            setInterval(monitorLoop, 2000);
         };
 
-        function render() {
-            // Update UI elements based on data
+        function renderUI() {
+            // Datalist Update
             const dl = document.getElementById('dl-classes'); dl.innerHTML='';
             (data.classes||[]).forEach(c=>dl.innerHTML+=`<option value="${c}">`);
             
-            document.getElementById('code-disp').innerText = data.code;
-            document.getElementById('guard-disp').innerText = data.guard;
+            document.getElementById('sys-code').innerText = data.code;
+            document.getElementById('sys-guard').innerText = data.guard;
 
-            // Refresh active tab
-            if(!document.getElementById('sec-data').classList.contains('hidden')) renderData();
-            if(!document.getElementById('sec-agent').classList.contains('hidden')) renderAgent();
-            if(!document.getElementById('sec-guard').classList.contains('hidden')) renderGuard();
+            // Render Active Screen
+            if(role==='admin' && isActive('data')) renderManage();
+            if(role==='admin' && isActive('agent')) renderAgent();
+            if(role==='guard') renderGuard();
+            if(isActive('monitor')) renderMonitor();
         }
+        function isActive(s) { return !document.getElementById('sec-'+s).classList.contains('hidden'); }
 
         // ================= AUTH =================
         function openPin(r) { role=r; document.getElementById('pin-screen').classList.remove('hidden'); }
@@ -335,35 +436,31 @@
             } else Swal.fire('خطأ','الرمز غير صحيح','error');
         }
 
-        // ================= NAVIGATION =================
+        // ================= MENU =================
         function buildMenu() {
             const m = document.getElementById('menu-items'); m.innerHTML='';
+            document.getElementById('role-disp').innerText = role==='admin'?'الإدارة':(role==='teacher'?'المعلم':'الزوار');
             const items = role==='teacher' ? [['monitor','المتابعة','desktop'],['permit','إصدار إذن','file-signature']] :
                           role==='admin' ? [['monitor','المتابعة','desktop'],['data','البيانات','database'],['agent','الوكيل','user-check'],['reports','التقارير','chart-bar']] :
                           [['guard','بوابة الزوار','id-card']];
-            items.forEach(([id,t,i]) => m.innerHTML+=`<div class="nav-link" onclick="navigate('${id}')"><i class="fas fa-${i} ms-2"></i> ${t}</div>`);
+            items.forEach(([id,t,i]) => m.innerHTML+=`<div class="nav-link" onclick="navigate('${id}')"><i class="fas fa-${i}"></i> ${t}</div>`);
         }
         function navigate(id) {
             document.querySelectorAll('.view-sec').forEach(e=>e.classList.add('hidden'));
             document.getElementById('sec-'+id).classList.remove('hidden');
-            if(window.innerWidth < 992) document.getElementById('sidebar').classList.remove('active');
+            if(window.innerWidth < 992) document.querySelector('.sidebar').classList.remove('active');
             if(id==='reports') repView('all');
         }
-        function toggleSidebar() { 
-            document.getElementById('sidebar').classList.toggle('active');
-            document.querySelector('.sidebar-overlay').classList.toggle('active');
-        }
 
-        // ================= 1. TEACHER (Strict Validation) =================
+        // ================= TEACHER =================
         function loadStudents(cls) {
-            const sel = document.getElementById('p-student'); sel.innerHTML='<option value="">-- اختر --</option>'; sel.disabled=false;
+            const sel = document.getElementById('p-student'); sel.innerHTML='<option value="">اختر الطالب</option>'; sel.disabled=false;
             Object.values(data.students||{}).filter(s=>s.class===cls).forEach(s=>sel.innerHTML+=`<option value="${s.name}">${s.name}</option>`);
         }
         function issuePermit(e) {
             e.preventDefault();
             const s=document.getElementById('p-student').value, c=document.getElementById('p-class').value, d=document.getElementById('p-dest').value, t=document.getElementById('p-time').value;
-            
-            // Validation
+            // Strict Validation
             if(!s || !c || !d || !t) return Swal.fire('بيانات ناقصة','يرجى تعبئة جميع الحقول','warning');
             
             // Check Active
@@ -374,7 +471,8 @@
             navigate('monitor'); e.target.reset();
         }
 
-        // ================= 2. MONITOR =================
+        // ================= MONITOR =================
+        function monitorLoop() { if(isActive('monitor')) renderMonitor(); }
         function renderMonitor() {
             const g = document.getElementById('live-grid'), active=Object.entries(data.permits||{}).filter(([k,v])=>v.active);
             if(!active.length) { document.getElementById('no-active').classList.remove('hidden'); g.innerHTML=''; return; }
@@ -384,34 +482,33 @@
             g.innerHTML = active.map(([k,p]) => {
                 const m = Math.floor((new Date()-new Date(p.start))/60000);
                 if(m >= p.limit) alert=true;
-                return `<div class="col-6 col-md-4 col-lg-3"><div class="monitor-card ${m>=p.limit?'danger':'safe'}"><strong>${p.student}</strong><br><small>${p.class}</small><h2 class="my-2">${m}</h2><small>دقيقة</small><button class="btn btn-dark btn-sm w-100 mt-2" onclick="endPermit('${k}')">عودة</button></div></div>`;
+                return `<div class="col-md-3"><div class="monitor-card ${m>=p.limit?'danger':'safe'}"><h4>${p.student}</h4><span class="badge bg-light text-dark border">${p.class}</span><br><small class="text-muted">${p.dest}</small><div class="display-4 fw-bold my-2 ${m>=p.limit?'text-danger':'text-success'}">${m}</div><small>دقيقة</small><button class="btn btn-dark w-100 mt-2" onclick="db.ref('permits/${k}').update({active:false, end:new Date().toISOString()})">عودة</button></div></div>`;
             }).join('');
-            if(alert) document.getElementById('snd').play().catch(()=>{});
+            if(alert && !muted && Date.now()-lastSound > 10000) { document.getElementById('snd').play().catch(()=>{}); lastSound=Date.now(); }
         }
-        function endPermit(k) { db.ref('permits/'+k).update({active:false, end:new Date().toISOString()}); }
-        function forceUpdate() { renderMonitor(); }
+        function toggleMute() { muted=!muted; document.getElementById('mute-btn').classList.toggle('text-danger'); }
 
-        // ================= 3. DATA =================
+        // ================= DATA =================
         function tabData(t, btn) {
             document.querySelectorAll('.data-tab').forEach(e=>e.classList.add('hidden'));
             document.getElementById('tab-'+t).classList.remove('hidden');
             if(btn) { document.querySelectorAll('.nav-pills .nav-link').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
-            renderData();
+            renderManage();
         }
-        function renderData() {
-            document.getElementById('body-stu').innerHTML = Object.entries(data.students||{}).reverse().map(([k,s])=>`<tr><td>${s.name}</td><td>${s.class}</td><td><button class="btn btn-sm btn-danger" onclick="del('students/${k}')"><i class="fas fa-trash"></i></button></td></tr>`).join('');
-            document.getElementById('body-tea').innerHTML = Object.entries(data.teachers||{}).map(([k,t])=>`<tr><td>${t.name}</td><td><button class="btn btn-sm btn-danger" onclick="del('teachers/${k}')"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+        function renderManage() {
+            document.getElementById('body-stu').innerHTML = Object.entries(data.students||{}).reverse().map(([k,s])=>`<tr><td>${s.name}</td><td>${s.class}</td><td><button class="action-btn move" onclick="moveStu('${k}')"><i class="fas fa-exchange-alt"></i></button> <button class="action-btn btn-del" onclick="del('students/${k}')"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+            document.getElementById('body-tea').innerHTML = Object.entries(data.teachers||{}).map(([k,t])=>`<tr><td>${t.name}</td><td><button class="action-btn btn-del" onclick="del('teachers/${k}')"><i class="fas fa-trash"></i></button></td></tr>`).join('');
         }
         function addStudent() {
             const cls = document.getElementById('imp-cls').value;
-            if(!cls) return Swal.fire('تنبيه','اكتب الفصل بجوار زر الاستيراد','warning');
+            if(!cls) return Swal.fire('تنبيه','حدد الفصل','warning');
             Swal.fire({input:'text', title:'اسم الطالب'}).then(r=>{if(r.value){db.ref('students').push({name:r.value, class:cls}); checkCls(cls);}});
         }
         function addTeacher() { Swal.fire({input:'text', title:'اسم المعلم'}).then(r=>{if(r.value)db.ref('teachers').push({name:r.value})}); }
+        function moveStu(k) { Swal.fire({input:'text', title:'الفصل الجديد'}).then(r=>{if(r.value){db.ref('students/'+k).update({class:r.value}); checkCls(r.value);}}); }
         function del(p) { Swal.fire({title:'حذف؟', showCancelButton:true}).then(r=>{if(r.isConfirmed)db.ref(p).remove()}); }
         function delAll(p) { Swal.fire({title:'حذف الكل؟', showCancelButton:true}).then(r=>{if(r.isConfirmed)db.ref(p).remove()}); }
         function checkCls(c) { if(!data.classes.includes(c)) { let n=data.classes; n.push(c); db.ref('classes').set(n); } }
-        
         function importData(inp, t) {
             const f=inp.files[0], cls=document.getElementById('imp-cls').value;
             if(t==='students' && !cls) return Swal.fire('تنبيه','حدد الفصل','warning');
@@ -428,36 +525,37 @@
         function newCode() { db.ref('code').set(Math.floor(1000+Math.random()*9000)); }
         function newGuard() { Swal.fire({input:'text'}).then(r=>{if(r.value)db.ref('guard').set(r.value)}); }
 
-        // ================= 4. GUARD & AGENT =================
+        // ================= GUARD & AGENT =================
         function sendVisitor() {
-            const v={name:document.getElementById('g-name').value, id:document.getElementById('g-id').value, reason:document.getElementById('g-reason').value, status:'wait', time:new Date().toLocaleString()};
+            const v={name:document.getElementById('v-name').value, id:document.getElementById('v-id').value, reason:document.getElementById('v-reason').value, status:'wait', time:new Date().toLocaleString()};
             if(v.name) { db.ref('visitors').push(v); Swal.fire('تم الإرسال'); document.querySelectorAll('#sec-guard input').forEach(i=>i.value=''); }
         }
         function renderGuard() {
-            document.getElementById('g-list').innerHTML = Object.values(data.visitors||{}).slice(-5).reverse().map(v=>`<div class="list-group-item d-flex justify-content-between"><span>${v.name}</span><span class="badge ${v.status==='ok'?'bg-success':(v.status==='no'?'bg-danger':'bg-warning')}">${v.status==='wait'?'انتظار':v.status}</span></div>`).join('');
+            document.getElementById('g-list').innerHTML = Object.values(data.visitors||{}).reverse().map(v=>`<div class="list-group-item d-flex justify-content-between"><span>${v.name}</span><span class="badge ${v.status==='ok'?'bg-success':(v.status==='no'?'bg-danger':'bg-warning')}">${v.status==='wait'?'انتظار':(v.status==='ok'?'مسموح':'مرفوض')}</span></div>`).join('');
         }
         function renderAgent() {
-            const l=document.getElementById('ag-list'), p=Object.entries(data.visitors||{}).filter(([k,v])=>v.status==='wait');
-            l.innerHTML = p.map(([k,v])=>`<div class="list-group-item"><div><strong>${v.name}</strong><br>${v.reason}</div><div class="mt-2"><button class="btn btn-success btn-sm" onclick="db.ref('visitors/${k}').update({status:'ok'})">موافقة</button> <button class="btn btn-danger btn-sm" onclick="db.ref('visitors/${k}').update({status:'no'})">رفض</button></div></div>`).join('');
+            document.getElementById('ag-list').innerHTML = Object.entries(data.visitors||{}).filter(([k,v])=>v.status==='wait').map(([k,v])=>`<div class="list-group-item"><div><strong>${v.name}</strong><br>${v.reason}</div><div class="mt-2"><button class="btn btn-success btn-sm" onclick="db.ref('visitors/${k}').update({status:'ok'})">موافقة</button> <button class="btn btn-danger btn-sm" onclick="db.ref('visitors/${k}').update({status:'no'})">رفض</button></div></div>`).join('');
         }
         function sendDep() {
             const n=document.getElementById('dep-n').value, r=document.getElementById('dep-r').value;
-            if(n) { db.ref('departures').push({name:n, reason:r, time:new Date().toLocaleString()}); Swal.fire('تم'); document.getElementById('dep-n').value=''; }
+            if(n) { db.ref('departures').push({name:n, reason:r, time:new Date().toLocaleString()}); Swal.fire('تم'); }
         }
 
-        // ================= 5. REPORTS =================
+        // ================= REPORTS =================
         function repView(t, btn) {
             if(btn) { document.querySelectorAll('#sec-reports button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
             const th=document.getElementById('rep-th'), tb=document.getElementById('rep-tb');
+            document.getElementById('rep-title').innerText = t==='all'?'سجل الأذونات':(t==='vis'?'سجل الزوار':(t==='dep'?'سجل الانصراف':'الإحصائيات'));
+            
             if(t==='all') {
                 th.innerHTML='<tr><th>الطالب</th><th>الوجهة</th><th>الوقت</th></tr>';
-                tb.innerHTML=Object.values(data.permits||{}).map(p=>`<tr><td>${p.student}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString()}</td></tr>`).reverse().join('');
+                tb.innerHTML=Object.values(data.permits||{}).reverse().map(p=>`<tr><td>${p.student}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleString()}</td></tr>`).join('');
             } else if(t==='vis') {
                 th.innerHTML='<tr><th>الزائر</th><th>السبب</th><th>الحالة</th></tr>';
-                tb.innerHTML=Object.values(data.visitors||{}).map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.status}</td></tr>`).reverse().join('');
+                tb.innerHTML=Object.values(data.visitors||{}).reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.status}</td></tr>`).join('');
             } else if(t==='dep') {
                 th.innerHTML='<tr><th>الطالب</th><th>السبب</th><th>الوقت</th></tr>';
-                tb.innerHTML=Object.values(data.departures||{}).map(d=>`<tr><td>${d.name}</td><td>${d.reason}</td><td>${d.time}</td></tr>`).reverse().join('');
+                tb.innerHTML=Object.values(data.departures||{}).reverse().map(d=>`<tr><td>${d.name}</td><td>${d.reason}</td><td>${d.time}</td></tr>`).join('');
             } else {
                 th.innerHTML='<tr><th>الطالب</th><th>العدد</th></tr>';
                 const c={}; Object.values(data.permits||{}).forEach(p=>{c[p.student]=(c[p.student]||0)+1});

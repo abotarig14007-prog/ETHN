@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>نظام إذن (V51 المضمونة)</title> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>نظام إذن الذكي (V53)</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
     
@@ -16,7 +20,7 @@
         :root { --primary: #006C35; --gold: #C69C6D; --bg: #F5F7FA; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding-bottom: 80px; }
 
-        /* Login */
+        /* Login Screen */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #fff, #e0f2f1); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .role-btn { width: 90%; max-width: 350px; background: white; padding: 20px; margin: 10px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); cursor: pointer; display: flex; align-items: center; justify-content: space-between; border: 1px solid #eee; transition: 0.3s; }
         .role-btn:hover { transform: translateY(-5px); border-color: var(--primary); }
@@ -24,41 +28,37 @@
         #pin-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.98); z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; }
         .pin-input { font-size: 2.5rem; text-align: center; width: 250px; border: none; border-bottom: 4px solid var(--primary); background: transparent; outline: none; margin: 30px 0; }
 
-        /* Sidebar & Layout */
+        /* Layout */
         .sidebar { width: 260px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; padding-top: 30px; transition: 0.3s; display: flex; flex-direction: column; }
         .main-content { margin-right: 260px; padding: 25px; transition: 0.3s; }
-        @media (max-width: 991px) {
-            .sidebar { transform: translateX(100%); } .sidebar.active { transform: translateX(0); }
-            .main-content { margin-right: 0; padding: 15px; } .mobile-header { display: flex !important; }
-        }
-        .mobile-header { display: none; justify-content: space-between; align-items: center; background: var(--primary); color: white; padding: 15px; margin: -15px -15px 20px -15px; position: sticky; top: 0; z-index: 500; }
+        @media (max-width: 991px) { .sidebar { transform: translateX(100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-right: 0; padding: 15px; } .mobile-header { display: flex !important; } }
+        .mobile-header { display: none; justify-content: space-between; align-items: center; background: var(--primary); color: white; padding: 15px; position: sticky; top: 0; z-index: 500; }
 
         /* UI Components */
         .page-card { background: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); margin-bottom: 20px; overflow: hidden; border: 1px solid #eee; }
-        .card-head { padding: 20px; background: white; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: var(--primary); font-size: 1.1rem; }
+        .card-head { padding: 20px; background: white; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .nav-link { padding: 15px 25px; color: rgba(255,255,255,0.8); cursor: pointer; display: flex; align-items: center; border-right: 4px solid transparent; font-size: 1.1rem; }
         .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: white; border-right-color: var(--gold); }
-        .monitor-card { background: white; padding: 20px; border-radius: 15px; border-right: 5px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.03); margin-bottom: 15px; }
+        
+        .monitor-card { background: white; padding: 20px; border-radius: 15px; border-right: 5px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.03); margin-bottom: 15px; position: relative; }
         .monitor-card.safe { border-right-color: #198754; }
         .monitor-card.danger { border-right-color: #dc3545; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(220,53,69,0.4); } 70% { box-shadow: 0 0 0 10px rgba(220,53,69,0); } }
 
         .hidden { display: none !important; }
-        
-        /* مؤشر الاتصال */
-        #status-dot { width: 12px; height: 12px; background: #ccc; border-radius: 50%; position: fixed; bottom: 15px; left: 15px; z-index: 99999; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+        #status-dot { width: 12px; height: 12px; background: red; border-radius: 50%; position: fixed; bottom: 15px; left: 15px; z-index: 99999; border: 2px solid white; }
     </style>
 </head>
 <body>
-    <div id="status-dot" title="حالة الاتصال"></div>
+    <div id="status-dot"></div>
 
     <div id="auth-overlay">
         <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" width="100" class="mb-4">
-        <h2 class="mb-5 fw-bold text-dark">بوابة النظام المدرسي</h2>
-        <div class="role-btn" onclick="openPin('admin')"><div><h4 class="m-0 fw-bold">الإدارة</h4><small>التحكم والبيانات</small></div><i class="fas fa-user-tie fa-2x text-primary"></i></div>
-        <div class="role-btn" onclick="openPin('teacher')"><div><h4 class="m-0 fw-bold">المعلم</h4><small>الأذونات والمخالفات</small></div><i class="fas fa-chalkboard-teacher fa-2x text-warning"></i></div>
-        <div class="role-btn" onclick="openPin('guard')"><div><h4 class="m-0 fw-bold">الزوار</h4><small>البوابة الأمنية</small></div><i class="fas fa-id-card-alt fa-2x text-secondary"></i></div>
-        <div class="role-btn" onclick="openPin('counselor')"><div><h4 class="m-0 fw-bold">الموجه</h4><small>التوجيه الطلابي</small></div><i class="fas fa-user-md fa-2x text-info"></i></div>
+        <h2 class="mb-5 fw-bold text-dark">بوابة الإمام النووي</h2>
+        <div class="role-btn" onclick="openPin('admin')"><div><h4 class="m-0 fw-bold">الوكيل (الإدارة)</h4><small>التحكم والبيانات</small></div><i class="fas fa-user-tie fa-2x text-primary"></i></div>
+        <div class="role-btn" onclick="openPin('teacher')"><div><h4 class="m-0 fw-bold">المعلم</h4><small>إصدار الأذونات</small></div><i class="fas fa-chalkboard-teacher fa-2x text-warning"></i></div>
+        <div class="role-btn" onclick="openPin('guard')"><div><h4 class="m-0 fw-bold">الحارس (الزوار)</h4><small>البوابة الأمنية</small></div><i class="fas fa-id-card-alt fa-2x text-secondary"></i></div>
+        
         <div id="pin-screen" class="hidden">
             <h3 class="fw-bold">الرمز السري</h3>
             <input type="password" id="pin-input" class="pin-input" inputmode="numeric">
@@ -73,91 +73,71 @@
             <nav id="menu-items" class="flex-grow-1"></nav>
             <div class="p-3"><button class="btn btn-outline-light w-100 py-2 rounded-pill fw-bold" onclick="location.reload()">خروج</button></div>
         </aside>
+
         <main class="main-content">
             <section id="sec-monitor" class="view-sec"><div class="d-flex justify-content-between mb-4 align-items-center"><h3 class="fw-bold m-0 text-dark">المتابعة الحية</h3><button class="btn btn-white border shadow-sm rounded-circle" id="mute-btn" onclick="toggleMute()"><i class="fas fa-volume-up text-success"></i></button></div><div id="live-grid" class="row g-3"></div><div id="no-active" class="text-center py-5 hidden"><i class="fas fa-check-circle fa-5x text-success opacity-25 mb-3"></i><h4>الجميع في الفصول</h4></div></section>
             
             <section id="sec-teacher" class="view-sec hidden">
-                <ul class="nav nav-pills mb-4 gap-3 bg-white p-2 rounded-4 shadow-sm border d-inline-flex"><li class="nav-item"><button class="nav-link text-dark active rounded-pill px-4" onclick="tabTeacher('permit', this)">إصدار إذن</button></li><li class="nav-item"><button class="nav-link text-dark rounded-pill px-4" onclick="tabTeacher('refer', this)">تحويل (سلوك)</button></li></ul>
-                <div id="tea-permit">
-                    <div class="page-card p-4">
-                        <form onsubmit="issuePermit(event)">
-                            <div class="mb-3">
-                                <label class="fw-bold mb-2">1. اختر الفصل</label>
-                                <div class="input-group">
-                                    <select id="p-class" class="form-select form-select-lg" onchange="loadStudentsForTeacher(this.value, 'p-student')" required>
-                                        <option value="">جاري التحميل...</option>
-                                    </select>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="refreshAllScreens()" title="تحديث القائمة"><i class="fas fa-sync"></i></button>
-                                </div>
+                <div class="page-card p-4">
+                    <form onsubmit="issuePermit(event)">
+                        <div class="mb-3">
+                            <label class="fw-bold mb-2">1. اختر الفصل</label>
+                            <div class="input-group">
+                                <select id="p-class" class="form-select form-select-lg" onchange="loadStudentsForTeacher(this.value, 'p-student')" required><option value="">جاري التحميل...</option></select>
+                                <button type="button" class="btn btn-outline-secondary" onclick="refreshAllScreens()"><i class="fas fa-sync"></i></button>
                             </div>
-                            <div class="mb-3"><label class="fw-bold mb-2">2. اختر الطالب</label><select id="p-student" class="form-select form-select-lg" disabled required><option value="">حدد الفصل أولاً</option></select></div>
-                            <div class="row g-3 mb-3"><div class="col-6"><label class="fw-bold mb-2">الوجهة</label><select id="p-dest" class="form-select form-select-lg" required><option>دورة مياه</option><option>المقصف</option><option>الإدارة</option><option>الموجه</option></select></div><div class="col-6"><label class="fw-bold mb-2">المدة</label><input type="number" id="p-time" class="form-control form-control-lg" value="5" required></div></div>
-                            <div class="form-check form-switch mb-3 p-2 bg-light rounded border"><input class="form-check-input ms-2" type="checkbox" id="p-spec"><label class="form-check-label text-danger fw-bold">حالة طارئة</label></div>
-                            <button class="btn btn-success w-100 py-3 fw-bold rounded-pill">تسجيل خروج</button>
-                        </form>
-                    </div>
-                </div>
-                <div id="tea-refer" class="hidden">
-                    <div class="page-card p-4 border-top border-danger border-5">
-                        <label class="fw-bold mb-2">الفصل</label>
-                        <div class="input-group mb-3">
-                            <select id="r-class" class="form-select form-select-lg" onchange="loadStudentsForTeacher(this.value, 'r-student')"><option value="">اختر الفصل</option></select>
-                            <button type="button" class="btn btn-outline-secondary" onclick="refreshAllScreens()"><i class="fas fa-sync"></i></button>
                         </div>
-                        <label class="fw-bold mb-2">الطالب</label><select id="r-student" class="form-select form-select-lg mb-3" disabled><option value="">اختر الفصل أولاً</option></select>
-                        <input id="r-vio" class="form-control form-control-lg mb-3" placeholder="نوع المخالفة">
-                        <textarea id="r-reason" class="form-control form-control-lg mb-3" rows="3" placeholder="التفاصيل"></textarea>
-                        <button class="btn btn-danger w-100 py-3 fw-bold rounded-pill" onclick="sendReferral()">إرسال للوكيل</button>
-                    </div>
+                        <div class="mb-3"><label class="fw-bold mb-2">2. اختر الطالب</label><select id="p-student" class="form-select form-select-lg" disabled required><option value="">حدد الفصل أولاً</option></select></div>
+                        <div class="row g-3 mb-3"><div class="col-6"><label class="fw-bold mb-2">الوجهة</label><select id="p-dest" class="form-select form-select-lg" required><option>دورة مياه</option><option>المقصف</option><option>الإدارة</option><option>الموجه</option></select></div><div class="col-6"><label class="fw-bold mb-2">المدة</label><input type="number" id="p-time" class="form-control form-control-lg" value="5" required></div></div>
+                        <button class="btn btn-success w-100 py-3 fw-bold rounded-pill shadow">تسجيل خروج</button>
+                    </form>
                 </div>
             </section>
 
             <section id="sec-agent" class="view-sec hidden">
-                <div class="row g-4"><div class="col-md-4"><div class="page-card h-100 border-top border-warning border-5"><div class="card-head bg-light">طلبات الزوار</div><div id="agent-vis-list" class="list-group list-group-flush"></div></div></div><div class="col-md-4"><div class="page-card h-100 border-top border-primary border-5"><div class="card-head bg-light">الإحالات</div><div id="agent-ref-list" class="list-group list-group-flush p-2"></div></div></div><div class="col-md-4"><div class="page-card h-100 border-top border-danger border-5"><div class="card-head bg-light">إصدار أمر انصراف</div><div class="p-4"><input id="dep-name" class="form-control form-control-lg mb-3" placeholder="اسم الطالب"><input id="dep-reason" class="form-control form-control-lg mb-3" placeholder="السبب"><button class="btn btn-danger w-100 py-3 fw-bold" onclick="sendDeparture()">إرسال للحارس</button></div></div></div></div>
-            </section>
-
-            <section id="sec-data" class="view-sec hidden">
-                <ul class="nav nav-pills mb-4 gap-2 bg-white p-2 rounded-4 shadow-sm border d-inline-flex"><li class="nav-item"><button class="nav-link text-dark active rounded-pill px-4" onclick="tabData('stu', this)">الطلاب</button></li><li class="nav-item"><button class="nav-link text-dark rounded-pill px-4" onclick="tabData('tea', this)">المعلمون</button></li><li class="nav-item"><button class="nav-link text-dark rounded-pill px-4" onclick="tabData('sys', this)">النظام</button></li></ul>
-                <div id="tab-stu">
-                    <div class="page-card p-4">
-                        <div class="row g-3 align-items-end mb-4 bg-light p-3 rounded-4 border">
-                            <div class="col-md-3"><label class="fw-bold small mb-1">اسم الفصل (للاستيراد)</label><div class="input-group"><input id="imp-cls" class="form-control" placeholder="مثلاً: 1/1"><button class="btn btn-outline-secondary" onclick="viewSavedClasses()" title="عرض الفصول المضافة"><i class="fas fa-eye"></i></button></div></div>
-                            <div class="col-md-3"><button class="btn btn-success w-100" onclick="document.getElementById('f-stu').click()"><i class="fas fa-file-excel"></i> استيراد Excel</button><input type="file" id="f-stu" hidden onchange="importData(this, 'students')"></div>
-                            <div class="col-md-3"><button class="btn btn-primary w-100" onclick="addStudent()">+ طالب يدوي</button></div>
-                            <div class="col-md-3"><button class="btn btn-outline-danger w-100" onclick="delAll('students')">حذف الكل</button></div>
-                        </div>
-                        <input class="form-control w-50 mb-3" placeholder="بحث..." onkeyup="filterTable('tbl-stu', this.value)">
-                        <div class="table-responsive" style="max-height:400px"><table class="table align-middle" id="tbl-stu"><thead class="table-light"><tr><th>الاسم</th><th>الفصل</th><th>حذف</th></tr></thead><tbody id="body-stu"></tbody></table></div>
-                    </div>
-                </div>
-                <div id="tab-tea" class="hidden"><div class="page-card p-4"><div class="d-flex gap-3 mb-4"><button class="btn btn-success flex-grow-1" onclick="document.getElementById('f-tea').click()">استيراد المعلمين</button><input type="file" id="f-tea" hidden onchange="importData(this, 'teachers')"><button class="btn btn-primary flex-grow-1" onclick="addTeacher()">+ معلم جديد</button></div><button class="btn btn-outline-danger btn-sm mb-3" onclick="delAll('teachers')">حذف الكل</button><table class="table table-hover" id="tbl-tea"><tbody id="body-tea"></tbody></table></div></div>
-                <div id="tab-sys" class="hidden">
-                    <div class="row g-4">
-                        <div class="col-md-6"><div class="page-card text-center p-5 border-warning border-top border-5"><h6 class="text-muted">كود المعلم</h6><h1 class="text-primary fw-bold my-3" id="sys-code">----</h1><button class="btn btn-dark rounded-pill" onclick="newCode()">تغيير الكود</button></div></div>
-                        <div class="col-md-6"><div class="page-card text-center p-5 border-dark border-top border-5"><h6 class="text-muted">كلمة الحارس</h6><h1 class="text-dark fw-bold my-3" id="sys-guard">----</h1><button class="btn btn-outline-dark rounded-pill" onclick="newGuard()">تغيير الكلمة</button></div></div>
-                    </div>
+                <div class="row g-4">
+                    <div class="col-md-6"><div class="page-card h-100 border-top border-warning border-5"><div class="card-head">طلبات الزوار</div><div id="agent-vis-list" class="list-group list-group-flush"></div></div></div>
+                    <div class="col-md-6"><div class="page-card h-100 border-top border-danger border-5"><div class="card-head">إصدار أمر انصراف</div><div class="p-4"><input id="dep-name" class="form-control form-control-lg mb-3" placeholder="اسم الطالب"><input id="dep-reason" class="form-control form-control-lg mb-3" placeholder="السبب"><button class="btn btn-danger w-100 py-3 fw-bold rounded-pill" onclick="sendDeparture()">إرسال للحارس</button></div></div></div>
                 </div>
             </section>
 
             <section id="sec-guard" class="view-sec hidden">
                 <div class="row g-4">
-                    <div class="col-md-5"><div class="page-card p-4 border-top border-primary border-5"><h4 class="mb-4 fw-bold">تسجيل زائر</h4><input id="g-name" class="form-control mb-3" placeholder="اسم الزائر"><input id="g-id" type="number" class="form-control mb-3" placeholder="رقم الهوية"><input id="g-reason" class="form-control mb-3" placeholder="السبب"><button class="btn btn-primary w-100 py-3 fw-bold" onclick="sendVisitor()">إرسال للوكيل</button></div></div>
-                    <div class="col-md-7"><div class="page-card mb-3"><div class="card-head">الطلبات</div><div id="guard-vis-list" class="list-group list-group-flush"></div></div><div class="page-card border-top border-danger border-5"><div class="card-head text-danger">المغادرة</div><div id="guard-dep-list" class="list-group list-group-flush p-2"></div></div></div>
+                    <div class="col-md-5"><div class="page-card p-4 border-top border-primary border-5"><h4 class="mb-4 fw-bold">تسجيل زائر</h4><input id="g-name" class="form-control mb-3" placeholder="اسم الزائر"><input id="g-id" type="number" class="form-control mb-3" placeholder="رقم الهوية"><input id="g-reason" class="form-control mb-3" placeholder="السبب"><button class="btn btn-primary w-100 py-3 fw-bold rounded-pill" onclick="sendVisitor()">إرسال للوكيل</button></div></div>
+                    <div class="col-md-7"><div class="page-card mb-3"><div class="card-head">حالة طلبات الزيارة</div><div id="guard-vis-list" class="list-group list-group-flush"></div></div><div class="page-card border-top border-danger border-5"><div class="card-head text-danger">أوامر الانصراف الواردة</div><div id="guard-dep-list" class="list-group list-group-flush"></div></div></div>
                 </div>
             </section>
 
-            <section id="sec-counselor" class="view-sec hidden"><div class="page-card"><div class="card-head">الحالات المحولة</div><div class="table-responsive"><table class="table align-middle text-center mb-0"><thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody id="counselor-list"></tbody></table></div></div></section>
-
-            <section id="sec-reports" class="view-sec hidden"><div class="d-flex justify-content-between mb-4 no-print"><h3 class="fw-bold">التقارير</h3><button class="btn btn-dark" onclick="window.print()">طباعة</button></div><div class="d-flex gap-2 mb-3 overflow-auto no-print"><button class="btn btn-outline-success active px-4 rounded-pill" onclick="showRep('all',this)">الأذونات</button><button class="btn btn-outline-success px-4 rounded-pill" onclick="showRep('vis',this)">الزوار</button><button class="btn btn-outline-success px-4 rounded-pill" onclick="showRep('dep',this)">الانصراف</button><button class="btn btn-outline-success px-4 rounded-pill" onclick="showRep('ref',this)">المخالفات</button><button class="btn btn-outline-success px-4 rounded-pill" onclick="showRep('stats',this)">الإحصائيات</button></div><div class="page-card"><div class="table-responsive"><table class="table table-bordered text-center mb-0"><thead class="table-light" id="rep-th"></thead><tbody id="rep-tb"></tbody></table></div></div></section>
+            <section id="sec-data" class="view-sec hidden">
+                <ul class="nav nav-pills mb-4 gap-2 bg-white p-2 rounded-4 shadow-sm border d-inline-flex">
+                    <li class="nav-item"><button class="nav-link text-dark active rounded-pill px-4" onclick="tabData('stu', this)">الطلاب</button></li>
+                    <li class="nav-item"><button class="nav-link text-dark rounded-pill px-4" onclick="tabData('sys', this)">الإعدادات</button></li>
+                </ul>
+                <div id="tab-stu">
+                    <div class="page-card p-4">
+                        <div class="row g-3 align-items-end mb-4 bg-light p-3 rounded-4 border">
+                            <div class="col-md-3"><label class="fw-bold small">الفصل</label><input id="imp-cls" class="form-control" placeholder="1/1"></div>
+                            <div class="col-md-4"><button class="btn btn-success w-100" onclick="document.getElementById('f-stu').click()"><i class="fas fa-file-excel"></i> استيراد</button><input type="file" id="f-stu" hidden onchange="importData(this, 'students')"></div>
+                            <div class="col-md-5"><button class="btn btn-outline-danger w-100" onclick="delAll('students')">حذف جميع الطلاب</button></div>
+                        </div>
+                        <input class="form-control w-50 mb-3 rounded-pill" placeholder="بحث سريع..." onkeyup="filterTable('tbl-stu', this.value)">
+                        <div class="table-responsive" style="max-height:400px"><table class="table align-middle" id="tbl-stu"><thead class="table-light"><tr><th>الاسم</th><th>الفصل</th><th>إجراء</th></tr></thead><tbody id="body-stu"></tbody></table></div>
+                    </div>
+                </div>
+                <div id="tab-sys" class="hidden">
+                    <div class="row g-4">
+                        <div class="col-md-6"><div class="page-card text-center p-5 border-warning border-top border-5"><h6>كود المعلم</h6><h1 class="text-primary fw-bold my-3" id="sys-code">----</h1><button class="btn btn-dark rounded-pill" onclick="newCode()">تغيير الكود</button></div></div>
+                        <div class="col-md-6"><div class="page-card text-center p-5 border-dark border-top border-5"><h6>كلمة الحارس</h6><h1 class="text-dark fw-bold my-3" id="sys-guard">----</h1><button class="btn btn-outline-dark rounded-pill" onclick="newGuard()">تغيير الكلمة</button></div></div>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
     <audio id="snd" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
     <script>
-        // ================================================================
-        // 🛑 تم إضافة بياناتك الصحيحة من الصورة 5
-        // ================================================================
+        // --- بيانات Firebase ---
         const firebaseConfig = {
             apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE",
             authDomain: "ethn-63848.firebaseapp.com",
@@ -167,83 +147,84 @@
             messagingSenderId: "747489913596",
             appId: "1:747489913596:web:d98d88447e4a25cc808579"
         };
-
-        try { if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); } 
-        catch(e) { Swal.fire('تنبيه','خطأ في الاتصال','error'); }
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         let role='', muted=false, lastSound=0;
-        let data={code:'2026', guard:'1111', classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, referrals:{}};
+        let data={code:'2026', guard:'1111', classes:[], students:{}, permits:{}, visitors:{}, departures:{}};
+        let lastVisCount = 0, lastDepCount = 0;
 
-        // --- المزامنة الذكية (Smart Sync V51) ---
         window.onload = () => {
-            // مؤشر حالة الاتصال
-            const statusDot = document.getElementById('status-dot');
-            db.ref('.info/connected').on('value', snap => {
-                statusDot.style.background = snap.val() === true ? '#00ff00' : 'red';
-            });
-
+            db.ref('.info/connected').on('value', s => document.getElementById('status-dot').style.background = s.val()? '#00ff00' : 'red');
             db.ref('/').on('value', snap => {
                 const val = snap.val();
                 if(val) {
                     data = val;
-                    // ضمان أن الفصول مصفوفة صالحة دائماً
                     if(!data.classes) data.classes = [];
-                    // التحويل القسري إلى مصفوفة إذا كانت كائناً
-                    if(typeof data.classes === 'object' && !Array.isArray(data.classes)) {
-                        data.classes = Object.values(data.classes);
-                    }
+                    if(typeof data.classes === 'object' && !Array.isArray(data.classes)) data.classes = Object.values(data.classes);
+                    
+                    checkNotifications(data);
                     refreshAllScreens();
                 }
             });
             setInterval(monitorLoop, 3000);
         };
 
-        function refreshAllScreens() {
-            // تحديث القوائم المنسدلة في صفحة المعلم والإدارة
-            const dropdownIds = ['p-class', 'r-class']; // قوائم المعلم
-            
-            // قائمة الداتاليست (البحث) في الإدارة
-            const dl = document.getElementById('dl-classes');
-            if(dl) {
-                dl.innerHTML = '';
-                (data.classes || []).forEach(c => {
-                    if(c) dl.innerHTML += `<option value="${c}">`;
-                });
+        // --- نظام التنبيهات ---
+        function checkNotifications(newData) {
+            if (role === 'admin') {
+                const pendingCount = Object.values(newData.visitors || {}).filter(v => v.status === 'pending').length;
+                if (pendingCount > lastVisCount) {
+                    Swal.fire({ title: 'تنبيه!', text: 'يوجد طلب زائر جديد بانتظارك', icon: 'info', toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
+                    if(!muted) document.getElementById('snd').play();
+                }
+                lastVisCount = pendingCount;
             }
+            if (role === 'guard') {
+                const pendingDep = Object.values(newData.departures || {}).filter(d => d.status === 'pending').length;
+                if (pendingDep > lastDepCount) {
+                    Swal.fire({ title: 'تنبيه!', text: 'يوجد أمر انصراف طالب جديد', icon: 'warning', toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
+                    if(!muted) document.getElementById('snd').play();
+                }
+                lastDepCount = pendingDep;
+            }
+        }
 
-            // قوائم الاختيار (Select) عند المعلم
-            dropdownIds.forEach(id => {
+        function refreshAllScreens() {
+            const dropdowns = ['p-class', 'r-class'];
+            dropdowns.forEach(id => {
                 const el = document.getElementById(id);
                 if(el) {
-                    const currentVal = el.value;
+                    const current = el.value;
                     el.innerHTML = '<option value="">اختر الفصل...</option>';
-                    
-                    // استخدام مصفوفة نظيفة ومفلترة
-                    let cleanClasses = (data.classes || []).filter(c => c !== null && c !== undefined && c !== '');
-                    
-                    if (cleanClasses.length === 0) {
-                        el.innerHTML = '<option value="">لا توجد فصول (تأكد من الاستيراد)</option>';
-                    } else {
-                        cleanClasses.forEach(c => {
-                            el.innerHTML += `<option value="${c}">${c}</option>`;
-                        });
-                    }
-                    el.value = currentVal;
+                    (data.classes||[]).filter(c => c).forEach(c => el.innerHTML += `<option value="${c}">${c}</option>`);
+                    el.value = current;
                 }
             });
-
-            // تحديث كود المعلم والحارس
-            if(document.getElementById('sys-code')) document.getElementById('sys-code').innerText = data.code || '2026';
-            if(document.getElementById('sys-guard')) document.getElementById('sys-guard').innerText = data.guard || '1111';
-
-            // تحديث الشاشة النشطة
+            document.getElementById('sys-code').innerText = data.code || '2026';
+            document.getElementById('sys-guard').innerText = data.guard || '1111';
             if(role==='guard') renderGuard();
             if(role==='admin') renderAgent();
-            if(role==='counselor') renderCounselor();
             if(!document.getElementById('sec-data').classList.contains('hidden')) renderData();
             if(!document.getElementById('sec-monitor').classList.contains('hidden')) renderMonitor();
-            if(!document.getElementById('sec-reports').classList.contains('hidden')) showRep('all');
+        }
+
+        // --- الحذف الفردي (ميزة جديدة) ---
+        function deleteItem(path, type) {
+            Swal.fire({
+                title: 'تأكيد الحذف',
+                text: `هل أنت متأكد من حذف ${type}؟`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    db.ref(path).remove();
+                    Swal.fire('تم!', 'تم الحذف بنجاح', 'success');
+                }
+            });
         }
 
         // --- Auth ---
@@ -251,20 +232,20 @@
         function closePin(){document.getElementById('pin-screen').classList.add('hidden');}
         function login(){
             const p=document.getElementById('pin-input').value;
-            let ok=(role==='admin' && p==='admin')||(role==='guard' && p==String(data.guard))||(role==='teacher' && p==String(data.code))||(role==='counselor' && p==='admin');
+            let ok=(role==='admin' && p==='admin')||(role==='guard' && p==String(data.guard))||(role==='teacher' && p==String(data.code));
             if(ok){
                 document.getElementById('auth-overlay').style.display='none';
                 document.getElementById('app-interface').classList.remove('hidden');
-                buildMenu(); navigate(role==='guard'?'guard':(role==='counselor'?'counselor':(role==='admin'?'monitor':'teacher')));
+                buildMenu(); navigate(role==='guard'?'guard':(role==='admin'?'monitor':'teacher'));
             } else Swal.fire('خطأ','الرمز غير صحيح','error');
         }
         function buildMenu(){
             const m=document.getElementById('menu-items'); m.innerHTML='';
-            document.getElementById('role-disp').innerText={'admin':'الوكيل','teacher':'المعلم','guard':'الحارس','counselor':'الموجه'}[role];
-            const links = role==='teacher' ? [['monitor','المتابعة','desktop'],['teacher','الخدمات','user-cog']] :
-                          role==='admin' ? [['monitor','المتابعة','desktop'],['data','البيانات','database'],['agent','الوكيل','user-check'],['reports','التقارير','chart-bar']] :
-                          role==='guard' ? [['guard','بوابة الزوار','id-card']] : [['counselor','التوجيه','user-md']];
-            links.forEach(([id,t,i])=>m.innerHTML+=`<div class="nav-link" onclick="navigate('${id}')"><i class="fas fa-${i}"></i> ${t}</div>`);
+            document.getElementById('role-disp').innerText={'admin':'الوكيل','teacher':'المعلم','guard':'الحارس'}[role];
+            const links = role==='teacher' ? [['monitor','المتابعة','desktop'],['teacher','إصدار إذن','file-signature']] :
+                          role==='admin' ? [['monitor','المتابعة','desktop'],['data','البيانات','database'],['agent','لوحة التحكم','user-check']] :
+                          [['guard','بوابة الزوار','id-card']];
+            links.forEach(([id,t,i])=>m.innerHTML+=`<div class="nav-link" onclick="navigate('${id}')"><i class="fas fa-${i} ms-2"></i> ${t}</div>`);
         }
         function navigate(id){
             document.querySelectorAll('.view-sec').forEach(e=>e.classList.add('hidden'));
@@ -273,76 +254,31 @@
             refreshAllScreens();
         }
 
-        // --- Data Handling ---
+        // --- Data Logic ---
         function tabData(t, btn){
-            document.getElementById('tab-stu').classList.add('hidden'); document.getElementById('tab-tea').classList.add('hidden'); document.getElementById('tab-sys').classList.add('hidden');
+            document.getElementById('tab-stu').classList.add('hidden'); document.getElementById('tab-sys').classList.add('hidden');
             document.getElementById('tab-'+t).classList.remove('hidden');
-            if(btn){document.querySelectorAll('#sec-data .nav-link').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}
+            document.querySelectorAll('#sec-data .nav-link').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
             renderData();
         }
         function renderData(){
-            document.getElementById('body-stu').innerHTML=Object.entries(data.students||{}).reverse().map(([k,s])=>`<tr><td>${s.name}</td><td>${s.class}</td><td><button class="btn btn-sm btn-danger" onclick="db.ref('students/'+k).remove()"><i class="fas fa-trash"></i></button></td></tr>`).join('');
-            document.getElementById('body-tea').innerHTML=Object.entries(data.teachers||{}).map(([k,t])=>`<tr><td>${t.name}</td><td><button class="btn btn-sm btn-danger" onclick="db.ref('teachers/'+k).remove()"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+            document.getElementById('body-stu').innerHTML=Object.entries(data.students||{}).reverse().map(([k,s])=>`<tr><td>${s.name}</td><td>${s.class}</td><td><button class="btn btn-sm btn-danger" onclick="deleteItem('students/${k}', 'الطالب')"><i class="fas fa-trash"></i></button></td></tr>`).join('');
         }
         function importData(inp, t){
             const f=inp.files[0], cls=document.getElementById('imp-cls').value;
-            if(t==='students' && !cls) return Swal.fire('تنبيه','اكتب اسم الفصل أولاً','warning');
-            
+            if(!cls) return Swal.fire('تنبيه','اكتب اسم الفصل أولاً','warning');
             const r=new FileReader();
             r.onload=e=>{
-                const w=XLSX.read(e.target.result,{type:'array'});
-                const j=XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{header:1});
-                let count=0;
-                j.forEach(row=>{
-                    if(row[0]){
-                        let obj={name:row[0]}; if(t==='students') obj.class=cls;
-                        db.ref(t).push(obj); count++;
-                    }
-                });
-                
-                // حفظ الفصل في القائمة الموحدة (Fix for Array/Object)
-                if(t==='students' && count>0){
-                    let currentClasses = [];
-                    if(Array.isArray(data.classes)) currentClasses = data.classes;
-                    else if(data.classes) currentClasses = Object.values(data.classes);
-                    
-                    if(!currentClasses.includes(cls)){
-                        currentClasses.push(cls);
-                        db.ref('classes').set(currentClasses);
-                    }
-                }
-                Swal.fire('تم',`تم استيراد ${count} سجل وحفظ الفصل`,'success');
+                const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1});
+                j.forEach(row=>{ if(row[0]) db.ref(t).push({name:row[0], class:cls}); });
+                let n=Array.isArray(data.classes)?data.classes:Object.values(data.classes||{});
+                if(!n.includes(cls)){ n.push(cls); db.ref('classes').set(n); }
+                Swal.fire('تم الاستيراد');
             }; r.readAsArrayBuffer(f);
         }
-        
-        function viewSavedClasses() {
-            let list = [];
-            if(Array.isArray(data.classes)) list = data.classes;
-            else if(data.classes) list = Object.values(data.classes);
-            
-            Swal.fire({title: 'الفصول المحفوظة', text: list.join(' - ') || 'لا توجد فصول', icon: 'info'});
-        }
+        function delAll(p){ Swal.fire({title:'حذف الكل؟', text:'سيتم مسح جميع الأسماء نهائياً!', icon:'warning', showCancelButton:true, confirmButtonText:'نعم، احذف'}).then(r=>{if(r.isConfirmed)db.ref(p).remove()}); }
 
-        function addStudent(){
-            const cls=document.getElementById('imp-cls').value; if(!cls)return Swal.fire('تنبيه','اكتب الفصل','warning');
-            Swal.fire({input:'text',title:'الاسم'}).then(r=>{if(r.value){
-                db.ref('students').push({name:r.value,class:cls});
-                let currentClasses = Array.isArray(data.classes) ? data.classes : (data.classes ? Object.values(data.classes) : []);
-                if(!currentClasses.includes(cls)){ currentClasses.push(cls); db.ref('classes').set(currentClasses); }
-            }});
-        }
-        function addTeacher(){Swal.fire({input:'text'}).then(r=>{if(r.value)db.ref('teachers').push({name:r.value})});}
-        function delAll(p){if(confirm('هل أنت متأكد؟'))db.ref(p).remove();}
-        function newCode(){db.ref('code').set(Math.floor(1000+Math.random()*9000));}
-        function newGuard(){Swal.fire({input:'text', title:'كلمة المرور الجديدة'}).then(r=>{if(r.value)db.ref('guard').set(r.value)});}
-        function filterTable(id,v){document.querySelectorAll(`#${id} tbody tr`).forEach(r=>r.style.display=r.innerText.includes(v)?'':'none');}
-
-        // --- Teacher ---
-        function tabTeacher(t,btn){
-            document.getElementById('tea-permit').classList.add('hidden'); document.getElementById('tea-refer').classList.add('hidden');
-            document.getElementById('tea-'+t).classList.remove('hidden');
-            document.querySelectorAll('#sec-teacher .nav-link').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-        }
+        // --- Business Logic ---
         function loadStudentsForTeacher(cls, id){
             const sel=document.getElementById(id); sel.innerHTML='<option value="">اختر الطالب</option>'; sel.disabled=false;
             Object.values(data.students||{}).filter(s=>s.class==cls).forEach(s=>sel.innerHTML+=`<option value="${s.name}">${s.name}</option>`);
@@ -350,67 +286,52 @@
         function issuePermit(e){
             e.preventDefault();
             const s=document.getElementById('p-student').value, c=document.getElementById('p-class').value, d=document.getElementById('p-dest').value, t=document.getElementById('p-time').value;
-            if(!s||!c) return Swal.fire('نقص','أكمل البيانات','warning');
             if(Object.values(data.permits||{}).find(p=>p.student===s && p.active)) return Swal.fire('خطأ','الطالب بالخارج','error');
             db.ref('permits').push({student:s, class:c, dest:d, limit:parseInt(t), start:new Date().toISOString(), active:true});
-            Swal.fire({icon:'success',title:'تم الخروج',timer:1000,showConfirmButton:false}); navigate('monitor'); e.target.reset();
+            Swal.fire({icon:'success',title:'تم الخروج',timer:1000,showConfirmButton:false}); navigate('monitor');
         }
-        function sendReferral(){
-            const s=document.getElementById('r-student').value, c=document.getElementById('r-class').value, v=document.getElementById('r-vio').value, r=document.getElementById('r-reason').value;
-            if(!s||!v) return Swal.fire('نقص','البيانات ناقصة','warning');
-            db.ref('referrals').push({student:s, class:c, vio:v, reason:r, status:'pending_agent', date:new Date().toLocaleString()});
-            Swal.fire('تم التحويل للوكيل'); document.getElementById('r-student').value='';
-        }
-
-        // --- Agent & Guard ---
         function sendVisitor(){
             const v={name:document.getElementById('g-name').value, id:document.getElementById('g-id').value, reason:document.getElementById('g-reason').value, status:'pending', time:new Date().toLocaleString()};
-            if(!v.name) return; db.ref('visitors').push(v); Swal.fire('تم الإرسال'); document.querySelectorAll('#sec-guard input').forEach(i=>i.value='');
+            if(v.name) db.ref('visitors').push(v); Swal.fire('تم الإرسال'); document.querySelectorAll('#sec-guard input').forEach(i=>i.value='');
         }
         function renderGuard(){
-            document.getElementById('guard-vis-list').innerHTML=Object.values(data.visitors||{}).reverse().slice(0,5).map(v=>`<div class="list-group-item d-flex justify-content-between align-items-center"><div><strong>${v.name}</strong><br><small>${v.reason}</small></div><span class="badge ${v.status==='pending'?'bg-warning text-dark':(v.status==='approved'?'bg-success':'bg-danger')}">${v.status==='pending'?'انتظار':(v.status==='approved'?'مقبول':'مرفوض')}</span></div>`).join('');
-            document.getElementById('guard-dep-list').innerHTML=Object.entries(data.departures||{}).filter(([k,d])=>d.status==='pending').map(([k,d])=>`<div class="alert alert-danger d-flex justify-content-between align-items-center mb-2"><div><strong>${d.name}</strong><br>${d.reason}</div><button class="btn btn-success btn-sm" onclick="db.ref('departures/${k}').update({status:'exited'})">خروج</button></div>`).join('');
+            document.getElementById('guard-vis-list').innerHTML=Object.entries(data.visitors||{}).reverse().slice(0,5).map(([k,v])=>`
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div><strong>${v.name}</strong><br><small>${v.reason}</small></div>
+                    <div>
+                        <span class="badge ${v.status==='approved'?'bg-success':'bg-warning text-dark'}">${v.status==='pending'?'انتظار':v.status}</span>
+                        <button class="btn btn-sm text-danger ms-2" onclick="deleteItem('visitors/${k}', 'سجل الزيارة')"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>`).join('');
+            document.getElementById('guard-dep-list').innerHTML=Object.entries(data.departures||{}).filter(([k,d])=>d.status==='pending').map(([k,d])=>`
+                <div class="alert alert-danger d-flex justify-content-between align-items-center mb-2">
+                    <div><strong>${d.name}</strong><br>${d.reason}</div>
+                    <button class="btn btn-success btn-sm" onclick="db.ref('departures/${k}').update({status:'exited'})">تأكيد الخروج</button>
+                </div>`).join('');
         }
         function renderAgent(){
-            document.getElementById('agent-vis-list').innerHTML=Object.entries(data.visitors||{}).filter(([k,v])=>v.status==='pending').map(([k,v])=>`<div class="alert alert-warning mb-2"><div class="d-flex justify-content-between"><strong>${v.name}</strong><small>${v.time.split(',')[1]}</small></div><div class="small">${v.reason}</div><div class="mt-2"><button class="btn btn-success btn-sm w-50" onclick="db.ref('visitors/${k}').update({status:'approved'})">موافقة</button><button class="btn btn-danger btn-sm w-50" onclick="db.ref('visitors/${k}').update({status:'rejected'})">رفض</button></div></div>`).join('');
-            document.getElementById('agent-ref-list').innerHTML=Object.entries(data.referrals||{}).filter(([k,r])=>r.status==='pending_agent').map(([k,r])=>`<div class="card p-3 mb-2 border-danger"><h6 class="fw-bold text-danger">${r.student}</h6><p class="small">${r.vio}</p><input id="act-${k}" class="form-control form-control-sm mb-2" placeholder="الإجراء"><button class="btn btn-primary btn-sm w-100" onclick="referToCounselor('${k}')">تحويل للموجه</button></div>`).join('');
+            document.getElementById('agent-vis-list').innerHTML=Object.entries(data.visitors||{}).filter(([k,v])=>v.status==='pending').map(([k,v])=>`
+                <div class="alert alert-warning mb-2"><div class="d-flex justify-content-between"><strong>${v.name}</strong><small>${v.time.split(',')[1]}</small></div><div class="small">${v.reason}</div>
+                <div class="mt-2"><button class="btn btn-success btn-sm w-50" onclick="db.ref('visitors/${k}').update({status:'approved'})">موافقة</button><button class="btn btn-danger btn-sm w-50" onclick="db.ref('visitors/${k}').update({status:'rejected'})">رفوض</button></div></div>`).join('');
         }
         function sendDeparture(){
-            const n=document.getElementById('dep-name').value, r=document.getElementById('dep-reason').value;
-            if(n){db.ref('departures').push({name:n, reason:r, status:'pending', time:new Date().toLocaleString()}); Swal.fire('تم');}
-        }
-        function referToCounselor(k){
-            const act=document.getElementById('act-'+k).value; if(!act) return Swal.fire('تنبيه','اكتب الإجراء','warning');
-            db.ref('referrals/'+k).update({status:'pending_counselor', agent_action:act}); Swal.fire('تم التحويل');
-        }
-
-        // --- Monitor & Reports ---
-        function renderCounselor(){
-            document.getElementById('counselor-list').innerHTML=Object.entries(data.referrals||{}).filter(([k,r])=>r.status==='pending_counselor').map(([k,r])=>`<tr><td>${r.student}</td><td>${r.vio}</td><td>${r.agent_action}</td><td>${r.date.split(',')[0]}</td><td><button class="btn btn-success btn-sm" onclick="db.ref('referrals/${k}').update({status:'closed'})">إغلاق</button></td></tr>`).join('');
+            const n=document.getElementById('dep-name').value;
+            if(n){db.ref('departures').push({name:n, reason:document.getElementById('dep-reason').value, status:'pending', time:new Date().toLocaleString()}); Swal.fire('تم');}
         }
         function monitorLoop(){ if(!document.getElementById('sec-monitor').classList.contains('hidden')) renderMonitor(); }
         function renderMonitor(){
-            const g=document.getElementById('live-grid'), active=Object.entries(data.permits||{}).filter(([k,v])=>v.active);
-            if(!active.length){document.getElementById('no-active').classList.remove('hidden'); g.innerHTML=''; return;}
+            const active=Object.entries(data.permits||{}).filter(([k,v])=>v.active);
+            if(!active.length){document.getElementById('no-active').classList.remove('hidden'); document.getElementById('live-grid').innerHTML=''; return;}
             document.getElementById('no-active').classList.add('hidden');
-            let alrt=false;
-            g.innerHTML=active.map(([k,p])=>{
-                const m=Math.floor((new Date()-new Date(p.start))/60000); if(m>=p.limit) alrt=true;
+            document.getElementById('live-grid').innerHTML=active.map(([k,p])=>{
+                const m=Math.floor((new Date()-new Date(p.start))/60000);
                 return `<div class="col-md-3"><div class="monitor-card ${m>=p.limit?'danger':'safe'}"><h4>${p.student}</h4><small>${p.dest}</small><h2>${m} د</h2><button class="btn btn-dark w-100 btn-sm" onclick="db.ref('permits/${k}').update({active:false, end:new Date().toISOString()})">عودة</button></div></div>`;
             }).join('');
-            if(alrt && !muted && Date.now()-lastSound>10000){document.getElementById('snd').play().catch(()=>{}); lastSound=Date.now();}
         }
-        function toggleMute(){muted=!muted; document.getElementById('mute-btn').classList.toggle('text-danger');}
-        
-        function showRep(t, btn){
-            if(btn){document.querySelectorAll('#sec-reports .btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}
-            const th=document.getElementById('rep-th'), tb=document.getElementById('rep-tb');
-            if(t==='all'){th.innerHTML='<tr><th>الطالب</th><th>الوجهة</th><th>الوقت</th></tr>'; tb.innerHTML=Object.values(data.permits||{}).reverse().map(p=>`<tr><td>${p.student}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString()}</td></tr>`).join('');}
-            else if(t==='ref'){th.innerHTML='<tr><th>الطالب</th><th>المخالفة</th><th>الحالة</th></tr>'; tb.innerHTML=Object.values(data.referrals||{}).reverse().map(r=>`<tr><td>${r.student}</td><td>${r.vio}</td><td>${r.status}</td></tr>`).join('');}
-            else if(t==='vis'){th.innerHTML='<tr><th>الزائر</th><th>السبب</th><th>الحالة</th></tr>'; tb.innerHTML=Object.values(data.visitors||{}).reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.status}</td></tr>`).join('');}
-            else if(t==='dep'){th.innerHTML='<tr><th>الطالب</th><th>السبب</th><th>الوقت</th></tr>'; tb.innerHTML=Object.values(data.departures||{}).reverse().map(d=>`<tr><td>${d.name}</td><td>${d.reason}</td><td>${d.time}</td></tr>`).join('');}
-            else if(t==='stats'){const c={}; Object.values(data.permits||{}).forEach(p=>{c[p.student]=(c[p.student]||0)+1}); th.innerHTML='<tr><th>الطالب</th><th>الخروج</th></tr>'; tb.innerHTML=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([n,k])=>`<tr><td>${n}</td><td>${k}</td></tr>`).join('');}
-        }
+        function newCode(){ db.ref('code').set(Math.floor(1000+Math.random()*9000)); }
+        function newGuard(){ Swal.fire({input:'text', title:'كلمة المرور الجديدة'}).then(r=>{if(r.value)db.ref('guard').set(r.value)}); }
+        function toggleMute(){ muted=!muted; document.getElementById('mute-btn').classList.toggle('text-danger'); }
+        function filterTable(id,v){ document.querySelectorAll(`#${id} tbody tr`).forEach(r=>r.style.display=r.innerText.includes(v)?'':'none'); }
     </script>
 </body>
 </html>

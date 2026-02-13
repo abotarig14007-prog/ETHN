@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>نظام إذن المدرسي (V68)</title>
+    <title>نظام إذن المدرسي (V69)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
         :root { --primary: #006C35; --gold: #C69C6D; --bg: #F5F7FA; --dark: #1a1a1a; }
@@ -45,25 +46,14 @@
         #status-dot { width: 12px; height: 12px; background: red; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .hidden { display: none !important; }
 
-        /* --- حل مشكلة الطباعة (V68 Fix) --- */
+        /* --- نظام الطباعة الجديد (V69 Fix) --- */
         @media print {
             body * { visibility: hidden; }
-            #report-viewer, #report-viewer * { visibility: visible; }
-            #report-viewer {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                margin: 0;
-                padding: 0;
-                background: white !important;
-                z-index: 99999;
-                box-shadow: none !important;
-                border: none !important;
-            }
+            #printModal, #printModal * { visibility: visible; }
+            #printModal { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: white; }
+            .modal-footer, .modal-header .btn-close { display: none !important; }
+            #print-content { padding: 20px; width: 100%; }
             .no-print { display: none !important; }
-            /* إخفاء الأزرار داخل التقرير عند الطباعة */
-            #report-viewer button { display: none !important; }
         }
     </style>
 </head>
@@ -85,7 +75,7 @@
     <div id="auth-overlay">
         <div class="login-card">
             <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" class="app-logo">
-            <h3 class="fw-bold text-dark mb-1">إذن</h3>
+            <h3 class="fw-bold text-dark mb-1">منصة إذن التعليمية</h3>
             <p class="text-muted mb-4 small">نظام الضبط والمتابعة المدرسية</p>
             
             <div id="role-selection">
@@ -131,7 +121,6 @@
                     <button class="btn btn-success rounded-pill px-5" onclick="tabTeacher('permit')">إذن خروج</button>
                     <button class="btn btn-outline-danger rounded-pill px-5 ms-2" onclick="tabTeacher('violation')">تحويل سلوكي</button>
                 </div>
-                
                 <div id="t-permit-box" class="page-card p-4">
                     <h5 class="fw-bold border-bottom pb-3 mb-3 text-success">إصدار إذن خروج (مؤقت)</h5>
                     <div class="row g-3">
@@ -142,7 +131,6 @@
                         <div class="col-12 mt-4"><button class="btn btn-success w-100 py-3 fw-bold rounded-pill shadow" onclick="sendPermit()">تسجيل خروج (بدء المؤقت)</button></div>
                     </div>
                 </div>
-
                 <div id="t-vio-box" class="page-card p-4 d-none border-top border-danger border-5">
                     <h5 class="fw-bold mb-3 text-danger">تسجيل مخالفة سلوكية</h5>
                     <div class="row g-3">
@@ -203,10 +191,10 @@
                     </div>
                     <div class="col-md-4">
                         <div class="page-card p-4 border-top border-success border-5">
-                            <h6 class="fw-bold mb-3">استعلام عن طالب (لولي الأمر)</h6>
+                            <h6 class="fw-bold mb-3"><i class="fas fa-search me-2"></i>الاستعلام عن طالب (لولي الأمر)</h6>
                             <input type="text" id="stu-search-name" class="form-control mb-3" placeholder="اكتب اسم الطالب...">
-                            <button class="btn btn-success w-100 mb-3" onclick="searchStudentHistory()">بحث في السجل</button>
-                            <div id="stu-history-res" class="alert alert-secondary d-none"></div>
+                            <button class="btn btn-success w-100 mb-3" onclick="searchStudentHistory()">بحث شامل</button>
+                            <div id="stu-history-res" class="d-none"></div>
                         </div>
                     </div>
                 </div>
@@ -215,14 +203,10 @@
             <section id="sec-reports" class="view-section d-none no-print">
                 <h4 class="fw-bold mb-4">التقارير والإحصائيات</h4>
                 <div class="row g-3 mb-4">
-                    <div class="col-md-3"><button class="btn btn-white border w-100 py-3" onclick="buildReport('permits')">الأذونات الداخلية</button></div>
-                    <div class="col-md-3"><button class="btn btn-white border w-100 py-3" onclick="buildReport('visitors')">الزوار</button></div>
-                    <div class="col-md-3"><button class="btn btn-white border w-100 py-3" onclick="buildReport('most_out')">الأكثر خروجاً</button></div>
-                    <div class="col-md-3"><button class="btn btn-white border w-100 py-3" onclick="buildReport('violations')">المخالفات</button></div>
-                </div>
-                <div id="report-viewer" class="bg-white p-5 rounded-4 shadow-sm border d-none">
-                    <div id="print-area"></div>
-                    <button class="btn btn-dark w-100 mt-4 no-print" onclick="printReportDelayed()"><i class="fas fa-print me-2"></i> طباعة</button>
+                    <div class="col-md-3"><button class="btn btn-white border w-100 py-3 shadow-sm fw-bold" onclick="showReportModal('permits')">📋 الأذونات الداخلية</button></div>
+                    <div class="col-md-3"><button class="btn btn-white border w-100 py-3 shadow-sm fw-bold" onclick="showReportModal('visitors')">👥 سجل الزوار</button></div>
+                    <div class="col-md-3"><button class="btn btn-white border w-100 py-3 shadow-sm fw-bold" onclick="showReportModal('most_out')">📉 الأكثر خروجاً</button></div>
+                    <div class="col-md-3"><button class="btn btn-white border w-100 py-3 shadow-sm fw-bold" onclick="showReportModal('violations')">⚠️ المخالفات</button></div>
                 </div>
             </section>
 
@@ -232,27 +216,25 @@
                     
                     <div class="row g-3 mb-4 p-3 bg-light rounded border">
                         <div class="col-md-6">
-                            <label class="fw-bold mb-2">شعار المدرسة/الوزارة (للتقارير)</label>
+                            <label class="fw-bold mb-2">شعار المدرسة/الوزارة</label>
                             <input type="file" id="logo-upload" class="form-control" accept="image/*" onchange="uploadLogo()">
-                            <small class="text-muted">ارفع صورة الشعار لتظهر في الترويسة عند الطباعة</small>
                         </div>
                         <div class="col-md-6 text-center">
                             <img id="logo-preview" src="" style="max-height: 80px; display: none; margin: 0 auto;">
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-4 border p-3 rounded bg-light">
-                        <h6 class="fw-bold text-danger">كلمات المرور</h6>
-                        <div class="col-md-3"><label class="small fw-bold">الوكيل/المدير</label><input id="set-admin-pass" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
-                        <div class="col-md-3"><label class="small fw-bold">الموجه</label><input id="set-counselor-pass" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
-                        <div class="col-md-3"><label class="small fw-bold">المعلم</label><input id="set-code" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
-                        <div class="col-md-3"><label class="small fw-bold">الحارس</label><input id="set-guard" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
-                    </div>
-                    
                     <div class="row g-3 mb-4">
                         <div class="col-md-4"><label>اسم المدرسة</label><input id="s-school" class="form-control" onchange="saveSettings()"></div>
                         <div class="col-md-4"><label>مدير المدرسة</label><input id="s-manager" class="form-control" onchange="saveSettings()"></div>
                         <div class="col-md-4"><label>وكيل المدرسة</label><input id="s-deputy" class="form-control" onchange="saveSettings()"></div>
+                    </div>
+                    <hr>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3"><label class="small fw-bold">الوكيل/المدير</label><input id="set-admin-pass" class="form-control text-center" onchange="saveSettings()"></div>
+                        <div class="col-md-3"><label class="small fw-bold">الموجه</label><input id="set-counselor-pass" class="form-control text-center" onchange="saveSettings()"></div>
+                        <div class="col-md-3"><label class="small fw-bold">المعلم</label><input id="set-code" class="form-control text-center" onchange="saveSettings()"></div>
+                        <div class="col-md-3"><label class="small fw-bold">الحارس</label><input id="set-guard" class="form-control text-center" onchange="saveSettings()"></div>
                     </div>
                     <hr>
                     <h5 class="fw-bold mb-3">الطلاب</h5>
@@ -261,6 +243,23 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <div class="modal fade" id="printModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold">معاينة التقرير قبل الطباعة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-white" id="print-content">
+                    </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary px-5 fw-bold" onclick="window.print()"><i class="fas fa-print me-2"></i> تأكيد وطباعة</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <audio id="bell" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
@@ -323,7 +322,9 @@
             if(userRole==='teacher') links.push(['teacher','الخدمات','user-edit']);
             if(userRole==='admin') links.push(['admin','لوحة التحكم','tasks'], ['reports','التقارير','file-alt'], ['data','الإعدادات','cogs']);
             if(userRole==='guard') links = [['guard','البوابة','shield-alt']];
-            if(userRole==='counselor') links.push(['counselor','التوجيه','user-graduate']);
+            // إضافة التقارير للموجه الطلابي (V69 Update)
+            if(userRole==='counselor') links.push(['counselor','التوجيه','user-graduate'], ['reports','التقارير الشاملة','file-contract']);
+            
             m.innerHTML = links.map(l => `<div class="nav-link" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-2"></i> ${l[1]}</div>`).join('');
         }
         function navigate(id) {
@@ -436,24 +437,28 @@
             });
         }
 
-        // --- بحث الموجه عن الطالب (V68) ---
+        // --- البحث الشامل للموجه (V69 Update) ---
         function searchStudentHistory() {
             const name = document.getElementById('stu-search-name').value;
-            const resBox = document.getElementById('stu-history-res');
+            const box = document.getElementById('stu-history-res');
             if(!name) return;
+            box.classList.remove('d-none');
             
-            const history = Object.values(data.violations||{}).filter(v => v.student.includes(name));
-            resBox.classList.remove('d-none');
+            // البحث في المخالفات والأذونات
+            const viols = Object.values(data.violations || {}).filter(v => v.student.includes(name));
+            const perms = Object.values(data.permits || {}).filter(p => p.student.includes(name)).length;
             
-            if(history.length === 0) {
-                resBox.className = 'alert alert-success mt-3';
-                resBox.innerHTML = '<i class="fas fa-check-circle me-2"></i> <strong>هذا الطالب متميز</strong> ولا توجد عليه أي ملاحظات سلوكية مسجلة.';
+            if(viols.length === 0) {
+                box.className = 'alert alert-success mt-3';
+                box.innerHTML = `<i class="fas fa-check-circle me-2"></i> <strong>${name}</strong> طالب متميز، لا توجد عليه ملاحظات سلوكية.<br>عدد مرات الخروج (أذونات): ${perms}`;
             } else {
-                resBox.className = 'alert alert-warning mt-3';
-                let html = '<h6>سجل المخالفات:</h6><ul class="mb-0">';
-                history.forEach(h => html += `<li>${h.date}: ${h.type} <span class="badge bg-secondary">${h.status==='closed'?'مغلق':'نشط'}</span></li>`);
-                html += '</ul>';
-                resBox.innerHTML = html;
+                box.className = 'alert alert-warning mt-3';
+                let html = `<strong>سجل الملاحظات للطالب: ${name}</strong><ul class="mb-0 mt-2">`;
+                viols.forEach(v => {
+                    html += `<li>${v.date}: ${v.type} <span class="badge bg-secondary">${v.status==='closed'?'مغلق':'نشط'}</span></li>`;
+                });
+                html += `</ul><div class="mt-2 small text-muted">إجمالي الأذونات: ${perms}</div>`;
+                box.innerHTML = html;
             }
         }
 
@@ -463,7 +468,7 @@
         }
         function sendDeparture() { const n=document.getElementById('adm-dep-name').value; if(n) db.ref('departures').push({name:n, status:'pending', guardSeen:false}); Swal.fire('تم الإرسال للحارس'); }
 
-        // --- DATA & LOGO (V68) ---
+        // --- DATA ---
         function syncSettingsInputs() {
             const s=data.settings; document.getElementById('s-school').value=s.school; document.getElementById('s-manager').value=s.manager; document.getElementById('s-deputy').value=s.deputy || '';
             document.getElementById('set-code').value=s.code; document.getElementById('set-guard').value=s.guard; document.getElementById('set-admin-pass').value=s.admin; document.getElementById('set-counselor-pass').value=s.counselor;
@@ -476,10 +481,10 @@
             if(file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    db.ref('settings/logo').set(e.target.result); // حفظ الشعار في قاعدة البيانات
+                    db.ref('settings/logo').set(e.target.result);
                     document.getElementById('logo-preview').src = e.target.result;
                     document.getElementById('logo-preview').style.display = 'block';
-                    Swal.fire('تم رفع الشعار بنجاح');
+                    Swal.fire('تم رفع الشعار');
                 };
                 reader.readAsDataURL(file);
             }
@@ -521,10 +526,11 @@
         }
         function updateTimers() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor(); }
 
-        function printReportDelayed() { setTimeout(() => { window.print(); }, 500); }
-
-        function buildReport(type) {
-            document.getElementById('report-viewer').classList.remove('d-none');
+        // --- نظام المعاينة قبل الطباعة (V69 Fix) ---
+        function showReportModal(type) {
+            const modal = new bootstrap.Modal(document.getElementById('printModal'));
+            const content = document.getElementById('print-content');
+            
             // استخدام الشعار المرفوع أو الافتراضي
             const logoSrc = data.settings.logo || "https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg";
             
@@ -535,6 +541,7 @@
                     <div style="text-align:left;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br>نظام إذن</div>
                 </div>`;
             
+            // بناء الجدول حسب النوع
             if(type==='permits') {
                 const d = Object.values(data.permits||{});
                 h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4>`;
@@ -562,7 +569,9 @@
                     <div><strong>وكيل المدرسة</strong><br>${data.settings.deputy || ''}<br><br>....................</div>
                     <div><strong>مدير المدرسة</strong><br>${data.settings.manager}<br><br>....................</div>
                 </div>`;
-            document.getElementById('print-area').innerHTML = h;
+            
+            content.innerHTML = h;
+            modal.show();
         }
     </script>
 </body>

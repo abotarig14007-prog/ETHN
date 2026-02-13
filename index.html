@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>نظام إذن المدرسي (V66)</title>
+    <title>نظام إذن المدرسي (V67 Final)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -94,10 +94,9 @@
         <aside class="sidebar no-print">
             <div class="text-center mb-4 px-3">
                 <i class="fas fa-school fa-3x text-warning mb-2"></i>
-                <h6 class="fw-bold text-white mb-0" id="disp-school">...</h6>
-                <small class="text-white-50" id="disp-role">...</small>
+                <h6 class="fw-bold text-white mb-0 mt-3" id="disp-school">جاري التحميل...</h6>
             </div>
-            <div id="nav-items" class="flex-grow-1"></div>
+            <div id="nav-items" class="flex-grow-1 mt-4"></div>
             <div class="p-3"><button class="btn btn-outline-light w-100 rounded-pill" onclick="location.reload()">خروج</button></div>
         </aside>
 
@@ -195,7 +194,7 @@
                 </div>
                 <div id="report-viewer" class="bg-white p-5 rounded-4 shadow-sm border d-none">
                     <div id="print-area"></div>
-                    <button class="btn btn-dark w-100 mt-4 no-print" onclick="window.print()"><i class="fas fa-print me-2"></i> طباعة</button>
+                    <button class="btn btn-dark w-100 mt-4 no-print" onclick="printReportDelayed()"><i class="fas fa-print me-2"></i> طباعة</button>
                 </div>
             </section>
 
@@ -208,7 +207,11 @@
                         <div class="col-md-3"><label class="small fw-bold">المعلم</label><input id="set-code" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
                         <div class="col-md-3"><label class="small fw-bold">الحارس</label><input id="set-guard" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
                     </div>
-                    <div class="row g-3 mb-4"><div class="col-md-6"><label>اسم المدرسة</label><input id="s-school" class="form-control" onchange="saveSettings()"></div><div class="col-md-6"><label>المدير</label><input id="s-manager" class="form-control" onchange="saveSettings()"></div></div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4"><label>اسم المدرسة</label><input id="s-school" class="form-control" onchange="saveSettings()"></div>
+                        <div class="col-md-4"><label>مدير المدرسة</label><input id="s-manager" class="form-control" onchange="saveSettings()"></div>
+                        <div class="col-md-4"><label>وكيل المدرسة</label><input id="s-deputy" class="form-control" onchange="saveSettings()"></div>
+                    </div>
                     <hr>
                     <h5 class="fw-bold mb-3">الطلاب</h5>
                     <div class="row g-3"><div class="col-md-4"><input id="imp-cls-name" class="form-control" placeholder="اسم الفصل"></div><div class="col-md-4"><button class="btn btn-success w-100" onclick="document.getElementById('f-excel').click()">استيراد</button><input type="file" id="f-excel" hidden onchange="importData(this)"></div><div class="col-md-4"><button class="btn btn-outline-danger w-100" onclick="clearData('students')">حذف الكل</button></div></div>
@@ -234,7 +237,8 @@
         const db = firebase.database();
 
         let userRole = '', isMuted = false, alertActive = false;
-        let data = { settings: {school:'مدرستنا', manager:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111'}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{} };
+        // إضافة deputy للبيانات الافتراضية
+        let data = { settings: {school:'مدرستنا', manager:'', deputy:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111'}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{} };
 
         window.onload = () => {
             db.ref('.info/connected').on('value', s => document.getElementById('status-dot').style.background = s.val()? '#00ff00' : 'red');
@@ -242,7 +246,7 @@
                 const val = snap.val();
                 if(val) {
                     data = { ...data, ...val };
-                    data.settings = { ...{school:'مدرستنا', manager:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111'}, ...(val.settings || {}) };
+                    data.settings = { ...{school:'مدرستنا', manager:'', deputy:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111'}, ...(val.settings || {}) };
                     if(typeof data.classes === 'object') data.classes = Object.values(data.classes);
                     
                     document.getElementById('disp-school').innerText = data.settings.school;
@@ -274,7 +278,7 @@
 
         function buildMenu() {
             const m = document.getElementById('nav-items');
-            document.getElementById('disp-role').innerText = {'admin':'الوكيل','teacher':'المعلم','guard':'الحارس','counselor':'الموجه'}[userRole];
+            // تم حذف السطر الذي يظهر الدور تحت اسم المدرسة
             let links = [['monitor','المتابعة','desktop']];
             if(userRole==='teacher') links.push(['teacher','الخدمات','user-edit']);
             if(userRole==='admin') links.push(['admin','لوحة التحكم','tasks'], ['reports','التقارير','file-alt'], ['data','الإعدادات','cogs']);
@@ -313,7 +317,6 @@
             if(userRole==='counselor' && !document.getElementById('sec-counselor').classList.contains('d-none')) renderCounselor();
             if(!document.getElementById('sec-data').classList.contains('d-none')) renderDataTable();
             
-            // إصلاح تعبئة الفصول في كل القوائم
             const dropdowns = ['t-class', 'r-class'];
             dropdowns.forEach(id => {
                 const el = document.getElementById(id);
@@ -343,7 +346,6 @@
             document.getElementById('adm-vis-list').innerHTML = Object.entries(data.visitors||{}).filter(([k,v])=>v.status==='pending').map(([k,v])=>`
                 <div class="list-group-item"><strong>${v.name}</strong><br><small>${v.reason}</small><div class="btn-group w-100 mt-2"><button class="btn btn-success btn-sm" onclick="db.ref('visitors/${k}').update({status:'approved'})">موافقة</button><button class="btn btn-danger btn-sm" onclick="db.ref('visitors/${k}').update({status:'rejected'})">رفض</button></div></div>`).join('');
             
-            // الوكيل يرى "تحويل للموجه"
             document.getElementById('adm-vio-list').innerHTML = Object.entries(data.violations||{}).filter(([k,v])=>v.status==='pending_admin').map(([k,v])=>`
                 <div class="alert alert-danger p-2 mb-2">
                     <small>${v.student} (${v.class})</small><br><strong>${v.type}</strong><br><small class="text-muted">${v.desc || ''}</small>
@@ -358,11 +360,9 @@
                 <div class="list-group-item d-flex justify-content-between"><div>${v.name}</div><span class="badge ${v.status==='approved'?'bg-success':(v.status==='pending'?'bg-warning text-dark':'bg-danger')}">${v.status==='pending'?'انتظار':(v.status==='approved'?'مسموح':'مرفوض')}</span></div>`).join('');
         }
 
-        // الموجه الطلابي
         function renderCounselor() {
             const list = Object.entries(data.violations||{}).filter(([k,v])=>v.status==='pending_counselor');
             document.getElementById('counselor-empty').classList.toggle('d-none', list.length > 0);
-            
             document.getElementById('counselor-list').innerHTML = list.map(([k,v])=>`
                 <tr>
                     <td>${v.student}<br><small class="text-muted">${v.class}</small></td>
@@ -430,13 +430,25 @@
         function sendDeparture() { const n=document.getElementById('adm-dep-name').value; if(n) db.ref('departures').push({name:n, status:'pending', guardSeen:false}); Swal.fire('تم الإرسال للحارس'); }
 
         // --- SYSTEM ---
+        // تحديث الدوال لربط خانة الوكيل الجديدة
         function syncSettingsInputs() {
-            const s=data.settings; document.getElementById('s-school').value=s.school; document.getElementById('s-manager').value=s.manager;
+            const s=data.settings; 
+            document.getElementById('s-school').value=s.school; 
+            document.getElementById('s-manager').value=s.manager;
+            document.getElementById('s-deputy').value=s.deputy || ''; // ربط خانة الوكيل
             document.getElementById('set-code').value=s.code; document.getElementById('set-guard').value=s.guard;
             document.getElementById('set-admin-pass').value=s.admin; document.getElementById('set-counselor-pass').value=s.counselor;
         }
         function saveSettings() {
-            db.ref('settings').set({school:document.getElementById('s-school').value, manager:document.getElementById('s-manager').value, code:document.getElementById('set-code').value, guard:document.getElementById('set-guard').value, admin:document.getElementById('set-admin-pass').value, counselor:document.getElementById('set-counselor-pass').value});
+            db.ref('settings').set({
+                school:document.getElementById('s-school').value, 
+                manager:document.getElementById('s-manager').value,
+                deputy:document.getElementById('s-deputy').value, // حفظ خانة الوكيل
+                code:document.getElementById('set-code').value, 
+                guard:document.getElementById('set-guard').value, 
+                admin:document.getElementById('set-admin-pass').value, 
+                counselor:document.getElementById('set-counselor-pass').value
+            });
             Swal.fire('تم الحفظ');
         }
         function importData(inp) {
@@ -462,6 +474,14 @@
             }
         }
         function updateTimers() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor(); }
+
+        // دالة الطباعة الجديدة مع التأخير لإصلاح المشكلة
+        function printReportDelayed() {
+            // انتظار نصف ثانية حتى يكتمل بناء التقرير في المتصفح
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
 
         function buildReport(type) {
             document.getElementById('report-viewer').classList.remove('d-none');
@@ -491,7 +511,11 @@
                 else h+=`<p class="text-center">لا توجد بيانات</p>`;
             }
 
-            h+=`<div style="margin-top:50px; display:flex; justify-content:space-between; padding:0 50px;"><div><strong>الوكيل</strong><br>....................</div><div><strong>المدير: ${data.settings.manager}</strong><br>....................</div></div>`;
+            // تحديث التوقيعات لإظهار اسم الوكيل
+            h+=`<div style="margin-top:50px; display:flex; justify-content:space-between; padding:0 50px; text-align:center;">
+                    <div><strong>وكيل المدرسة</strong><br>${data.settings.deputy || ''}<br><br>....................</div>
+                    <div><strong>مدير المدرسة</strong><br>${data.settings.manager}<br><br>....................</div>
+                </div>`;
             document.getElementById('print-area').innerHTML = h;
         }
     </script>

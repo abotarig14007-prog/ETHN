@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>نظام الإدارة المدرسية (V63)</title>
+    <title>نظام الإدارة المدرسية (V64)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -168,7 +168,17 @@
                 </div>
             </section>
 
-            <section id="sec-counselor" class="view-section d-none"><div class="page-card"><div class="card-header-custom">الحالات السلوكية</div><div class="table-responsive"><table class="table table-hover text-center"><thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody id="counselor-list"></tbody></table></div></div></section>
+            <section id="sec-counselor" class="view-section d-none">
+                <div class="page-card">
+                    <div class="card-header-custom">ملفات الطلاب المحولة (السلوك)</div>
+                    <div class="table-responsive">
+                        <table class="table table-hover text-center align-middle">
+                            <thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>التاريخ</th><th>إجراء التوجيه</th></tr></thead>
+                            <tbody id="counselor-list"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
             <section id="sec-reports" class="view-section d-none no-print">
                 <h4 class="fw-bold mb-4">التقارير</h4>
@@ -262,7 +272,7 @@
             document.getElementById('disp-role').innerText = {'admin':'الوكيل','teacher':'المعلم','guard':'الحارس','counselor':'الموجه'}[userRole];
             let links = [['monitor','المتابعة','desktop']];
             if(userRole==='teacher') links.push(['teacher','الخدمات','user-edit']);
-            if(userRole==='admin') links.push(['admin','لوحة التحكم','tasks'], ['reports','التقارير','file-alt'], ['data','الإعدادات والبيانات','cogs']);
+            if(userRole==='admin') links.push(['admin','لوحة التحكم','tasks'], ['reports','التقارير','file-alt'], ['data','الإعدادات','cogs']);
             if(userRole==='guard') links = [['guard','البوابة','shield-alt']];
             if(userRole==='counselor') links.push(['reports','سجل الطلاب','user-graduate']);
             m.innerHTML = links.map(l => `<div class="nav-link" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-2"></i> ${l[1]}</div>`).join('');
@@ -295,12 +305,14 @@
             if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor();
             if(userRole==='admin' && !document.getElementById('sec-admin').classList.contains('d-none')) renderAdmin();
             if(userRole==='guard' && !document.getElementById('sec-guard').classList.contains('d-none')) renderGuard();
+            if(userRole==='counselor' && !document.getElementById('sec-counselor').classList.contains('d-none')) renderCounselor();
             if(!document.getElementById('sec-data').classList.contains('d-none')) renderDataTable();
             
+            // تعبئة القوائم للمعلم
             const dropdowns = ['t-class', 'r-class'];
             dropdowns.forEach(id => {
                 const el = document.getElementById(id);
-                if(el) {
+                if(el && el.options.length <= 1) { // فقط إذا كانت فارغة لتجنب إعادة التعبئة المزعجة
                     const cur = el.value;
                     el.innerHTML = '<option value="">اختر الفصل</option>' + (data.classes||[]).map(c=>`<option value="${c}">${c}</option>`).join('');
                     el.value = cur;
@@ -325,8 +337,13 @@
         function renderAdmin() {
             document.getElementById('adm-vis-list').innerHTML = Object.entries(data.visitors||{}).filter(([k,v])=>v.status==='pending').map(([k,v])=>`
                 <div class="list-group-item"><strong>${v.name}</strong><br><small>${v.reason}</small><div class="btn-group w-100 mt-2"><button class="btn btn-success btn-sm" onclick="db.ref('visitors/${k}').update({status:'approved'})">موافقة</button><button class="btn btn-danger btn-sm" onclick="db.ref('visitors/${k}').update({status:'rejected'})">رفض</button></div></div>`).join('');
+            
+            // تحديث عرض المخالفات للوكيل (مع زر الإجراء)
             document.getElementById('adm-vio-list').innerHTML = Object.entries(data.violations||{}).filter(([k,v])=>v.status==='pending_admin').map(([k,v])=>`
-                <div class="alert alert-danger p-2 mb-2"><small>${v.student} (${v.class})</small><br><strong>${v.type}</strong><button class="btn btn-sm btn-dark w-100 mt-1" onclick="db.ref('violations/'+'${k}').update({status:'pending_counselor', admin_action:'تحويل للموجه'})">تحويل للموجه</button></div>`).join('');
+                <div class="alert alert-danger p-2 mb-2">
+                    <small>${v.student} (${v.class})</small><br><strong>${v.type}</strong>
+                    <div class="mt-2"><button class="btn btn-sm btn-dark w-100" onclick="referToCounselor('${k}')">اتخاذ إجراء وتحويل للموجه</button></div>
+                </div>`).join('');
         }
 
         function renderGuard() {
@@ -336,12 +353,19 @@
                 <div class="list-group-item d-flex justify-content-between"><div>${v.name}</div><span class="badge ${v.status==='approved'?'bg-success':(v.status==='pending'?'bg-warning text-dark':'bg-danger')}">${v.status==='pending'?'انتظار':(v.status==='approved'?'مسموح':'مرفوض')}</span></div>`).join('');
         }
 
+        // تحديث عرض الموجه (مع زر الإجراء)
         function renderCounselor() {
             document.getElementById('counselor-list').innerHTML = Object.entries(data.violations||{}).filter(([k,v])=>v.status==='pending_counselor').map(([k,v])=>`
-                <tr><td>${v.student}</td><td>${v.type}</td><td>${v.date}</td><td><button class="btn btn-success btn-sm" onclick="db.ref('violations/'+'${k}').update({status:'closed'})">إغلاق</button></td></tr>`).join('');
+                <tr>
+                    <td>${v.student}</td>
+                    <td>${v.type}</td>
+                    <td>${v.admin_action}</td>
+                    <td>${v.date}</td>
+                    <td><button class="btn btn-success btn-sm" onclick="closeCase('${k}')">تحديد إجراء وإغلاق</button></td>
+                </tr>`).join('');
         }
 
-        // --- ACTIONS ---
+        // --- ACTIONS (V64: New Workflows) ---
         function loadStudentsForRole(cls, tid) {
             const list = Object.values(data.students||{}).filter(s=>s.class===cls);
             const el = document.getElementById(tid); el.innerHTML='<option value="">اختر الطالب</option>'; el.disabled=false;
@@ -352,20 +376,52 @@
             if(!p.student) return; db.ref('permits').push(p); 
             Swal.fire('تم التسجيل','بدأ المؤقت بنجاح','success'); navigate('monitor');
         }
-        
-        // --- تعديل رسالة المخالفة التربوية (V63) ---
         function sendViolation() {
             const v={student:document.getElementById('r-stu').value, class:document.getElementById('r-class').value, type:document.getElementById('v-type').value, desc:document.getElementById('v-desc').value, status:'pending_admin', date:new Date().toLocaleDateString('ar-SA')};
             if(!v.student) return; 
             db.ref('violations').push(v); 
-            
-            // الرسالة الجديدة
+            Swal.fire({ title: 'شكراً لك يا أستاذ', text: 'الرجاء عدم إخراج الطالب أثناء الحصة. سيتم استدعاؤه من قبل الإدارة أثناء الفسحة.', icon: 'info', confirmButtonText: 'حسناً', confirmButtonColor: '#006C35' });
+        }
+
+        // إجراء الوكيل الجديد (مع توثيق الإجراء)
+        function referToCounselor(k) {
             Swal.fire({
-                title: 'شكراً لك يا أستاذ',
-                text: 'الرجاء عدم إخراج الطالب أثناء الحصة. سيتم استدعاؤه من قبل الإدارة أثناء الفسحة.',
-                icon: 'info',
-                confirmButtonText: 'حسناً',
-                confirmButtonColor: '#006C35'
+                title: 'إجراء الوكيل',
+                input: 'text',
+                inputLabel: 'ما هو الإجراء الأولي الذي اتخذته؟',
+                inputPlaceholder: 'مثلاً: تعهد خطي، استدعاء ولي أمر...',
+                showCancelButton: true,
+                confirmButtonText: 'تحويل للموجه',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    db.ref('violations/'+k).update({
+                        status: 'pending_counselor', 
+                        admin_action: result.value
+                    });
+                    Swal.fire('تم التحويل', 'تم تحويل الطالب للموجه بنجاح', 'success');
+                }
+            });
+        }
+
+        // إجراء الموجه الجديد (إغلاق وتوثيق)
+        function closeCase(k) {
+            Swal.fire({
+                title: 'إجراء الموجه الطلابي',
+                input: 'text',
+                inputLabel: 'ما هو الإجراء العلاجي/التوجيهي؟',
+                inputPlaceholder: 'مثلاً: جلسة فردية، تعديل سلوك...',
+                showCancelButton: true,
+                confirmButtonText: 'حفظ وإغلاق الملف',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    db.ref('violations/'+k).update({
+                        status: 'closed', 
+                        counselor_action: result.value
+                    });
+                    Swal.fire('تم الإغلاق', 'تم حفظ الملف في الأرشيف', 'success');
+                }
             });
         }
 
@@ -397,7 +453,20 @@
         }
         function renderDataTable() { document.getElementById('data-stu-body').innerHTML = Object.entries(data.students||{}).reverse().slice(0,50).map(([k,s])=>`<tr><td>${s.name}</td><td>${s.class}</td><td><button class="btn btn-sm text-danger" onclick="db.ref('students/${k}').remove()"><i class="fas fa-trash"></i></button></td></tr>`).join(''); }
         function clearData(p) { if(confirm('متأكد؟')) db.ref(p).remove(); }
-        function tabTeacher(t) { document.getElementById('t-permit-box').classList.toggle('hidden', t!=='permit'); document.getElementById('t-vio-box').classList.toggle('hidden', t!=='violation'); }
+        function tabTeacher(t) { 
+            document.getElementById('t-permit-box').classList.toggle('hidden', t!=='permit'); 
+            document.getElementById('t-vio-box').classList.toggle('hidden', t!=='violation'); 
+            
+            // إصلاح مشكلة عدم ظهور الفصول في التبويب الثاني (V64 Fix)
+            if(t === 'violation') {
+                const el = document.getElementById('r-class');
+                if(el && el.options.length <= 1) {
+                    const cur = el.value;
+                    el.innerHTML = '<option value="">اختر الفصل</option>' + (data.classes||[]).map(c=>`<option value="${c}">${c}</option>`).join('');
+                    el.value = cur;
+                }
+            }
+        }
         function updateTimers() { if(!document.getElementById('sec-monitor').classList.contains('hidden')) renderMonitor(); }
 
         function buildReport(type) {
@@ -410,7 +479,10 @@
                 </div>`;
             if(type==='permits') h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الفصل</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).reverse().map(p=>`<tr><td>${p.student}</td><td>${p.class}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`;
             else if(type==='visitors') h+=`<h4 class="text-center fw-bold mb-4">سجل الزوار</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>السبب</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.time}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`;
-            else if(type==='violations') h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الفصل</th><th>نوع المخالفة</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.violations||{}).reverse().map(v=>`<tr><td>${v.student}</td><td>${v.class}</td><td>${v.type}</td><td>${v.date}</td></tr>`).join('')}</tbody></table>`;
+            
+            // تقرير المخالفات المطور (V64)
+            else if(type==='violations') h+=`<h4 class="text-center fw-bold mb-4">المخالفات والإجراءات المتخذة</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.violations||{}).reverse().map(v=>`<tr><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td><td>${v.date}</td></tr>`).join('')}</tbody></table>`;
+            
             h+=`<div style="margin-top:50px; display:flex; justify-content:space-between; padding:0 50px;"><div><strong>الوكيل</strong><br>....................</div><div><strong>المدير: ${data.settings.manager}</strong><br>....................</div></div>`;
             document.getElementById('print-area').innerHTML = h;
         }

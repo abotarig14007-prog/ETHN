@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>نظام الإدارة المدرسية (V61)</title>
+    <title>نظام الإدارة المدرسية (V63)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -35,7 +35,6 @@
         .page-card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); margin-bottom: 25px; border: 1px solid #eee; overflow: hidden; }
         .card-header-custom { padding: 20px; background: #fff; border-bottom: 1px solid #f0f0f0; font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
 
-        /* شاشة المتابعة */
         .monitor-card { background: white; padding: 20px; border-radius: 15px; border-right: 6px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.03); position: relative; }
         .monitor-card.safe { border-right-color: #27ae60; }
         .monitor-card.danger { border-right-color: #c0392b; animation: pulse 1.5s infinite; }
@@ -128,10 +127,11 @@
 
                 <div id="t-vio-box" class="page-card p-4 d-none">
                     <div class="row g-3">
-                        <div class="col-md-6"><label class="fw-bold">الطالب</label><select id="v-stu" class="form-select form-select-lg"></select></div>
-                        <div class="col-md-6"><label class="fw-bold">المخالفة</label><input id="v-type" class="form-control form-control-lg"></div>
-                        <div class="col-12"><textarea id="v-desc" class="form-control" rows="3"></textarea></div>
-                        <button class="btn btn-danger py-3 rounded-pill fw-bold" onclick="sendViolation()">إحالة للوكيل</button>
+                        <div class="col-md-6"><label class="fw-bold">الفصل</label><select id="r-class" class="form-select form-select-lg" onchange="loadStudentsForRole(this.value, 'r-stu')"></select></div>
+                        <div class="col-md-6"><label class="fw-bold">الطالب</label><select id="r-stu" class="form-select form-select-lg" disabled><option>حدد الفصل</option></select></div>
+                        <div class="col-md-6"><label class="fw-bold">نوع المخالفة</label><input id="v-type" class="form-control form-control-lg" placeholder="مشاغبة، تأخر..."></div>
+                        <div class="col-12"><label class="fw-bold">التفاصيل</label><textarea id="v-desc" class="form-control" rows="3"></textarea></div>
+                        <div class="col-12 mt-4"><button class="btn btn-danger w-100 py-3 fw-bold rounded-pill shadow" onclick="sendViolation()">إحالة فورية للوكيل</button></div>
                     </div>
                 </div>
             </section>
@@ -262,9 +262,9 @@
             document.getElementById('disp-role').innerText = {'admin':'الوكيل','teacher':'المعلم','guard':'الحارس','counselor':'الموجه'}[userRole];
             let links = [['monitor','المتابعة','desktop']];
             if(userRole==='teacher') links.push(['teacher','الخدمات','user-edit']);
-            if(userRole==='admin') links.push(['admin','الإدارة','tasks'], ['reports','التقارير','file-alt'], ['data','الإعدادات','cogs']);
+            if(userRole==='admin') links.push(['admin','لوحة التحكم','tasks'], ['reports','التقارير','file-alt'], ['data','الإعدادات والبيانات','cogs']);
             if(userRole==='guard') links = [['guard','البوابة','shield-alt']];
-            if(userRole==='counselor') links.push(['reports','السجل','user-graduate']);
+            if(userRole==='counselor') links.push(['reports','سجل الطلاب','user-graduate']);
             m.innerHTML = links.map(l => `<div class="nav-link" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-2"></i> ${l[1]}</div>`).join('');
         }
         function navigate(id) {
@@ -273,10 +273,9 @@
             refreshScreens();
         }
 
-        // --- ALERTS (معدلة للحارس) ---
+        // --- ALERTS ---
         function checkSecurityAlerts() {
             let shouldRing = false;
-            // الحارس يرن فقط عند (الانصراف النهائي) وليس أذونات المعلم
             if(userRole === 'guard') {
                 const newDep = Object.values(data.departures || {}).some(d => d.status === 'pending' && !d.guardSeen);
                 if(newDep) shouldRing = true;
@@ -291,19 +290,22 @@
         function stopRinging() { alertActive=false; document.getElementById('bell').pause(); document.getElementById('alert-msg').classList.add('d-none'); }
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').className = isMuted ? 'btn btn-danger rounded-circle' : 'btn btn-light rounded-circle'; if(isMuted) stopRinging(); }
 
-        // --- SCREENS ---
+        // --- RENDER ---
         function refreshScreens() {
             if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor();
             if(userRole==='admin' && !document.getElementById('sec-admin').classList.contains('d-none')) renderAdmin();
             if(userRole==='guard' && !document.getElementById('sec-guard').classList.contains('d-none')) renderGuard();
             if(!document.getElementById('sec-data').classList.contains('d-none')) renderDataTable();
             
-            const clsSel = document.getElementById('t-class');
-            if(clsSel) {
-                const cur = clsSel.value;
-                clsSel.innerHTML = '<option value="">اختر الفصل</option>' + (data.classes||[]).map(c=>`<option value="${c}">${c}</option>`).join('');
-                clsSel.value = cur;
-            }
+            const dropdowns = ['t-class', 'r-class'];
+            dropdowns.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    const cur = el.value;
+                    el.innerHTML = '<option value="">اختر الفصل</option>' + (data.classes||[]).map(c=>`<option value="${c}">${c}</option>`).join('');
+                    el.value = cur;
+                }
+            });
         }
 
         function renderMonitor() {
@@ -320,19 +322,18 @@
             }).join('');
         }
 
-        function renderGuard() {
-            // فقط الانصراف النهائي يظهر هنا
-            document.getElementById('g-dep-list').innerHTML = Object.entries(data.departures||{}).filter(([k,d])=>d.status==='pending').map(([k,d])=>`
-                <div class="alert alert-danger d-flex justify-content-between align-items-center"><strong>${d.name}</strong><button class="btn btn-sm btn-success" onclick="db.ref('departures/${k}').update({status:'exited', guardSeen:true})">تم الخروج</button></div>`).join('');
-            document.getElementById('g-vis-list').innerHTML = Object.entries(data.visitors||{}).reverse().slice(0,5).map(([k,v])=>`
-                <div class="list-group-item d-flex justify-content-between"><div>${v.name}</div><span class="badge ${v.status==='approved'?'bg-success':(v.status==='pending'?'bg-warning text-dark':'bg-danger')}">${v.status==='pending'?'انتظار':(v.status==='approved'?'مسموح':'مرفوض')}</span></div>`).join('');
-        }
-
         function renderAdmin() {
             document.getElementById('adm-vis-list').innerHTML = Object.entries(data.visitors||{}).filter(([k,v])=>v.status==='pending').map(([k,v])=>`
                 <div class="list-group-item"><strong>${v.name}</strong><br><small>${v.reason}</small><div class="btn-group w-100 mt-2"><button class="btn btn-success btn-sm" onclick="db.ref('visitors/${k}').update({status:'approved'})">موافقة</button><button class="btn btn-danger btn-sm" onclick="db.ref('visitors/${k}').update({status:'rejected'})">رفض</button></div></div>`).join('');
             document.getElementById('adm-vio-list').innerHTML = Object.entries(data.violations||{}).filter(([k,v])=>v.status==='pending_admin').map(([k,v])=>`
                 <div class="alert alert-danger p-2 mb-2"><small>${v.student} (${v.class})</small><br><strong>${v.type}</strong><button class="btn btn-sm btn-dark w-100 mt-1" onclick="db.ref('violations/'+'${k}').update({status:'pending_counselor', admin_action:'تحويل للموجه'})">تحويل للموجه</button></div>`).join('');
+        }
+
+        function renderGuard() {
+            document.getElementById('g-dep-list').innerHTML = Object.entries(data.departures||{}).filter(([k,d])=>d.status==='pending').map(([k,d])=>`
+                <div class="alert alert-danger d-flex justify-content-between align-items-center"><strong>${d.name}</strong><button class="btn btn-sm btn-success" onclick="db.ref('departures/${k}').update({status:'exited', guardSeen:true})">تم الخروج</button></div>`).join('');
+            document.getElementById('g-vis-list').innerHTML = Object.entries(data.visitors||{}).reverse().slice(0,5).map(([k,v])=>`
+                <div class="list-group-item d-flex justify-content-between"><div>${v.name}</div><span class="badge ${v.status==='approved'?'bg-success':(v.status==='pending'?'bg-warning text-dark':'bg-danger')}">${v.status==='pending'?'انتظار':(v.status==='approved'?'مسموح':'مرفوض')}</span></div>`).join('');
         }
 
         function renderCounselor() {
@@ -348,12 +349,26 @@
         }
         function sendPermit() {
             const p={student:document.getElementById('t-stu').value, class:document.getElementById('t-class').value, dest:document.getElementById('t-dest').value, limit:parseInt(document.getElementById('t-time').value), start:new Date().toISOString(), active:true};
-            if(!p.student) return; db.ref('permits').push(p); Swal.fire('تم التسجيل','بدأ المؤقت بنجاح','success'); navigate('monitor');
+            if(!p.student) return; db.ref('permits').push(p); 
+            Swal.fire('تم التسجيل','بدأ المؤقت بنجاح','success'); navigate('monitor');
         }
+        
+        // --- تعديل رسالة المخالفة التربوية (V63) ---
         function sendViolation() {
-            const v={student:document.getElementById('v-stu').value, type:document.getElementById('v-type').value, desc:document.getElementById('v-desc').value, status:'pending_admin', date:new Date().toLocaleDateString('ar-SA')};
-            if(!v.student) return; db.ref('violations').push(v); Swal.fire('تم التحويل للوكيل');
+            const v={student:document.getElementById('r-stu').value, class:document.getElementById('r-class').value, type:document.getElementById('v-type').value, desc:document.getElementById('v-desc').value, status:'pending_admin', date:new Date().toLocaleDateString('ar-SA')};
+            if(!v.student) return; 
+            db.ref('violations').push(v); 
+            
+            // الرسالة الجديدة
+            Swal.fire({
+                title: 'شكراً لك يا أستاذ',
+                text: 'الرجاء عدم إخراج الطالب أثناء الحصة. سيتم استدعاؤه من قبل الإدارة أثناء الفسحة.',
+                icon: 'info',
+                confirmButtonText: 'حسناً',
+                confirmButtonColor: '#006C35'
+            });
         }
+
         function sendVisitorReq() {
             const v={name:document.getElementById('g-v-name').value, id:document.getElementById('g-v-id').value, reason:document.getElementById('g-v-reason').value, status:'pending', time:new Date().toLocaleString()};
             if(v.name) db.ref('visitors').push(v).then(()=>{Swal.fire('تم الطلب');document.getElementById('g-v-name').value=''});
@@ -395,6 +410,7 @@
                 </div>`;
             if(type==='permits') h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الفصل</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).reverse().map(p=>`<tr><td>${p.student}</td><td>${p.class}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`;
             else if(type==='visitors') h+=`<h4 class="text-center fw-bold mb-4">سجل الزوار</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>السبب</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.time}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`;
+            else if(type==='violations') h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الفصل</th><th>نوع المخالفة</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.violations||{}).reverse().map(v=>`<tr><td>${v.student}</td><td>${v.class}</td><td>${v.type}</td><td>${v.date}</td></tr>`).join('')}</tbody></table>`;
             h+=`<div style="margin-top:50px; display:flex; justify-content:space-between; padding:0 50px;"><div><strong>الوكيل</strong><br>....................</div><div><strong>المدير: ${data.settings.manager}</strong><br>....................</div></div>`;
             document.getElementById('print-area').innerHTML = h;
         }

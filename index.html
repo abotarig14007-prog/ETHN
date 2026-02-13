@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>نظام إذن المدرسي (V67 Final)</title>
+    <title>نظام إذن المدرسي (V68)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,10 +18,10 @@
         :root { --primary: #006C35; --gold: #C69C6D; --bg: #F5F7FA; --dark: #1a1a1a; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding-bottom: 60px; }
 
-        /* شاشة الدخول الاحترافية */
+        /* شاشة الدخول */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #004d25, #006C35); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .login-card { background: white; padding: 40px; border-radius: 25px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-        .app-logo { width: 100px; margin-bottom: 15px; }
+        .app-logo { width: 100px; margin-bottom: 15px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .role-btn { border: 2px solid #f0f0f0; padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: space-between; font-weight: bold; color: #444; }
         .role-btn:hover { border-color: var(--primary); background: #e8f5e9; color: var(--primary); transform: translateX(-5px); }
         
@@ -41,15 +41,30 @@
         .monitor-card.danger { border-right-color: #c0392b; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(192, 57, 43, 0); } }
 
-        @media print {
-            .no-print { display: none !important; }
-            #print-area { display: block !important; padding: 40px; }
-            body { background: white; }
-        }
-        
         #top-bar { background: white; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 900; }
         #status-dot { width: 12px; height: 12px; background: red; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .hidden { display: none !important; }
+
+        /* --- حل مشكلة الطباعة (V68 Fix) --- */
+        @media print {
+            body * { visibility: hidden; }
+            #report-viewer, #report-viewer * { visibility: visible; }
+            #report-viewer {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: white !important;
+                z-index: 99999;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .no-print { display: none !important; }
+            /* إخفاء الأزرار داخل التقرير عند الطباعة */
+            #report-viewer button { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -57,7 +72,8 @@
     <div id="top-bar" class="no-print">
         <div class="d-flex align-items-center">
             <div id="status-dot" title="حالة الاتصال"></div>
-            <h5 class="m-0 fw-bold text-success">نظام إذن المدرسي</h5>
+            <i class="fas fa-graduation-cap text-success fs-3 ms-2"></i>
+            <h5 class="m-0 fw-bold text-dark">نظام إذن <span class="text-success">المدرسي</span></h5>
         </div>
         <div class="d-flex align-items-center gap-3">
             <span id="alert-msg" class="badge bg-danger d-none animate__animated animate__shakeX">تنبيه جديد!</span>
@@ -68,9 +84,9 @@
 
     <div id="auth-overlay">
         <div class="login-card">
-            <img src="https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg" class="app-logo">
-            <h2 class="fw-bold text-dark mb-1">نظام إذن</h2>
-            <p class="text-muted mb-4">الإدارة المدرسية الذكية</p>
+            <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" class="app-logo">
+            <h3 class="fw-bold text-dark mb-1">منصة إذن التعليمية</h3>
+            <p class="text-muted mb-4 small">نظام الضبط والمتابعة المدرسية</p>
             
             <div id="role-selection">
                 <div class="role-btn" onclick="selectRole('admin', 'الوكيل / المدير')"><span>الوكيل / المدير</span><i class="fas fa-user-tie text-primary"></i></div>
@@ -172,14 +188,26 @@
             </section>
 
             <section id="sec-counselor" class="view-section d-none">
-                <div class="page-card">
-                    <div class="card-header-custom bg-info text-white">ملفات الطلاب المحولة من الوكيل</div>
-                    <div class="table-responsive">
-                        <table class="table table-hover text-center align-middle mb-0">
-                            <thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>التاريخ</th><th>إجراء التوجيه</th></tr></thead>
-                            <tbody id="counselor-list"></tbody>
-                        </table>
-                        <div id="counselor-empty" class="text-center p-4 text-muted d-none">لا توجد حالات محولة حالياً</div>
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <div class="page-card">
+                            <div class="card-header-custom bg-info text-white">ملفات الطلاب المحولة من الوكيل</div>
+                            <div class="table-responsive">
+                                <table class="table table-hover text-center align-middle mb-0">
+                                    <thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>التاريخ</th><th>إجراء التوجيه</th></tr></thead>
+                                    <tbody id="counselor-list"></tbody>
+                                </table>
+                                <div id="counselor-empty" class="text-center p-4 text-muted d-none">لا توجد حالات محولة حالياً</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="page-card p-4 border-top border-success border-5">
+                            <h6 class="fw-bold mb-3">استعلام عن طالب (لولي الأمر)</h6>
+                            <input type="text" id="stu-search-name" class="form-control mb-3" placeholder="اكتب اسم الطالب...">
+                            <button class="btn btn-success w-100 mb-3" onclick="searchStudentHistory()">بحث في السجل</button>
+                            <div id="stu-history-res" class="alert alert-secondary d-none"></div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -200,13 +228,27 @@
 
             <section id="sec-data" class="view-section d-none">
                 <div class="page-card p-4">
-                    <h5 class="fw-bold mb-4 text-primary">الإعدادات</h5>
+                    <h5 class="fw-bold mb-4 text-primary">الإعدادات العامة</h5>
+                    
+                    <div class="row g-3 mb-4 p-3 bg-light rounded border">
+                        <div class="col-md-6">
+                            <label class="fw-bold mb-2">شعار المدرسة/الوزارة (للتقارير)</label>
+                            <input type="file" id="logo-upload" class="form-control" accept="image/*" onchange="uploadLogo()">
+                            <small class="text-muted">ارفع صورة الشعار لتظهر في الترويسة عند الطباعة</small>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <img id="logo-preview" src="" style="max-height: 80px; display: none; margin: 0 auto;">
+                        </div>
+                    </div>
+
                     <div class="row g-3 mb-4 border p-3 rounded bg-light">
+                        <h6 class="fw-bold text-danger">كلمات المرور</h6>
                         <div class="col-md-3"><label class="small fw-bold">الوكيل/المدير</label><input id="set-admin-pass" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
                         <div class="col-md-3"><label class="small fw-bold">الموجه</label><input id="set-counselor-pass" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
                         <div class="col-md-3"><label class="small fw-bold">المعلم</label><input id="set-code" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
                         <div class="col-md-3"><label class="small fw-bold">الحارس</label><input id="set-guard" class="form-control text-center fw-bold" onchange="saveSettings()"></div>
                     </div>
+                    
                     <div class="row g-3 mb-4">
                         <div class="col-md-4"><label>اسم المدرسة</label><input id="s-school" class="form-control" onchange="saveSettings()"></div>
                         <div class="col-md-4"><label>مدير المدرسة</label><input id="s-manager" class="form-control" onchange="saveSettings()"></div>
@@ -237,8 +279,7 @@
         const db = firebase.database();
 
         let userRole = '', isMuted = false, alertActive = false;
-        // إضافة deputy للبيانات الافتراضية
-        let data = { settings: {school:'مدرستنا', manager:'', deputy:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111'}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{} };
+        let data = { settings: {school:'مدرستنا', manager:'', deputy:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111', logo:''}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{} };
 
         window.onload = () => {
             db.ref('.info/connected').on('value', s => document.getElementById('status-dot').style.background = s.val()? '#00ff00' : 'red');
@@ -246,7 +287,7 @@
                 const val = snap.val();
                 if(val) {
                     data = { ...data, ...val };
-                    data.settings = { ...{school:'مدرستنا', manager:'', deputy:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111'}, ...(val.settings || {}) };
+                    data.settings = { ...{school:'مدرستنا', manager:'', deputy:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111', logo:''}, ...(val.settings || {}) };
                     if(typeof data.classes === 'object') data.classes = Object.values(data.classes);
                     
                     document.getElementById('disp-school').innerText = data.settings.school;
@@ -278,7 +319,6 @@
 
         function buildMenu() {
             const m = document.getElementById('nav-items');
-            // تم حذف السطر الذي يظهر الدور تحت اسم المدرسة
             let links = [['monitor','المتابعة','desktop']];
             if(userRole==='teacher') links.push(['teacher','الخدمات','user-edit']);
             if(userRole==='admin') links.push(['admin','لوحة التحكم','tasks'], ['reports','التقارير','file-alt'], ['data','الإعدادات','cogs']);
@@ -345,7 +385,6 @@
         function renderAdmin() {
             document.getElementById('adm-vis-list').innerHTML = Object.entries(data.visitors||{}).filter(([k,v])=>v.status==='pending').map(([k,v])=>`
                 <div class="list-group-item"><strong>${v.name}</strong><br><small>${v.reason}</small><div class="btn-group w-100 mt-2"><button class="btn btn-success btn-sm" onclick="db.ref('visitors/${k}').update({status:'approved'})">موافقة</button><button class="btn btn-danger btn-sm" onclick="db.ref('visitors/${k}').update({status:'rejected'})">رفض</button></div></div>`).join('');
-            
             document.getElementById('adm-vio-list').innerHTML = Object.entries(data.violations||{}).filter(([k,v])=>v.status==='pending_admin').map(([k,v])=>`
                 <div class="alert alert-danger p-2 mb-2">
                     <small>${v.student} (${v.class})</small><br><strong>${v.type}</strong><br><small class="text-muted">${v.desc || ''}</small>
@@ -364,13 +403,7 @@
             const list = Object.entries(data.violations||{}).filter(([k,v])=>v.status==='pending_counselor');
             document.getElementById('counselor-empty').classList.toggle('d-none', list.length > 0);
             document.getElementById('counselor-list').innerHTML = list.map(([k,v])=>`
-                <tr>
-                    <td>${v.student}<br><small class="text-muted">${v.class}</small></td>
-                    <td>${v.type}</td>
-                    <td>${v.admin_action || '-'}</td>
-                    <td>${v.date}</td>
-                    <td><button class="btn btn-success btn-sm" onclick="closeCase('${k}')">إغلاق وتوثيق</button></td>
-                </tr>`).join('');
+                <tr><td>${v.student}<br><small class="text-muted">${v.class}</small></td><td>${v.type}</td><td>${v.admin_action || '-'}</td><td>${v.date}</td><td><button class="btn btn-success btn-sm" onclick="closeCase('${k}')">إغلاق وتوثيق</button></td></tr>`).join('');
         }
 
         // --- ACTIONS ---
@@ -392,35 +425,36 @@
         }
 
         function referToCounselor(k) {
-            Swal.fire({
-                title: 'إجراء الوكيل',
-                input: 'text',
-                inputLabel: 'الإجراء المتخذ قبل التحويل:',
-                inputPlaceholder: 'مثلاً: تعهد، استدعاء...',
-                showCancelButton: true,
-                confirmButtonText: 'تحويل للموجه'
-            }).then((result) => {
-                if (result.isConfirmed && result.value) {
-                    db.ref('violations/'+k).update({ status: 'pending_counselor', admin_action: result.value });
-                    Swal.fire('تم التحويل', '', 'success');
-                }
+            Swal.fire({ title: 'إجراء الوكيل', input: 'text', inputLabel: 'الإجراء المتخذ:', showCancelButton: true, confirmButtonText: 'تحويل' }).then((r) => {
+                if (r.isConfirmed && r.value) { db.ref('violations/'+k).update({ status: 'pending_counselor', admin_action: r.value }); Swal.fire('تم التحويل'); }
             });
         }
 
         function closeCase(k) {
-            Swal.fire({
-                title: 'إجراء الموجه',
-                input: 'text',
-                inputLabel: 'الإجراء التربوي:',
-                inputPlaceholder: 'مثلاً: جلسة إرشادية...',
-                showCancelButton: true,
-                confirmButtonText: 'إغلاق الملف'
-            }).then((result) => {
-                if (result.isConfirmed && result.value) {
-                    db.ref('violations/'+k).update({ status: 'closed', counselor_action: result.value });
-                    Swal.fire('تم الحفظ', '', 'success');
-                }
+            Swal.fire({ title: 'إجراء الموجه', input: 'text', inputLabel: 'الإجراء التربوي:', showCancelButton: true, confirmButtonText: 'إغلاق الملف' }).then((r) => {
+                if (r.isConfirmed && r.value) { db.ref('violations/'+k).update({ status: 'closed', counselor_action: r.value }); Swal.fire('تم الحفظ'); }
             });
+        }
+
+        // --- بحث الموجه عن الطالب (V68) ---
+        function searchStudentHistory() {
+            const name = document.getElementById('stu-search-name').value;
+            const resBox = document.getElementById('stu-history-res');
+            if(!name) return;
+            
+            const history = Object.values(data.violations||{}).filter(v => v.student.includes(name));
+            resBox.classList.remove('d-none');
+            
+            if(history.length === 0) {
+                resBox.className = 'alert alert-success mt-3';
+                resBox.innerHTML = '<i class="fas fa-check-circle me-2"></i> <strong>هذا الطالب متميز</strong> ولا توجد عليه أي ملاحظات سلوكية مسجلة.';
+            } else {
+                resBox.className = 'alert alert-warning mt-3';
+                let html = '<h6>سجل المخالفات:</h6><ul class="mb-0">';
+                history.forEach(h => html += `<li>${h.date}: ${h.type} <span class="badge bg-secondary">${h.status==='closed'?'مغلق':'نشط'}</span></li>`);
+                html += '</ul>';
+                resBox.innerHTML = html;
+            }
         }
 
         function sendVisitorReq() {
@@ -429,21 +463,33 @@
         }
         function sendDeparture() { const n=document.getElementById('adm-dep-name').value; if(n) db.ref('departures').push({name:n, status:'pending', guardSeen:false}); Swal.fire('تم الإرسال للحارس'); }
 
-        // --- SYSTEM ---
-        // تحديث الدوال لربط خانة الوكيل الجديدة
+        // --- DATA & LOGO (V68) ---
         function syncSettingsInputs() {
-            const s=data.settings; 
-            document.getElementById('s-school').value=s.school; 
-            document.getElementById('s-manager').value=s.manager;
-            document.getElementById('s-deputy').value=s.deputy || ''; // ربط خانة الوكيل
-            document.getElementById('set-code').value=s.code; document.getElementById('set-guard').value=s.guard;
-            document.getElementById('set-admin-pass').value=s.admin; document.getElementById('set-counselor-pass').value=s.counselor;
+            const s=data.settings; document.getElementById('s-school').value=s.school; document.getElementById('s-manager').value=s.manager; document.getElementById('s-deputy').value=s.deputy || '';
+            document.getElementById('set-code').value=s.code; document.getElementById('set-guard').value=s.guard; document.getElementById('set-admin-pass').value=s.admin; document.getElementById('set-counselor-pass').value=s.counselor;
+            if(s.logo) document.getElementById('logo-preview').src = s.logo;
+            if(s.logo) document.getElementById('logo-preview').style.display = 'block';
         }
+        
+        function uploadLogo() {
+            const file = document.getElementById('logo-upload').files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    db.ref('settings/logo').set(e.target.result); // حفظ الشعار في قاعدة البيانات
+                    document.getElementById('logo-preview').src = e.target.result;
+                    document.getElementById('logo-preview').style.display = 'block';
+                    Swal.fire('تم رفع الشعار بنجاح');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function saveSettings() {
-            db.ref('settings').set({
+            db.ref('settings').update({
                 school:document.getElementById('s-school').value, 
                 manager:document.getElementById('s-manager').value,
-                deputy:document.getElementById('s-deputy').value, // حفظ خانة الوكيل
+                deputy:document.getElementById('s-deputy').value,
                 code:document.getElementById('set-code').value, 
                 guard:document.getElementById('set-guard').value, 
                 admin:document.getElementById('set-admin-pass').value, 
@@ -475,45 +521,45 @@
         }
         function updateTimers() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor(); }
 
-        // دالة الطباعة الجديدة مع التأخير لإصلاح المشكلة
-        function printReportDelayed() {
-            // انتظار نصف ثانية حتى يكتمل بناء التقرير في المتصفح
-            setTimeout(() => {
-                window.print();
-            }, 500);
-        }
+        function printReportDelayed() { setTimeout(() => { window.print(); }, 500); }
 
         function buildReport(type) {
             document.getElementById('report-viewer').classList.remove('d-none');
+            // استخدام الشعار المرفوع أو الافتراضي
+            const logoSrc = data.settings.logo || "https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg";
+            
             let h = `
                 <div style="display:flex; justify-content:space-between; border-bottom:3px solid var(--primary); padding-bottom:20px; margin-bottom:30px;">
                     <div style="text-align:right;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div>
-                    <img src="https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg" width="120">
+                    <img src="${logoSrc}" width="120" style="max-height:100px;">
                     <div style="text-align:left;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br>نظام إذن</div>
                 </div>`;
             
             if(type==='permits') {
                 const d = Object.values(data.permits||{});
-                if(d.length) h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الفصل</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map(p=>`<tr><td>${p.student}</td><td>${p.class}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`;
-                else h+=`<p class="text-center">لا توجد بيانات</p>`;
+                h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4>`;
+                if(!d.length) h+=`<p class="text-center">لا توجد بيانات</p>`;
+                else h+=`<table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الفصل</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map(p=>`<tr><td>${p.student}</td><td>${p.class}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`;
             } else if(type==='visitors') {
                 const d = Object.values(data.visitors||{});
-                if(d.length) h+=`<h4 class="text-center fw-bold mb-4">سجل الزوار</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>السبب</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>${d.reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.time}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`;
-                else h+=`<p class="text-center">لا توجد بيانات</p>`;
+                h+=`<h4 class="text-center fw-bold mb-4">سجل الزوار</h4>`;
+                if(!d.length) h+=`<p class="text-center">لا توجد بيانات</p>`;
+                else h+=`<table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>السبب</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>${d.reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.time}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`;
             } else if(type==='violations') {
                 const d = Object.values(data.violations||{});
-                if(d.length) h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`;
-                else h+=`<p class="text-center">لا توجد بيانات</p>`;
+                h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4>`;
+                if(!d.length) h+=`<p class="text-center">لا توجد بيانات</p>`;
+                else h+=`<table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`;
             } else if(type==='most_out') {
                 let stats = {}; Object.values(data.permits||{}).forEach(p=>stats[p.student]=(stats[p.student]||0)+1);
                 let sorted = Object.entries(stats).sort((a,b)=>b[1]-a[1]);
-                if(sorted.length) h+=`<h4 class="text-center fw-bold mb-4">الطلاب الأكثر خروجاً</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>مرات الخروج</th></tr></thead><tbody>${sorted.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</tbody></table>`;
-                else h+=`<p class="text-center">لا توجد بيانات</p>`;
+                h+=`<h4 class="text-center fw-bold mb-4">الطلاب الأكثر خروجاً</h4>`;
+                if(!sorted.length) h+=`<p class="text-center">لا توجد بيانات</p>`;
+                else h+=`<table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>مرات الخروج</th></tr></thead><tbody>${sorted.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</tbody></table>`;
             }
 
-            // تحديث التوقيعات لإظهار اسم الوكيل
-            h+=`<div style="margin-top:50px; display:flex; justify-content:space-between; padding:0 50px; text-align:center;">
-                    <div><strong> وكيل شؤون الطلاب </strong><br>${data.settings.deputy || ''}<br><br>....................</div>
+            h+=`<div style="margin-top:60px; display:flex; justify-content:space-between; padding:0 50px; text-align:center;">
+                    <div><strong>وكيل المدرسة</strong><br>${data.settings.deputy || ''}<br><br>....................</div>
                     <div><strong>مدير المدرسة</strong><br>${data.settings.manager}<br><br>....................</div>
                 </div>`;
             document.getElementById('print-area').innerHTML = h;

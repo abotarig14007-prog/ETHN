@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#006C35">
-    <title>نظام إذن (V83.0 Diamond Class)</title>
+    <title>نظام إذن (V83.1 Diamond Class)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -587,6 +587,17 @@
         }
         
         function registerLateLogic(studentName) {
+            // التحقق من التكرار اليومي
+            const todayStr = new Date().toLocaleDateString('en-CA');
+            const existing = Object.values(data.tardiness || {}).find(t => 
+                t.student === studentName && 
+                new Date(t.date).toLocaleDateString('en-CA') === todayStr
+            );
+
+            if (existing) {
+                return Swal.fire('تنبيه', 'تم تسجيل الطالب لهذا اليوم مسبقاً', 'warning');
+            }
+
             const prev = Object.values(data.tardiness || {}).filter(t => t.student === studentName).length;
             const newCount = prev + 1;
             
@@ -711,9 +722,12 @@
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const content = document.getElementById('modal-print-content'); const logoSrc = data.settings.logo || "https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg"; const monthVal = document.getElementById('report-month').value;
             let h = `<div style="display:flex; justify-content:space-between; border-bottom:3px solid var(--primary); padding-bottom:20px; margin-bottom:30px;"><div style="text-align:right;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div><img src="${logoSrc}" width="120" style="max-height:100px;"><div style="text-align:left;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br>${monthVal ? 'تقرير شهر: '+monthVal : 'تقرير شامل'}</div></div>`;
             
+            // Helper to find class
+            const findClass = (n) => { const s = Object.values(data.students||{}).find(x=>x.name===n); return s?s.class:'-'; };
+
             if(type==='permits') { 
                 const d = Object.values(data.permits||{}); 
-                h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>المعلم المصدر</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map((p, i)=>`<tr class="${i%2===0?'table-light':''}"><td>${p.student}</td><td>${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
+                h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المعلم المصدر</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map((p, i)=>`<tr class="${i%2===0?'table-light':''}"><td>${p.student}</td><td>${p.class || findClass(p.student)}</td><td>${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
             }
             else if(type==='visitors') { 
                 const d = Object.values(data.visitors||{}); 
@@ -726,7 +740,7 @@
             }
             else if(type==='violations') { 
                 const d = Object.values(data.violations||{}); 
-                h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr class="table-warning"><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`; 
+                h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr class="table-warning"><td>${v.student}</td><td>${v.class || findClass(v.student)}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`; 
             }
             else if(type==='attendance') {
                 const today = new Date().toLocaleDateString('en-CA');
@@ -748,7 +762,7 @@
 
                 h+=`<h4 class="text-center fw-bold mb-4 text-warning"><i class="fas fa-crown"></i> لوحة الشرف (الطلاب المتميزين)</h4>
                     <table class="table table-bordered text-center table-hover">
-                        <thead><tr class="table-dark"><th>الترتيب</th><th>اسم الطالب</th><th>المجموع</th><th>التفاصيل (السبب - المعلم)</th></tr></thead>
+                        <thead><tr class="table-dark"><th>الترتيب</th><th>اسم الطالب</th><th>الفصل</th><th>المجموع</th><th>التفاصيل (السبب - المعلم)</th></tr></thead>
                         <tbody>`;
                 
                 sortedStudents.forEach(([name, d], index) => {
@@ -758,7 +772,7 @@
                         </div>`
                     ).join('');
                     
-                    h+= `<tr><td>${index+1}</td><td class="fw-bold">${name}</td><td class="fs-4 text-warning fw-bold">${d.total}</td><td>${detailsHtml}</td></tr>`;
+                    h+= `<tr><td>${index+1}</td><td class="fw-bold">${name}</td><td>${findClass(name)}</td><td class="fs-4 text-warning fw-bold">${d.total}</td><td>${detailsHtml}</td></tr>`;
                 });
                 h+= `</tbody></table>`;
             }
@@ -799,11 +813,10 @@
             }
             else if(type==='late') {
                 const d = Object.values(data.tardiness||{});
-                h+=`<h4 class="text-center fw-bold mb-4">تقرير التأخر الصباحي</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الوقت</th><th>التاريخ</th></tr></thead><tbody>${d.reverse().map(t=>`<tr><td>${t.student}</td><td>${new Date(t.date).toLocaleTimeString('ar-SA')}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`;
+                h+=`<h4 class="text-center fw-bold mb-4">تقرير التأخر الصباحي</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الفصل</th><th>الوقت</th><th>التاريخ</th></tr></thead><tbody>${d.reverse().map(t=>`<tr><td>${t.student}</td><td>${findClass(t.student)}</td><td>${new Date(t.date).toLocaleTimeString('ar-SA')}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`;
             }
-            else if(type==='most_out') { let stats = {}; Object.values(data.permits||{}).forEach(p=>stats[p.student]=(stats[p.student]||0)+1); let sorted = Object.entries(stats).sort((a,b)=>b[1]-a[1]); h+=`<h4 class="text-center fw-bold mb-4">الطلاب الأكثر خروجاً</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الاسم</th><th>مرات الخروج</th></tr></thead><tbody>${sorted.map((s,i)=>`<tr class="${i<3?'table-danger':''}"><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</tbody></table>`; }
             
-            h+=`<div style="margin-top:60px; display:flex; justify-content:space-between; padding:0 50px; text-align:center;"><div><strong>وكيل المدرسة</strong><br>${data.settings.deputy||''}<br>....................</div><div><strong>مدير المدرسة</strong><br>${data.settings.manager}<br>....................</div></div>`;
+            h+=`<div style="margin-top:60px; display:flex; justify-content:space-between; padding:0 50px; text-align:center;"><div><strong>وكيل الشؤون المدرسية</strong><br>${data.settings.deputy||''}<br>....................</div><div><strong>مدير المدرسة</strong><br>${data.settings.manager}<br>....................</div></div>`;
             content.innerHTML = h; modal.show();
         }
     </script>

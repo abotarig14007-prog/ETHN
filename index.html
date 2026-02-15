@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#006C35">
     <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoibnphbV9lez4iLCJzaG9ydF9uYW1lIjoiRXpuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIuIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiMwMDZDMzUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4taWNvbnXMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzIwOS8zMjA5MjY1LnBuZyIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3209/3209265.png">
-    <title>نظام إذن (V80.0 Pro)</title>
+    <title>نظام إذن (V80.1 Pro Alert)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -52,7 +52,15 @@
         #status-dot { width: 10px; height: 10px; background: red; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .hidden { display: none !important; }
 
-        /* Report Colors */
+        /* Report Colors & Styling */
+        .report-btn { transition: transform 0.2s; border: none !important; color: white !important; }
+        .report-btn:hover { transform: translateY(-5px); opacity: 0.9; }
+        .bg-gradient-blue { background: linear-gradient(45deg, #0d6efd, #0a58ca); }
+        .bg-gradient-green { background: linear-gradient(45deg, #198754, #146c43); }
+        .bg-gradient-red { background: linear-gradient(45deg, #dc3545, #b02a37); }
+        .bg-gradient-orange { background: linear-gradient(45deg, #fd7e14, #ca6510); }
+        .bg-gradient-teal { background: linear-gradient(45deg, #20c997, #1aa179); }
+
         .row-approved { background-color: #d1e7dd !important; }
         .row-rejected { background-color: #f8d7da !important; }
         .row-pending { background-color: #fff3cd !important; }
@@ -67,9 +75,6 @@
             #final-print-container * { visibility: visible; }
             .no-print { display: none !important; }
             .print-section { page-break-inside: avoid; margin-bottom: 20px; }
-            table { width: 100% !important; border-collapse: collapse !important; }
-            th, td { border: 1px solid #000 !important; padding: 8px !important; }
-            /* Force print colors */
             .row-approved { background-color: #d1e7dd !important; -webkit-print-color-adjust: exact; }
             .row-rejected { background-color: #f8d7da !important; -webkit-print-color-adjust: exact; }
             .row-pending { background-color: #fff3cd !important; -webkit-print-color-adjust: exact; }
@@ -86,7 +91,7 @@
         </div>
         <div class="d-flex align-items-center gap-3">
             <span id="alert-msg" class="badge bg-danger d-none animate__animated animate__shakeX">تنبيه!</span>
-            <button class="btn btn-light rounded-circle shadow-sm" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up text-primary"></i></button>
+            <button class="btn btn-light rounded-circle shadow-sm border border-danger" onclick="toggleMute()" id="mute-btn" title="تفعيل التنبيهات"><i class="fas fa-volume-mute text-danger"></i></button>
             <button class="btn btn-outline-dark d-lg-none" onclick="document.querySelector('.sidebar').classList.toggle('active')"><i class="fas fa-bars"></i></button>
         </div>
     </div>
@@ -219,11 +224,11 @@
                     </div>
                 </div>
                 <div class="row g-3 mb-4">
-                    <div class="col-md-4"><button class="btn btn-white border w-100 py-3 shadow-sm fw-bold" onclick="showReportModal('permits')">📋 الأذونات الداخلية</button></div>
-                    <div class="col-md-4"><button class="btn btn-white border w-100 py-3 shadow-sm fw-bold" onclick="showReportModal('visitors')">👥 سجل الزوار</button></div>
-                    <div class="col-md-4"><button class="btn btn-white border w-100 py-3 shadow-sm fw-bold" onclick="showReportModal('violations')">⚠️ المخالفات</button></div>
-                    <div class="col-md-4"><button class="btn btn-white border w-100 py-3 shadow-sm fw-bold" onclick="showReportModal('attendance')">🚫 غياب اليوم</button></div>
-                    <div class="col-md-4"><button class="btn btn-white border w-100 py-3 shadow-sm fw-bold" onclick="showReportModal('most_out')">📉 الأكثر خروجاً</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-blue w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('permits')"><i class="fas fa-clipboard-list fa-2x mb-2 d-block"></i> الأذونات الداخلية</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-green w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('visitors')"><i class="fas fa-users fa-2x mb-2 d-block"></i> سجل الزوار</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-red w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('violations')"><i class="fas fa-exclamation-triangle fa-2x mb-2 d-block"></i> المخالفات</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-orange w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('attendance')"><i class="fas fa-user-times fa-2x mb-2 d-block"></i> غياب اليوم</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-teal w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('most_out')"><i class="fas fa-chart-bar fa-2x mb-2 d-block"></i> الأكثر خروجاً</button></div>
                 </div>
             </section>
 
@@ -306,8 +311,7 @@
     <script>
         const firebaseConfig = { apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE", authDomain: "ethn-63848.firebaseapp.com", databaseURL: "https://ethn-63848-default-rtdb.firebaseio.com", projectId: "ethn-63848", storageBucket: "ethn-63848.appspot.com", messagingSenderId: "747489913596", appId: "1:747489913596:web:d98d88447e4a25cc808579" };
         firebase.initializeApp(firebaseConfig); const db = firebase.database();
-        let userRole='', isMuted=false, alertActive=false;
-        // Data structure updated with Logs and PINs defaults
+        let userRole='', isMuted=true, alertActive=false; // isMuted starts true to force user interaction
         let data = { settings: {school:'مدرستنا', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:''}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, logs:{} };
 
         window.onload = () => {
@@ -316,7 +320,6 @@
                 const val = snap.val();
                 if(val) {
                     data = { ...data, ...val };
-                    // Ensure settings exist with defaults
                     data.settings = { ...{school:'مدرستنا', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:''}, ...(val.settings || {}) };
                     if(typeof data.classes === 'object') data.classes = Object.values(data.classes);
                     document.getElementById('disp-school').innerText = data.settings.school;
@@ -329,7 +332,6 @@
         function selectRole(id, t) { userRole=id; document.getElementById('role-selection').classList.add('hidden'); document.getElementById('pin-area').classList.remove('hidden'); document.getElementById('selected-role-title').innerText='دخول: '+t; document.getElementById('pin-input').focus(); }
         function backToRoles() { document.getElementById('pin-area').classList.add('hidden'); document.getElementById('role-selection').classList.remove('hidden'); }
         
-        // Updated Login Logic to use Dynamic PINs
         function doLogin() {
             const p = document.getElementById('pin-input').value.trim();
             let correctPin = '';
@@ -343,6 +345,15 @@
                 document.getElementById('app-body').classList.remove('d-none'); 
                 buildMenu(); 
                 navigate(userRole==='guard'?'guard':(userRole==='counselor'?'counselor':(userRole==='admin'?'monitor':'teacher'))); 
+                // Show hint to unmute
+                if(userRole==='admin' || userRole==='guard') {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'تفعيل التنبيهات',
+                        text: 'اضغط على زر الجرس بالأعلى لتفعيل الصوت والاهتزاز',
+                        timer: 4000
+                    });
+                }
             } else {
                 Swal.fire('خطأ','الرمز غير صحيح','error');
             }
@@ -358,43 +369,54 @@
         }
         function navigate(id) { document.querySelectorAll('.view-section').forEach(s => s.classList.add('d-none')); document.getElementById('sec-'+id).classList.remove('d-none'); refreshScreens(); }
 
-        // Security Alerts + Voice Announcement Logic
+        // --- Alert System Logic (Core Fix) ---
         function checkSecurityAlerts() {
             let ring = false;
-            let speakMsg = '';
-
-            // Check departures for Guard (Voice Alert)
+            let adminPopup = false;
+            
+            // For Guard: Check Departures
             if(userRole==='guard') {
-                const departures = Object.values(data.departures||{});
-                const pending = departures.filter(d => d.status==='pending' && !d.guardSeen);
-                if (pending.length > 0) {
-                    ring = true;
-                    // Speak the last added student
-                    speakMsg = 'خروج نهائي للطالب: ' + pending[pending.length-1].name;
-                }
+                const pending = Object.values(data.departures||{}).filter(d => d.status==='pending' && !d.guardSeen);
+                if (pending.length > 0) ring = true;
             }
 
-            if(userRole==='admin' && Object.values(data.visitors||{}).some(v=>v.status==='pending')) ring=true;
-            
-            if(ring && !isMuted) {
-                alertActive=true; 
-                document.getElementById('bell').play().catch(()=>{}); 
-                document.getElementById('alert-msg').classList.remove('d-none');
-                
-                // Text-to-Speech logic
-                if(speakMsg && 'speechSynthesis' in window) {
-                    // Prevent repeating too often
-                    if(!window.speakingFlag) {
-                        window.speakingFlag = true;
-                        const u = new SpeechSynthesisUtterance(speakMsg);
-                        u.lang = 'ar-SA';
-                        speechSynthesis.speak(u);
-                        setTimeout(() => { window.speakingFlag = false; }, 5000);
+            // For Admin: Check Visitors (Aggressive Alert)
+            if(userRole==='admin') {
+                const pendingVisitors = Object.values(data.visitors||{}).filter(v=>v.status==='pending');
+                if(pendingVisitors.length > 0) {
+                    ring = true;
+                    // If modal not already shown, show it
+                    if(!Swal.isVisible()) {
+                        adminPopup = true;
                     }
+                }
+            }
+            
+            if(ring) {
+                document.getElementById('alert-msg').classList.remove('d-none');
+                if(!isMuted) {
+                    document.getElementById('bell').play().catch(()=>{});
+                    // Vibrate phone: 500ms vibrate, 200ms pause, 500ms vibrate
+                    if("vibrate" in navigator) navigator.vibrate([500, 200, 500]);
+                }
+                
+                // Admin Popup Logic
+                if(adminPopup) {
+                     Swal.fire({
+                        title: '🚨 زائر جديد ينتظر!',
+                        text: 'يوجد زائر عند البوابة يطلب الدخول.',
+                        icon: 'warning',
+                        confirmButtonText: 'فتح القائمة',
+                        confirmButtonColor: '#d33',
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            navigate('admin'); // Go to admin panel
+                        }
+                    });
                 }
 
             } else {
-                alertActive=false; 
                 document.getElementById('bell').pause(); 
                 document.getElementById('alert-msg').classList.add('d-none');
             }
@@ -407,7 +429,22 @@
             if(isLate && !isMuted) document.getElementById('bell').play().catch(()=>{});
         }
         function monitorLoop() { updateDashboardStats(); if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); checkLateStudents(); } }
-        function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').className = isMuted ? 'btn btn-danger rounded-circle' : 'btn btn-light rounded-circle'; if(isMuted) {document.getElementById('bell').pause();} }
+        
+        function toggleMute() { 
+            isMuted = !isMuted; 
+            const btn = document.getElementById('mute-btn');
+            if(isMuted) {
+                btn.className = 'btn btn-light rounded-circle shadow-sm border border-danger';
+                btn.innerHTML = '<i class="fas fa-volume-mute text-danger"></i>';
+                document.getElementById('bell').pause();
+            } else {
+                btn.className = 'btn btn-danger rounded-circle shadow-sm';
+                btn.innerHTML = '<i class="fas fa-volume-up text-white"></i>';
+                // Try playing silence to unlock audio
+                document.getElementById('bell').play().catch(()=>{});
+                document.getElementById('bell').pause();
+            }
+        }
         function toggleFullScreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } else { if (document.exitFullscreen) { document.exitFullscreen(); } } }
 
         function refreshScreens() {
@@ -525,13 +562,11 @@
             document.getElementById('data-stu-body').innerHTML = Object.entries(data.students||{}).reverse().slice(0,50).map(([k,s])=>`<tr><td>${s.name}</td><td>${s.class}</td><td><button class="btn btn-sm text-danger" onclick="db.ref('students/${k}').remove()">X</button></td></tr>`).join(''); 
             document.getElementById('data-tea-body').innerHTML = Object.entries(data.teachers||{}).reverse().map(([k,t])=>`<tr><td>${t.name}</td><td><button class="btn btn-sm text-danger" onclick="db.ref('teachers/${k}').remove()">X</button></td></tr>`).join('');
             
-            // Sync password inputs
             document.getElementById('pin-admin').value = data.settings.admin_pin;
             document.getElementById('pin-teacher').value = data.settings.teacher_pin;
             document.getElementById('pin-guard').value = data.settings.guard_pin;
             document.getElementById('pin-counselor').value = data.settings.counselor_pin;
             
-            // Render Logs
             document.getElementById('system-logs-list').innerHTML = Object.values(data.logs||{}).reverse().slice(0,20).map(l => `<li class="list-group-item d-flex justify-content-between"><span>${l.action}</span><span class="text-muted" style="font-size:0.8em">${new Date(l.time).toLocaleString('ar-SA')}</span></li>`).join('');
         }
         function addStudentManual() { document.getElementById('manual-stu-box').classList.remove('d-none'); }
@@ -547,7 +582,6 @@
         function uploadLogo() { const f=document.getElementById('logo-upload').files[0]; if(f){const r=new FileReader(); r.onload=e=>{db.ref('settings/logo').set(e.target.result); location.reload();}; r.readAsDataURL(f);} }
         function saveSettings() { db.ref('settings').update({school:document.getElementById('s-school').value, manager:document.getElementById('s-manager').value, deputy:document.getElementById('s-deputy').value}); logAction('تحديث إعدادات المدرسة'); Swal.fire('تم'); }
         
-        // Save Passwords Logic
         function savePasswords() {
             const newSettings = {
                 admin_pin: document.getElementById('pin-admin').value,
@@ -581,7 +615,6 @@
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const content = document.getElementById('modal-print-content'); const logoSrc = data.settings.logo || "https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg"; const monthVal = document.getElementById('report-month').value;
             let h = `<div style="display:flex; justify-content:space-between; border-bottom:3px solid var(--primary); padding-bottom:20px; margin-bottom:30px;"><div style="text-align:right;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div><img src="${logoSrc}" width="120" style="max-height:100px;"><div style="text-align:left;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br>${monthVal ? 'تقرير شهر: '+monthVal : 'تقرير شامل'}</div></div>`;
             
-            // Colorful Reports Logic
             if(type==='permits') { 
                 const d = Object.values(data.permits||{}); 
                 h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>المعلم المصدر</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map((p, i)=>`<tr class="${i%2===0?'table-light':''}"><td>${p.student}</td><td>${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 

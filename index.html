@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#006C35">
-    <title>نظام إذن (V83.2 Rainbow Edition)</title>
+    <title>نظام إذن (V83.3 Guard Update)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -224,13 +224,6 @@
                             <input id="g-v-id" class="form-control mb-3" placeholder="رقم الهوية">
                             <input id="g-v-reason" class="form-control mb-3" placeholder="السبب">
                             <button class="btn btn-dark w-100 py-3" onclick="sendVisitorReq()">طلب دخول</button>
-                        </div>
-                        <div class="page-card p-3 border-top border-warning border-5">
-                            <h6 class="fw-bold">رصد طالب متأخر</h6>
-                            <div class="d-flex gap-2">
-                                <input id="g-late-name" class="form-control" placeholder="اسم الطالب المتأخر">
-                                <button class="btn btn-warning" onclick="registerLateGuard()">رصد</button>
-                            </div>
                         </div>
                     </div>
                     <div class="col-md-7"><div class="page-card border-danger border-top border-4"><div class="card-header-custom text-danger">أوامر الانصراف</div><div id="g-dep-list" class="list-group list-group-flush"></div></div><div class="page-card mt-3"><div class="card-header-custom">حالة الزوار</div><div id="g-vis-list" class="list-group list-group-flush"></div></div></div>

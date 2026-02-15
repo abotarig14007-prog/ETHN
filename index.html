@@ -6,9 +6,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#006C35">
-    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoibnphbV9lem4iLCJzaG9ydF9uYW1lIjoiRXpuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIuIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiMwMDZDMzUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4taWNvbnXMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzIwOS8zMjA5MjY1LnBuZyIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoibnphbV9lez4iLCJzaG9ydF9uYW1lIjoiRXpuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIuIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiMwMDZDMzUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4taWNvbnXMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzIwOS8zMjA5MjY1LnBuZyIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3209/3209265.png">
-    <title>نظام إذن (V79 Groups)</title>
+    <title>نظام إذن (V79.1 Fixed)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -334,10 +334,24 @@
             if(userRole==='counselor' && !document.getElementById('sec-counselor').classList.contains('d-none')) renderCounselor();
             if(!document.getElementById('sec-data').classList.contains('d-none')) renderDataTable();
         }
+
+        // تم إصلاح مشكلة عداد الزوار ليعتمد على مقارنة التاريخ الموحدة (ISO)
         function updateDashboardStats() {
-            if(document.getElementById('stat-out')) document.getElementById('stat-out').innerText = Object.values(data.permits||{}).filter(p=>p.active).length;
-            if(document.getElementById('stat-vis')) { const today = new Date().toLocaleDateString('ar-SA'); document.getElementById('stat-vis').innerText = Object.values(data.visitors||{}).filter(v=>v.time.includes(today)).length; }
-            if(document.getElementById('stat-vio')) document.getElementById('stat-vio').innerText = Object.values(data.violations||{}).length;
+            if(document.getElementById('stat-out')) {
+                document.getElementById('stat-out').innerText = Object.values(data.permits||{}).filter(p=>p.active).length;
+            }
+            if(document.getElementById('stat-vis')) { 
+                const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+                const visCount = Object.values(data.visitors||{}).filter(v => {
+                    const vDate = new Date(v.time).toLocaleDateString('en-CA');
+                    return vDate === today;
+                }).length;
+                document.getElementById('stat-vis').innerText = visCount; 
+            }
+            if(document.getElementById('stat-vio')) {
+                const today = new Date().toLocaleDateString('ar-SA');
+                document.getElementById('stat-vio').innerText = Object.values(data.violations||{}).filter(v => v.date === today).length;
+            }
         }
 
         function loadAttendanceList(cls) {
@@ -356,11 +370,26 @@
         }
 
         function rememberTeacher(val) { localStorage.setItem('myTeacherName', val); }
+
+        // تم إصلاح مشكلة تكرار خروج الطالب (منع إصدار إذن جديد لمن هم بالخارج)
         function sendPermit() {
             const stu = document.getElementById('t-stu').value;
             const tName = document.getElementById('t-name-sender').value;
             const isSpecial = document.getElementById('t-special').checked;
+            
             if(!tName) return Swal.fire('تنبيه','الرجاء اختيار اسم المعلم','warning');
+            if(!stu) return Swal.fire('تنبيه','الرجاء اختيار الطالب','warning');
+
+            // التحقق مما إذا كان الطالب بالخارج حالياً
+            const isAlreadyOut = Object.values(data.permits || {}).some(p => p.student === stu && p.active === true);
+            if (isAlreadyOut) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'عذراً.. الطالب بالخارج',
+                    text: 'لا يمكن إصدار إذن جديد للطالب لأنه مسجل "بالخارج" حالياً في النظام.'
+                });
+            }
+
             if(!isSpecial) {
                 const lastPermit = Object.values(data.permits||{}).filter(p => p.student === stu).pop();
                 if(lastPermit) {
@@ -369,12 +398,13 @@
                 }
             }
             const p={student:stu, teacher:tName, class:document.getElementById('t-class').value, dest:document.getElementById('t-dest').value, limit:parseInt(document.getElementById('t-time').value), start:new Date().toISOString(), active:true};
-            if(!p.student) return; db.ref('permits').push(p); Swal.fire('تم','بدأ المؤقت','success'); navigate('monitor');
+            db.ref('permits').push(p); Swal.fire('تم','بدأ المؤقت','success'); navigate('monitor');
         }
+
         function sendViolation() { const v={student:document.getElementById('r-stu').value, class:document.getElementById('r-class').value, type:document.getElementById('v-type').value, desc:document.getElementById('v-desc').value, status:'pending_admin', date:new Date().toLocaleDateString('ar-SA')}; if(!v.student) return; db.ref('violations').push(v); Swal.fire('شكراً','تم الرفع للوكيل','info'); }
         function referToCounselor(k) { Swal.fire({title:'إجراء الوكيل', input:'text', showCancelButton:true}).then(r=>{if(r.value) db.ref('violations/'+k).update({status:'pending_counselor', admin_action:r.value})}); }
         function closeCase(k) { Swal.fire({title:'إجراء الموجه', input:'text', showCancelButton:true}).then(r=>{if(r.value) db.ref('violations/'+k).update({status:'closed', counselor_action:r.value})}); }
-        function sendVisitorReq() { const v={name:document.getElementById('g-v-name').value, id:document.getElementById('g-v-id').value, reason:document.getElementById('g-v-reason').value, status:'pending', time:new Date().toLocaleString()}; if(v.name) db.ref('visitors').push(v).then(()=>{Swal.fire('تم');document.getElementById('g-v-name').value=''}); }
+        function sendVisitorReq() { const v={name:document.getElementById('g-v-name').value, id:document.getElementById('g-v-id').value, reason:document.getElementById('g-v-reason').value, status:'pending', time:new Date().toISOString()}; if(v.name) db.ref('visitors').push(v).then(()=>{Swal.fire('تم');document.getElementById('g-v-name').value=''}); }
         function sendDeparture() { const n=document.getElementById('adm-dep-name').value; if(n) db.ref('departures').push({name:n, status:'pending', guardSeen:false}); Swal.fire('تم'); }
 
         function renderMonitor() {
@@ -391,8 +421,6 @@
         }
         function renderGuard() {
             document.getElementById('g-dep-list').innerHTML = Object.entries(data.departures||{}).filter(x=>x[1].status==='pending').map(([k,d])=>`<div class="alert alert-danger d-flex justify-content-between"><strong>${d.name}</strong><button class="btn btn-success btn-sm" onclick="db.ref('departures/${k}').update({status:'exited',guardSeen:true})">خروج</button></div>`).join('');
-            
-            // تعريب الحالة للحارس (V78)
             document.getElementById('g-vis-list').innerHTML = Object.entries(data.visitors||{}).reverse().slice(0,5).map(([k,v])=>{
                 let badgeClass = 'bg-warning text-dark', statusText = 'انتظار الموافقة';
                 if(v.status === 'approved') { badgeClass = 'bg-success'; statusText = 'مسموح بالدخول'; }
@@ -448,31 +476,23 @@
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const content = document.getElementById('modal-print-content'); const logoSrc = data.settings.logo || "https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg"; const monthVal = document.getElementById('report-month').value;
             let h = `<div style="display:flex; justify-content:space-between; border-bottom:3px solid var(--primary); padding-bottom:20px; margin-bottom:30px;"><div style="text-align:right;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div><img src="${logoSrc}" width="120" style="max-height:100px;"><div style="text-align:left;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br>${monthVal ? 'تقرير شهر: '+monthVal : 'تقرير شامل'}</div></div>`;
             if(type==='permits') { const d = Object.values(data.permits||{}); h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المعلم المصدر</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map(p=>`<tr><td>${p.student}</td><td>${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; }
-            
-            // تعديل V78: تعريب الحالة في تقرير الزوار
             else if(type==='visitors') { 
                 const d = Object.values(data.visitors||{}); 
                 h+=`<h4 class="text-center fw-bold mb-4">سجل الزوار</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>السبب</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>${d.reverse().map(v=>{
                     let statusAr = 'انتظار';
                     if(v.status==='approved') statusAr = 'تم الدخول';
                     if(v.status==='rejected') statusAr = 'مرفوض';
-                    return `<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.time}</td><td>${statusAr}</td></tr>`;
+                    return `<tr><td>${v.name}</td><td>${v.reason}</td><td>${new Date(v.time).toLocaleString('ar-SA')}</td><td>${statusAr}</td></tr>`;
                 }).join('')}</tbody></table>`; 
             }
-            
             else if(type==='violations') { const d = Object.values(data.violations||{}); h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`; }
-            
-            // تقرير الغياب المجمع (V79 New)
             else if(type==='attendance') {
                 const today = new Date().toLocaleDateString('en-CA');
                 const absents = data.attendance && data.attendance[today] ? Object.entries(data.attendance[today]).filter(x=>x[1]==='absent') : [];
-                
                 h += `<h4 class="text-center fw-bold mb-4">تقرير الغياب اليومي - ${new Date().toLocaleDateString('ar-SA')}</h4>`;
-
                 if(absents.length === 0) {
                     h += `<div class="alert alert-success text-center">لا يوجد غياب اليوم</div>`;
                 } else {
-                    // تجميع حسب الفصل
                     const groups = {};
                     absents.forEach(([name, status]) => {
                         const studentObj = Object.values(data.students || {}).find(s => s.name === name);
@@ -480,24 +500,11 @@
                         if (!groups[cls]) groups[cls] = [];
                         groups[cls].push(name);
                     });
-
-                    // رسم الجداول لكل فصل
                     Object.keys(groups).sort().forEach(cls => {
-                        h += `
-                        <div class="mb-4 print-section">
-                            <h5 class="fw-bold border-bottom pb-2 border-primary text-primary">الصف / الشعبة: ${cls}</h5>
-                            <table class="table table-bordered text-center table-striped">
-                                <thead class="table-light"><tr><th style="width:70%">اسم الطالب</th><th>الحالة</th></tr></thead>
-                                <tbody>
-                                    ${groups[cls].map(name => `<tr><td>${name}</td><td class="text-danger fw-bold">غائب</td></tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                        `;
+                        h += `<div class="mb-4 print-section"><h5 class="fw-bold border-bottom pb-2 border-primary text-primary">الصف / الشعبة: ${cls}</h5><table class="table table-bordered text-center table-striped"><thead class="table-light"><tr><th style="width:70%">اسم الطالب</th><th>الحالة</th></tr></thead><tbody>${groups[cls].map(name => `<tr><td>${name}</td><td class="text-danger fw-bold">غائب</td></tr>`).join('')}</tbody></table></div>`;
                     });
                 }
             }
-            
             else if(type==='most_out') { let stats = {}; Object.values(data.permits||{}).forEach(p=>stats[p.student]=(stats[p.student]||0)+1); let sorted = Object.entries(stats).sort((a,b)=>b[1]-a[1]); h+=`<h4 class="text-center fw-bold mb-4">الطلاب الأكثر خروجاً</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>مرات الخروج</th></tr></thead><tbody>${sorted.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</tbody></table>`; }
             h+=`<div style="margin-top:60px; display:flex; justify-content:space-between; padding:0 50px; text-align:center;"><div><strong>وكيل المدرسة</strong><br>${data.settings.deputy||''}<br>....................</div><div><strong>مدير المدرسة</strong><br>${data.settings.manager}<br>....................</div></div>`;
             content.innerHTML = h; modal.show();

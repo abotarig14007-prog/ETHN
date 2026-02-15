@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#006C35">
     <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoibnphbV9lez4iLCJzaG9ydF9uYW1lIjoiRXpuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIuIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiMwMDZDMzUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4taWNvbnXMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzIwOS8zMjA5MjY1LnBuZyIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3209/3209265.png">
-    <title>نظام إذن (V79.1 Fixed)</title>
+    <title>نظام إذن (V79.3 Final)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -335,7 +335,7 @@
             if(!document.getElementById('sec-data').classList.contains('d-none')) renderDataTable();
         }
 
-        // تم إصلاح مشكلة عداد الزوار ليعتمد على مقارنة التاريخ الموحدة (ISO)
+        // تم إصلاح دالة التحديث لتعتمد على صيغة التاريخ الموحدة (ISO to YYYY-MM-DD)
         function updateDashboardStats() {
             if(document.getElementById('stat-out')) {
                 document.getElementById('stat-out').innerText = Object.values(data.permits||{}).filter(p=>p.active).length;
@@ -343,6 +343,7 @@
             if(document.getElementById('stat-vis')) { 
                 const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
                 const visCount = Object.values(data.visitors||{}).filter(v => {
+                    if(!v.time) return false;
                     const vDate = new Date(v.time).toLocaleDateString('en-CA');
                     return vDate === today;
                 }).length;
@@ -371,7 +372,7 @@
 
         function rememberTeacher(val) { localStorage.setItem('myTeacherName', val); }
 
-        // تم إصلاح مشكلة تكرار خروج الطالب (منع إصدار إذن جديد لمن هم بالخارج)
+        // تم إصلاح دالة إرسال الإذن لمنع تكرار خروج الطالب
         function sendPermit() {
             const stu = document.getElementById('t-stu').value;
             const tName = document.getElementById('t-name-sender').value;
@@ -380,13 +381,14 @@
             if(!tName) return Swal.fire('تنبيه','الرجاء اختيار اسم المعلم','warning');
             if(!stu) return Swal.fire('تنبيه','الرجاء اختيار الطالب','warning');
 
-            // التحقق مما إذا كان الطالب بالخارج حالياً
+            // منع الخروج المتكرر
             const isAlreadyOut = Object.values(data.permits || {}).some(p => p.student === stu && p.active === true);
             if (isAlreadyOut) {
                 return Swal.fire({
                     icon: 'error',
                     title: 'عذراً.. الطالب بالخارج',
-                    text: 'لا يمكن إصدار إذن جديد للطالب لأنه مسجل "بالخارج" حالياً في النظام.'
+                    text: 'لا يمكن إصدار إذن جديد للطالب لأنه مسجل "بالخارج" حالياً في النظام.',
+                    confirmButtonText: 'حسناً'
                 });
             }
 
@@ -404,7 +406,23 @@
         function sendViolation() { const v={student:document.getElementById('r-stu').value, class:document.getElementById('r-class').value, type:document.getElementById('v-type').value, desc:document.getElementById('v-desc').value, status:'pending_admin', date:new Date().toLocaleDateString('ar-SA')}; if(!v.student) return; db.ref('violations').push(v); Swal.fire('شكراً','تم الرفع للوكيل','info'); }
         function referToCounselor(k) { Swal.fire({title:'إجراء الوكيل', input:'text', showCancelButton:true}).then(r=>{if(r.value) db.ref('violations/'+k).update({status:'pending_counselor', admin_action:r.value})}); }
         function closeCase(k) { Swal.fire({title:'إجراء الموجه', input:'text', showCancelButton:true}).then(r=>{if(r.value) db.ref('violations/'+k).update({status:'closed', counselor_action:r.value})}); }
-        function sendVisitorReq() { const v={name:document.getElementById('g-v-name').value, id:document.getElementById('g-v-id').value, reason:document.getElementById('g-v-reason').value, status:'pending', time:new Date().toISOString()}; if(v.name) db.ref('visitors').push(v).then(()=>{Swal.fire('تم');document.getElementById('g-v-name').value=''}); }
+        
+        // تم استخدام toISOString لحفظ وقت الزائر بدقة
+        function sendVisitorReq() { 
+            const v = {
+                name: document.getElementById('g-v-name').value, 
+                id: document.getElementById('g-v-id').value, 
+                reason: document.getElementById('g-v-reason').value, 
+                status: 'pending', 
+                time: new Date().toISOString()
+            }; 
+            if(v.name) {
+                db.ref('visitors').push(v).then(() => {
+                    Swal.fire('تم إرسال الطلب');
+                    document.getElementById('g-v-name').value = '';
+                });
+            }
+        }
         function sendDeparture() { const n=document.getElementById('adm-dep-name').value; if(n) db.ref('departures').push({name:n, status:'pending', guardSeen:false}); Swal.fire('تم'); }
 
         function renderMonitor() {
@@ -482,7 +500,9 @@
                     let statusAr = 'انتظار';
                     if(v.status==='approved') statusAr = 'تم الدخول';
                     if(v.status==='rejected') statusAr = 'مرفوض';
-                    return `<tr><td>${v.name}</td><td>${v.reason}</td><td>${new Date(v.time).toLocaleString('ar-SA')}</td><td>${statusAr}</td></tr>`;
+                    // عرض التاريخ بصيغة مقروءة في التقرير
+                    const readableTime = v.time ? new Date(v.time).toLocaleString('ar-SA') : 'غير مسجل';
+                    return `<tr><td>${v.name}</td><td>${v.reason}</td><td>${readableTime}</td><td>${statusAr}</td></tr>`;
                 }).join('')}</tbody></table>`; 
             }
             else if(type==='violations') { const d = Object.values(data.violations||{}); h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`; }

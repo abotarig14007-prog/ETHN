@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#006C35">
     <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoibnphbV9lez4iLCJzaG9ydF9uYW1lIjoiRXpuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIuIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiMwMDZDMzUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4taWNvbnXMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzIwOS8zMjA5MjY1LnBuZyIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3209/3209265.png">
-    <title>نظام إذن (V79.3 Final)</title>
+    <title>نظام إذن (V80.0 Pro)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,14 +24,14 @@
         html, body { height: 100%; overflow-y: auto; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding-bottom: 60px; }
 
-        /* Login */
+        /* Login & UI */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #004d25, #006C35); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
         .login-card { background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); margin: 20px 0; }
         .app-logo { width: 90px; margin-bottom: 15px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .role-btn { border: 2px solid #f0f0f0; padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: space-between; font-weight: bold; color: #444; }
         .role-btn:hover { border-color: var(--primary); background: #e8f5e9; color: var(--primary); transform: translateX(-5px); }
         
-        /* Layout */
+        /* Sidebar & Layout */
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; padding-top: 20px; display: flex; flex-direction: column; transition: 0.3s; overflow-y: auto; }
         .main-content { margin-right: 280px; padding: 25px; transition: 0.3s; padding-top: 80px; min-height: 100vh; }
         @media (max-width: 991px) { .sidebar { transform: translateX(100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-right: 0; } }
@@ -52,6 +52,13 @@
         #status-dot { width: 10px; height: 10px; background: red; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .hidden { display: none !important; }
 
+        /* Report Colors */
+        .row-approved { background-color: #d1e7dd !important; }
+        .row-rejected { background-color: #f8d7da !important; }
+        .row-pending { background-color: #fff3cd !important; }
+        .row-absent { background-color: #f8d7da !important; color: #842029; }
+        .row-present { background-color: #d1e7dd !important; color: #0f5132; }
+
         /* Print */
         #final-print-container { display: none; }
         @media print {
@@ -60,6 +67,12 @@
             #final-print-container * { visibility: visible; }
             .no-print { display: none !important; }
             .print-section { page-break-inside: avoid; margin-bottom: 20px; }
+            table { width: 100% !important; border-collapse: collapse !important; }
+            th, td { border: 1px solid #000 !important; padding: 8px !important; }
+            /* Force print colors */
+            .row-approved { background-color: #d1e7dd !important; -webkit-print-color-adjust: exact; }
+            .row-rejected { background-color: #f8d7da !important; -webkit-print-color-adjust: exact; }
+            .row-pending { background-color: #fff3cd !important; -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
@@ -112,7 +125,10 @@
 
         <main class="main-content">
             <section id="sec-monitor" class="view-section">
-                <h4 class="fw-bold mb-4"><i class="fas fa-desktop text-success me-2"></i> المتابعة الحية</h4>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold"><i class="fas fa-desktop text-success me-2"></i> المتابعة الحية</h4>
+                    <button class="btn btn-dark rounded-pill px-4 shadow-sm" onclick="toggleFullScreen()"><i class="fas fa-expand me-2"></i> ملء الشاشة</button>
+                </div>
                 <div id="monitor-grid" class="row g-3"></div>
                 <div id="no-students" class="text-center py-5 d-none"><i class="fas fa-check-circle fa-5x text-success opacity-25 mb-3"></i><h4>الجميع داخل الفصول</h4></div>
             </section>
@@ -214,7 +230,19 @@
             <section id="sec-data" class="view-section d-none">
                 <div class="page-card p-4">
                     <h5 class="fw-bold mb-4 text-primary">الإعدادات والصيانة</h5>
-                    <div class="row g-3 mb-4 p-3 bg-light rounded border">
+                    
+                    <div class="page-card p-3 mb-4 border-success border-top border-5 bg-light">
+                        <h6 class="fw-bold text-success mb-3"><i class="fas fa-key me-2"></i> إدارة كلمات المرور (PIN)</h6>
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-3"><label class="small fw-bold">المدير/الوكيل</label><input type="number" id="pin-admin" class="form-control" placeholder="****"></div>
+                            <div class="col-md-3"><label class="small fw-bold">المعلم</label><input type="number" id="pin-teacher" class="form-control" placeholder="****"></div>
+                            <div class="col-md-3"><label class="small fw-bold">الحارس</label><input type="number" id="pin-guard" class="form-control" placeholder="****"></div>
+                            <div class="col-md-3"><label class="small fw-bold">الموجه</label><input type="number" id="pin-counselor" class="form-control" placeholder="****"></div>
+                            <div class="col-12"><button class="btn btn-success w-100" onclick="savePasswords()">حفظ كلمات المرور الجديدة</button></div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4 p-3 bg-white rounded border">
                         <div class="col-md-6"><label class="fw-bold mb-2">شعار المدرسة</label><input type="file" id="logo-upload" class="form-control" accept="image/*" onchange="uploadLogo()"></div>
                         <div class="col-md-6 text-center"><img id="logo-preview" src="" style="max-height: 80px; display: none; margin: 0 auto;"></div>
                     </div>
@@ -223,6 +251,14 @@
                         <div class="col-md-4"><label>مدير المدرسة</label><input id="s-manager" class="form-control" onchange="saveSettings()"></div>
                         <div class="col-md-4"><label>وكيل المدرسة</label><input id="s-deputy" class="form-control" onchange="saveSettings()"></div>
                     </div>
+                    
+                    <div class="accordion mb-4" id="accordionLogs">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLogs">سجل حركات النظام (Logs)</button></h2>
+                            <div id="collapseLogs" class="accordion-collapse collapse"><div class="accordion-body"><ul id="system-logs-list" class="list-group list-group-flush small"></ul></div></div>
+                        </div>
+                    </div>
+
                     <div class="row g-3 mb-4 border p-3 rounded bg-white shadow-sm">
                         <h6 class="fw-bold text-dark"><i class="fas fa-tools me-2"></i> أدوات الصيانة</h6>
                         <div class="col-md-4"><button class="btn btn-outline-dark w-100" onclick="exportData()">💾 تحميل نسخة احتياطية</button></div>
@@ -271,7 +307,8 @@
         const firebaseConfig = { apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE", authDomain: "ethn-63848.firebaseapp.com", databaseURL: "https://ethn-63848-default-rtdb.firebaseio.com", projectId: "ethn-63848", storageBucket: "ethn-63848.appspot.com", messagingSenderId: "747489913596", appId: "1:747489913596:web:d98d88447e4a25cc808579" };
         firebase.initializeApp(firebaseConfig); const db = firebase.database();
         let userRole='', isMuted=false, alertActive=false;
-        let data = { settings: {school:'مدرستنا', manager:'', deputy:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111', logo:''}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{} };
+        // Data structure updated with Logs and PINs defaults
+        let data = { settings: {school:'مدرستنا', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:''}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, logs:{} };
 
         window.onload = () => {
             db.ref('.info/connected').on('value', s => document.getElementById('status-dot').style.background = s.val()? '#00ff00' : 'red');
@@ -279,7 +316,8 @@
                 const val = snap.val();
                 if(val) {
                     data = { ...data, ...val };
-                    data.settings = { ...{school:'مدرستنا', manager:'', deputy:'', admin:'2026', counselor:'admin', code:'2026', guard:'1111', logo:''}, ...(val.settings || {}) };
+                    // Ensure settings exist with defaults
+                    data.settings = { ...{school:'مدرستنا', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:''}, ...(val.settings || {}) };
                     if(typeof data.classes === 'object') data.classes = Object.values(data.classes);
                     document.getElementById('disp-school').innerText = data.settings.school;
                     syncSettingsInputs(); checkSecurityAlerts(); refreshScreens(); updateDashboardStats();
@@ -290,11 +328,26 @@
 
         function selectRole(id, t) { userRole=id; document.getElementById('role-selection').classList.add('hidden'); document.getElementById('pin-area').classList.remove('hidden'); document.getElementById('selected-role-title').innerText='دخول: '+t; document.getElementById('pin-input').focus(); }
         function backToRoles() { document.getElementById('pin-area').classList.add('hidden'); document.getElementById('role-selection').classList.remove('hidden'); }
+        
+        // Updated Login Logic to use Dynamic PINs
         function doLogin() {
             const p = document.getElementById('pin-input').value.trim();
-            let ok = (userRole==='admin' && p===String(data.settings.admin)) || (userRole==='teacher' && p===String(data.settings.code)) || (userRole==='guard' && p===String(data.settings.guard)) || (userRole==='counselor' && p===String(data.settings.counselor));
-            if(ok) { document.getElementById('auth-overlay').style.display='none'; document.getElementById('app-body').classList.remove('d-none'); buildMenu(); navigate(userRole==='guard'?'guard':(userRole==='counselor'?'counselor':(userRole==='admin'?'monitor':'teacher'))); } else Swal.fire('خطأ','الرمز غير صحيح','error');
+            let correctPin = '';
+            if (userRole === 'admin') correctPin = data.settings.admin_pin;
+            else if (userRole === 'teacher') correctPin = data.settings.teacher_pin;
+            else if (userRole === 'guard') correctPin = data.settings.guard_pin;
+            else if (userRole === 'counselor') correctPin = data.settings.counselor_pin;
+
+            if(p === String(correctPin)) { 
+                document.getElementById('auth-overlay').style.display='none'; 
+                document.getElementById('app-body').classList.remove('d-none'); 
+                buildMenu(); 
+                navigate(userRole==='guard'?'guard':(userRole==='counselor'?'counselor':(userRole==='admin'?'monitor':'teacher'))); 
+            } else {
+                Swal.fire('خطأ','الرمز غير صحيح','error');
+            }
         }
+
         function buildMenu() {
             const m = document.getElementById('nav-items'); let links = [['monitor','المتابعة','desktop']];
             if(userRole==='teacher') links.push(['teacher','الخدمات','user-edit']);
@@ -305,12 +358,48 @@
         }
         function navigate(id) { document.querySelectorAll('.view-section').forEach(s => s.classList.add('d-none')); document.getElementById('sec-'+id).classList.remove('d-none'); refreshScreens(); }
 
+        // Security Alerts + Voice Announcement Logic
         function checkSecurityAlerts() {
             let ring = false;
-            if(userRole==='guard' && Object.values(data.departures||{}).some(d=>d.status==='pending'&&!d.guardSeen)) ring=true;
+            let speakMsg = '';
+
+            // Check departures for Guard (Voice Alert)
+            if(userRole==='guard') {
+                const departures = Object.values(data.departures||{});
+                const pending = departures.filter(d => d.status==='pending' && !d.guardSeen);
+                if (pending.length > 0) {
+                    ring = true;
+                    // Speak the last added student
+                    speakMsg = 'خروج نهائي للطالب: ' + pending[pending.length-1].name;
+                }
+            }
+
             if(userRole==='admin' && Object.values(data.visitors||{}).some(v=>v.status==='pending')) ring=true;
-            if(ring && !isMuted) {alertActive=true; document.getElementById('bell').play().catch(()=>{}); document.getElementById('alert-msg').classList.remove('d-none');} else {alertActive=false; document.getElementById('bell').pause(); document.getElementById('alert-msg').classList.add('d-none');}
+            
+            if(ring && !isMuted) {
+                alertActive=true; 
+                document.getElementById('bell').play().catch(()=>{}); 
+                document.getElementById('alert-msg').classList.remove('d-none');
+                
+                // Text-to-Speech logic
+                if(speakMsg && 'speechSynthesis' in window) {
+                    // Prevent repeating too often
+                    if(!window.speakingFlag) {
+                        window.speakingFlag = true;
+                        const u = new SpeechSynthesisUtterance(speakMsg);
+                        u.lang = 'ar-SA';
+                        speechSynthesis.speak(u);
+                        setTimeout(() => { window.speakingFlag = false; }, 5000);
+                    }
+                }
+
+            } else {
+                alertActive=false; 
+                document.getElementById('bell').pause(); 
+                document.getElementById('alert-msg').classList.add('d-none');
+            }
         }
+
         function checkLateStudents() {
             const activePermits = Object.values(data.permits||{}).filter(p=>p.active);
             let isLate = false;
@@ -319,6 +408,7 @@
         }
         function monitorLoop() { updateDashboardStats(); if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); checkLateStudents(); } }
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').className = isMuted ? 'btn btn-danger rounded-circle' : 'btn btn-light rounded-circle'; if(isMuted) {document.getElementById('bell').pause();} }
+        function toggleFullScreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } else { if (document.exitFullscreen) { document.exitFullscreen(); } } }
 
         function refreshScreens() {
             const els = ['t-class', 'r-class', 'att-class']; els.forEach(id=>{ const e=document.getElementById(id); if(e&&e.options.length<=1){ const v=e.value; e.innerHTML='<option value="">اختر الفصل</option>'+(data.classes||[]).map(c=>`<option>${c}</option>`).join(''); e.value=v; }});
@@ -335,18 +425,11 @@
             if(!document.getElementById('sec-data').classList.contains('d-none')) renderDataTable();
         }
 
-        // تم إصلاح دالة التحديث لتعتمد على صيغة التاريخ الموحدة (ISO to YYYY-MM-DD)
         function updateDashboardStats() {
-            if(document.getElementById('stat-out')) {
-                document.getElementById('stat-out').innerText = Object.values(data.permits||{}).filter(p=>p.active).length;
-            }
+            if(document.getElementById('stat-out')) document.getElementById('stat-out').innerText = Object.values(data.permits||{}).filter(p=>p.active).length;
             if(document.getElementById('stat-vis')) { 
-                const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
-                const visCount = Object.values(data.visitors||{}).filter(v => {
-                    if(!v.time) return false;
-                    const vDate = new Date(v.time).toLocaleDateString('en-CA');
-                    return vDate === today;
-                }).length;
+                const today = new Date().toLocaleDateString('en-CA'); 
+                const visCount = Object.values(data.visitors||{}).filter(v => v.time && new Date(v.time).toLocaleDateString('en-CA') === today).length;
                 document.getElementById('stat-vis').innerText = visCount; 
             }
             if(document.getElementById('stat-vio')) {
@@ -372,7 +455,6 @@
 
         function rememberTeacher(val) { localStorage.setItem('myTeacherName', val); }
 
-        // تم إصلاح دالة إرسال الإذن لمنع تكرار خروج الطالب
         function sendPermit() {
             const stu = document.getElementById('t-stu').value;
             const tName = document.getElementById('t-name-sender').value;
@@ -381,22 +463,14 @@
             if(!tName) return Swal.fire('تنبيه','الرجاء اختيار اسم المعلم','warning');
             if(!stu) return Swal.fire('تنبيه','الرجاء اختيار الطالب','warning');
 
-            // منع الخروج المتكرر
             const isAlreadyOut = Object.values(data.permits || {}).some(p => p.student === stu && p.active === true);
-            if (isAlreadyOut) {
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'عذراً.. الطالب بالخارج',
-                    text: 'لا يمكن إصدار إذن جديد للطالب لأنه مسجل "بالخارج" حالياً في النظام.',
-                    confirmButtonText: 'حسناً'
-                });
-            }
+            if (isAlreadyOut) return Swal.fire({icon: 'error', title: 'عذراً.. الطالب بالخارج', text: 'الطالب مسجل "بالخارج" حالياً.'});
 
             if(!isSpecial) {
                 const lastPermit = Object.values(data.permits||{}).filter(p => p.student === stu).pop();
                 if(lastPermit) {
                     const diff = (new Date() - new Date(lastPermit.start)) / (1000 * 60 * 60);
-                    if(diff < 2) return Swal.fire('تنبيه', 'يجب مرور ساعتين على آخر خروج. استخدم "حالة خاصة" للضرورة.', 'warning');
+                    if(diff < 2) return Swal.fire('تنبيه', 'يجب مرور ساعتين على آخر خروج.', 'warning');
                 }
             }
             const p={student:stu, teacher:tName, class:document.getElementById('t-class').value, dest:document.getElementById('t-dest').value, limit:parseInt(document.getElementById('t-time').value), start:new Date().toISOString(), active:true};
@@ -407,21 +481,9 @@
         function referToCounselor(k) { Swal.fire({title:'إجراء الوكيل', input:'text', showCancelButton:true}).then(r=>{if(r.value) db.ref('violations/'+k).update({status:'pending_counselor', admin_action:r.value})}); }
         function closeCase(k) { Swal.fire({title:'إجراء الموجه', input:'text', showCancelButton:true}).then(r=>{if(r.value) db.ref('violations/'+k).update({status:'closed', counselor_action:r.value})}); }
         
-        // تم استخدام toISOString لحفظ وقت الزائر بدقة
         function sendVisitorReq() { 
-            const v = {
-                name: document.getElementById('g-v-name').value, 
-                id: document.getElementById('g-v-id').value, 
-                reason: document.getElementById('g-v-reason').value, 
-                status: 'pending', 
-                time: new Date().toISOString()
-            }; 
-            if(v.name) {
-                db.ref('visitors').push(v).then(() => {
-                    Swal.fire('تم إرسال الطلب');
-                    document.getElementById('g-v-name').value = '';
-                });
-            }
+            const v = { name: document.getElementById('g-v-name').value, id: document.getElementById('g-v-id').value, reason: document.getElementById('g-v-reason').value, status: 'pending', time: new Date().toISOString() }; 
+            if(v.name) { db.ref('visitors').push(v).then(() => { Swal.fire('تم إرسال الطلب'); document.getElementById('g-v-name').value = ''; }); }
         }
         function sendDeparture() { const n=document.getElementById('adm-dep-name').value; if(n) db.ref('departures').push({name:n, status:'pending', guardSeen:false}); Swal.fire('تم'); }
 
@@ -462,6 +524,15 @@
         function renderDataTable() { 
             document.getElementById('data-stu-body').innerHTML = Object.entries(data.students||{}).reverse().slice(0,50).map(([k,s])=>`<tr><td>${s.name}</td><td>${s.class}</td><td><button class="btn btn-sm text-danger" onclick="db.ref('students/${k}').remove()">X</button></td></tr>`).join(''); 
             document.getElementById('data-tea-body').innerHTML = Object.entries(data.teachers||{}).reverse().map(([k,t])=>`<tr><td>${t.name}</td><td><button class="btn btn-sm text-danger" onclick="db.ref('teachers/${k}').remove()">X</button></td></tr>`).join('');
+            
+            // Sync password inputs
+            document.getElementById('pin-admin').value = data.settings.admin_pin;
+            document.getElementById('pin-teacher').value = data.settings.teacher_pin;
+            document.getElementById('pin-guard').value = data.settings.guard_pin;
+            document.getElementById('pin-counselor').value = data.settings.counselor_pin;
+            
+            // Render Logs
+            document.getElementById('system-logs-list').innerHTML = Object.values(data.logs||{}).reverse().slice(0,20).map(l => `<li class="list-group-item d-flex justify-content-between"><span>${l.action}</span><span class="text-muted" style="font-size:0.8em">${new Date(l.time).toLocaleString('ar-SA')}</span></li>`).join('');
         }
         function addStudentManual() { document.getElementById('manual-stu-box').classList.remove('d-none'); }
         function saveManualStudent() {
@@ -471,10 +542,26 @@
         function addTeacherManual() { Swal.fire({input:'text', title:'اسم المعلم'}).then(r=>{if(r.value) db.ref('teachers').push({name:r.value});}); }
         function importTeachers(inp) { const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(r=>{if(r[0]) db.ref('teachers').push({name:r[0]})}); Swal.fire('تم استيراد المعلمين'); }; r.readAsArrayBuffer(inp.files[0]); }
         function exportData() { const json = JSON.stringify(data); const blob = new Blob([json], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "backup.json"; a.click(); }
-        function resetReports() { Swal.fire({title:'تصفير السجلات؟', text:'سيتم مسح الأذونات والمخالفات والتحضير', icon:'warning', showCancelButton:true}).then(r=>{if(r.isConfirmed) { db.ref('permits').remove(); db.ref('visitors').remove(); db.ref('violations').remove(); db.ref('departures').remove(); db.ref('attendance').remove(); Swal.fire('تم'); }}); }
+        function resetReports() { Swal.fire({title:'تصفير السجلات؟', text:'سيتم مسح الأذونات والمخالفات والتحضير', icon:'warning', showCancelButton:true}).then(r=>{if(r.isConfirmed) { db.ref('permits').remove(); db.ref('visitors').remove(); db.ref('violations').remove(); db.ref('departures').remove(); db.ref('attendance').remove(); logAction('تصفير السجلات'); Swal.fire('تم'); }}); }
         function factoryReset() { Swal.fire({title:'تصفير المصنع!', text:'حذف كل شيء!', icon:'error', showCancelButton:true}).then(r=>{if(r.isConfirmed) { db.ref('/').remove(); location.reload(); }}); }
         function uploadLogo() { const f=document.getElementById('logo-upload').files[0]; if(f){const r=new FileReader(); r.onload=e=>{db.ref('settings/logo').set(e.target.result); location.reload();}; r.readAsDataURL(f);} }
-        function saveSettings() { db.ref('settings').update({school:document.getElementById('s-school').value, manager:document.getElementById('s-manager').value, deputy:document.getElementById('s-deputy').value}); Swal.fire('تم'); }
+        function saveSettings() { db.ref('settings').update({school:document.getElementById('s-school').value, manager:document.getElementById('s-manager').value, deputy:document.getElementById('s-deputy').value}); logAction('تحديث إعدادات المدرسة'); Swal.fire('تم'); }
+        
+        // Save Passwords Logic
+        function savePasswords() {
+            const newSettings = {
+                admin_pin: document.getElementById('pin-admin').value,
+                teacher_pin: document.getElementById('pin-teacher').value,
+                guard_pin: document.getElementById('pin-guard').value,
+                counselor_pin: document.getElementById('pin-counselor').value
+            };
+            db.ref('settings').update(newSettings);
+            logAction('تغيير كلمات المرور');
+            Swal.fire('تم حفظ كلمات المرور بنجاح', '', 'success');
+        }
+
+        function logAction(act) { db.ref('logs').push({action: act, time: new Date().toISOString()}); }
+
         function tabTeacher(t) { 
             document.getElementById('t-permit-box').classList.toggle('d-none', t!=='permit'); 
             document.getElementById('t-vio-box').classList.toggle('d-none', t!=='violation'); 
@@ -493,19 +580,25 @@
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const content = document.getElementById('modal-print-content'); const logoSrc = data.settings.logo || "https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg"; const monthVal = document.getElementById('report-month').value;
             let h = `<div style="display:flex; justify-content:space-between; border-bottom:3px solid var(--primary); padding-bottom:20px; margin-bottom:30px;"><div style="text-align:right;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div><img src="${logoSrc}" width="120" style="max-height:100px;"><div style="text-align:left;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br>${monthVal ? 'تقرير شهر: '+monthVal : 'تقرير شامل'}</div></div>`;
-            if(type==='permits') { const d = Object.values(data.permits||{}); h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المعلم المصدر</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map(p=>`<tr><td>${p.student}</td><td>${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; }
+            
+            // Colorful Reports Logic
+            if(type==='permits') { 
+                const d = Object.values(data.permits||{}); 
+                h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>المعلم المصدر</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map((p, i)=>`<tr class="${i%2===0?'table-light':''}"><td>${p.student}</td><td>${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
+            }
             else if(type==='visitors') { 
                 const d = Object.values(data.visitors||{}); 
-                h+=`<h4 class="text-center fw-bold mb-4">سجل الزوار</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>السبب</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>${d.reverse().map(v=>{
-                    let statusAr = 'انتظار';
-                    if(v.status==='approved') statusAr = 'تم الدخول';
-                    if(v.status==='rejected') statusAr = 'مرفوض';
-                    // عرض التاريخ بصيغة مقروءة في التقرير
-                    const readableTime = v.time ? new Date(v.time).toLocaleString('ar-SA') : 'غير مسجل';
-                    return `<tr><td>${v.name}</td><td>${v.reason}</td><td>${readableTime}</td><td>${statusAr}</td></tr>`;
+                h+=`<h4 class="text-center fw-bold mb-4">سجل الزوار</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الاسم</th><th>السبب</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>${d.reverse().map(v=>{
+                    let statusAr = 'انتظار', rowClass='row-pending';
+                    if(v.status==='approved') { statusAr = 'تم الدخول'; rowClass='row-approved'; }
+                    if(v.status==='rejected') { statusAr = 'مرفوض'; rowClass='row-rejected'; }
+                    return `<tr class="${rowClass}"><td>${v.name}</td><td>${v.reason}</td><td>${v.time ? new Date(v.time).toLocaleString('ar-SA') : '-'}</td><td>${statusAr}</td></tr>`;
                 }).join('')}</tbody></table>`; 
             }
-            else if(type==='violations') { const d = Object.values(data.violations||{}); h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`; }
+            else if(type==='violations') { 
+                const d = Object.values(data.violations||{}); 
+                h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr class="table-warning"><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`; 
+            }
             else if(type==='attendance') {
                 const today = new Date().toLocaleDateString('en-CA');
                 const absents = data.attendance && data.attendance[today] ? Object.entries(data.attendance[today]).filter(x=>x[1]==='absent') : [];
@@ -521,11 +614,11 @@
                         groups[cls].push(name);
                     });
                     Object.keys(groups).sort().forEach(cls => {
-                        h += `<div class="mb-4 print-section"><h5 class="fw-bold border-bottom pb-2 border-primary text-primary">الصف / الشعبة: ${cls}</h5><table class="table table-bordered text-center table-striped"><thead class="table-light"><tr><th style="width:70%">اسم الطالب</th><th>الحالة</th></tr></thead><tbody>${groups[cls].map(name => `<tr><td>${name}</td><td class="text-danger fw-bold">غائب</td></tr>`).join('')}</tbody></table></div>`;
+                        h += `<div class="mb-4 print-section"><h5 class="fw-bold border-bottom pb-2 border-primary text-primary">الصف / الشعبة: ${cls}</h5><table class="table table-bordered text-center table-striped"><thead class="table-light"><tr><th style="width:70%">اسم الطالب</th><th>الحالة</th></tr></thead><tbody>${groups[cls].map(name => `<tr class="row-absent"><td>${name}</td><td class="fw-bold">غائب</td></tr>`).join('')}</tbody></table></div>`;
                     });
                 }
             }
-            else if(type==='most_out') { let stats = {}; Object.values(data.permits||{}).forEach(p=>stats[p.student]=(stats[p.student]||0)+1); let sorted = Object.entries(stats).sort((a,b)=>b[1]-a[1]); h+=`<h4 class="text-center fw-bold mb-4">الطلاب الأكثر خروجاً</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>مرات الخروج</th></tr></thead><tbody>${sorted.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</tbody></table>`; }
+            else if(type==='most_out') { let stats = {}; Object.values(data.permits||{}).forEach(p=>stats[p.student]=(stats[p.student]||0)+1); let sorted = Object.entries(stats).sort((a,b)=>b[1]-a[1]); h+=`<h4 class="text-center fw-bold mb-4">الطلاب الأكثر خروجاً</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الاسم</th><th>مرات الخروج</th></tr></thead><tbody>${sorted.map((s,i)=>`<tr class="${i<3?'table-danger':''}"><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</tbody></table>`; }
             h+=`<div style="margin-top:60px; display:flex; justify-content:space-between; padding:0 50px; text-align:center;"><div><strong>وكيل المدرسة</strong><br>${data.settings.deputy||''}<br>....................</div><div><strong>مدير المدرسة</strong><br>${data.settings.manager}<br>....................</div></div>`;
             content.innerHTML = h; modal.show();
         }

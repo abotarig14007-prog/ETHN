@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#006C35">
     <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoibnphbV9lem4iLCJzaG9ydF9uYW1lIjoiRXpuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIuIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiMwMDZDMzUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4taWNvbnXMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzIwOS8zMjA5MjY1LnBuZyIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3209/3209265.png">
-    <title>نظام إذن (V77 Fixed)</title>
+    <title>نظام إذن (V79 Groups)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,18 +21,17 @@
 
     <style>
         :root { --primary: #006C35; --gold: #C69C6D; --bg: #F5F7FA; --dark: #1a1a1a; }
-        /* تم تعديل خصائص الجسم لإظهار شريط التمرير */
         html, body { height: 100%; overflow-y: auto; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding-bottom: 60px; }
 
-        /* شاشة الدخول */
+        /* Login */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #004d25, #006C35); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
         .login-card { background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); margin: 20px 0; }
         .app-logo { width: 90px; margin-bottom: 15px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .role-btn { border: 2px solid #f0f0f0; padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: space-between; font-weight: bold; color: #444; }
         .role-btn:hover { border-color: var(--primary); background: #e8f5e9; color: var(--primary); transform: translateX(-5px); }
         
-        /* التخطيط */
+        /* Layout */
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; padding-top: 20px; display: flex; flex-direction: column; transition: 0.3s; overflow-y: auto; }
         .main-content { margin-right: 280px; padding: 25px; transition: 0.3s; padding-top: 80px; min-height: 100vh; }
         @media (max-width: 991px) { .sidebar { transform: translateX(100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-right: 0; } }
@@ -53,13 +52,14 @@
         #status-dot { width: 10px; height: 10px; background: red; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .hidden { display: none !important; }
 
-        /* الطباعة */
+        /* Print */
         #final-print-container { display: none; }
         @media print {
             body > * { display: none !important; }
             #final-print-container { display: block !important; position: absolute; top: 0; left: 0; width: 100%; background: white; z-index: 999999; }
             #final-print-container * { visibility: visible; }
             .no-print { display: none !important; }
+            .print-section { page-break-inside: avoid; margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -340,35 +340,19 @@
             if(document.getElementById('stat-vio')) document.getElementById('stat-vio').innerText = Object.values(data.violations||{}).length;
         }
 
-        // --- ATTENDANCE FIX (V77) ---
         function loadAttendanceList(cls) {
             const body = document.getElementById('att-list-body');
             if(!cls) { body.innerHTML = ''; return; }
             const students = Object.values(data.students||{}).filter(s => s.class === cls);
             const today = new Date().toLocaleDateString('en-CA');
             const attData = data.attendance && data.attendance[today] ? data.attendance[today] : {};
-
             body.innerHTML = students.map(s => {
                 const isAbsent = attData[s.name] === 'absent';
-                return `
-                    <tr>
-                        <td class="fw-bold">${s.name}</td>
-                        <td>
-                            <button class="btn btn-sm ${isAbsent ? 'btn-danger' : 'btn-success'} rounded-pill px-4" 
-                                onclick="toggleAttendance('${today}', '${s.name}', '${isAbsent ? 'present' : 'absent'}')">
-                                ${isAbsent ? 'غائب' : 'حاضر'}
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                return `<tr><td class="fw-bold">${s.name}</td><td><button class="btn btn-sm ${isAbsent ? 'btn-danger' : 'btn-success'} rounded-pill px-4" onclick="toggleAttendance('${today}', '${s.name}', '${isAbsent ? 'present' : 'absent'}')">${isAbsent ? 'غائب' : 'حاضر'}</button></td></tr>`;
             }).join('');
         }
         function toggleAttendance(date, name, status) {
-            db.ref(`attendance/${date}/${name}`).set(status).then(() => {
-                // تحديث القائمة فوراً
-                const currentClass = document.getElementById('att-class').value;
-                loadAttendanceList(currentClass);
-            });
+            db.ref(`attendance/${date}/${name}`).set(status).then(() => { const currentClass = document.getElementById('att-class').value; loadAttendanceList(currentClass); });
         }
 
         function rememberTeacher(val) { localStorage.setItem('myTeacherName', val); }
@@ -407,7 +391,14 @@
         }
         function renderGuard() {
             document.getElementById('g-dep-list').innerHTML = Object.entries(data.departures||{}).filter(x=>x[1].status==='pending').map(([k,d])=>`<div class="alert alert-danger d-flex justify-content-between"><strong>${d.name}</strong><button class="btn btn-success btn-sm" onclick="db.ref('departures/${k}').update({status:'exited',guardSeen:true})">خروج</button></div>`).join('');
-            document.getElementById('g-vis-list').innerHTML = Object.entries(data.visitors||{}).reverse().slice(0,5).map(([k,v])=>`<div class="list-group-item d-flex justify-content-between"><span>${v.name}</span><span class="badge ${v.status==='approved'?'bg-success':(v.status==='pending'?'bg-warning text-dark':'bg-danger')}">${v.status}</span></div>`).join('');
+            
+            // تعريب الحالة للحارس (V78)
+            document.getElementById('g-vis-list').innerHTML = Object.entries(data.visitors||{}).reverse().slice(0,5).map(([k,v])=>{
+                let badgeClass = 'bg-warning text-dark', statusText = 'انتظار الموافقة';
+                if(v.status === 'approved') { badgeClass = 'bg-success'; statusText = 'مسموح بالدخول'; }
+                if(v.status === 'rejected') { badgeClass = 'bg-danger'; statusText = 'مرفوض'; }
+                return `<div class="list-group-item d-flex justify-content-between"><span>${v.name}</span><span class="badge ${badgeClass}">${statusText}</span></div>`;
+            }).join('');
         }
         function renderCounselor() {
             const l = Object.entries(data.violations||{}).filter(x=>x[1].status==='pending_counselor');
@@ -457,26 +448,54 @@
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const content = document.getElementById('modal-print-content'); const logoSrc = data.settings.logo || "https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg"; const monthVal = document.getElementById('report-month').value;
             let h = `<div style="display:flex; justify-content:space-between; border-bottom:3px solid var(--primary); padding-bottom:20px; margin-bottom:30px;"><div style="text-align:right;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div><img src="${logoSrc}" width="120" style="max-height:100px;"><div style="text-align:left;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br>${monthVal ? 'تقرير شهر: '+monthVal : 'تقرير شامل'}</div></div>`;
             if(type==='permits') { const d = Object.values(data.permits||{}); h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المعلم المصدر</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map(p=>`<tr><td>${p.student}</td><td>${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; }
-            else if(type==='visitors') { const d = Object.values(data.visitors||{}); h+=`<h4 class="text-center fw-bold mb-4">سجل الزوار</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>السبب</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>${d.reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.time}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`; }
+            
+            // تعديل V78: تعريب الحالة في تقرير الزوار
+            else if(type==='visitors') { 
+                const d = Object.values(data.visitors||{}); 
+                h+=`<h4 class="text-center fw-bold mb-4">سجل الزوار</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>السبب</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>${d.reverse().map(v=>{
+                    let statusAr = 'انتظار';
+                    if(v.status==='approved') statusAr = 'تم الدخول';
+                    if(v.status==='rejected') statusAr = 'مرفوض';
+                    return `<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.time}</td><td>${statusAr}</td></tr>`;
+                }).join('')}</tbody></table>`; 
+            }
+            
             else if(type==='violations') { const d = Object.values(data.violations||{}); h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`; }
             
-            // إصلاح تقرير الغياب (V77 Fix)
+            // تقرير الغياب المجمع (V79 New)
             else if(type==='attendance') {
                 const today = new Date().toLocaleDateString('en-CA');
                 const absents = data.attendance && data.attendance[today] ? Object.entries(data.attendance[today]).filter(x=>x[1]==='absent') : [];
-                h+=`<h4 class="text-center fw-bold mb-4">سجل غياب الطلاب اليوم</h4><table class="table table-bordered text-center"><thead><tr><th>اسم الطالب</th><th>الفصل</th><th>الحالة</th></tr></thead><tbody>`;
-                if(absents.length > 0) {
-                    h += absents.map(a => {
-                        const name = a[0];
-                        // البحث عن فصل الطالب
-                        const studentObj = Object.values(data.students || {}).find(s => s.name === name);
-                        const className = studentObj ? studentObj.class : '-';
-                        return `<tr><td>${name}</td><td>${className}</td><td class="text-danger">غائب</td></tr>`;
-                    }).join('');
+                
+                h += `<h4 class="text-center fw-bold mb-4">تقرير الغياب اليومي - ${new Date().toLocaleDateString('ar-SA')}</h4>`;
+
+                if(absents.length === 0) {
+                    h += `<div class="alert alert-success text-center">لا يوجد غياب اليوم</div>`;
                 } else {
-                    h += '<tr><td colspan="3">لا يوجد غياب اليوم</td></tr>';
+                    // تجميع حسب الفصل
+                    const groups = {};
+                    absents.forEach(([name, status]) => {
+                        const studentObj = Object.values(data.students || {}).find(s => s.name === name);
+                        const cls = studentObj ? studentObj.class : 'غير محدد';
+                        if (!groups[cls]) groups[cls] = [];
+                        groups[cls].push(name);
+                    });
+
+                    // رسم الجداول لكل فصل
+                    Object.keys(groups).sort().forEach(cls => {
+                        h += `
+                        <div class="mb-4 print-section">
+                            <h5 class="fw-bold border-bottom pb-2 border-primary text-primary">الصف / الشعبة: ${cls}</h5>
+                            <table class="table table-bordered text-center table-striped">
+                                <thead class="table-light"><tr><th style="width:70%">اسم الطالب</th><th>الحالة</th></tr></thead>
+                                <tbody>
+                                    ${groups[cls].map(name => `<tr><td>${name}</td><td class="text-danger fw-bold">غائب</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        `;
+                    });
                 }
-                h += '</tbody></table>';
             }
             
             else if(type==='most_out') { let stats = {}; Object.values(data.permits||{}).forEach(p=>stats[p.student]=(stats[p.student]||0)+1); let sorted = Object.entries(stats).sort((a,b)=>b[1]-a[1]); h+=`<h4 class="text-center fw-bold mb-4">الطلاب الأكثر خروجاً</h4><table class="table table-bordered text-center"><thead><tr><th>الاسم</th><th>مرات الخروج</th></tr></thead><tbody>${sorted.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</tbody></table>`; }

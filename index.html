@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#006C35">
-    <title>نظام إذن (V110.0 Restored Glory)</title>
+    <title>نظام إذن (V111.0 Official Print)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,134 +20,45 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-        /* =========================================
-           1. التنسيقات الأساسية (Design System)
-        ========================================== */
-        :root { 
-            --primary: #006C35; 
-            --primary-dark: #004d25;
-            --gold: #C69C6D; 
-            --bg: #F8FAFC; 
-            --card: #ffffff; 
-            --text: #1E293B; 
-            --border: #E2E8F0; 
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="dark"] { 
-            --bg: #0f172a; 
-            --card: #1e293b; 
-            --text: #f1f5f9; 
-            --border: #334155; 
-        }
-
-        body { 
-            font-family: 'Tajawal', sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text); 
-            transition: var(--transition); 
-            overflow-x: hidden; 
-            visibility: hidden; /* يمنع الوميض عند التحميل */
-            padding-bottom: 80px; 
-        }
-
-        /* خلفية متحركة */
-        .gradient-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff);
-            background-size: 400% 400%; animation: bgAnim 20s infinite alternate; z-index: -2;
-        }
+        /* ================= Core Styles ================= */
+        :root { --primary: #006C35; --gold: #C69C6D; --bg: #F8FAFC; --card: #ffffff; --text: #1E293B; --border: #E2E8F0; --transition: all 0.3s ease; }
+        [data-theme="dark"] { --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; visibility: hidden; padding-bottom: 80px; }
+        .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         [data-theme="dark"] .gradient-bg { background: linear-gradient(-45deg, #0f172a, #1e293b, #020617); }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
-
-        /* =========================================
-           2. القائمة الجانبية (Sidebar) - ثابتة ومرتبة
-        ========================================== */
-        .sidebar { 
-            width: 280px; height: 100vh; background: var(--primary); color: white; 
-            position: fixed; right: 0; top: 0; z-index: 1000; 
-            box-shadow: -5px 0 20px rgba(0,0,0,0.15); 
-            overflow-y: auto; display: flex; flex-direction: column;
-        }
         
-        .main-content { 
-            margin-right: 280px; padding: 40px; transition: var(--transition); 
-            padding-top: 110px; min-height: 100vh; 
-        }
-        
-        @media (max-width: 991px) { 
-            .sidebar { transform: translateX(100%); } 
-            .sidebar.active { transform: translateX(0); } 
-            .main-content { margin-right: 0; padding: 20px; padding-top: 90px; } 
-        }
+        .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.15); overflow-y: auto; display: flex; flex-direction: column; }
+        .main-content { margin-right: 280px; padding: 40px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
+        @media (max-width: 991px) { .sidebar { transform: translateX(100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-right: 0; padding: 20px; padding-top: 90px; } }
 
-        .nav-link { 
-            padding: 15px 25px; margin: 5px 15px; color: rgba(255,255,255,0.85); 
-            cursor: pointer; border-radius: 12px; font-weight: 700; transition: 0.2s; 
-            display: flex; align-items: center; font-size: 1.1rem;
-        }
-        .nav-link:hover, .nav-link.active { 
-            background: rgba(255,255,255,0.2); color: white; transform: translateX(-5px); 
-        }
+        .nav-link { padding: 15px 25px; margin: 5px 15px; color: rgba(255,255,255,0.85); cursor: pointer; border-radius: 12px; font-weight: 700; transition: 0.2s; display: flex; align-items: center; font-size: 1.1rem; }
+        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.2); color: white; transform: translateX(-5px); }
         .nav-link.active { border-right: 5px solid var(--gold); }
 
-        /* =========================================
-           3. البطاقات والعناصر (UI Components)
-        ========================================== */
-        .page-card { 
-            background: var(--card); border-radius: 24px; border: 1px solid var(--border); 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; 
-            overflow: hidden; transition: var(--transition); 
-        }
+        .page-card { background: var(--card); border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; overflow: hidden; transition: var(--transition); }
         .page-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card-header-custom { padding: 20px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
 
-        .card-header-custom { 
-            padding: 20px 25px; background: rgba(var(--primary), 0.05); 
-            border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); 
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .stat-box { 
-            background: var(--card); padding: 25px; border-radius: 20px; text-align: center; 
-            border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-            transition: 0.3s;
-        }
+        .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
         .stat-box:hover { transform: scale(1.02); }
         .stat-box h2 { font-size: 3rem; font-weight: 800; margin: 10px 0; }
-        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; }
-        .stat-box.green { border-color: #198754; color: #198754; }
-        .stat-box.red { border-color: #dc3545; color: #dc3545; }
+        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
 
-        .report-grid-item { 
-            background: var(--card); border-radius: 24px; padding: 35px 20px; 
-            text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; 
-        }
-        .report-grid-item:hover { 
-            transform: translateY(-5px); border-color: var(--primary); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
-        }
+        .report-grid-item { background: var(--card); border-radius: 24px; padding: 35px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
+        .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .report-grid-item i { font-size: 3.5rem; margin-bottom: 20px; color: var(--primary); }
 
-        /* =========================================
-           4. شاشات العرض (Cinema & Broadcast)
-        ========================================== */
-        .full-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); /* كحلي ملكي */
-            z-index: 10000; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif;
-        }
-        .overlay-close {
-            position: absolute; top: 30px; left: 30px; z-index: 10001;
-            background: rgba(255,255,255,0.1); border: 1px solid white; color: white;
-            padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer;
-        }
+        /* Overlay Screens */
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); z-index: 10000; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
+        .overlay-close { position: absolute; top: 30px; left: 30px; z-index: 10001; background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; }
 
-        /* لوحة الشرف */
+        /* Hall of Fame */
         .hof-container { height: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
-        .champion-area { text-align: center; margin-bottom: 40px; animation: float 4s ease-in-out infinite; }
+        .champion-area { text-align: center; margin-bottom: 40px; animation: float 4s ease-in-out infinite; width: 100%; }
         .champion-avatar { width: 220px; height: 220px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 5rem; color: #333; margin: 0 auto 20px; box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); overflow: hidden; }
         .champion-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .champion-name { font-size: 4rem; font-weight: 900; margin: 0; animation: colorCycle 5s infinite; }
+        .champion-name { font-size: 4rem; font-weight: 900; margin: 0; animation: colorCycle 5s infinite; text-align: center; width: 100%; }
         @keyframes colorCycle { 0% {color:#fff; text-shadow:0 0 20px #FFD700;} 50% {color:#FFD700; text-shadow:0 0 20px #fff;} 100% {color:#fff; text-shadow:0 0 20px #FFD700;} }
         
         #challengers-slider { width: 95%; max-width: 1500px; display: flex; justify-content: center; gap: 30px; }
@@ -156,44 +67,43 @@
         .challenger-name { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; color: white; }
         .challenger-stars { font-size: 1.5rem; color: #FFD700; font-weight: bold; }
 
-        /* شاشات المناسبات والمعرض */
+        /* Other Screens */
         .event-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .event-title { font-size: 6rem; font-weight: 900; color: #FFD700; margin-bottom: 40px; animation: zoomIn 1.5s; text-shadow: 0 0 40px #000; }
         .event-msg { font-size: 3.5rem; color: #fff; background: rgba(0,0,0,0.6); padding: 40px; border-radius: 40px; animation: fadeInUp 2s; border: 3px solid rgba(255,215,0,0.3); }
-        
         .showcase-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .showcase-img-box { max-height: 70vh; border: 15px solid #fff; box-shadow: 0 0 60px rgba(0,0,0,0.8); border-radius: 30px; overflow: hidden; animation: zoomIn 1s; }
         .showcase-img-box img { height: 100%; width: auto; object-fit: contain; }
         .showcase-label { font-size: 3rem; color: #FFD700; margin-top: 30px; font-weight: 900; text-shadow: 0 5px 20px #000; background: rgba(0,0,0,0.7); padding: 15px 50px; border-radius: 50px; }
 
-        /* =========================================
-           5. شاشة الدخول والتنبيهات
-        ========================================== */
+        /* Empty State */
+        .empty-state-message { font-size: 3rem; font-weight: 900; color: #FFD700; text-align: center; margin-top: 15%; animation: pulse 2s infinite; }
+
+        /* Auth */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
         
         .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; font-size: 1.2rem; }
-        
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 80px; border-bottom: 1px solid var(--border); }
         [data-theme="dark"] #top-bar { background: rgba(30, 41, 59, 0.95); }
 
-        /* إخفاء القوالب */
-        #cert-template, #final-print-container { display: none; } /* هام جداً لإصلاح الخلل */
-        
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes float { 0%,100% {transform: translateY(0);} 50% {transform: translateY(-20px);} }
         @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-        
+
+        /* Print - Official Cliché */
+        #final-print-container { display: none; }
         @media print {
             body > * { display: none !important; }
             #final-print-container { display: block !important; position: absolute; top: 0; left: 0; width: 100%; background: white; z-index: 999999; padding: 20px; }
             #final-print-container * { visibility: visible; }
             .no-print { display: none !important; }
-            @page { size: A4; margin: 5mm; }
+            @page { size: A4; margin: 10mm; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
-        
-        #cert-template { width: 800px; height: 600px; background: #fff; padding: 40px; border: 15px double var(--primary); text-align: center; position: relative; color: #000; }
-        .cert-inner { border: 5px solid var(--gold); height: 100%; padding: 40px; background-image: url('https://www.transparenttextures.com/patterns/white-diamond.png'); }
+        #cert-template { display: none; } /* Hide from main view */
     </style>
 </head>
 <body>
@@ -240,7 +150,7 @@
         <div class="login-card fade-in">
             <i class="fas fa-school fa-5x text-success mb-3"></i>
             <h3 class="fw-bold mb-1">متوسطة الإمام النووي</h3>
-            <p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V110.0</p>
+            <p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V111.0</p>
             <div id="role-selection">
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('admin', 'الإدارة')"><span>الإدارة</span><i class="fas fa-user-tie text-primary fa-lg"></i></div>
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('teacher', 'المعلم')"><span>المعلم</span><i class="fas fa-chalkboard-teacher text-success fa-lg"></i></div>
@@ -379,7 +289,7 @@
                         <div class="col-6"><label>الفصل <span class="req-star">*</span></label><select id="v-class" class="form-select form-select-lg" onchange="loadStudentsForRole(this.value, 'v-stu')"></select></div>
                         <div class="col-6"><label>الطالب <span class="req-star">*</span></label><select id="v-stu" class="form-select" disabled></select></div>
                         <div class="col-12"><label>المخالفة <span class="req-star">*</span></label><input id="v-type" class="form-control" placeholder="تأخر، مشاغبة..."></div>
-                        <div class="col-12"><label>التفاصيل</label><textarea id="v-desc" class="form-control" rows="2"></textarea></div>
+                        <div class="col-12"><label>التفاصيل <span class="req-star">*</span></label><textarea id="v-desc" class="form-control" rows="2"></textarea></div>
                         <div class="col-12"><button class="btn btn-danger w-100 fw-bold rounded-pill" onclick="sendViolation()">رفع للوكيل</button></div>
                     </div>
                 </div>
@@ -462,7 +372,7 @@
 
     <div class="modal fade" id="printModal" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">معاينة التقرير</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-white" id="modal-print-content"></div><div class="modal-footer"><button type="button" class="btn btn-primary w-100 fw-bold" onclick="executePrint()">طباعة</button></div></div></div></div>
     <div id="final-print-container"></div>
-    <div id="cert-template"><div class="cert-inner"><h1 style="color:var(--primary); font-weight:800; font-size:3rem; margin-bottom:40px;">شهادة شكر وتقدير</h1><p style="font-size:1.5rem; margin-top:20px;">تتقدم إدارة المدرسة بالشكر الجزيل للطالب المتميز:</p><h2 id="cert-student-name" style="color:var(--gold); border-bottom:2px solid; display:inline-block; padding:10px 50px; margin: 30px 0;">...</h2><p style="font-size:1.3rem; margin-top:20px; line-height: 1.8;">وذلك نظير انضباطه السلوكي وحصوله على نقاط تميز عالية.<br>متمنين له دوام التوفيق والنجاح.</p><div style="margin-top:80px; display:flex; justify-content:space-around; align-items: flex-end;"><div style="text-align: center;"><strong>وكيل شؤون الطلاب</strong><br><span id="cert-deputy">...</span></div><div style="text-align: center;"><strong>مدير المدرسة</strong><br><span id="cert-manager">...</span></div></div></div></div>
+    <div id="cert-template" style="display: none;"><div class="cert-inner"><h1 style="color:var(--primary); font-weight:800; font-size:3rem; margin-bottom:40px;">شهادة شكر وتقدير</h1><p style="font-size:1.5rem; margin-top:20px;">تتقدم إدارة المدرسة بالشكر الجزيل للطالب المتميز:</p><h2 id="cert-student-name" style="color:var(--gold); border-bottom:2px solid; display:inline-block; padding:10px 50px; margin: 30px 0;">...</h2><p style="font-size:1.3rem; margin-top:20px; line-height: 1.8;">وذلك نظير انضباطه السلوكي وحصوله على نقاط تميز عالية.<br>متمنين له دوام التوفيق والنجاح.</p><div style="margin-top:80px; display:flex; justify-content:space-around; align-items: flex-end;"><div style="text-align: center;"><strong>وكيل شؤون الطلاب</strong><br><span id="cert-deputy">...</span></div><div style="text-align: center;"><strong>مدير المدرسة</strong><br><span id="cert-manager">...</span></div></div></div></div>
     <div class="fab-theme" onclick="toggleTheme()"><i class="fas fa-moon"></i></div>
 
     <script>
@@ -566,7 +476,7 @@
             Swal.fire('تم سحب النجمة', '', 'warning');
         }
 
-        // ... (بقية دوال الحفظ والحذف والتحضير)
+        // ... (Functions same as before, preserved for full functionality)
         function savePermissions() { const perms = { counselor: document.getElementById('perm-counselor').checked, teacher: document.getElementById('perm-teacher').checked, guard: document.getElementById('perm-guard').checked }; db.ref('settings/permissions').set(perms).then(() => Swal.fire('تم', 'تم تحديث الصلاحيات', 'success')); }
         function saveBroadcastSettings() {
             const updates = {
@@ -616,7 +526,7 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute"></i>':'<i class="fas fa-volume-up"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
         function tabTeacher(t) { document.querySelectorAll('#sec-teacher > .page-card').forEach(c=>c.classList.add('d-none')); document.getElementById(`t-${t}-box`).classList.remove('d-none'); }
-        function rememberTeacher(v) { localStorage.setItem('teacher', v); document.getElementById('t-name-sender').value = v; }
+        function rememberTeacher(v) { localStorage.setItem('teacher', v); }
         function referToCounselor(k) { Swal.fire({title:'إجراء الوكيل', input:'text', showCancelButton:true}).then(r=>{if(r.value) db.ref('violations/'+k).update({status:'pending_counselor', admin_action:r.value})}); }
         function closeCase(k) { Swal.fire({title:'إجراء الموجه', input:'text', showCancelButton:true}).then(r=>{if(r.value) db.ref('violations/'+k).update({status:'closed', counselor_action:r.value})}); }
         function renderCounselor() { document.getElementById('counselor-list').innerHTML = Object.entries(data.violations||{}).filter(x=>x[1].status==='pending_counselor').map(([k,v])=>`<tr><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action}</td><td>${v.date}</td><td><button class="btn btn-success btn-sm" onclick="closeCase('${k}')">إغلاق</button></td></tr>`).join(''); }
@@ -624,7 +534,7 @@
         function toggleTeachers() { const c = document.getElementById('teachers-list-container'); c.classList.toggle('d-none'); if(!c.classList.contains('d-none')) { let h=''; Object.entries(data.teachers||{}).forEach(([k,t])=>h+=`<tr><td>${t.name}</td><td><button class="btn btn-sm text-danger" onclick="db.ref('teachers/${k}').remove()">X</button></td></tr>`); document.getElementById('data-tea-body').innerHTML=h||'<tr><td colspan="2" class="text-center">لا يوجد</td></tr>'; } }
         function toggleStudents() { document.getElementById('students-list-container').classList.toggle('d-none'); }
 
-        // --- Cinema Hall of Fame - Auto Demo Mode ---
+        /* Hall of Fame */
         function openHallOfFame() {
             const scores = {}; Object.values(data.stars||{}).forEach(s => {
                 const val = s.value !== undefined ? s.value : 1;
@@ -633,11 +543,7 @@
             const sorted = Object.entries(scores).filter(s => s[1] > 0).sort((a,b)=>b[1]-a[1]).slice(0, 10);
             
             if(sorted.length === 0) {
-                // شاشة التحفيز عند عدم وجود بيانات حقيقية
-                const emptyHtml = `<div class="empty-state-message">
-                    <i class="fas fa-crown fa-5x mb-4 text-warning animate__animated animate__pulse animate__infinite"></i><br>
-                    المنافسة بدأت! كن أول من يتصدر الشاشة واحصل على أعلى عدد من النجوم 🌟
-                </div>`;
+                const emptyHtml = `<div class="empty-state-message"><i class="fas fa-crown fa-5x mb-4 text-warning animate__animated animate__pulse animate__infinite"></i><br>المنافسة بدأت! كن أول من يتصدر الشاشة واحصل على أعلى عدد من النجوم 🌟</div>`;
                 document.getElementById('hof-content').innerHTML = emptyHtml;
                 document.getElementById('hall-of-fame-overlay').style.display = 'block';
                 if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
@@ -648,18 +554,11 @@
             const champObj = Object.values(data.students||{}).find(s=>s.name===champ[0]);
             const champPhoto = champObj && champObj.photo ? `<img src="${champObj.photo}">` : '<i class="fas fa-user-graduate"></i>';
             
-            let html = `<div class="champion-area">
-                            <div class="champion-avatar">${champPhoto}</div>
-                            <h2 class="champion-name">${champ[0]}</h2>
-                            <h3 class="champion-desc">${champ[1]} نجمة 🌟</h3>
-                            <h4 class="text-white-50">${champObj?champObj.class:''}</h4>
-                        </div>
-                        <div id="challengers-slider"></div>`;
+            let html = `<div class="champion-area"><div class="champion-avatar">${champPhoto}</div><h2 class="champion-name">${champ[0]}</h2><h3 class="champion-desc">${champ[1]} نجمة 🌟</h3><h4 class="text-white-50">${champObj?champObj.class:''}</h4></div><div id="challengers-slider"></div>`;
             document.getElementById('hof-content').innerHTML = html;
             
             const others = sorted.slice(1);
             let currentIndex = 0;
-            
             if(others.length > 0) {
                 const slider = document.getElementById('challengers-slider');
                 const showBatch = () => {
@@ -669,23 +568,15 @@
                         const s = others[idx];
                         const sObj = Object.values(data.students||{}).find(x=>x.name===s[0]);
                         const sPhoto = sObj && sObj.photo ? `<img src="${sObj.photo}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">` : null;
-                        
                         let avatarHtml = `<div class="challenger-rank">${idx+2}</div>`;
                         if(sPhoto) avatarHtml += `<div style="width:80px; height:80px; border-radius:50%; overflow:hidden; margin-bottom:10px; border:3px solid gold;">${sPhoto}</div>`;
-
-                        slider.innerHTML += `<div class="challenger-card">
-                            ${avatarHtml}
-                            <h2 class="challenger-name">${s[0]}</h2>
-                            <h3 class="challenger-class">${sObj?sObj.class:''}</h3>
-                            <div class="challenger-stars">${s[1]} نجمة</div>
-                        </div>`;
+                        slider.innerHTML += `<div class="challenger-card">${avatarHtml}<h2 class="challenger-name">${s[0]}</h2><h3 class="challenger-class">${sObj?sObj.class:''}</h3><div class="challenger-stars">${s[1]} نجمة</div></div>`;
                     }
                     currentIndex = (currentIndex + 3) % others.length;
                 };
                 showBatch();
                 if(others.length > 3) hofInterval = setInterval(showBatch, 5000);
             }
-            
             document.getElementById('hall-of-fame-overlay').style.display='block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
         }
@@ -723,7 +614,21 @@
 
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const logo = data.settings.logo || ""; const titles = {'permits':'سجل الأذونات','visitors':'سجل الزوار','violations':'المخالفات','attendance':'الغياب اليومي','stars':'لوحة الشرف','late':'تأخر الصباح','top_class':'الفصل المثالي'};
-            let h = `<div style="display:flex; justify-content:space-between; border-bottom:3px double #000; padding-bottom:10px; margin-bottom:20px;"><div style="text-align:center; width:30%; line-height:1.6"><strong>المملكة العربية السعودية</strong><br>وزارة التعليم<br>إدارة جازان<br>${data.settings.school}</div><div style="text-align:center; width:30%"><img src="${logo}" style="max-height:100px; max-width:100%"></div><div style="text-align:center; width:30%; line-height:1.6"><strong>التاريخ: ${new Date().toLocaleDateString('ar-SA')}</strong><br><h4 style="margin-top:10px; text-decoration:underline">${titles[type]}</h4></div></div>`;
+            let h = `<div class="print-header" style="border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; direction: rtl; display: flex; justify-content: space-between; align-items: center;">
+                <div style="text-align: right; width: 33%; font-weight: bold; line-height: 1.6;">
+                    <div>المملكة العربية السعودية</div>
+                    <div>وزارة التعليم</div>
+                    <div>إدارة التعليم بمنطقة جازان</div>
+                    <div>${data.settings.school}</div>
+                </div>
+                <div style="text-align: center; width: 33%;">
+                    <img src="${logo}" style="max-height: 120px; max-width: 100%;">
+                </div>
+                <div style="text-align: left; width: 33%; font-weight: bold; line-height: 1.6;">
+                    <div>التاريخ: ${new Date().toLocaleDateString('ar-SA')}</div>
+                    <div style="margin-top: 10px; font-size: 1.2rem; text-decoration: underline;">${titles[type] || 'تقرير'}</div>
+                </div>
+            </div>`;
             
             if(type==='attendance') {
                 const t = new Date().toLocaleDateString('en-CA');

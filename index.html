@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#006C35">
-    <title>نظام إذن (V83.3 Guard Update)</title>
+    <title>نظام إذن (V83.0 Diamond Class)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,17 +50,17 @@
         #status-dot { width: 10px; height: 10px; background: red; border-radius: 50%; display: inline-block; margin-left: 8px; }
         .hidden { display: none !important; }
 
-        /* Report Colors (Rainbow Theme) */
+        /* Report Colors */
         .report-btn { transition: transform 0.2s; border: none !important; color: white !important; position: relative; overflow: hidden; }
         .report-btn:hover { transform: translateY(-5px); opacity: 0.9; box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important; }
-        
-        .rainbow-red { background: linear-gradient(135deg, #ef5350, #c62828); }    /* 1. Red */
-        .rainbow-orange { background: linear-gradient(135deg, #ffa726, #ef6c00); } /* 2. Orange */
-        .rainbow-yellow { background: linear-gradient(135deg, #fdd835, #f9a825); color: #000 !important; } /* 3. Yellow (Black text) */
-        .rainbow-green { background: linear-gradient(135deg, #66bb6a, #2e7d32); }  /* 4. Green */
-        .rainbow-blue { background: linear-gradient(135deg, #42a5f5, #1565c0); }   /* 5. Blue */
-        .rainbow-indigo { background: linear-gradient(135deg, #7e57c2, #4527a0); } /* 6. Indigo */
-        .rainbow-violet { background: linear-gradient(135deg, #ab47bc, #6a1b9a); } /* 7. Violet */
+        .bg-gradient-blue { background: linear-gradient(135deg, #0061f2, #00c6ff); }
+        .bg-gradient-green { background: linear-gradient(135deg, #23b65d, #27e172); }
+        .bg-gradient-red { background: linear-gradient(135deg, #ee0979, #ff6a00); }
+        .bg-gradient-purple { background: linear-gradient(135deg, #8e44ad, #c0392b); }
+        .bg-gradient-teal { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .bg-gradient-gold { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+        .bg-gradient-orange { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .bg-gradient-indigo { background: linear-gradient(135deg, #6610f2, #6f42c1); }
 
         .row-approved { background-color: #d1e7dd !important; }
         .row-rejected { background-color: #f8d7da !important; }
@@ -225,6 +225,13 @@
                             <input id="g-v-reason" class="form-control mb-3" placeholder="السبب">
                             <button class="btn btn-dark w-100 py-3" onclick="sendVisitorReq()">طلب دخول</button>
                         </div>
+                        <div class="page-card p-3 border-top border-warning border-5">
+                            <h6 class="fw-bold">رصد طالب متأخر</h6>
+                            <div class="d-flex gap-2">
+                                <input id="g-late-name" class="form-control" placeholder="اسم الطالب المتأخر">
+                                <button class="btn btn-warning" onclick="registerLateGuard()">رصد</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-7"><div class="page-card border-danger border-top border-4"><div class="card-header-custom text-danger">أوامر الانصراف</div><div id="g-dep-list" class="list-group list-group-flush"></div></div><div class="page-card mt-3"><div class="card-header-custom">حالة الزوار</div><div id="g-vis-list" class="list-group list-group-flush"></div></div></div>
                 </div>
@@ -253,13 +260,13 @@
                     </div>
                 </div>
                 <div class="row g-3 mb-4">
-                    <div class="col-md-4"><button class="btn report-btn rainbow-red w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('permits')"><i class="fas fa-clipboard-list fa-2x mb-2 d-block"></i> الأذونات الداخلية</button></div>
-                    <div class="col-md-4"><button class="btn report-btn rainbow-orange w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('visitors')"><i class="fas fa-users fa-2x mb-2 d-block"></i> سجل الزوار</button></div>
-                    <div class="col-md-4"><button class="btn report-btn rainbow-yellow w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('violations')"><i class="fas fa-exclamation-triangle fa-2x mb-2 d-block"></i> المخالفات</button></div>
-                    <div class="col-md-4"><button class="btn report-btn rainbow-green w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('attendance')"><i class="fas fa-user-times fa-2x mb-2 d-block"></i> غياب اليوم</button></div>
-                    <div class="col-md-4"><button class="btn report-btn rainbow-blue w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('stars')"><i class="fas fa-star fa-2x mb-2 d-block"></i> لوحة الشرف</button></div>
-                    <div class="col-md-4"><button class="btn report-btn rainbow-indigo w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('late')"><i class="fas fa-user-clock fa-2x mb-2 d-block"></i> المتأخرين صباحاً</button></div>
-                    <div class="col-md-12"><button class="btn report-btn rainbow-violet w-100 py-4 shadow fw-bold fs-4" onclick="showReportModal('top_class')"><i class="fas fa-trophy fa-2x mb-2 d-block"></i> تقرير الفصل المثالي</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-blue w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('permits')"><i class="fas fa-clipboard-list fa-2x mb-2 d-block"></i> الأذونات الداخلية</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-green w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('visitors')"><i class="fas fa-users fa-2x mb-2 d-block"></i> سجل الزوار</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-red w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('violations')"><i class="fas fa-exclamation-triangle fa-2x mb-2 d-block"></i> المخالفات</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-purple w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('attendance')"><i class="fas fa-user-times fa-2x mb-2 d-block"></i> غياب اليوم</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-gold w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('stars')"><i class="fas fa-star fa-2x mb-2 d-block"></i> لوحة الشرف</button></div>
+                    <div class="col-md-4"><button class="btn report-btn bg-gradient-orange w-100 py-4 shadow fw-bold fs-5" onclick="showReportModal('late')"><i class="fas fa-user-clock fa-2x mb-2 d-block"></i> المتأخرين صباحاً</button></div>
+                    <div class="col-md-12"><button class="btn report-btn bg-gradient-indigo w-100 py-4 shadow fw-bold fs-4" onclick="showReportModal('top_class')"><i class="fas fa-trophy fa-2x mb-2 d-block"></i> تقرير الفصل المثالي</button></div>
                 </div>
             </section>
 
@@ -285,7 +292,7 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-4"><label>اسم المدرسة</label><input id="s-school" class="form-control" onchange="saveSettings()"></div>
                         <div class="col-md-4"><label>مدير المدرسة</label><input id="s-manager" class="form-control" onchange="saveSettings()"></div>
-                        <div class="col-md-4"><label>وكيل المدرسة</label><input id="s-deputy" class="form-control" onchange="saveSettings()"></div>
+                        <div class="col-md-4"><label>وكيل شؤون الطلاب</label><input id="s-deputy" class="form-control" onchange="saveSettings()"></div>
                     </div>
                     
                     <div class="accordion mb-4" id="accordionLogs">
@@ -580,17 +587,6 @@
         }
         
         function registerLateLogic(studentName) {
-            // التحقق من التكرار اليومي
-            const todayStr = new Date().toLocaleDateString('en-CA');
-            const existing = Object.values(data.tardiness || {}).find(t => 
-                t.student === studentName && 
-                new Date(t.date).toLocaleDateString('en-CA') === todayStr
-            );
-
-            if (existing) {
-                return Swal.fire('تنبيه', 'تم تسجيل الطالب لهذا اليوم مسبقاً', 'warning');
-            }
-
             const prev = Object.values(data.tardiness || {}).filter(t => t.student === studentName).length;
             const newCount = prev + 1;
             
@@ -715,12 +711,9 @@
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const content = document.getElementById('modal-print-content'); const logoSrc = data.settings.logo || "https://upload.wikimedia.org/wikipedia/ar/b/bb/Logo_of_the_Ministry_of_Education_%28Saudi_Arabia%29.svg"; const monthVal = document.getElementById('report-month').value;
             let h = `<div style="display:flex; justify-content:space-between; border-bottom:3px solid var(--primary); padding-bottom:20px; margin-bottom:30px;"><div style="text-align:right;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div><img src="${logoSrc}" width="120" style="max-height:100px;"><div style="text-align:left;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br>${monthVal ? 'تقرير شهر: '+monthVal : 'تقرير شامل'}</div></div>`;
             
-            // Helper to find class
-            const findClass = (n) => { const s = Object.values(data.students||{}).find(x=>x.name===n); return s?s.class:'-'; };
-
             if(type==='permits') { 
                 const d = Object.values(data.permits||{}); 
-                h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المعلم المصدر</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map((p, i)=>`<tr class="${i%2===0?'table-light':''}"><td>${p.student}</td><td>${p.class || findClass(p.student)}</td><td>${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
+                h+=`<h4 class="text-center fw-bold mb-4">سجل الأذونات</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>المعلم المصدر</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${d.reverse().map((p, i)=>`<tr class="${i%2===0?'table-light':''}"><td>${p.student}</td><td>${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
             }
             else if(type==='visitors') { 
                 const d = Object.values(data.visitors||{}); 
@@ -733,7 +726,7 @@
             }
             else if(type==='violations') { 
                 const d = Object.values(data.violations||{}); 
-                h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr class="table-warning"><td>${v.student}</td><td>${v.class || findClass(v.student)}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`; 
+                h+=`<h4 class="text-center fw-bold mb-4">المخالفات السلوكية</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>إجراء الوكيل</th><th>إجراء الموجه</th></tr></thead><tbody>${d.reverse().map(v=>`<tr class="table-warning"><td>${v.student}</td><td>${v.type}</td><td>${v.admin_action||'-'}</td><td>${v.counselor_action||'-'}</td></tr>`).join('')}</tbody></table>`; 
             }
             else if(type==='attendance') {
                 const today = new Date().toLocaleDateString('en-CA');
@@ -755,7 +748,7 @@
 
                 h+=`<h4 class="text-center fw-bold mb-4 text-warning"><i class="fas fa-crown"></i> لوحة الشرف (الطلاب المتميزين)</h4>
                     <table class="table table-bordered text-center table-hover">
-                        <thead><tr class="table-dark"><th>الترتيب</th><th>اسم الطالب</th><th>الفصل</th><th>المجموع</th><th>التفاصيل (السبب - المعلم)</th></tr></thead>
+                        <thead><tr class="table-dark"><th>الترتيب</th><th>اسم الطالب</th><th>المجموع</th><th>التفاصيل (السبب - المعلم)</th></tr></thead>
                         <tbody>`;
                 
                 sortedStudents.forEach(([name, d], index) => {
@@ -765,7 +758,7 @@
                         </div>`
                     ).join('');
                     
-                    h+= `<tr><td>${index+1}</td><td class="fw-bold">${name}</td><td>${findClass(name)}</td><td class="fs-4 text-warning fw-bold">${d.total}</td><td>${detailsHtml}</td></tr>`;
+                    h+= `<tr><td>${index+1}</td><td class="fw-bold">${name}</td><td class="fs-4 text-warning fw-bold">${d.total}</td><td>${detailsHtml}</td></tr>`;
                 });
                 h+= `</tbody></table>`;
             }
@@ -806,10 +799,11 @@
             }
             else if(type==='late') {
                 const d = Object.values(data.tardiness||{});
-                h+=`<h4 class="text-center fw-bold mb-4">تقرير التأخر الصباحي</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الفصل</th><th>الوقت</th><th>التاريخ</th></tr></thead><tbody>${d.reverse().map(t=>`<tr><td>${t.student}</td><td>${findClass(t.student)}</td><td>${new Date(t.date).toLocaleTimeString('ar-SA')}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`;
+                h+=`<h4 class="text-center fw-bold mb-4">تقرير التأخر الصباحي</h4><table class="table table-bordered text-center"><thead><tr><th>الطالب</th><th>الوقت</th><th>التاريخ</th></tr></thead><tbody>${d.reverse().map(t=>`<tr><td>${t.student}</td><td>${new Date(t.date).toLocaleTimeString('ar-SA')}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`;
             }
+            else if(type==='most_out') { let stats = {}; Object.values(data.permits||{}).forEach(p=>stats[p.student]=(stats[p.student]||0)+1); let sorted = Object.entries(stats).sort((a,b)=>b[1]-a[1]); h+=`<h4 class="text-center fw-bold mb-4">الطلاب الأكثر خروجاً</h4><table class="table table-bordered text-center table-hover"><thead><tr class="table-dark"><th>الاسم</th><th>مرات الخروج</th></tr></thead><tbody>${sorted.map((s,i)=>`<tr class="${i<3?'table-danger':''}"><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</tbody></table>`; }
             
-            h+=`<div style="margin-top:60px; display:flex; justify-content:space-between; padding:0 50px; text-align:center;"><div><strong>وكيل الشؤون المدرسية</strong><br>${data.settings.deputy||''}<br>....................</div><div><strong>مدير المدرسة</strong><br>${data.settings.manager}<br>....................</div></div>`;
+            h+=`<div style="margin-top:60px; display:flex; justify-content:space-between; padding:0 50px; text-align:center;"><div><strong>وكيل شؤون الطلاب</strong><br>${data.settings.deputy||''}<br>....................</div><div><strong>مدير المدرسة</strong><br>${data.settings.manager}<br>....................</div></div>`;
             content.innerHTML = h; modal.show();
         }
     </script>

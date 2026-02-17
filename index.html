@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#006C35">
-    <title>نظام إذن (V112.0 Strict Services)</title>
+    <title>نظام إذن (V113.0 Full Source)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,66 +20,227 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-        :root { --primary: #006C35; --gold: #C69C6D; --bg: #F8FAFC; --card: #ffffff; --text: #1E293B; --border: #E2E8F0; --transition: all 0.3s ease; }
-        [data-theme="dark"] { --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; visibility: hidden; padding-bottom: 80px; }
-        .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
-        [data-theme="dark"] .gradient-bg { background: linear-gradient(-45deg, #0f172a, #1e293b, #020617); }
-        @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
-        
-        /* Sidebar Updated Order */
-        .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: flex; flex-direction: column; }
-        .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
-        @media (max-width: 991px) { .sidebar { transform: translateX(100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-right: 0; padding: 20px; padding-top: 90px; } }
+        /* =========================================
+           1. التنسيقات الأساسية (Design System)
+        ========================================== */
+        :root { 
+            --primary: #006C35; 
+            --gold: #C69C6D; 
+            --bg: #F8FAFC; 
+            --card: #ffffff; 
+            --text: #1E293B; 
+            --border: #E2E8F0; 
+            --transition: all 0.3s ease;
+        }
 
-        .nav-link { padding: 15px 25px; margin: 5px 15px; color: rgba(255,255,255,0.85); cursor: pointer; border-radius: 12px; font-weight: 700; transition: 0.2s; display: flex; align-items: center; }
-        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.2); color: white; transform: translateX(-5px); }
+        [data-theme="dark"] { 
+            --bg: #0f172a; 
+            --card: #1e293b; 
+            --text: #f1f5f9; 
+            --border: #334155; 
+        }
+
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            transition: var(--transition);
+            overflow-x: hidden; 
+            visibility: hidden; /* يمنع الوميض عند التحميل */
+            padding-bottom: 80px; 
+        }
+
+        /* خلفية متحركة */
+        .gradient-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff);
+            background-size: 400% 400%; 
+            animation: bgAnim 20s infinite alternate; 
+            z-index: -2;
+        }
+        [data-theme="dark"] .gradient-bg { 
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #020617); 
+        }
+        @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
+
+        /* =========================================
+           2. القائمة الجانبية (Sidebar)
+        ========================================== */
+        .sidebar { 
+            width: 280px; height: 100vh; background: var(--primary); color: white; 
+            position: fixed; right: 0; top: 0; z-index: 1000; 
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1); 
+            overflow-y: auto; display: flex; flex-direction: column;
+        }
+        
+        .main-content { 
+            margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; 
+            transition: var(--transition); 
+        }
+        
+        @media (max-width: 991px) { 
+            .sidebar { transform: translateX(100%); } 
+            .sidebar.active { transform: translateX(0); } 
+            .main-content { margin-right: 0; padding: 20px; padding-top: 90px; } 
+        }
+
+        .nav-link { 
+            padding: 15px 25px; margin: 5px 15px; color: rgba(255,255,255,0.85); 
+            cursor: pointer; border-radius: 12px; font-weight: 700; transition: 0.2s; 
+            display: flex; align-items: center;
+        }
+        .nav-link:hover, .nav-link.active { 
+            background: rgba(255,255,255,0.2); color: white; transform: translateX(-5px); 
+        }
         .nav-link.active { border-right: 5px solid var(--gold); }
 
-        .page-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
+        /* =========================================
+           3. البطاقات والعناصر (UI Components)
+        ========================================== */
+        .page-card { 
+            background: var(--card); border-radius: 20px; border: 1px solid var(--border); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; 
+            overflow: hidden; transition: var(--transition); 
+        }
+        .page-card:hover { transform: translateY(-3px); }
+
+        .card-header-custom { 
+            padding: 15px 25px; background: rgba(var(--primary), 0.05); 
+            border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .stat-box { 
+            background: var(--card); padding: 25px; border-radius: 20px; text-align: center; 
+            border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        }
+        .stat-box h2 { font-size: 2.5rem; font-weight: 800; margin: 10px 0; }
+        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; }
+        .stat-box.green { border-color: #198754; color: #198754; }
+        .stat-box.red { border-color: #dc3545; color: #dc3545; }
+
+        .report-grid-item { 
+            background: var(--card); border-radius: 20px; padding: 30px 20px; 
+            text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; 
+        }
+        .report-grid-item:hover { 
+            transform: translateY(-5px); border-color: var(--primary); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+        }
+        .report-grid-item i { font-size: 3rem; margin-bottom: 15px; color: var(--primary); }
+
         .req-star { color: #dc3545; font-weight: bold; margin-right: 3px; }
-        .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
-        .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); }
-        
-        /* Overlays */
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); z-index: 10000; display: none; overflow: hidden; color: white; }
-        .overlay-close { position: absolute; top: 30px; left: 30px; z-index: 10001; background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 10px 25px; border-radius: 50px; cursor: pointer; }
 
-        /* Hall of Fame */
-        .champion-area { text-align: center; margin-bottom: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: float 4s infinite; padding-top: 50px; }
-        .champion-avatar { width: 220px; height: 220px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 5rem; color: #333; margin: 0 auto 20px; box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); overflow: hidden; }
+        /* =========================================
+           4. شاشات العرض (Cinema & Broadcast)
+        ========================================== */
+        .full-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); /* كحلي ملكي */
+            z-index: 10000; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif;
+        }
+        .overlay-close {
+            position: absolute; top: 30px; left: 30px; z-index: 10001;
+            background: rgba(255,255,255,0.1); border: 1px solid white; color: white;
+            padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer;
+        }
+
+        /* لوحة الشرف */
+        .hof-container { height: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
+        
+        .hof-title {
+            font-size: 3rem; font-weight: 900; color: #FFD700; margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); letter-spacing: 2px;
+        }
+
+        .champion-area { 
+            text-align: center; margin-bottom: 40px; width: 100%; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            animation: float 4s ease-in-out infinite; 
+        }
+        .champion-avatar { 
+            width: 220px; height: 220px; background: #fff; border-radius: 50%; 
+            border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; 
+            font-size: 5rem; color: #333; margin: 0 auto 20px; 
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); overflow: hidden; 
+        }
         .champion-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .champion-name { font-size: 4rem; font-weight: 900; animation: colorCycle 5s infinite; }
-        @keyframes colorCycle { 0% {color:#fff; text-shadow:0 0 20px #FFD700;} 50% {color:#FFD700; text-shadow:0 0 20px #fff;} 100% {color:#fff; text-shadow:0 0 20px #FFD700;} }
-        #challengers-slider { width: 95%; max-width: 1500px; display: flex; justify-content: center; gap: 30px; margin: 0 auto; }
-        .challenger-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 215, 0, 0.3); border-radius: 25px; padding: 30px; text-align: center; width: 350px; animation: slideUp 0.8s ease; display: flex; flex-direction: column; align-items: center; }
-        .challenger-rank { background: #FFD700; color: #000; width: 60px; height: 60px; border-radius: 50%; font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 4px solid #fff; }
-        .challenger-name { font-size: 2rem; font-weight: 800; margin-bottom: 5px; color: white; }
         
-        .empty-state-message { font-size: 3rem; font-weight: 900; color: #FFD700; text-align: center; margin-top: 15%; animation: pulse 2s infinite; }
+        .champion-name { 
+            font-size: 4rem; font-weight: 900; margin: 0; text-align: center; width: 100%; 
+            animation: colorCycle 5s infinite; 
+        }
+        @keyframes colorCycle { 
+            0% { color: #ffffff; text-shadow: 0 0 20px #FFD700; } 
+            50% { color: #FFD700; text-shadow: 0 0 20px #ffffff; } 
+            100% { color: #ffffff; text-shadow: 0 0 20px #FFD700; } 
+        }
+        .champion-desc { font-size: 2rem; color: #FFD700; font-weight: bold; margin-top: 10px; }
 
-        /* Other Screens */
+        #challengers-slider { 
+            width: 95%; max-width: 1500px; display: flex; justify-content: center; 
+            gap: 30px; perspective: 1000px; min-height: 350px; 
+        }
+        .challenger-card { 
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); 
+            border: 2px solid rgba(255, 215, 0, 0.3); border-radius: 25px; padding: 30px; 
+            text-align: center; width: 350px; animation: slideUp 0.8s ease; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+        .challenger-rank { 
+            background: #FFD700; color: #000; width: 60px; height: 60px; border-radius: 50%; 
+            font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; justify-content: center; 
+            margin-bottom: 15px; border: 4px solid #fff; 
+        }
+        .challenger-name { font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 10px; line-height: 1.2; }
+        .challenger-class { font-size: 1.5rem; color: #ddd; background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px; }
+        .challenger-stars { font-size: 1.8rem; color: #FFD700; font-weight: bold; }
+        
+        .empty-state-message { 
+            font-size: 3rem; font-weight: 900; color: #FFD700; 
+            text-align: center; margin-top: 15%; animation: pulse 2s infinite; 
+            text-shadow: 0 0 20px #000;
+        }
+
+        /* شاشات المناسبات والمعرض */
         .event-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .event-title { font-size: 6rem; font-weight: 900; color: #FFD700; text-shadow: 0 0 40px #000; }
-        .event-msg { font-size: 3.5rem; color: #fff; background: rgba(0,0,0,0.6); padding: 40px; border-radius: 40px; border: 3px solid rgba(255,215,0,0.3); }
+        .event-title { font-size: 6rem; font-weight: 900; color: #FFD700; margin-bottom: 40px; animation: zoomIn 1.5s; text-shadow: 0 0 40px #000; }
+        .event-msg { font-size: 3.5rem; color: #fff; background: rgba(0,0,0,0.6); padding: 40px; border-radius: 40px; animation: fadeInUp 2s; border: 3px solid rgba(255,215,0,0.3); }
+        
         .showcase-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .showcase-img-box { max-height: 70vh; border: 15px solid #fff; box-shadow: 0 0 60px rgba(0,0,0,0.8); border-radius: 30px; overflow: hidden; }
+        .showcase-img-box { max-height: 70vh; border: 15px solid #fff; box-shadow: 0 0 60px rgba(0,0,0,0.8); border-radius: 30px; overflow: hidden; animation: zoomIn 1s; }
         .showcase-img-box img { height: 100%; width: auto; object-fit: contain; }
         .showcase-label { font-size: 3rem; color: #FFD700; margin-top: 30px; font-weight: 900; text-shadow: 0 5px 20px #000; background: rgba(0,0,0,0.7); padding: 15px 50px; border-radius: 50px; }
 
+        @keyframes float { 0%,100% {transform: translateY(0);} 50% {transform: translateY(-20px);} }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.02); opacity: 1; } 100% { transform: scale(1); opacity: 0.9; } }
+
+        /* =========================================
+           5. شاشة الدخول والتنبيهات
+        ========================================== */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: var(--card); padding: 50px; width: 90%; max-width: 480px; text-align: center; border-radius: 40px; }
-        .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; }
+        .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
+        
+        .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; font-size: 1.2rem; }
+        
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 80px; border-bottom: 1px solid var(--border); }
         [data-theme="dark"] #top-bar { background: rgba(30, 41, 59, 0.95); }
 
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes float { 0%,100% {transform: translateY(0);} 50% {transform: translateY(-20px);} }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
 
+        .fab-theme { 
+            position: fixed; bottom: 30px; left: 30px; z-index: 1001; 
+            width: 60px; height: 60px; border-radius: 50%; 
+            background: var(--primary); color: white; display: flex; 
+            align-items: center; justify-content: center; cursor: pointer; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-size: 1.5rem; 
+        }
+
+        /* الطباعة */
         #final-print-container { display: none; }
         @media print {
             body > * { display: none !important; }
@@ -89,7 +250,8 @@
             @page { size: A4; margin: 5mm; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
-        #cert-template { display: none; }
+        #cert-template { width: 800px; height: 600px; background: #fff; padding: 40px; border: 15px double var(--primary); display: none; text-align: center; position: relative; color: #000; }
+        .cert-inner { border: 5px solid var(--gold); height: 100%; padding: 40px; background-image: url('https://www.transparenttextures.com/patterns/white-diamond.png'); }
     </style>
 </head>
 <body>
@@ -100,7 +262,7 @@
         <button class="overlay-close" onclick="closeOverlay('hall-of-fame-overlay')">إغلاق</button>
         <div class="hof-container">
             <h1 class="hof-title">💎 لوحة الشرف والمتميزين 💎</h1>
-            <div id="hof-content" style="width: 100%;"></div>
+            <div id="hof-content" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
         </div>
     </div>
 
@@ -126,7 +288,7 @@
             <h5 class="m-0 fw-bold text-dark">نظام إذن <span class="text-success">الاحترافي</span></h5>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div>
+            <div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div>
             <button class="btn btn-light rounded-circle border" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up"></i></button>
             <button class="btn btn-outline-dark d-lg-none" onclick="document.querySelector('.sidebar').classList.toggle('active')"><i class="fas fa-bars"></i></button>
         </div>
@@ -136,7 +298,7 @@
         <div class="login-card fade-in">
             <i class="fas fa-school fa-5x text-success mb-3"></i>
             <h3 class="fw-bold mb-1">متوسطة الإمام النووي</h3>
-            <p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V112.0</p>
+            <p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V113.0</p>
             <div id="role-selection">
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('admin', 'الإدارة')"><span>الإدارة</span><i class="fas fa-user-tie text-primary fa-lg"></i></div>
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('teacher', 'المعلم')"><span>المعلم</span><i class="fas fa-chalkboard-teacher text-success fa-lg"></i></div>
@@ -197,7 +359,7 @@
                 </div>
                 
                 <div id="srv-permit-box" class="page-card p-4">
-                    <h5 class="fw-bold mb-4 text-success border-bottom pb-3">إصدار إذن خروج</h5>
+                    <h5 class="fw-bold mb-4 text-success border-bottom pb-3">إصدار إذن خروج طالب</h5>
                     <div class="row g-3">
                         <div class="col-md-6"><label>الفصل <span class="req-star">*</span></label><select id="t-class" class="form-select form-select-lg" onchange="loadStudentsForRole(this.value, 't-stu')"></select></div>
                         <div class="col-md-6"><label>الطالب <span class="req-star">*</span></label><select id="t-stu" class="form-select form-select-lg" disabled></select></div>
@@ -360,7 +522,7 @@
 
     <div class="modal fade" id="printModal" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">معاينة التقرير</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-white" id="modal-print-content"></div><div class="modal-footer"><button type="button" class="btn btn-primary w-100 fw-bold" onclick="executePrint()">طباعة</button></div></div></div></div>
     <div id="final-print-container"></div>
-    <div id="cert-template" style="display: none;"><div class="cert-inner"><h1 style="color:var(--primary); font-weight:800; font-size:3rem; margin-bottom:40px;">شهادة شكر وتقدير</h1><p style="font-size:1.5rem; margin-top:20px;">تتقدم إدارة المدرسة بالشكر الجزيل للطالب المتميز:</p><h2 id="cert-student-name" style="color:var(--gold); border-bottom:2px solid; display:inline-block; padding:10px 50px; margin: 30px 0;">...</h2><p style="font-size:1.3rem; margin-top:20px; line-height: 1.8;">وذلك نظير انضباطه السلوكي وحصوله على نقاط تميز عالية.<br>متمنين له دوام التوفيق والنجاح.</p><div style="margin-top:80px; display:flex; justify-content:space-around; align-items: flex-end;"><div style="text-align: center;"><strong>وكيل شؤون الطلاب</strong><br><span id="cert-deputy">...</span></div><div style="text-align: center;"><strong>مدير المدرسة</strong><br><span id="cert-manager">...</span></div></div></div></div>
+    <div id="cert-template"><div class="cert-inner"><h1 style="color:var(--primary); font-weight:800; font-size:3rem; margin-bottom:40px;">شهادة شكر وتقدير</h1><p style="font-size:1.5rem; margin-top:20px;">تتقدم إدارة المدرسة بالشكر الجزيل للطالب المتميز:</p><h2 id="cert-student-name" style="color:var(--gold); border-bottom:2px solid; display:inline-block; padding:10px 50px; margin: 30px 0;">...</h2><p style="font-size:1.3rem; margin-top:20px; line-height: 1.8;">وذلك نظير انضباطه السلوكي وحصوله على نقاط تميز عالية.<br>متمنين له دوام التوفيق والنجاح.</p><div style="margin-top:80px; display:flex; justify-content:space-around; align-items: flex-end;"><div style="text-align: center;"><strong>وكيل شؤون الطلاب</strong><br><span id="cert-deputy">...</span></div><div style="text-align: center;"><strong>مدير المدرسة</strong><br><span id="cert-manager">...</span></div></div></div></div>
     <div class="fab-theme" onclick="toggleTheme()"><i class="fas fa-moon"></i></div>
 
     <script>
@@ -412,8 +574,15 @@
             
             // Mapping for services section based on role
             if(id === 'services') {
-                if(userRole === 'admin') document.getElementById('sec-admin').classList.remove('d-none');
-                else if(userRole === 'teacher') document.getElementById('sec-teacher').classList.remove('d-none');
+                if(userRole === 'admin') {
+                    document.getElementById('sec-admin').classList.remove('d-none');
+                    document.getElementById('admin-stats-panel').classList.remove('d-none');
+                    document.querySelector('.admin-only').classList.remove('d-none');
+                }
+                else if(userRole === 'teacher') {
+                    document.getElementById('sec-teacher').classList.remove('d-none');
+                    document.getElementById('admin-stats-panel').classList.add('d-none');
+                }
             } else {
                 const el = document.getElementById('sec-'+id);
                 if(el) el.classList.remove('d-none');
@@ -577,12 +746,9 @@
 
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const logo = data.settings.logo || "";
-            // ... (Report generation logic identical to V111) ...
-            // Simplified for length, but functionally complete in actual file
             let h = `<div style="display:flex; justify-content:space-between; border-bottom:3px double #000; padding-bottom:10px; margin-bottom:20px;"><div style="text-align:center; width:33%"><strong>المملكة العربية السعودية</strong><br>وزارة التعليم<br>${data.settings.school}</div><div style="text-align:center; width:33%"><img src="${logo}" style="max-height:100px"></div><div style="text-align:center; width:33%"><strong>التاريخ: ${new Date().toLocaleDateString('ar-SA')}</strong><br><u>تقرير: ${type}</u></div></div>`;
             h += `<table class="table table-bordered text-center"><thead><tr class="table-dark"><th>البيان</th></tr></thead><tbody><tr><td>جاري تحميل البيانات... (مفصل في النسخة الكاملة)</td></tr></tbody></table>`; 
             // In full version, this part is the detailed loop from V111.0
-            // Re-inserting the detailed report logic here for completeness:
             if(type==='stars') { 
                 let s = {}; Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; });
                 h=`<div style="display:flex; justify-content:space-between; border-bottom:3px double #000; padding-bottom:10px; margin-bottom:20px;"><div style="text-align:center; width:33%"><strong>المملكة العربية السعودية</strong><br>وزارة التعليم<br>${data.settings.school}</div><div style="text-align:center; width:33%"><img src="${logo}" style="max-height:100px"></div><div style="text-align:center; width:33%"><strong>التاريخ: ${new Date().toLocaleDateString('ar-SA')}</strong><br><u>لوحة الشرف</u></div></div><table class="table table-bordered text-center"><thead><tr class="table-dark"><th>الطالب</th><th>الرصيد</th></tr></thead><tbody>`;

@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#006C35">
-    <title>نظام إذن (V116.0 Broadcast Master)</title>
+    <title>نظام إذن (V116.0 Monitor Fix)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -38,9 +38,14 @@
 
         .page-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
         .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
-        .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); }
+        
+        /* Monitor Card Style */
+        .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 2px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
+        .monitor-card.safe { border-bottom: 5px solid #198754; }
+        .monitor-card.danger { border-bottom: 5px solid #dc3545; animation: pulse 2s infinite; }
+        .monitor-card h5 { font-weight: 800; color: var(--text); margin-bottom: 5px; }
         
         /* Overlays */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); z-index: 10000; display: none; overflow: hidden; color: white; }
@@ -59,11 +64,10 @@
         .empty-state-message { font-size: 3rem; font-weight: 900; color: #FFD700; text-align: center; margin-top: 15%; animation: pulse 2s infinite; }
 
         /* Showcase & Events */
-        .event-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .event-container, .showcase-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .event-title { font-size: 6rem; font-weight: 900; color: #FFD700; margin-bottom: 30px; text-shadow: 0 0 40px #000; }
         .event-msg { font-size: 3.5rem; color: #fff; background: rgba(0,0,0,0.6); padding: 40px; border-radius: 40px; border: 3px solid rgba(255,215,0,0.3); }
-        .showcase-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .showcase-img-box { max-height: 70vh; border: 15px solid #fff; box-shadow: 0 0 60px rgba(0,0,0,0.8); border-radius: 30px; overflow: hidden; animation: zoomIn 1s; }
+        .showcase-img-box { max-height: 70vh; border: 15px solid #fff; box-shadow: 0 0 60px rgba(0,0,0,0.8); border-radius: 30px; overflow: hidden; }
         .showcase-img-box img { height: 100%; width: auto; object-fit: contain; }
         .showcase-label { font-size: 3rem; color: #FFD700; margin-top: 30px; font-weight: 900; background: rgba(0,0,0,0.7); padding: 15px 50px; border-radius: 50px; }
 
@@ -77,11 +81,14 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes float { 0%,100% {transform: translateY(0);} 50% {transform: translateY(-20px);} }
         @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.02); opacity: 1; } 100% { transform: scale(1); opacity: 0.9; } }
         
         /* Settings Colors */
         .setting-card-navy { border-top: 5px solid #001f3f; background: #fff; }
         .setting-card-green { border-top: 5px solid #198754; background: #fff; }
         .setting-card-blue { border-top: 5px solid #0d6efd; background: #fff; }
+        .settings-card-orange { border-top: 5px solid #fd7e14; background: #fff; }
+        .settings-card-red { border-top: 5px solid #dc3545; background: #fff; }
 
         /* Print */
         #final-print-container { display: none; }
@@ -111,7 +118,7 @@
 
     <div id="auth-overlay">
         <div class="login-card fade-in">
-            <i class="fas fa-school fa-5x text-success mb-3"></i><h3 class="fw-bold mb-1">متوسطة الإمام النووي</h3><p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V114.0</p>
+            <i class="fas fa-school fa-5x text-success mb-3"></i><h3 class="fw-bold mb-1">متوسطة الإمام النووي</h3><p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V116.0</p>
             <div id="role-selection">
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('admin', 'الإدارة')"><span>الإدارة</span><i class="fas fa-user-tie text-primary fa-lg"></i></div>
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('teacher', 'المعلم')"><span>المعلم</span><i class="fas fa-chalkboard-teacher text-success fa-lg"></i></div>
@@ -150,6 +157,11 @@
                         <div class="col-md-4"><div class="stat-box blue"><h2>0</h2><small>طلاب بالخارج</small></div></div>
                         <div class="col-md-4"><div class="stat-box green"><h2>0</h2><small>زوار اليوم</small></div></div>
                         <div class="col-md-4"><div class="stat-box red"><h2>0</h2><small>مخالفات اليوم</small></div></div>
+                    </div>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4"><div class="page-card h-100"><div class="card-header-custom">الزوار</div><div id="adm-vis-list" class="list-group list-group-flush p-2"></div></div></div>
+                        <div class="col-md-4"><div class="page-card h-100"><div class="card-header-custom">المخالفات</div><div id="adm-vio-list" class="p-3"></div></div></div>
+                        <div class="col-md-4"><div class="page-card h-100"><div class="card-header-custom">انصراف نهائي</div><div class="p-4"><label>اسم الطالب <span class="req-star">*</span></label><input id="adm-dep-name" class="form-control mb-3"><button class="btn btn-primary w-100 rounded-pill" onclick="sendDeparture()">إرسال للحارس</button></div></div></div>
                     </div>
                 </div>
 
@@ -256,14 +268,14 @@
                 <div class="page-card p-4">
                     <h5 class="fw-bold mb-4 text-primary">الإعدادات والأمان</h5>
                     
-                    <div class="settings-card-navy p-3 mb-4 rounded shadow-sm">
+                    <div class="setting-card-navy p-3 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-dark mb-3"><i class="fas fa-crown me-2"></i> إعدادات لوحة الشرف</h6>
                         <div class="row g-3">
                             <div class="col-md-6"><label>عنوان اللوحة</label><input id="set-hof-title" class="form-control" placeholder="لوحة الشرف والمتميزين"></div>
                         </div>
                     </div>
 
-                    <div class="settings-card-green p-3 mb-4 rounded shadow-sm">
+                    <div class="setting-card-green p-3 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-success mb-3"><i class="fas fa-calendar-alt me-2"></i> إعدادات نبض المدرسة</h6>
                         <div class="row g-3">
                             <div class="col-md-6"><label>عنوان المناسبة</label><input id="set-event-title" class="form-control"></div>
@@ -271,7 +283,7 @@
                         </div>
                     </div>
 
-                    <div class="settings-card-blue p-3 mb-4 rounded shadow-sm">
+                    <div class="setting-card-blue p-3 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-primary mb-3"><i class="fas fa-palette me-2"></i> إعدادات معرض المبدعين</h6>
                         <div class="row g-3">
                             <div class="col-md-12"><label>صورة المعرض</label><input type="file" id="set-showcase-img" class="form-control" accept="image/*"></div>
@@ -399,7 +411,7 @@
             if(userRole==='admin') links.push(['broadcast','مركز البث','broadcast-tower'],['data','الإعدادات','cogs']); 
             if(userRole==='guard') links = [['guard','الحارس','shield-alt']]; 
             if(userRole==='counselor') links = [['counselor','الموجه','user-graduate']];
-            if(hasReportPerm && userRole !== 'admin') links.push(['reports','التقارير','file-alt']); // Add again for safety for non-admins
+            if(hasReportPerm && userRole !== 'admin') links.push(['reports','التقارير','file-alt']);
 
             const uniqueLinks = []; const map = new Map();
             for (const item of links) { if(!map.has(item[0])){ map.set(item[0], true); uniqueLinks.push(item); }}

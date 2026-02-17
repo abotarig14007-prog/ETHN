@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#006C35">
-    <title>نظام إذن (V117.0 The Guardian)</title>
+    <title>نظام إذن (V118.0 Monitor Fixed)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -38,7 +38,15 @@
 
         .page-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
         .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .stat-box h2 { font-size: 2.5rem; font-weight: 800; margin: 10px 0; }
+        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
+        
+        /* Monitor Card Style */
+        .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 2px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
+        .monitor-card.safe { border-bottom: 5px solid #198754; }
+        .monitor-card.danger { border-bottom: 5px solid #dc3545; animation: pulse 2s infinite; }
+        .monitor-card h5 { font-weight: 800; color: var(--text); margin-bottom: 5px; }
+
         .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
         .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         
@@ -71,7 +79,6 @@
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
         .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 12px 40px; border-radius: 50px; display: none; font-weight: bold; }
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 80px; border-bottom: 1px solid var(--border); }
-        [data-theme="dark"] #top-bar { background: rgba(30, 41, 59, 0.95); }
         
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.6s ease; }
@@ -115,7 +122,7 @@
 
     <div id="auth-overlay">
         <div class="login-card fade-in">
-            <i class="fas fa-school fa-5x text-success mb-3"></i><h3 class="fw-bold mb-1">متوسطة الإمام النووي</h3><p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V117.0</p>
+            <i class="fas fa-school fa-5x text-success mb-3"></i><h3 class="fw-bold mb-1">متوسطة الإمام النووي</h3><p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V118.0</p>
             <div id="role-selection">
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('admin', 'الإدارة')"><span>الإدارة</span><i class="fas fa-user-tie text-primary fa-lg"></i></div>
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('teacher', 'المعلم')"><span>المعلم</span><i class="fas fa-chalkboard-teacher text-success fa-lg"></i></div>
@@ -154,6 +161,11 @@
                         <div class="col-md-4"><div class="stat-box blue"><h2>0</h2><small>طلاب بالخارج</small></div></div>
                         <div class="col-md-4"><div class="stat-box green"><h2>0</h2><small>زوار اليوم</small></div></div>
                         <div class="col-md-4"><div class="stat-box red"><h2>0</h2><small>مخالفات اليوم</small></div></div>
+                    </div>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4"><div class="page-card h-100"><div class="card-header-custom">الزوار</div><div id="adm-vis-list" class="list-group list-group-flush p-2"></div></div></div>
+                        <div class="col-md-4"><div class="page-card h-100"><div class="card-header-custom">المخالفات</div><div id="adm-vio-list" class="p-3"></div></div></div>
+                        <div class="col-md-4"><div class="page-card h-100"><div class="card-header-custom">انصراف نهائي</div><div class="p-4"><label>اسم الطالب <span class="req-star">*</span></label><input id="adm-dep-name" class="form-control mb-3"><button class="btn btn-primary w-100 rounded-pill" onclick="sendDeparture()">إرسال للحارس</button></div></div></div>
                     </div>
                 </div>
 
@@ -263,23 +275,23 @@
                     <div class="setting-card-navy p-4 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-dark mb-3"><i class="fas fa-crown me-2"></i> إعدادات لوحة الشرف</h6>
                         <div class="row g-3">
-                            <div class="col-md-12"><label>عنوان اللوحة (مثلاً: نجوم الأسبوع)</label><input id="set-hof-title" class="form-control" placeholder="لوحة الشرف والمتميزين"></div>
+                            <div class="col-md-6"><label>عنوان اللوحة</label><input id="set-hof-title" class="form-control" placeholder="لوحة الشرف والمتميزين"></div>
                         </div>
                     </div>
 
                     <div class="setting-card-green p-4 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-success mb-3"><i class="fas fa-calendar-alt me-2"></i> إعدادات نبض المدرسة</h6>
                         <div class="row g-3">
-                            <div class="col-md-6"><label>عنوان المناسبة</label><input id="set-event-title" class="form-control" placeholder="عنوان يظهر أعلى الشاشة"></div>
-                            <div class="col-md-6"><label>نص الرسالة</label><input id="set-event-msg" class="form-control" placeholder="الرسالة التي ستظهر"></div>
+                            <div class="col-md-6"><label>عنوان المناسبة</label><input id="set-event-title" class="form-control"></div>
+                            <div class="col-md-6"><label>نص الرسالة</label><input id="set-event-msg" class="form-control"></div>
                         </div>
                     </div>
 
                     <div class="setting-card-blue p-4 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-primary mb-3"><i class="fas fa-palette me-2"></i> إعدادات معرض المبدعين</h6>
                         <div class="row g-3">
-                            <div class="col-md-12"><label>صورة العمل الفني</label><input type="file" id="set-showcase-img" class="form-control" accept="image/*"></div>
-                            <div class="col-md-12"><label>اسم الطالب أو عنوان العمل</label><input id="set-showcase-title" class="form-control"></div>
+                            <div class="col-md-12"><label>صورة المعرض</label><input type="file" id="set-showcase-img" class="form-control" accept="image/*"></div>
+                            <div class="col-md-12"><label>عنوان العمل</label><input id="set-showcase-title" class="form-control"></div>
                         </div>
                     </div>
                     <div class="col-12 mb-4"><button class="btn btn-dark w-100 py-3 fw-bold" onclick="saveBroadcastSettings()">حفظ وتحديث إعدادات البث</button></div>
@@ -462,6 +474,7 @@
                  populateSettingsUI();
             } else {
                 const el = document.getElementById('sec-'+id); if(el) el.classList.remove('d-none');
+                if(id==='monitor') renderMonitor(); // Force render
             }
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); 
             if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active'); 
@@ -493,6 +506,22 @@
                 else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; }
             }
             if(userRole==='admin') renderAdmin(); if(userRole==='guard') renderGuard();
+            
+            if(!document.getElementById('sec-data').classList.contains('d-none')) {
+                const s = document.getElementById('view-class-select'); s.innerHTML='<option value="">اختر الفصل</option>'+(data.classes||[]).map(c=>`<option>${c}</option>`).join('');
+                document.getElementById('s-school').value=data.settings.school; document.getElementById('s-manager').value=data.settings.manager; document.getElementById('s-deputy').value=data.settings.deputy; document.getElementById('s-email').value=data.settings.admin_email;
+                if(data.settings.logo) { document.getElementById('logo-preview').style.display='block'; document.getElementById('logo-preview').src=data.settings.logo; }
+                
+                document.getElementById('perm-counselor').checked = data.settings.permissions?.counselor || false;
+                document.getElementById('perm-teacher').checked = data.settings.permissions?.teacher || false;
+                document.getElementById('perm-guard').checked = data.settings.permissions?.guard || false;
+
+                // Broadcast Settings Load
+                document.getElementById('set-hof-title').value = data.settings.broadcast?.hofTitle || '';
+                document.getElementById('set-event-title').value = data.settings.broadcast?.eventTitle || '';
+                document.getElementById('set-event-msg').value = data.settings.broadcast?.eventMsg || '';
+                document.getElementById('set-showcase-title').value = data.settings.broadcast?.showcaseTitle || '';
+            }
         }
 
         // Logic
@@ -537,7 +566,6 @@
         function sendVisitorReq() { if(validate(['g-v-name','g-v-id','g-v-reason'])) { db.ref('visitors').push({name:document.getElementById('g-v-name').value, id:document.getElementById('g-v-id').value, reason:document.getElementById('g-v-reason').value, status:'pending', time:new Date().toISOString()}); document.getElementById('g-v-name').value=''; showToast('تم الإرسال'); } }
         function sendDeparture() { if(validate(['adm-dep-name'])) { db.ref('departures').push({name:document.getElementById('adm-dep-name').value, status:'pending'}); document.getElementById('adm-dep-name').value=''; showToast('تم الإرسال'); } }
         function registerLate() { if(validate(['late-stu'])) { db.ref('tardiness').push({student:document.getElementById('late-stu').value, date:new Date().toISOString()}); showToast('تم الرصد'); } }
-        function loadStudentsForRole(c, id) { const l=Object.values(data.students||{}).filter(s=>s.class===c); const e=document.getElementById(id); e.innerHTML='<option value="">الطالب</option>'; e.disabled=false; l.forEach(s=>e.innerHTML+=`<option value="${s.name}">${s.name}</option>`); }
         function setAttMode(mode) { attMode = mode; document.getElementById('btn-mode-period').className = mode === 'period' ? 'btn btn-primary w-50 rounded-pill' : 'btn btn-outline-primary w-50 rounded-pill'; document.getElementById('btn-mode-day').className = mode === 'day' ? 'btn btn-primary w-50 rounded-pill' : 'btn btn-outline-primary w-50 rounded-pill'; document.getElementById('div-att-period').style.visibility = mode === 'period' ? 'visible' : 'hidden'; loadAttendanceList(); }
         function loadAttendanceList() { const cls = document.getElementById('att-class').value; const period = document.getElementById('att-period').value; const body = document.getElementById('att-list-body'); if(!cls) { body.innerHTML = '<tr><td colspan="2">اختر الفصل أولاً</td></tr>'; return; } const today = new Date().toLocaleDateString('en-CA'); const students = Object.values(data.students || {}).filter(s => s.class === cls); body.innerHTML = students.map(s => { let isAbsent = false; if (attMode === 'day') { isAbsent = data.attendance && data.attendance[today] && data.attendance[today]['full_day'] && data.attendance[today]['full_day'][s.name] === true; } else { isAbsent = data.attendance && data.attendance[today] && data.attendance[today]['periods'] && data.attendance[today]['periods'][period] && data.attendance[today]['periods'][period][s.name] === 'absent'; } return `<tr><td>${s.name}</td><td><button class="btn btn-sm ${isAbsent ? 'btn-danger' : 'btn-success'} w-50 rounded-pill" onclick="toggleAtt('${today}', '${s.name}', ${isAbsent})">${isAbsent ? 'غائب' : 'حاضر'}</button></td></tr>`; }).join(''); }
         function toggleAtt(date, name, currentlyAbsent) { const period = document.getElementById('att-period').value; const newState = !currentlyAbsent; if (attMode === 'day') { if (newState) { db.ref(`attendance/${date}/full_day/${name}`).set(true); } else { db.ref(`attendance/${date}/full_day/${name}`).remove(); } } else { if (newState) { db.ref(`attendance/${date}/periods/${period}/${name}`).set('absent'); } else { db.ref(`attendance/${date}/periods/${period}/${name}`).remove(); } } setTimeout(() => loadAttendanceList(), 100); }
@@ -555,25 +583,7 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute"></i>':'<i class="fas fa-volume-up"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
         function savePermissions() { const perms = { counselor: document.getElementById('perm-counselor').checked, teacher: document.getElementById('perm-teacher').checked, guard: document.getElementById('perm-guard').checked }; db.ref('settings/permissions').set(perms).then(() => Swal.fire('تم', 'تم تحديث الصلاحيات', 'success')); }
-        
-        function saveBroadcastSettings() { 
-            const updates = { 
-                hofTitle: document.getElementById('set-hof-title').value,
-                eventTitle: document.getElementById('set-event-title').value, 
-                eventMsg: document.getElementById('set-event-msg').value, 
-                showcaseTitle: document.getElementById('set-showcase-title').value 
-            }; 
-            const file = document.getElementById('set-showcase-img').files[0]; 
-            
-            const doUpdate = (data) => db.ref('settings/broadcast').update(data).then(()=>Swal.fire('تم','تم حفظ إعدادات البث','success'));
-
-            if(file) { 
-                const r = new FileReader(); 
-                r.onload = e => { updates.showcaseImg = e.target.result; doUpdate(updates); }; 
-                r.readAsDataURL(file); 
-            } else { doUpdate(updates); } 
-        }
-
+        function saveBroadcastSettings() { const updates = { eventTitle: document.getElementById('set-event-title').value, eventMsg: document.getElementById('set-event-msg').value, showcaseTitle: document.getElementById('set-showcase-title').value }; const file = document.getElementById('set-showcase-img').files[0]; if(file) { const r = new FileReader(); r.onload = e => { updates.showcaseImg = e.target.result; db.ref('settings/broadcast').update(updates).then(()=>Swal.fire('تم','تم حفظ العرض','success')); }; r.readAsDataURL(file); } else { db.ref('settings/broadcast').update(updates).then(()=>Swal.fire('تم','تم حفظ العرض','success')); } }
         function updateDashboardStats() { if(userRole==='admin') { document.getElementById('adm-vis-list').previousElementSibling.querySelector('span.badge').innerText = Object.values(data.visitors||{}).filter(v=>v.status==='pending').length; } }
         
         function openHallOfFame() {
@@ -650,6 +660,7 @@
             document.getElementById('modal-print-content').innerHTML = h; modal.show();
         }
         function executePrint() { document.getElementById('final-print-container').innerHTML = document.getElementById('modal-print-content').innerHTML; setTimeout(()=>window.print(), 500); }
+        function renderMonitor() { const g = document.getElementById('monitor-grid'); const l = Object.entries(data.permits||{}).filter(x=>x[1].active); document.getElementById('no-students').classList.toggle('d-none', l.length>0); g.innerHTML = l.map(([k,p])=>{ const m = Math.floor((new Date()-new Date(p.start))/60000); return `<div class="col-md-3"><div class="monitor-card ${m>=p.limit?'danger':'safe'}"><h5>${p.student}</h5><small class="text-muted d-block">${p.class} | ${p.dest}</small><h2 class="text-center my-3">${m} د</h2><button class="btn btn-dark btn-sm w-100 rounded-pill" onclick="db.ref('permits/${k}').update({active:false}); renderMonitor();">عودة</button></div></div>`; }).join(''); }
     </script>
 </body>
 </html>

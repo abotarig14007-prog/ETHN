@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#006C35">
-    <title>نظام إذن (V116.0 Monitor Fix)</title>
+    <title>نظام إذن (V117.0 The Guardian)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -38,17 +38,12 @@
 
         .page-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
         .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
-        .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); }
-        
-        /* Monitor Card Style */
-        .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 2px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
-        .monitor-card.safe { border-bottom: 5px solid #198754; }
-        .monitor-card.danger { border-bottom: 5px solid #dc3545; animation: pulse 2s infinite; }
-        .monitor-card h5 { font-weight: 800; color: var(--text); margin-bottom: 5px; }
+        .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         
         /* Overlays */
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); z-index: 10000; display: none; overflow: hidden; color: white; }
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); z-index: 10000; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
         .overlay-close { position: absolute; top: 30px; left: 30px; z-index: 10001; background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; }
         
         /* Hall of Fame */
@@ -64,10 +59,11 @@
         .empty-state-message { font-size: 3rem; font-weight: 900; color: #FFD700; text-align: center; margin-top: 15%; animation: pulse 2s infinite; }
 
         /* Showcase & Events */
-        .event-container, .showcase-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .event-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .event-title { font-size: 6rem; font-weight: 900; color: #FFD700; margin-bottom: 30px; text-shadow: 0 0 40px #000; }
         .event-msg { font-size: 3.5rem; color: #fff; background: rgba(0,0,0,0.6); padding: 40px; border-radius: 40px; border: 3px solid rgba(255,215,0,0.3); }
-        .showcase-img-box { max-height: 70vh; border: 15px solid #fff; box-shadow: 0 0 60px rgba(0,0,0,0.8); border-radius: 30px; overflow: hidden; }
+        .showcase-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .showcase-img-box { max-height: 70vh; border: 15px solid #fff; box-shadow: 0 0 60px rgba(0,0,0,0.8); border-radius: 30px; overflow: hidden; animation: zoomIn 1s; }
         .showcase-img-box img { height: 100%; width: auto; object-fit: contain; }
         .showcase-label { font-size: 3rem; color: #FFD700; margin-top: 30px; font-weight: 900; background: rgba(0,0,0,0.7); padding: 15px 50px; border-radius: 50px; }
 
@@ -75,6 +71,7 @@
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
         .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 12px 40px; border-radius: 50px; display: none; font-weight: bold; }
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 80px; border-bottom: 1px solid var(--border); }
+        [data-theme="dark"] #top-bar { background: rgba(30, 41, 59, 0.95); }
         
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.6s ease; }
@@ -87,8 +84,8 @@
         .setting-card-navy { border-top: 5px solid #001f3f; background: #fff; }
         .setting-card-green { border-top: 5px solid #198754; background: #fff; }
         .setting-card-blue { border-top: 5px solid #0d6efd; background: #fff; }
-        .settings-card-orange { border-top: 5px solid #fd7e14; background: #fff; }
-        .settings-card-red { border-top: 5px solid #dc3545; background: #fff; }
+        .setting-card-orange { border-top: 5px solid #fd7e14; background: #fff; }
+        .setting-card-red { border-top: 5px solid #dc3545; background: #fff; }
 
         /* Print */
         #final-print-container { display: none; }
@@ -118,7 +115,7 @@
 
     <div id="auth-overlay">
         <div class="login-card fade-in">
-            <i class="fas fa-school fa-5x text-success mb-3"></i><h3 class="fw-bold mb-1">متوسطة الإمام النووي</h3><p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V116.0</p>
+            <i class="fas fa-school fa-5x text-success mb-3"></i><h3 class="fw-bold mb-1">متوسطة الإمام النووي</h3><p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V117.0</p>
             <div id="role-selection">
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('admin', 'الإدارة')"><span>الإدارة</span><i class="fas fa-user-tie text-primary fa-lg"></i></div>
                 <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('teacher', 'المعلم')"><span>المعلم</span><i class="fas fa-chalkboard-teacher text-success fa-lg"></i></div>
@@ -157,11 +154,6 @@
                         <div class="col-md-4"><div class="stat-box blue"><h2>0</h2><small>طلاب بالخارج</small></div></div>
                         <div class="col-md-4"><div class="stat-box green"><h2>0</h2><small>زوار اليوم</small></div></div>
                         <div class="col-md-4"><div class="stat-box red"><h2>0</h2><small>مخالفات اليوم</small></div></div>
-                    </div>
-                    <div class="row g-4 mb-4">
-                        <div class="col-md-4"><div class="page-card h-100"><div class="card-header-custom">الزوار</div><div id="adm-vis-list" class="list-group list-group-flush p-2"></div></div></div>
-                        <div class="col-md-4"><div class="page-card h-100"><div class="card-header-custom">المخالفات</div><div id="adm-vio-list" class="p-3"></div></div></div>
-                        <div class="col-md-4"><div class="page-card h-100"><div class="card-header-custom">انصراف نهائي</div><div class="p-4"><label>اسم الطالب <span class="req-star">*</span></label><input id="adm-dep-name" class="form-control mb-3"><button class="btn btn-primary w-100 rounded-pill" onclick="sendDeparture()">إرسال للحارس</button></div></div></div>
                     </div>
                 </div>
 
@@ -268,37 +260,37 @@
                 <div class="page-card p-4">
                     <h5 class="fw-bold mb-4 text-primary">الإعدادات والأمان</h5>
                     
-                    <div class="setting-card-navy p-3 mb-4 rounded shadow-sm">
+                    <div class="setting-card-navy p-4 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-dark mb-3"><i class="fas fa-crown me-2"></i> إعدادات لوحة الشرف</h6>
                         <div class="row g-3">
-                            <div class="col-md-6"><label>عنوان اللوحة</label><input id="set-hof-title" class="form-control" placeholder="لوحة الشرف والمتميزين"></div>
+                            <div class="col-md-12"><label>عنوان اللوحة (مثلاً: نجوم الأسبوع)</label><input id="set-hof-title" class="form-control" placeholder="لوحة الشرف والمتميزين"></div>
                         </div>
                     </div>
 
-                    <div class="setting-card-green p-3 mb-4 rounded shadow-sm">
+                    <div class="setting-card-green p-4 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-success mb-3"><i class="fas fa-calendar-alt me-2"></i> إعدادات نبض المدرسة</h6>
                         <div class="row g-3">
-                            <div class="col-md-6"><label>عنوان المناسبة</label><input id="set-event-title" class="form-control"></div>
-                            <div class="col-md-6"><label>نص الرسالة</label><input id="set-event-msg" class="form-control"></div>
+                            <div class="col-md-6"><label>عنوان المناسبة</label><input id="set-event-title" class="form-control" placeholder="عنوان يظهر أعلى الشاشة"></div>
+                            <div class="col-md-6"><label>نص الرسالة</label><input id="set-event-msg" class="form-control" placeholder="الرسالة التي ستظهر"></div>
                         </div>
                     </div>
 
-                    <div class="setting-card-blue p-3 mb-4 rounded shadow-sm">
+                    <div class="setting-card-blue p-4 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-primary mb-3"><i class="fas fa-palette me-2"></i> إعدادات معرض المبدعين</h6>
                         <div class="row g-3">
-                            <div class="col-md-12"><label>صورة المعرض</label><input type="file" id="set-showcase-img" class="form-control" accept="image/*"></div>
-                            <div class="col-md-12"><label>عنوان العمل</label><input id="set-showcase-title" class="form-control"></div>
+                            <div class="col-md-12"><label>صورة العمل الفني</label><input type="file" id="set-showcase-img" class="form-control" accept="image/*"></div>
+                            <div class="col-md-12"><label>اسم الطالب أو عنوان العمل</label><input id="set-showcase-title" class="form-control"></div>
                         </div>
                     </div>
-                    <div class="col-12 mb-4"><button class="btn btn-dark w-100" onclick="saveBroadcastSettings()">حفظ إعدادات البث</button></div>
+                    <div class="col-12 mb-4"><button class="btn btn-dark w-100 py-3 fw-bold" onclick="saveBroadcastSettings()">حفظ وتحديث إعدادات البث</button></div>
 
-                    <div class="settings-card-orange p-3 mb-4 rounded shadow-sm">
+                    <div class="setting-card-orange p-4 mb-4 rounded shadow-sm">
                         <h6 class="fw-bold text-dark"><i class="fas fa-lock me-2"></i> إدارة الصلاحيات</h6>
-                        <div class="row g-3">
+                        <div class="row g-3 mt-2">
                             <div class="col-md-4"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-counselor"><label class="form-check-label fw-bold">الموجه (تقارير)</label></div></div>
                             <div class="col-md-4"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-teacher"><label class="form-check-label fw-bold">المعلم (تقارير)</label></div></div>
                             <div class="col-md-4"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-guard"><label class="form-check-label fw-bold">الحارس (تقارير)</label></div></div>
-                            <div class="col-12 mt-2"><button class="btn btn-warning btn-sm w-100" onclick="savePermissions()">حفظ الصلاحيات</button></div>
+                            <div class="col-12 mt-2"><button class="btn btn-warning btn-sm w-100 fw-bold" onclick="savePermissions()">حفظ الصلاحيات</button></div>
                         </div>
                     </div>
 
@@ -311,15 +303,15 @@
                          <div class="col-12 text-center"><img id="logo-preview" src="" style="max-height: 80px; display: none; margin: 0 auto;"></div>
                     </div>
 
-                    <div class="settings-card-red p-3 mb-4 rounded shadow-sm">
-                        <h6 class="fw-bold text-danger"><i class="fas fa-shield-alt me-2"></i> بيانات الدخول</h6>
-                        <div class="row g-3">
+                    <div class="setting-card-red p-4 mb-4 rounded shadow-sm">
+                        <h6 class="fw-bold text-danger"><i class="fas fa-shield-alt me-2"></i> بيانات الدخول والأمان</h6>
+                        <div class="row g-3 mt-2">
                             <div class="col-md-12"><label class="text-danger fw-bold">إيميل التحقق</label><div class="input-group"><input type="password" id="s-email" class="form-control" placeholder="example@gmail.com" onchange="saveSettings()"><button class="btn btn-outline-secondary" onclick="toggleVisibility('s-email')"><i class="fas fa-eye"></i></button></div></div>
                             <div class="col-md-3"><label>المدير</label><div class="input-group"><input type="password" id="pin-admin" class="form-control"><button class="btn btn-outline-secondary" onclick="toggleVisibility('pin-admin')"><i class="fas fa-eye"></i></button></div></div>
                             <div class="col-md-3"><label>المعلم</label><div class="input-group"><input type="password" id="pin-teacher" class="form-control"><button class="btn btn-outline-secondary" onclick="toggleVisibility('pin-teacher')"><i class="fas fa-eye"></i></button></div></div>
                             <div class="col-md-3"><label>الحارس</label><div class="input-group"><input type="password" id="pin-guard" class="form-control"><button class="btn btn-outline-secondary" onclick="toggleVisibility('pin-guard')"><i class="fas fa-eye"></i></button></div></div>
                             <div class="col-md-3"><label>الموجه</label><div class="input-group"><input type="password" id="pin-counselor" class="form-control"><button class="btn btn-outline-secondary" onclick="toggleVisibility('pin-counselor')"><i class="fas fa-eye"></i></button></div></div>
-                            <div class="col-12"><button class="btn btn-dark w-100" onclick="savePasswords()">حفظ الرموز</button></div>
+                            <div class="col-12"><button class="btn btn-dark w-100 fw-bold" onclick="savePasswords()">حفظ الرموز السرية</button></div>
                         </div>
                     </div>
 
@@ -345,6 +337,7 @@
     <div class="modal fade" id="printModal" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">معاينة التقرير</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-white" id="modal-print-content"></div><div class="modal-footer"><button type="button" class="btn btn-primary w-100 fw-bold" onclick="executePrint()">طباعة</button></div></div></div></div>
     <div id="final-print-container"></div>
     <div class="fab-theme" onclick="toggleTheme()"><i class="fas fa-moon"></i></div>
+    <div id="cert-template" style="display: none;"><div class="cert-inner"><h1 style="color:var(--primary); font-weight:800; font-size:3rem; margin-bottom:40px;">شهادة شكر وتقدير</h1><p style="font-size:1.5rem; margin-top:20px;">تتقدم إدارة المدرسة بالشكر الجزيل للطالب المتميز:</p><h2 id="cert-student-name" style="color:var(--gold); border-bottom:2px solid; display:inline-block; padding:10px 50px; margin: 30px 0;">...</h2><p style="font-size:1.3rem; margin-top:20px; line-height: 1.8;">وذلك نظير انضباطه السلوكي وحصوله على نقاط تميز عالية.<br>متمنين له دوام التوفيق والنجاح.</p><div style="margin-top:80px; display:flex; justify-content:space-around; align-items: flex-end;"><div style="text-align: center;"><strong>وكيل شؤون الطلاب</strong><br><span id="cert-deputy">...</span></div><div style="text-align: center;"><strong>مدير المدرسة</strong><br><span id="cert-manager">...</span></div></div></div></div>
 
     <script>
         const firebaseConfig = { apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE", authDomain: "ethn-63848.firebaseapp.com", databaseURL: "https://ethn-63848-default-rtdb.firebaseio.com", projectId: "ethn-63848", storageBucket: "ethn-63848.appspot.com", messagingSenderId: "747489913596", appId: "1:747489913596:web:d98d88447e4a25cc808579" };
@@ -365,6 +358,7 @@
                     document.body.style.visibility = 'visible';
                     calculateBestClass(); updateDashboardStats(); checkSecurityAlerts();
                     
+                    // Auto Login if saved
                     if(savedRole && !userRole) {
                         userRole = savedRole;
                         document.getElementById('auth-overlay').style.display='none';
@@ -372,14 +366,44 @@
                         buildMenu();
                         const lastView = localStorage.getItem('currentView') || 'services';
                         navigate(lastView);
-                        showServiceDefault(); 
+                        showServiceDefault();
+                        populateSettingsUI(); // Fill inputs
                     } else if(userRole) {
                         refreshScreens(); 
+                        populateSettingsUI(); // Fill inputs on update
                     }
                 }
             });
             setInterval(monitorLoop, 10000);
         };
+
+        function populateSettingsUI() {
+             // Fill Settings Inputs from Data
+             if(document.getElementById('s-school')) {
+                 document.getElementById('s-school').value = data.settings.school || '';
+                 document.getElementById('s-manager').value = data.settings.manager || '';
+                 document.getElementById('s-deputy').value = data.settings.deputy || '';
+                 document.getElementById('s-email').value = data.settings.admin_email || '';
+                 if(data.settings.logo) { document.getElementById('logo-preview').src = data.settings.logo; document.getElementById('logo-preview').style.display = 'block'; }
+                 
+                 // Pins
+                 document.getElementById('pin-admin').value = data.settings.admin_pin || '';
+                 document.getElementById('pin-teacher').value = data.settings.teacher_pin || '';
+                 document.getElementById('pin-guard').value = data.settings.guard_pin || '';
+                 document.getElementById('pin-counselor').value = data.settings.counselor_pin || '';
+
+                 // Broadcast
+                 document.getElementById('set-hof-title').value = data.settings.broadcast?.hofTitle || '';
+                 document.getElementById('set-event-title').value = data.settings.broadcast?.eventTitle || '';
+                 document.getElementById('set-event-msg').value = data.settings.broadcast?.eventMsg || '';
+                 document.getElementById('set-showcase-title').value = data.settings.broadcast?.showcaseTitle || '';
+                 
+                 // Perms
+                 document.getElementById('perm-counselor').checked = data.settings.permissions?.counselor || false;
+                 document.getElementById('perm-teacher').checked = data.settings.permissions?.teacher || false;
+                 document.getElementById('perm-guard').checked = data.settings.permissions?.guard || false;
+             }
+        }
 
         function selectRole(r, t) { userRole=r; document.getElementById('role-selection').classList.add('hidden'); document.getElementById('pin-area').classList.remove('hidden'); document.getElementById('role-label').innerText='دخول: '+t; document.getElementById('pin-input').value=''; }
         function backToRoles() { document.getElementById('pin-area').classList.add('hidden'); document.getElementById('role-selection').classList.remove('hidden'); userRole=''; }
@@ -394,6 +418,7 @@
                 buildMenu(); 
                 navigate(userRole==='guard'?'guard':(userRole==='admin'?'services':'services')); 
                 showServiceDefault();
+                populateSettingsUI();
             } else { Swal.fire('خطأ','الرمز غير صحيح','error'); } 
         }
 
@@ -408,7 +433,7 @@
                                   
             if(hasReportPerm) links.push(['reports','التقارير','file-alt']);
             
-            if(userRole==='admin') links.push(['broadcast','مركز البث','broadcast-tower'],['data','الإعدادات','cogs']); 
+            if(userRole==='admin') links.push(['sec-data','مركز البث & الإعدادات','cogs']); // Unified for Admin
             if(userRole==='guard') links = [['guard','الحارس','shield-alt']]; 
             if(userRole==='counselor') links = [['counselor','الموجه','user-graduate']];
             if(hasReportPerm && userRole !== 'admin') links.push(['reports','التقارير','file-alt']);
@@ -425,13 +450,16 @@
             if(id === 'services') {
                 document.getElementById('sec-services').classList.remove('d-none');
                 if(userRole === 'admin') {
-                    document.getElementById('admin-stats-panel').classList.remove('d-none');
+                    document.getElementById('admin-panel-content').classList.remove('d-none');
                     document.querySelector('.admin-only').classList.remove('d-none');
                 } else {
-                    document.getElementById('admin-stats-panel').classList.add('d-none');
+                    document.getElementById('admin-panel-content').classList.add('d-none');
                     if(document.querySelector('.admin-only')) document.querySelector('.admin-only').classList.add('d-none');
                 }
                 showServiceDefault();
+            } else if (id === 'sec-data') { // Special case for Admin Settings
+                 document.getElementById('sec-data').classList.remove('d-none');
+                 populateSettingsUI();
             } else {
                 const el = document.getElementById('sec-'+id); if(el) el.classList.remove('d-none');
             }
@@ -465,22 +493,6 @@
                 else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; }
             }
             if(userRole==='admin') renderAdmin(); if(userRole==='guard') renderGuard();
-            
-            if(!document.getElementById('sec-data').classList.contains('d-none')) {
-                const s = document.getElementById('view-class-select'); s.innerHTML='<option value="">اختر الفصل</option>'+(data.classes||[]).map(c=>`<option>${c}</option>`).join('');
-                document.getElementById('s-school').value=data.settings.school; document.getElementById('s-manager').value=data.settings.manager; document.getElementById('s-deputy').value=data.settings.deputy; document.getElementById('s-email').value=data.settings.admin_email;
-                if(data.settings.logo) { document.getElementById('logo-preview').style.display='block'; document.getElementById('logo-preview').src=data.settings.logo; }
-                
-                document.getElementById('perm-counselor').checked = data.settings.permissions?.counselor || false;
-                document.getElementById('perm-teacher').checked = data.settings.permissions?.teacher || false;
-                document.getElementById('perm-guard').checked = data.settings.permissions?.guard || false;
-
-                // Broadcast Settings Load
-                document.getElementById('set-hof-title').value = data.settings.broadcast?.hofTitle || '';
-                document.getElementById('set-event-title').value = data.settings.broadcast?.eventTitle || '';
-                document.getElementById('set-event-msg').value = data.settings.broadcast?.eventMsg || '';
-                document.getElementById('set-showcase-title').value = data.settings.broadcast?.showcaseTitle || '';
-            }
         }
 
         // Logic
@@ -498,7 +510,6 @@
             if(!validate(['t-stu','t-class','t-dest'])) return;
             let timeVal = document.getElementById('t-time').value; if(!timeVal) return Swal.fire('تنبيه', 'أدخل المدة', 'warning');
             const stu = document.getElementById('t-stu').value;
-            
             const activePermits = Object.values(data.permits||{}).filter(p => p.student === stu && p.active);
             if(activePermits.length > 0) return Swal.fire('عذراً', 'الطالب موجود خارج الفصل حالياً!', 'error');
 

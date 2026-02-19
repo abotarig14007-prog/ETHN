@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="إذن">
     <meta name="theme-color" content="#006C35">
-    
-    <title>نظام إذن (V120.0 Mobile)</title>
+    <meta name="format-detection" content="telephone=no">
+    <title>نظام إذن (V126.0 Mobile Pro)</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,116 +21,103 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-        /* ================= Core Styles & Mobile Optimization ================= */
-        :root { --primary: #006C35; --gold: #C69C6D; --bg: #F8FAFC; --card: #ffffff; --text: #1E293B; --border: #E2E8F0; --transition: all 0.3s ease; }
-        [data-theme="dark"] { --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155; }
+        /* ================= Core Styles ================= */
+        :root { --primary: #006C35; --gold: #C69C6D; --bg: #F0F2F5; --card: #ffffff; --text: #1E293B; --border: #E2E8F0; --distinct: #6f42c1; }
         
-        /* Native App Feel Fixes */
-        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
+        /* Reset & Mobile Optimization */
+        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; touch-action: manipulation; }
+        
         body { 
-            font-family: 'Tajawal', sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text); 
-            overflow-x: hidden; 
-            visibility: hidden; 
-            padding-bottom: 80px;
-            /* Prevent Pull-to-Refresh & Overscroll */
-            overscroll-behavior-y: none;
-            -webkit-user-select: none; /* Disable text selection for UI feel */
-            user-select: none;
+            font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); 
+            overflow-x: hidden; visibility: hidden; padding-bottom: 100px;
+            overscroll-behavior-y: none; /* يمنع سحب الصفحة للأعلى والأسفل */
+            -webkit-user-select: none; user-select: none;
+        }
+
+        /* Input Fixes for Mobile (No Zoom) */
+        input, textarea, select, .form-control, .form-select { 
+            -webkit-user-select: text; user-select: text; 
+            font-size: 16px !important; /* حجم 16 يمنع زوم الايفون */
+            border-radius: 12px !important;
+            padding: 12px !important;
+            height: auto !important;
         }
         
-        /* Allow text selection only in inputs */
-        input, textarea, select { -webkit-user-select: text; user-select: text; font-size: 16px !important; /* Prevent iOS Zoom */ }
+        /* Larger Buttons for Touch */
+        .btn { 
+            border-radius: 12px; font-weight: 800; padding: 12px 20px; 
+            transition: transform 0.1s; display: flex; align-items: center; justify-content: center;
+        }
+        .btn:active { transform: scale(0.96); } /* تأثير ضغط الزر */
+        
+        /* Cards */
+        .page-card { 
+            background: var(--card); border-radius: 20px; border: none; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 15px; padding: 20px; 
+        }
 
-        .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
-        [data-theme="dark"] .gradient-bg { background: linear-gradient(-45deg, #0f172a, #1e293b, #020617); }
-        @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
-        
-        /* Safe Area Insets for Notched Phones */
-        .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top); }
-        
+        /* Top Bar - Sticky & Frosted */
         #top-bar { 
-            background: rgba(255,255,255,0.95); 
-            backdrop-filter: blur(10px); 
-            padding: 10px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: fixed; 
-            top: 0; left:0; width: 100%; 
-            z-index: 900; 
-            border-bottom: 1px solid var(--border);
-            /* Support for Notch */
-            padding-top: calc(10px + env(safe-area-inset-top)); 
-            height: calc(80px + env(safe-area-inset-top));
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; top: 0; left:0; width: 100%; z-index: 900; 
+            border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            padding-top: calc(10px + env(safe-area-inset-top)); height: calc(75px + env(safe-area-inset-top));
         }
 
-        .main-content { margin-right: 280px; padding: 20px; padding-top: calc(100px + env(safe-area-inset-top)); min-height: 100vh; transition: var(--transition); }
-        @media (max-width: 991px) { .sidebar { transform: translateX(100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-right: 0; padding-top: calc(90px + env(safe-area-inset-top)); } }
-
-        .nav-link { padding: 15px 25px; margin: 5px 15px; color: rgba(255,255,255,0.85); cursor: pointer; border-radius: 12px; font-weight: 700; transition: 0.2s; display: flex; align-items: center; }
-        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.2); color: white; transform: translateX(-5px); }
-        .nav-link.active { border-right: 5px solid var(--gold); }
-
-        .page-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
-        .stat-box { background: var(--card); padding: 20px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 10px; }
-        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
+        /* Layout & Sidebar */
+        .main-content { margin-right: 0; padding: 15px; padding-top: calc(95px + env(safe-area-inset-top)); min-height: 100vh; transition: all 0.3s ease; }
         
-        .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 2px solid #eee; transition: 0.3s; position: relative; overflow: hidden; touch-action: manipulation; }
-        .monitor-card:active { transform: scale(0.98); }
+        .sidebar { 
+            width: 85%; max-width: 320px; height: 100vh; background: var(--primary); color: white; 
+            position: fixed; right: 0; top: 0; z-index: 2000; 
+            box-shadow: -10px 0 30px rgba(0,0,0,0.2); 
+            display: flex; flex-direction: column; padding-top: env(safe-area-inset-top); 
+            transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .sidebar.active { transform: translateX(0); }
+        .sidebar-backdrop { 
+            position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); 
+            z-index: 1999; display: none; backdrop-filter: blur(3px);
+        }
+        .sidebar-backdrop.active { display: block; }
+
+        .nav-link { padding: 18px 25px; border-bottom: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; font-weight: 700; font-size: 1.1rem; }
+        .nav-link:active { background: rgba(255,255,255,0.1); }
+
+        /* Dashboard Items */
+        .stat-box { background: #fff; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .monitor-card { background: white; border-radius: 20px; padding: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; position: relative; }
+        .monitor-card.danger { border-bottom: 5px solid #dc3545; background: #fff5f5; }
         .monitor-card.safe { border-bottom: 5px solid #198754; }
-        .monitor-card.danger { border-bottom: 5px solid #dc3545; animation: pulse 2s infinite; }
-        .monitor-card h5 { font-weight: 800; color: var(--text); margin-bottom: 5px; }
 
-        .report-grid-item { background: var(--card); border-radius: 20px; padding: 25px 15px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; touch-action: manipulation; }
-        .report-grid-item:active { transform: scale(0.95); background: rgba(0,0,0,0.05); }
-        .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
-
-        /* Overlays */
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); z-index: 10000; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
-        .overlay-close { position: absolute; top: calc(30px + env(safe-area-inset-top)); left: 30px; z-index: 10001; background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; }
+        /* Overlays (Smart Board) */
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%); z-index: 10000; display: none; overflow: hidden; color: white; }
+        .overlay-close { position: absolute; top: calc(30px + env(safe-area-inset-top)); left: 30px; z-index: 10001; background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 10px 25px; border-radius: 50px; font-weight: bold; backdrop-filter: blur(5px); }
         
-        /* Hall of Fame */
-        .champion-area { text-align: center; margin-bottom: 40px; animation: float 4s infinite; padding-top: 50px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .champion-avatar { width: 220px; height: 220px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 5rem; color: #333; margin: 0 auto 20px; overflow: hidden; box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); }
-        .champion-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .champion-name { font-size: 3.5rem; font-weight: 900; animation: colorCycle 5s infinite; }
-        @keyframes colorCycle { 0% {color:#fff; text-shadow:0 0 20px #FFD700;} 50% {color:#FFD700; text-shadow:0 0 20px #fff;} 100% {color:#fff; text-shadow:0 0 20px #FFD700;} }
-        #challengers-slider { width: 95%; max-width: 1500px; display: flex; justify-content: center; gap: 30px; margin: 0 auto; flex-wrap: wrap; }
-        .challenger-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 215, 0, 0.3); border-radius: 25px; padding: 20px; text-align: center; width: 300px; animation: slideUp 0.8s ease; display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
-        .challenger-rank { background: #FFD700; color: #000; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border: 4px solid #fff; }
-        .challenger-name { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; color: white; }
-        .empty-state-message { font-size: 2.5rem; font-weight: 900; color: #FFD700; text-align: center; margin-top: 15%; animation: pulse 2s infinite; padding: 20px; }
-
-        /* Showcase & Events */
-        .event-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-        .event-title { font-size: 4rem; font-weight: 900; color: #FFD700; margin-bottom: 20px; text-shadow: 0 0 40px #000; }
-        .event-msg { font-size: 2rem; color: #fff; background: rgba(0,0,0,0.6); padding: 30px; border-radius: 30px; border: 3px solid rgba(255,215,0,0.3); width: 100%; max-width: 800px; }
-        .showcase-img-box { max-height: 60vh; max-width: 95%; border: 10px solid #fff; box-shadow: 0 0 60px rgba(0,0,0,0.8); border-radius: 20px; overflow: hidden; }
-        .showcase-img-box img { height: 100%; width: 100%; object-fit: contain; }
-        .showcase-label { font-size: 2rem; color: #FFD700; margin-top: 20px; font-weight: 900; background: rgba(0,0,0,0.7); padding: 10px 30px; border-radius: 50px; }
-
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: var(--card); padding: 30px; border-radius: 30px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .custom-toast { position: fixed; top: calc(30px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 12px 40px; border-radius: 50px; display: none; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 90%; max-width: 300px; text-align: center; }
+        .smart-board-container { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .board-slide { display: none; width: 100%; height: 100%; animation: fadeIn 0.8s ease; flex-direction: column; align-items: center; justify-content: center; }
+        .board-slide.active { display: flex; }
         
-        .role-btn { transition: 0.2s; touch-action: manipulation; }
-        .role-btn:active { transform: scale(0.97); background: #eee !important; }
-
-        .hidden { display: none !important; }
-        .fade-in { animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes float { 0%,100% {transform: translateY(0);} 50% {transform: translateY(-10px);} }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.02); opacity: 1; } 100% { transform: scale(1); opacity: 0.9; } }
+        .discipline-list { width: 100%; max-width: 600px; }
+        .discipline-item { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; margin-bottom: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #FFD700; }
         
-        /* Settings Colors */
-        .setting-card-navy { border-top: 5px solid #001f3f; background: #fff; }
-        .setting-card-green { border-top: 5px solid #198754; background: #fff; }
-        .setting-card-blue { border-top: 5px solid #0d6efd; background: #fff; }
-        .setting-card-orange { border-top: 5px solid #fd7e14; background: #fff; }
-        .setting-card-red { border-top: 5px solid #dc3545; background: #fff; }
+        .showcase-frame { max-height: 60vh; max-width: 100%; border: 5px solid #fff; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .showcase-frame img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* Back Button */
+        #global-back-btn {
+            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
+            background: var(--distinct); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.5); z-index: 800;
+            border: 3px solid white; transition: transform 0.2s;
+        }
+        #global-back-btn:active { transform: scale(0.9); }
+
+        /* Login */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #004d26, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: white; padding: 40px 30px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
 
         /* Print */
         #final-print-container { display: none; }
@@ -142,537 +127,526 @@
             #final-print-container * { visibility: visible; }
             .no-print { display: none !important; }
             @page { size: A4; margin: 5mm; }
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
-        #cert-template { display: none; }
+
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Buttons Mobile Optimization */
-        .btn { border-radius: 12px; padding: 10px 20px; font-weight: bold; }
-        .btn-lg { padding: 15px 30px; font-size: 1.1rem; }
+        /* Mobile Specific Tweaks */
+        @media (max-width: 768px) {
+            .stat-box h3 { font-size: 1.5rem; margin-bottom: 0; }
+            .col-6 { padding-left: 5px; padding-right: 5px; } /* Tighten grid */
+            h5 { font-size: 1.1rem; }
+        }
     </style>
 </head>
 <body>
-    <div class="gradient-bg"></div>
-    <div class="custom-toast" id="system-toast">تنبيه جديد!</div>
+    <div class="sidebar-backdrop" onclick="document.querySelector('.sidebar').classList.remove('active'); this.classList.remove('active');"></div>
+    <div class="custom-toast" id="system-toast" style="display:none; position:fixed; top:80px; left:50%; transform:translateX(-50%); background:#333; color:white; padding:12px 30px; border-radius:50px; z-index:11000; font-weight:bold; box-shadow:0 5px 15px rgba(0,0,0,0.2);">تنبيه</div>
 
-    <div id="hall-of-fame-overlay" class="full-overlay"><button class="overlay-close" onclick="closeOverlay('hall-of-fame-overlay')"><i class="fas fa-times"></i> إغلاق</button><div class="hof-container"><h1 class="hof-title" id="disp-hof-title">💎 لوحة الشرف 💎</h1><div id="hof-content" style="width:100%; display:flex; flex-direction:column; align-items:center; overflow-y:auto; max-height:85vh; padding-bottom:50px;"></div></div></div>
-    <div id="events-overlay" class="full-overlay"><button class="overlay-close" onclick="closeOverlay('events-overlay')"><i class="fas fa-times"></i> إغلاق</button><div class="event-container"><h1 class="event-title" id="disp-event-title"></h1><div class="event-msg" id="disp-event-msg"></div></div></div>
-    <div id="showcase-overlay" class="full-overlay"><button class="overlay-close" onclick="closeOverlay('showcase-overlay')"><i class="fas fa-times"></i> إغلاق</button><div class="showcase-container"><div class="showcase-img-box"><img id="disp-showcase-img" src=""></div><div class="showcase-label" id="disp-showcase-title"></div></div></div>
+    <div id="smart-board-overlay" class="full-overlay">
+        <button class="overlay-close" onclick="closeSmartBoard()"><i class="fas fa-times"></i> إغلاق</button>
+        <div class="smart-board-container">
+            <div id="slide-showcase" class="board-slide active">
+                <div class="showcase-frame"><img id="disp-showcase-img" src=""></div>
+                <h2 class="mt-4 text-warning fw-bold" id="disp-showcase-title"></h2>
+            </div>
+            <div id="slide-discipline" class="board-slide">
+                <h2 class="mb-4 text-warning fw-bold" style="font-size:2rem">💎 نجوم الانضباط 💎</h2>
+                <div id="discipline-list-container" class="discipline-list"></div>
+            </div>
+        </div>
+    </div>
 
-    <div id="top-bar" class="fixed-top no-print">
-        <div class="d-flex align-items-center"><div style="width:12px; height:12px; background:red; border-radius:50%; margin-left:10px;" id="status-dot"></div><h5 class="m-0 fw-bold text-dark">نظام إذن <span class="text-success small">Mobile</span></h5></div>
-        <div class="d-flex align-items-center gap-2"><div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> <span id="best-class-txt"></span></div><button class="btn btn-light rounded-circle border shadow-sm" style="width:40px;height:40px;" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up"></i></button><button class="btn btn-dark d-lg-none rounded-circle shadow-sm" style="width:40px;height:40px;" onclick="document.querySelector('.sidebar').classList.toggle('active')"><i class="fas fa-bars"></i></button></div>
+    <div id="top-bar" class="no-print">
+        <div class="d-flex align-items-center">
+            <div style="width:12px; height:12px; background:#22c55e; border-radius:50%; margin-left:10px; box-shadow:0 0 5px #22c55e;" id="status-dot"></div>
+            <h5 class="m-0 fw-bold text-dark">نظام إذن</h5>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-light rounded-circle shadow-sm border" style="width:45px;height:45px;" onclick="toggleSidebar()"><i class="fas fa-bars text-dark"></i></button>
+        </div>
+    </div>
+
+    <div id="global-back-btn" class="d-none animate__animated animate__fadeInUp" onclick="navigate('services')">
+        <i class="fas fa-th-large fa-lg"></i>
     </div>
 
     <div id="auth-overlay">
         <div class="login-card fade-in">
-            <i class="fas fa-school fa-4x text-success mb-3"></i><h3 class="fw-bold mb-1">متوسطة الإمام النووي</h3><p class="text-muted small mb-4">بوابة الضبط المدرسي الذكي - V120.0</p>
+            <div class="mb-4 text-success"><i class="fas fa-school fa-4x"></i></div>
+            <h3 class="fw-bold mb-4">بوابة الدخول</h3>
             <div id="role-selection">
-                <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('admin', 'الإدارة')"><span>الإدارة</span><i class="fas fa-user-tie text-primary fa-lg"></i></div>
-                <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('teacher', 'المعلم')"><span>المعلم</span><i class="fas fa-chalkboard-teacher text-success fa-lg"></i></div>
-                <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('guard', 'الحارس')"><span>الحارس</span><i class="fas fa-shield-alt text-dark fa-lg"></i></div>
-                <div class="role-btn btn border w-100 p-3 mb-2 rounded-4 d-flex justify-content-between align-items-center fw-bold bg-light" onclick="selectRole('counselor', 'الموجه الطلابي')"><span>الموجه الطلابي</span><i class="fas fa-user-md text-info fa-lg"></i></div>
+                <button class="btn btn-outline-dark w-100 mb-3" onclick="selectRole('admin', 'الإدارة')">الإدارة</button>
+                <button class="btn btn-outline-success w-100 mb-3" onclick="selectRole('teacher', 'المعلم')">المعلم</button>
+                <button class="btn btn-outline-secondary w-100 mb-3" onclick="selectRole('guard', 'الحارس')">الحارس</button>
+                <button class="btn btn-outline-info w-100 mb-3" onclick="selectRole('counselor', 'الموجه')">الموجه</button>
             </div>
             <div id="pin-area" class="hidden">
-                <h5 id="role-label" class="fw-bold text-primary mb-3"></h5>
-                <div class="input-group mb-3"><input type="password" id="pin-input" class="form-control form-control-lg text-center fw-bold fs-2" placeholder="****" maxlength="4" inputmode="numeric"><button class="btn btn-outline-secondary" type="button" onclick="togglePinVisibility()"><i class="fas fa-eye"></i></button></div>
-                <button class="btn btn-success w-100 btn-lg rounded-pill fw-bold mb-2 shadow" onclick="doLogin()">دخول</button><button class="btn btn-outline-secondary w-100 rounded-pill" onclick="backToRoles()">رجوع</button>
+                <h6 id="role-label" class="text-muted mb-3"></h6>
+                <input type="tel" id="pin-input" class="form-control text-center fs-2 mb-3 fw-bold" placeholder="••••" maxlength="4">
+                <button class="btn btn-success w-100 btn-lg rounded-pill shadow" onclick="doLogin()">دخول للنظام</button>
+                <button class="btn btn-link text-muted mt-3" onclick="backToRoles()">رجوع</button>
             </div>
         </div>
     </div>
 
     <div id="app-body" class="d-none">
         <aside class="sidebar no-print">
-            <div class="text-center py-4 px-3"><div class="bg-white p-2 rounded-circle d-inline-block shadow mb-2"><i class="fas fa-mosque fa-2x text-success"></i></div><h6 class="fw-bold text-white mt-1 small" id="disp-school">...</h6></div>
-            <div id="nav-items" class="flex-grow-1 px-2 overflow-auto"></div>
-            <div class="p-3"><button class="btn btn-outline-light w-100 rounded-pill fw-bold" onclick="logOut()"><i class="fas fa-sign-out-alt me-2"></i> خروج آمن</button></div>
+            <div class="text-center py-5 px-3">
+                <div class="bg-white p-3 rounded-circle d-inline-block shadow-sm mb-3"><i class="fas fa-user-graduate fa-2x text-success"></i></div>
+                <h6 class="fw-bold text-white mt-1" id="disp-school">...</h6>
+            </div>
+            <div id="nav-items" class="flex-grow-1 px-0 overflow-auto"></div>
+            <div class="p-4"><button class="btn btn-outline-light w-100 rounded-pill" onclick="logOut()">تسجيل خروج</button></div>
         </aside>
 
         <main class="main-content">
-            <section id="sec-services" class="view-section d-none fade-in">
-                <div class="page-card p-3 mb-3 bg-light border-primary border-2">
-                    <div class="d-flex align-items-center justify-content-between"><label class="fw-bold text-primary small"><i class="fas fa-chalkboard-teacher me-1"></i> المعلم:</label><select id="global-teacher-name" class="form-select form-select-sm border-primary fw-bold w-50" onchange="rememberTeacher(this.value)"><option value="">-- اختر --</option></select></div>
+            <section id="sec-services" class="view-section fade-in">
+                <div class="page-card bg-white border-start border-success border-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <label class="fw-bold text-dark small"><i class="fas fa-user-check me-1"></i> المعلم:</label>
+                        <select id="global-teacher-name" class="form-select border-0 bg-light fw-bold w-50" onchange="rememberTeacher(this.value)"><option value="">-- اختر --</option></select>
+                    </div>
                 </div>
 
                 <div id="admin-panel-content" class="d-none">
                      <div class="row g-2 mb-3">
-                        <div class="col-6"><button class="btn btn-dark w-100 py-3 shadow-sm fw-bold rounded-4 small" onclick="openHallOfFame()" style="background: linear-gradient(45deg, #001f3f, #000000); border: 2px solid #FFD700;"><i class="fas fa-crown d-block mb-1 fa-lg"></i>الشرف</button></div>
-                        <div class="col-6"><button class="btn btn-success w-100 py-3 shadow-sm fw-bold rounded-4 small" onclick="openEventsScreen()"><i class="fas fa-bullhorn d-block mb-1 fa-lg"></i>نبض</button></div>
-                        <div class="col-6"><button class="btn btn-primary w-100 py-3 shadow-sm fw-bold rounded-4 small" onclick="openShowcaseScreen()"><i class="fas fa-palette d-block mb-1 fa-lg"></i>معرض</button></div>
-                        <div class="col-6"><button class="btn btn-warning w-100 py-3 shadow-sm fw-bold rounded-4 small text-dark" onclick="showReportModal('stars')"><i class="fas fa-print d-block mb-1 fa-lg"></i>شهادات</button></div>
+                        <div class="col-6"><button class="btn btn-dark w-100 py-3 shadow-sm text-white" style="background:#2c3e50" onclick="openSmartBoard()"><i class="fas fa-desktop d-block mb-1 fa-lg"></i>الشاشة الذكية</button></div>
+                        <div class="col-6"><button class="btn btn-dark w-100 py-3 shadow-sm" style="background:#34495e" onclick="navigate('monitor')"><i class="fas fa-tv d-block mb-1 fa-lg"></i>المتابعة</button></div>
+                        <div class="col-6"><button class="btn btn-warning w-100 py-3 shadow-sm text-dark" onclick="showReportModal('stars')"><i class="fas fa-star d-block mb-1 fa-lg"></i>الشهادات</button></div>
+                        <div class="col-6"><button class="btn btn-secondary w-100 py-3 shadow-sm" onclick="navigate('sec-data')"><i class="fas fa-cog d-block mb-1 fa-lg"></i>الإعدادات</button></div>
                     </div>
-                     <div class="row g-2 mb-3 text-center">
-                        <div class="col-4"><div class="stat-box blue p-2"><h3>0</h3><small style="font-size:10px">خروج</small></div></div>
-                        <div class="col-4"><div class="stat-box green p-2"><h3>0</h3><small style="font-size:10px">زوار</small></div></div>
-                        <div class="col-4"><div class="stat-box red p-2"><h3>0</h3><small style="font-size:10px">مخالفات</small></div></div>
+                    
+                    <div class="row g-2 mb-3">
+                        <div class="col-4"><div class="stat-box"><h3 class="text-primary fw-bold" id="stat-exit">0</h3><small class="text-muted">بالخارج</small></div></div>
+                        <div class="col-4"><div class="stat-box"><h3 class="text-success fw-bold" id="stat-visit">0</h3><small class="text-muted">زوار</small></div></div>
+                        <div class="col-4"><div class="stat-box"><h3 class="text-danger fw-bold" id="stat-vio">0</h3><small class="text-muted">مخالفات</small></div></div>
                     </div>
-                    <div class="row g-3 mb-3">
-                        <div class="col-12"><div class="page-card"><div class="card-header-custom">الزوار المعلقين</div><div id="adm-vis-list" class="list-group list-group-flush p-2"></div></div></div>
-                        <div class="col-12"><div class="page-card"><div class="card-header-custom">مخالفات حديثة</div><div id="adm-vio-list" class="p-3"></div></div></div>
-                        <div class="col-12"><div class="page-card"><div class="card-header-custom">انصراف نهائي</div><div class="p-3"><label class="small text-muted mb-1">اسم الطالب <span class="req-star">*</span></label><div class="input-group"><input id="adm-dep-name" class="form-control"><button class="btn btn-primary" onclick="sendDeparture()">إرسال</button></div></div></div></div>
+
+                    <div class="page-card p-0 overflow-hidden mb-3">
+                        <div class="p-3 bg-light border-bottom fw-bold text-primary">الزوار المعلقين</div>
+                        <div id="adm-vis-list" class="list-group list-group-flush"></div>
+                    </div>
+                    <div class="page-card p-0 overflow-hidden mb-3">
+                        <div class="p-3 bg-light border-bottom fw-bold text-danger">مخالفات حديثة</div>
+                        <div id="adm-vio-list" class="p-3"></div>
+                    </div>
+                     <div class="page-card">
+                        <h6 class="fw-bold mb-3 text-dark">أمر انصراف</h6>
+                        <div class="input-group"><input id="adm-dep-name" class="form-control" placeholder="اسم الطالب"><button class="btn btn-primary" onclick="sendDeparture()"><i class="fas fa-paper-plane"></i></button></div>
                     </div>
                 </div>
 
-                <div class="d-flex bg-white p-2 rounded-pill shadow-sm mb-3 w-100 overflow-auto text-nowrap" style="-webkit-overflow-scrolling: touch;">
-                    <button class="btn btn-success rounded-pill px-3 mx-1 fw-bold flex-fill" onclick="tabService('permit')">خروج</button>
-                    <button class="btn btn-outline-primary rounded-pill px-3 mx-1 fw-bold flex-fill" onclick="tabService('attendance')">تحضير</button>
-                    <button class="btn btn-outline-warning rounded-pill px-3 mx-1 fw-bold flex-fill" onclick="tabService('behavior')">تميز</button>
-                    <button class="btn btn-outline-danger rounded-pill px-3 mx-1 fw-bold flex-fill" onclick="tabService('violation')">مخالفة</button>
-                    <button class="btn btn-outline-dark rounded-pill px-3 mx-1 fw-bold admin-only d-none flex-fill" onclick="tabService('late')">تأخر</button>
+                <div class="d-flex bg-white p-2 rounded-4 shadow-sm mb-3 w-100 overflow-auto text-nowrap gap-2">
+                    <button class="btn btn-success rounded-4 px-3 flex-fill" onclick="tabService('permit')">خروج</button>
+                    <button class="btn btn-outline-primary rounded-4 px-3 flex-fill" onclick="tabService('attendance')">تحضير</button>
+                    <button class="btn btn-outline-warning rounded-4 px-3 flex-fill" onclick="tabService('behavior')">تميز</button>
+                    <button class="btn btn-outline-danger rounded-4 px-3 flex-fill" onclick="tabService('violation')">مخالفة</button>
+                    <button class="btn btn-outline-dark rounded-4 px-3 admin-only d-none flex-fill" onclick="tabService('late')">تأخر</button>
                 </div>
                 
-                <div id="srv-permit-box" class="page-card p-3">
-                    <h6 class="fw-bold mb-3 text-success border-bottom pb-2">إذن خروج مؤقت</h6>
+                <div id="srv-permit-box" class="page-card">
+                    <h6 class="fw-bold mb-3 text-success"><i class="fas fa-clock me-2"></i> إذن مؤقت</h6>
                     <div class="row g-2">
-                        <div class="col-6"><label class="small text-muted">الفصل</label><select id="t-class" class="form-select" onchange="loadStudentsForRole(this.value, 't-stu')"></select></div>
-                        <div class="col-6"><label class="small text-muted">الطالب</label><select id="t-stu" class="form-select" disabled></select></div>
-                        <div class="col-12"><label class="small text-muted">الوجهة</label><select id="t-dest" class="form-select"><option>دورة مياه</option><option>الوكيل</option><option>المقصف</option><option>الموجه الطلابي</option><option>الإدارة</option></select></div>
-                        <div class="col-6"><label class="small text-muted">المدة (د)</label><input type="number" id="t-time" class="form-control" placeholder="دقيقة"></div>
-                        <div class="col-6 d-flex align-items-end"><div class="form-check border p-2 rounded w-100 bg-light"><input class="form-check-input ms-2" type="checkbox" id="t-special"><label class="small fw-bold">حالة خاصة</label></div></div>
-                        <div class="col-12 mt-3"><button class="btn btn-success w-100 py-2 fw-bold rounded-pill shadow-sm" onclick="sendPermit()">تسجيل خروج</button></div>
+                        <div class="col-12"><select id="t-class" class="form-select" onchange="loadStudentsForRole(this.value, 't-stu')"><option>اختر الفصل</option></select></div>
+                        <div class="col-12"><select id="t-stu" class="form-select" disabled><option>اختر الطالب</option></select></div>
+                        <div class="col-12"><select id="t-dest" class="form-select"><option>دورة مياه</option><option>الوكيل</option><option>الإدارة</option><option>المقصف</option></select></div>
+                        <div class="col-7"><input type="tel" id="t-time" class="form-control text-center" placeholder="المدة (دقيقة)"></div>
+                        <div class="col-5"><div class="form-check bg-light rounded p-2 ps-5 h-100 d-flex align-items-center"><input class="form-check-input" type="checkbox" id="t-special"><label class="small fw-bold ms-2">خاص</label></div></div>
+                        <div class="col-12 mt-3"><button class="btn btn-success w-100 py-3 shadow-sm" onclick="sendPermit()">تسجيل خروج</button></div>
                     </div>
                 </div>
 
-                <div id="srv-attendance-box" class="page-card p-3 d-none">
+                <div id="srv-attendance-box" class="page-card d-none">
                     <h6 class="fw-bold mb-3 text-primary">التحضير</h6>
                     <div class="d-flex justify-content-center mb-3 bg-light p-1 rounded-pill">
                         <button class="btn btn-sm btn-primary w-50 rounded-pill" id="btn-mode-period" onclick="setAttMode('period')">بالحصة</button>
                         <button class="btn btn-sm btn-outline-primary w-50 rounded-pill" id="btn-mode-day" onclick="setAttMode('day')">يوم كامل</button>
                     </div>
                     <div class="row g-2 mb-3">
-                        <div class="col-6"><label class="small">الفصل</label><select id="att-class" class="form-select" onchange="loadAttendanceList()"></select></div>
-                        <div class="col-6" id="div-att-period"><label class="small">الحصة</label><select id="att-period" class="form-select" onchange="loadAttendanceList()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></div>
-                        <div class="col-12"><button class="btn btn-primary w-100 btn-sm" onclick="loadAttendanceList()">تحديث</button></div>
+                        <div class="col-6"><select id="att-class" class="form-select" onchange="loadAttendanceList()"><option>الفصل</option></select></div>
+                        <div class="col-6" id="div-att-period"><select id="att-period" class="form-select" onchange="loadAttendanceList()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></div>
+                        <div class="col-12"><button class="btn btn-outline-primary w-100 btn-sm" onclick="loadAttendanceList()">تحديث</button></div>
                     </div>
-                    <div class="table-responsive"><table class="table table-bordered text-center align-middle small"><thead class="table-light"><tr><th>الطالب</th><th>الحالة</th></tr></thead><tbody id="att-list-body"></tbody></table></div>
+                    <div id="att-list-body" class="d-grid gap-2" style="max-height:300px; overflow-y:auto;"></div>
                 </div>
 
-                <div id="srv-behavior-box" class="page-card p-3 d-none">
-                    <h6 class="fw-bold mb-3 text-warning">نقاط التميز ⭐️</h6>
+                <div id="srv-behavior-box" class="page-card d-none">
+                    <h6 class="fw-bold mb-3 text-warning">نقاط التميز</h6>
                     <div class="row g-2">
-                        <div class="col-6"><label class="small">الفصل</label><select id="b-class" class="form-select" onchange="loadStudentsForRole(this.value, 'b-stu')"></select></div>
-                        <div class="col-6"><label class="small">الطالب</label><select id="b-stu" class="form-select" disabled></select></div>
-                        <div class="col-12"><label class="small">السبب</label><select id="b-reason" class="form-select"><option>مشاركة متميزة</option><option>واجبات منزلية</option><option>انضباط وسلوك</option><option>نظافة وترتيب</option><option>مبادرة إيجابية</option><option>حفظ القرآن</option></select></div>
-                        <div class="col-6 mt-3"><button class="btn btn-warning w-100 fw-bold rounded-pill shadow-sm" onclick="sendStar()">منح (+)</button></div>
-                        <div class="col-6 mt-3"><button class="btn btn-outline-danger w-100 fw-bold rounded-pill shadow-sm" onclick="deductStar()">سحب (-)</button></div>
+                        <div class="col-12"><select id="b-class" class="form-select" onchange="loadStudentsForRole(this.value, 'b-stu')"><option>الفصل</option></select></div>
+                        <div class="col-12"><select id="b-stu" class="form-select" disabled><option>الطالب</option></select></div>
+                        <div class="col-12"><select id="b-reason" class="form-select"><option>انضباط مدرسي</option><option>مشاركة صفية</option><option>واجبات</option><option>نظافة</option><option>مبادرة</option></select></div>
+                        <div class="col-6 mt-3"><button class="btn btn-warning w-100 py-3" onclick="sendStar()">منح (+)</button></div>
+                        <div class="col-6 mt-3"><button class="btn btn-outline-danger w-100 py-3" onclick="deductStar()">خصم (-)</button></div>
                     </div>
                 </div>
 
-                <div id="srv-violation-box" class="page-card p-3 d-none">
-                    <h6 class="fw-bold mb-3 text-danger">تسجيل مخالفة</h6>
+                <div id="srv-violation-box" class="page-card d-none">
+                    <h6 class="fw-bold mb-3 text-danger">مخالفة سلوكية</h6>
                     <div class="row g-2">
-                        <div class="col-6"><label class="small">الفصل</label><select id="v-class" class="form-select" onchange="loadStudentsForRole(this.value, 'v-stu')"></select></div>
-                        <div class="col-6"><label class="small">الطالب</label><select id="v-stu" class="form-select" disabled></select></div>
-                        <div class="col-12"><label class="small">المخالفة</label><input id="v-type" class="form-control" placeholder="تأخر، مشاغبة..."></div>
-                        <div class="col-12"><label class="small">التفاصيل</label><textarea id="v-desc" class="form-control" rows="2"></textarea></div>
-                        <div class="col-12 mt-3"><button class="btn btn-danger w-100 fw-bold rounded-pill shadow-sm" onclick="sendViolation()">رفع للوكيل</button></div>
+                        <div class="col-12"><select id="v-class" class="form-select" onchange="loadStudentsForRole(this.value, 'v-stu')"><option>الفصل</option></select></div>
+                        <div class="col-12"><select id="v-stu" class="form-select" disabled><option>الطالب</option></select></div>
+                        <div class="col-12"><input id="v-type" class="form-control" placeholder="نوع المخالفة"></div>
+                        <div class="col-12"><textarea id="v-desc" class="form-control" rows="2" placeholder="تفاصيل (اختياري)"></textarea></div>
+                        <div class="col-12 mt-3"><button class="btn btn-danger w-100 py-3 shadow-sm" onclick="sendViolation()">رفع للوكيل</button></div>
                     </div>
                 </div>
 
-                 <div id="srv-late-box" class="page-card p-3 d-none">
+                 <div id="srv-late-box" class="page-card d-none">
                     <h6 class="fw-bold mb-3 text-dark">رصد التأخر</h6>
                     <div class="row g-2">
-                        <div class="col-6"><label class="small">الفصل</label><select id="late-class" class="form-select" onchange="loadStudentsForRole(this.value, 'late-stu')"><option value="">اختر الفصل...</option></select></div>
-                        <div class="col-6"><label class="small">الطالب</label><select id="late-stu" class="form-select" disabled><option>اختر الطالب...</option></select></div>
-                        <div class="col-12 mt-3"><button class="btn btn-warning w-100 fw-bold rounded-pill" onclick="registerLate()">تسجيل التأخر</button></div>
+                        <div class="col-12"><select id="late-class" class="form-select" onchange="loadStudentsForRole(this.value, 'late-stu')"><option>الفصل</option></select></div>
+                        <div class="col-12"><select id="late-stu" class="form-select" disabled><option>الطالب</option></select></div>
+                        <div class="col-12 mt-3"><button class="btn btn-warning w-100 py-3" onclick="registerLate()">تسجيل</button></div>
                     </div>
+                </div>
+                
+                <div class="row g-2 mt-2">
+                    <div class="col-12"><button class="btn btn-outline-dark w-100 py-3 rounded-4 admin-only d-none" onclick="navigate('reports')">عرض التقارير</button></div>
                 </div>
             </section>
 
             <section id="sec-monitor" class="view-section d-none fade-in">
-                <div class="d-flex justify-content-between mb-3"><h5 class="fw-bold">المتابعة الحية</h5><button class="btn btn-dark btn-sm rounded-pill" onclick="toggleFullScreen()">ملء الشاشة</button></div>
-                <div id="monitor-grid" class="row g-3"></div>
+                <div class="d-flex justify-content-between mb-3"><h5 class="fw-bold">المتابعة الحية</h5></div>
+                <div id="monitor-grid" class="row g-2"></div>
                 <div id="no-students" class="text-center py-5 d-none"><i class="fas fa-check-circle fa-4x text-success opacity-25"></i><h5 class="mt-3 text-muted">الجميع بالفصول</h5></div>
             </section>
 
-             <section id="sec-reports" class="view-section d-none fade-in">
-                <div class="d-flex justify-content-between align-items-center mb-3"><h5 class="fw-bold">التقارير</h5><input type="month" id="report-month" class="form-control form-control-sm" style="width:140px"></div>
+            <section id="sec-reports" class="view-section d-none fade-in">
+                <h5 class="fw-bold mb-3">التقارير</h5>
                 <div class="row g-2">
                     <div class="col-6"><div class="report-grid-item" onclick="showReportModal('permits')"><i class="fas fa-file-invoice text-primary fa-lg mb-2"></i><h6 class="small m-0">الأذونات</h6></div></div>
                     <div class="col-6"><div class="report-grid-item" onclick="showReportModal('visitors')"><i class="fas fa-user-shield text-dark fa-lg mb-2"></i><h6 class="small m-0">الزوار</h6></div></div>
                     <div class="col-6"><div class="report-grid-item" onclick="showReportModal('violations')"><i class="fas fa-exclamation-triangle text-danger fa-lg mb-2"></i><h6 class="small m-0">المخالفات</h6></div></div>
                     <div class="col-6"><div class="report-grid-item" onclick="showReportModal('attendance')"><i class="fas fa-calendar-check text-success fa-lg mb-2"></i><h6 class="small m-0">الغياب</h6></div></div>
-                    <div class="col-6"><div class="report-grid-item" onclick="showReportModal('stars')"><i class="fas fa-trophy text-warning fa-lg mb-2"></i><h6 class="small m-0">الشرف</h6></div></div>
-                    <div class="col-6"><div class="report-grid-item" onclick="showReportModal('late')"><i class="fas fa-user-clock text-info fa-lg mb-2"></i><h6 class="small m-0">التأخر</h6></div></div>
-                    <div class="col-12"><div class="report-grid-item d-flex align-items-center justify-content-center gap-2" onclick="showReportModal('top_class')"><i class="fas fa-medal text-warning m-0"></i><h6 class="m-0 fw-bold">تقرير الفصل المثالي</h6></div></div>
+                    <div class="col-12"><div class="report-grid-item d-flex align-items-center justify-content-center gap-2" onclick="showReportModal('top_class')"><i class="fas fa-medal text-warning m-0"></i><h6 class="m-0 fw-bold">الفصل المثالي</h6></div></div>
                 </div>
             </section>
 
             <section id="sec-guard" class="view-section d-none fade-in">
-                <div class="row g-3">
-                    <div class="col-12"><div class="page-card p-3 border-top border-dark border-5"><h5 class="fw-bold mb-3 text-center">تسجيل زائر</h5><input id="g-v-name" class="form-control mb-2" placeholder="الاسم *"><input id="g-v-id" class="form-control mb-2" placeholder="الهوية *"><input id="g-v-reason" class="form-control mb-3" placeholder="السبب *"><button class="btn btn-dark w-100 py-3 rounded-pill fw-bold" onclick="sendVisitorReq()">إرسال طلب</button></div></div>
-                    <div class="col-12"><div class="page-card border-danger border-top border-5"><div class="card-header-custom bg-danger text-white">أوامر الخروج</div><div id="g-dep-list" class="p-3"></div></div></div>
+                <div class="page-card mb-3">
+                    <h5 class="fw-bold mb-3 text-center">تسجيل زائر</h5>
+                    <input id="g-v-name" class="form-control mb-2" placeholder="الاسم">
+                    <input type="tel" id="g-v-id" class="form-control mb-2" placeholder="الهوية">
+                    <input id="g-v-reason" class="form-control mb-3" placeholder="السبب">
+                    <button class="btn btn-dark w-100 py-3 rounded-pill" onclick="sendVisitorReq()">إرسال طلب</button>
+                </div>
+                <div class="page-card border-danger border-top border-4">
+                    <h6 class="fw-bold text-danger mb-3">أوامر الخروج</h6>
+                    <div id="g-dep-list"></div>
                 </div>
             </section>
 
             <section id="sec-counselor" class="view-section d-none fade-in">
-                <div class="row g-3">
-                    <div class="col-12"><div class="page-card p-3 border-top border-success border-5"><h6 class="fw-bold mb-2">بحث طالب</h6><div class="input-group"><input type="text" id="stu-search-name" class="form-control" placeholder="اكتب الاسم..."><button class="btn btn-success" onclick="searchStudentHistory()">بحث</button></div><div id="stu-history-res" class="d-none bg-light p-2 rounded small mt-2"></div></div></div>
-                    <div class="col-12"><div class="page-card"><div class="card-header-custom bg-info text-white">ملفات الحالات</div><div class="table-responsive"><table class="table table-hover text-center align-middle mb-0 small"><thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>الإجراء</th></tr></thead><tbody id="counselor-list"></tbody></table><div id="counselor-empty" class="text-center p-4 text-muted d-none"><h5>لا توجد حالات</h5></div></div></div></div>
+                <div class="page-card p-3">
+                    <h6 class="fw-bold mb-2">بحث طالب</h6>
+                    <div class="input-group"><input type="text" id="stu-search-name" class="form-control" placeholder="اسم الطالب..."><button class="btn btn-success" onclick="searchStudentHistory()"><i class="fas fa-search"></i></button></div>
+                    <div id="stu-history-res" class="d-none bg-light p-3 rounded mt-3"></div>
                 </div>
             </section>
 
             <section id="sec-data" class="view-section d-none fade-in">
-                <div class="page-card p-3">
-                    <h5 class="fw-bold mb-3 text-primary">الإعدادات</h5>
-                    
-                    <div class="accordion" id="settingsAccordion">
-                        <div class="accordion-item border-0 mb-2 shadow-sm rounded overflow-hidden">
-                            <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">إعدادات الشاشات</button></h2>
-                            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
-                                <div class="accordion-body bg-light">
-                                    <label class="small fw-bold">لوحة الشرف</label><input id="set-hof-title" class="form-control mb-2 form-control-sm" placeholder="العنوان">
-                                    <label class="small fw-bold">رسالة النبض</label><input id="set-event-title" class="form-control mb-1 form-control-sm" placeholder="عنوان"><input id="set-event-msg" class="form-control mb-2 form-control-sm" placeholder="الرسالة">
-                                    <label class="small fw-bold">معرض الصور</label><input type="file" id="set-showcase-img" class="form-control mb-1 form-control-sm"><input id="set-showcase-title" class="form-control mb-2 form-control-sm" placeholder="وصف العمل">
-                                    <button class="btn btn-dark w-100 btn-sm" onclick="saveBroadcastSettings()">حفظ التعديلات</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="accordion-item border-0 mb-2 shadow-sm rounded overflow-hidden">
-                            <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">الصلاحيات والرموز</button></h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
-                                <div class="accordion-body bg-light">
-                                    <div class="d-flex justify-content-between mb-2"><label class="small">تقارير الموجه</label><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-counselor"></div></div>
-                                    <div class="d-flex justify-content-between mb-2"><label class="small">تقارير المعلم</label><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-teacher"></div></div>
-                                    <div class="d-flex justify-content-between mb-2"><label class="small">تقارير الحارس</label><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-guard"></div></div>
-                                    <button class="btn btn-warning btn-sm w-100 mb-3" onclick="savePermissions()">حفظ الصلاحيات</button>
-                                    <hr>
-                                    <label class="small">رمز المدير</label><input type="tel" id="pin-admin" class="form-control mb-2 form-control-sm">
-                                    <label class="small">رمز المعلم</label><input type="tel" id="pin-teacher" class="form-control mb-2 form-control-sm">
-                                    <label class="small">رمز الحارس</label><input type="tel" id="pin-guard" class="form-control mb-2 form-control-sm">
-                                    <button class="btn btn-danger btn-sm w-100" onclick="savePasswords()">تحديث الرموز</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <h5 class="fw-bold mb-3 text-primary">الإعدادات</h5>
+                
+                <div class="page-card mb-3">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-desktop me-2"></i> الشاشة الذكية</h6>
+                    <label class="small text-muted mb-1">صورة المعرض</label>
+                    <input type="file" id="set-showcase-img" class="form-control mb-2">
+                    <label class="small text-muted mb-1">العنوان</label>
+                    <input id="set-showcase-title" class="form-control mb-2" placeholder="مثال: رسومات الطلاب">
+                    <button class="btn btn-dark w-100 mt-2" onclick="saveBroadcastSettings()">حفظ</button>
+                </div>
 
-                    <div class="d-grid gap-2 mt-3">
-                        <button class="btn btn-outline-dark btn-sm" onclick="exportData()">نسخة احتياطية</button>
-                        <button class="btn btn-outline-warning btn-sm" onclick="secureReset('reports')">تصفير السجلات</button>
-                        <button class="btn btn-outline-danger btn-sm" onclick="secureReset('factory')">تصفير كامل</button>
-                    </div>
-                    
-                    <hr>
-                    <h6 class="fw-bold small text-success">إدارة البيانات</h6>
+                <div class="page-card mb-3">
+                    <h6 class="fw-bold text-danger mb-3"><i class="fas fa-lock me-2"></i> الرموز</h6>
                     <div class="row g-2">
-                        <div class="col-12"><button class="btn btn-success w-100 btn-sm" onclick="document.getElementById('f-tea-excel').click()">استيراد معلمين</button><input type="file" id="f-tea-excel" hidden onchange="importTeachers(this)"></div>
-                        <div class="col-5"><input id="imp-cls-name" class="form-control form-control-sm" placeholder="الفصل"></div>
-                        <div class="col-7"><button class="btn btn-primary w-100 btn-sm" onclick="document.getElementById('f-excel').click()">استيراد طلاب</button><input type="file" id="f-excel" hidden onchange="importData(this)"></div>
+                        <div class="col-6"><input type="tel" id="pin-admin" class="form-control" placeholder="الإدارة"></div>
+                        <div class="col-6"><input type="tel" id="pin-teacher" class="form-control" placeholder="المعلم"></div>
+                        <div class="col-6"><input type="tel" id="pin-guard" class="form-control" placeholder="الحارس"></div>
+                        <div class="col-12"><button class="btn btn-danger w-100 mt-2" onclick="savePasswords()">تحديث</button></div>
+                    </div>
+                </div>
+
+                <div class="page-card">
+                    <h6 class="fw-bold text-success mb-3"><i class="fas fa-database me-2"></i> البيانات</h6>
+                    <button class="btn btn-outline-success w-100 mb-2" onclick="document.getElementById('f-tea-excel').click()">استيراد معلمين (Excel)</button>
+                    <input type="file" id="f-tea-excel" hidden onchange="importTeachers(this)">
+                    
+                    <div class="input-group mb-3">
+                        <input id="imp-cls-name" class="form-control" placeholder="اسم الفصل">
+                        <button class="btn btn-primary" onclick="document.getElementById('f-excel').click()">استيراد طلاب</button>
+                    </div>
+                    <input type="file" id="f-excel" hidden onchange="importData(this)">
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-light border" onclick="exportData()">نسخة احتياطية</button>
+                        <button class="btn btn-light border text-danger" onclick="secureReset('reports')">تصفير السجلات</button>
                     </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <div class="modal fade" id="printModal" tabindex="-1"><div class="modal-dialog modal-fullscreen-sm-down modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">معاينة التقرير</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-white" id="modal-print-content"></div><div class="modal-footer"><button type="button" class="btn btn-primary w-100 fw-bold" onclick="executePrint()">طباعة PDF</button></div></div></div></div>
+    <div class="modal fade" id="printModal" tabindex="-1"><div class="modal-dialog modal-fullscreen"><div class="modal-content"><div class="modal-header border-0"><h5 class="modal-title fw-bold">التقرير</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-white" id="modal-print-content"></div><div class="modal-footer border-0"><button type="button" class="btn btn-primary w-100 fw-bold py-3 rounded-pill" onclick="executePrint()">طباعة PDF</button></div></div></div></div>
     <div id="final-print-container"></div>
-    <div class="fab-theme" onclick="toggleTheme()" style="position:fixed; bottom:20px; left:20px; width:50px; height:50px; background:var(--text); color:var(--bg); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); z-index:1000;"><i class="fas fa-moon"></i></div>
-
+    
     <script>
-        // إعدادات قاعدة البيانات (نفس القديمة)
         const firebaseConfig = { apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE", authDomain: "ethn-63848.firebaseapp.com", databaseURL: "https://ethn-63848-default-rtdb.firebaseio.com", projectId: "ethn-63848", storageBucket: "ethn-63848.appspot.com", messagingSenderId: "747489913596", appId: "1:747489913596:web:d98d88447e4a25cc808579" };
         firebase.initializeApp(firebaseConfig); const db = firebase.database();
-        let userRole='', isMuted=true, attMode='period'; 
-        let data = { settings: {school:'متوسطة الإمام النووي', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:'', admin_email:'', permissions:{}, broadcast:{}}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, stars:{}, tardiness:{} };
+        let userRole='', attMode='period', smartBoardInterval;
+        let data = { settings: {admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', broadcast:{}}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, violations:{}, departures:{}, attendance:{}, stars:{}, tardiness:{} };
 
-        // التهيئة وبدء التطبيق
+        // --- Init & Auth ---
         window.onload = () => {
-            const savedTheme = localStorage.getItem('theme') || 'light'; document.documentElement.setAttribute('data-theme', savedTheme);
             const savedRole = localStorage.getItem('userRole');
-            
             db.ref('/').on('value', snap => {
                 const val = snap.val();
                 if(val) {
                     data = { ...data, ...val };
-                    document.getElementById('disp-school').innerText = data.settings.school;
                     document.body.style.visibility = 'visible';
-                    calculateBestClass(); updateDashboardStats(); checkSecurityAlerts();
+                    document.getElementById('disp-school').innerText = data.settings.school || 'مدرستي';
                     
                     if(savedRole && !userRole) {
                         userRole = savedRole;
                         document.getElementById('auth-overlay').style.display='none';
                         document.getElementById('app-body').classList.remove('d-none');
                         buildMenu();
-                        const lastView = localStorage.getItem('currentView') || 'services';
-                        navigate(lastView);
-                        showServiceDefault();
-                        populateSettingsUI(); 
-                    } else if(userRole) {
-                        refreshScreens(); 
-                        populateSettingsUI(); 
-                        updateDashboardStats(); 
-                    }
+                        navigate('services'); 
+                    } else if(userRole) { refreshScreens(); renderAdmin(); }
                 }
             });
             setInterval(monitorLoop, 10000);
         };
 
-        // واجهة الإعدادات
-        function populateSettingsUI() {
-             if(document.getElementById('s-school')) {
-                 // تم اختصار الإعدادات في الواجهة الجديدة للجوال
-                 document.getElementById('pin-admin').value = data.settings.admin_pin || '';
-                 document.getElementById('pin-teacher').value = data.settings.teacher_pin || '';
-                 document.getElementById('pin-guard').value = data.settings.guard_pin || '';
-
-                 document.getElementById('set-hof-title').value = data.settings.broadcast?.hofTitle || '';
-                 document.getElementById('set-event-title').value = data.settings.broadcast?.eventTitle || '';
-                 document.getElementById('set-event-msg').value = data.settings.broadcast?.eventMsg || '';
-                 document.getElementById('set-showcase-title').value = data.settings.broadcast?.showcaseTitle || '';
-                 
-                 document.getElementById('perm-counselor').checked = data.settings.permissions?.counselor || false;
-                 document.getElementById('perm-teacher').checked = data.settings.permissions?.teacher || false;
-                 document.getElementById('perm-guard').checked = data.settings.permissions?.guard || false;
-             }
-        }
-
-        // إدارة الأدوار والدخول
-        function selectRole(r, t) { userRole=r; document.getElementById('role-selection').classList.add('hidden'); document.getElementById('pin-area').classList.remove('hidden'); document.getElementById('role-label').innerText='دخول: '+t; document.getElementById('pin-input').value=''; }
+        function selectRole(r, t) { userRole=r; document.getElementById('role-selection').classList.add('hidden'); document.getElementById('pin-area').classList.remove('hidden'); document.getElementById('role-label').innerText='تسجيل دخول: '+t; }
         function backToRoles() { document.getElementById('pin-area').classList.add('hidden'); document.getElementById('role-selection').classList.remove('hidden'); userRole=''; }
-        function togglePinVisibility() { const p=document.getElementById('pin-input'); p.type=p.type==='password'?'text':'password'; }
-        
         function doLogin() { 
-            const p = document.getElementById('pin-input').value; 
-            if(p === String(data.settings[`${userRole}_pin`])) { 
-                localStorage.setItem('userRole', userRole); 
-                document.getElementById('auth-overlay').style.display='none'; 
-                document.getElementById('app-body').classList.remove('d-none'); 
-                buildMenu(); 
-                navigate(userRole==='guard'?'guard':(userRole==='admin'?'services':'services')); 
-                showServiceDefault();
-                populateSettingsUI();
-            } else { Swal.fire('خطأ','الرمز غير صحيح','error'); } 
+            if(document.getElementById('pin-input').value === String(data.settings[`${userRole}_pin`])) { 
+                localStorage.setItem('userRole', userRole); document.getElementById('auth-overlay').style.display='none'; document.getElementById('app-body').classList.remove('d-none'); 
+                buildMenu(); navigate(userRole==='guard'?'guard':(userRole==='admin'?'services':'services')); 
+            } else { showToast('الرمز غير صحيح'); } 
         }
 
-        function buildMenu() { 
-            const m = document.getElementById('nav-items'); 
-            let links = [['services','الرئيسية','concierge-bell'],['monitor','المتابعة','desktop']]; 
-            
-            const hasReportPerm = userRole==='admin' || 
-                                  (userRole==='teacher' && data.settings.permissions?.teacher) || 
-                                  (userRole==='guard' && data.settings.permissions?.guard) || 
-                                  (userRole==='counselor' && data.settings.permissions?.counselor);
-                                  
-            if(hasReportPerm) links.push(['reports','التقارير','file-alt']);
-            
-            if(userRole==='admin') links.push(['sec-data','الإعدادات','cogs']); 
-            if(userRole==='guard') links = [['guard','الحارس','shield-alt']]; 
-            if(userRole==='counselor') links = [['counselor','الموجه','user-graduate']];
-            if(hasReportPerm && userRole !== 'admin') links.push(['reports','التقارير','file-alt']);
-
-            const uniqueLinks = []; const map = new Map();
-            for (const item of links) { if(!map.has(item[0])){ map.set(item[0], true); uniqueLinks.push(item); }}
-            m.innerHTML = uniqueLinks.map(l => `<div class="nav-link" id="nav-${l[0]}" onclick="navigate('${l[0]}'); if(window.innerWidth<992) document.querySelector('.sidebar').classList.remove('active');"><i class="fas fa-${l[2]} me-2"></i> ${l[1]}</div>`).join(''); 
+        // --- Navigation ---
+        function toggleSidebar() { 
+            const sb = document.querySelector('.sidebar'); const bd = document.querySelector('.sidebar-backdrop');
+            sb.classList.toggle('active'); bd.classList.toggle('active');
         }
 
-        function navigate(id) { 
-            localStorage.setItem('currentView', id); 
-            document.querySelectorAll('.view-section').forEach(s => s.classList.add('d-none')); 
+        function buildMenu() {
+            const m = document.getElementById('nav-items');
+            let links = [['services','الرئيسية']];
+            if(userRole==='admin' || userRole==='teacher') links.push(['reports','التقارير']);
+            if(userRole==='admin') links.push(['sec-data','الإعدادات']);
             
+            m.innerHTML = links.map(l => `<div class="nav-link" onclick="navigate('${l[0]}'); toggleSidebar()">${l[1]}</div>`).join('');
+        }
+
+        function navigate(id) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.add('d-none'));
+            const target = document.getElementById('sec-'+id);
+            if(target) target.classList.remove('d-none');
+
+            // Manage Back Button
+            const btn = document.getElementById('global-back-btn');
+            if(id === 'services') btn.classList.add('d-none');
+            else btn.classList.remove('d-none');
+
+            // Admin Logic
             if(id === 'services') {
-                document.getElementById('sec-services').classList.remove('d-none');
                 if(userRole === 'admin') {
                     document.getElementById('admin-panel-content').classList.remove('d-none');
-                    document.querySelector('.admin-only').classList.remove('d-none');
+                    document.querySelectorAll('.admin-only').forEach(e=>e.classList.remove('d-none'));
                 } else {
                     document.getElementById('admin-panel-content').classList.add('d-none');
-                    if(document.querySelector('.admin-only')) document.querySelector('.admin-only').classList.add('d-none');
+                    document.querySelectorAll('.admin-only').forEach(e=>e.classList.add('d-none'));
                 }
-                showServiceDefault();
-            } else if (id === 'sec-data') { 
-                 document.getElementById('sec-data').classList.remove('d-none');
-                 populateSettingsUI();
-            } else {
-                const el = document.getElementById('sec-'+id); if(el) el.classList.remove('d-none');
-                if(id==='monitor') renderMonitor(); 
             }
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); 
-            if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active'); 
-            refreshScreens(); 
-        }
-
-        function showServiceDefault() {
-             const boxes = ['srv-permit-box', 'srv-attendance-box', 'srv-behavior-box', 'srv-violation-box', 'srv-late-box'];
-             let active = false;
-             boxes.forEach(b => { if(!document.getElementById(b).classList.contains('d-none')) active = true; });
-             if(!active) tabService('permit');
-        }
-
-        function toggleTheme() { const n = document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme', n); localStorage.setItem('theme', n); }
-        function showToast(m) { const t=document.getElementById('system-toast'); t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; t.style.display='block'; setTimeout(()=>{t.style.display='none'},3000); }
-        function toggleVisibility(id) { const e=document.getElementById(id); e.type=e.type==='password'?'text':'password'; }
-
-        // العمليات الأساسية
-        function calculateBestClass() { let s = {}; (data.classes||[]).forEach(c=>s[c]=0); Object.values(data.stars||{}).forEach(st=>{ let o=Object.values(data.students).find(x=>x.name===st.student); if(o) s[o.class]+=(st.value||1); }); Object.values(data.violations||{}).forEach(v=>{ let o=Object.values(data.students).find(x=>x.name===v.student); if(o) s[o.class]--; }); let best = Object.entries(s).sort((a,b)=>b[1]-a[1])[0]; if(best && best[1]>0) { document.getElementById('best-class-badge').classList.remove('d-none'); document.getElementById('best-class-txt').innerText=best[0]; } }
-        
-        function refreshScreens() {
-            ['t-class','v-class','b-class','att-class','late-class'].forEach(id=>{ 
-                const e=document.getElementById(id); 
-                if(e) {
-                    const currentVal = e.value;
-                    e.innerHTML='<option value="">اختر الفصل</option>'+(data.classes||[]).map(c=>`<option value="${c}">${c}</option>`).join(''); 
-                    if(currentVal) e.value = currentVal;
-                }
-            });
             
-            const te = document.getElementById('global-teacher-name'); 
-            if(te) {
-                const currentVal = te.value;
-                te.innerHTML='<option value="">-- اختر --</option>'+Object.values(data.teachers||{}).map(t=>`<option value="${t.name}">${t.name}</option>`).join('');
-                if(currentVal) te.value = currentVal;
-                else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; }
-            }
-            if(userRole==='admin') renderAdmin(); if(userRole==='guard') renderGuard();
+            if(id==='monitor') renderMonitor();
+            if(id==='sec-data') populateSettingsUI();
+            refreshScreens();
         }
 
-        // منطق العمل
-        function validate(ids) { for(let id of ids) { const e=document.getElementById(id); if(!e.value) { Swal.fire({title:'تنبيه',text:'البيانات ناقصة',icon:'warning',timer:1500,showConfirmButton:false}); e.focus(); return false; } } return true; }
-        function rememberTeacher(v) { localStorage.setItem('teacher', v); }
-        
         function tabService(tab) {
             document.querySelectorAll('#sec-services .page-card').forEach(c => { if(c.id.includes('srv-')) c.classList.add('d-none'); });
             const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
-            // Visual feedback for tabs
-             document.querySelectorAll('#sec-services .btn-group button').forEach(b => b.classList.remove('active'));
+        }
+
+        // --- Smart Board ---
+        function openSmartBoard() {
+            document.getElementById('smart-board-overlay').style.display = 'block';
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            
+            if(data.settings.broadcast?.showcaseImg) {
+                document.getElementById('disp-showcase-img').src = data.settings.broadcast.showcaseImg;
+                document.getElementById('disp-showcase-title').innerText = data.settings.broadcast.showcaseTitle || '';
+            }
+
+            const scores = {};
+            Object.values(data.students || {}).forEach(s => { scores[s.name] = 100; }); 
+            Object.values(data.attendance || {}).forEach(day => { if(day.full_day) Object.keys(day.full_day).forEach(name => { if(scores[name]) scores[name] -= 1; }); });
+            Object.values(data.tardiness || {}).forEach(t => { if(scores[t.student]) scores[t.student] -= 0.5; });
+
+            const sorted = Object.entries(scores).sort((a,b) => b[1] - a[1]).slice(0, 10);
+            document.getElementById('discipline-list-container').innerHTML = sorted.map((s, i) => 
+                `<div class="discipline-item"><div class="fw-bold fs-4 text-white">${i+1}. ${s[0]}</div><div class="badge bg-warning text-dark fs-5">${s[1]}%</div></div>`
+            ).join('');
+
+            let showSlide1 = true;
+            smartBoardInterval = setInterval(() => {
+                document.getElementById('slide-showcase').classList.toggle('active', showSlide1);
+                document.getElementById('slide-discipline').classList.toggle('active', !showSlide1);
+                showSlide1 = !showSlide1;
+            }, 6000);
+        }
+
+        function closeSmartBoard() {
+            document.getElementById('smart-board-overlay').style.display = 'none';
+            clearInterval(smartBoardInterval);
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
+
+        // --- Core Logic ---
+        function showToast(msg) { const t=document.getElementById('system-toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 2000); }
+
+        function refreshScreens() {
+            ['t-class','v-class','b-class','att-class','late-class'].forEach(id=>{ 
+                const e=document.getElementById(id); if(e) {
+                    const val = e.value;
+                    e.innerHTML='<option value="">الفصل</option>'+(data.classes||[]).map(c=>`<option value="${c}">${c}</option>`).join('');
+                    if(val) e.value = val;
+                }
+            });
+            const te = document.getElementById('global-teacher-name');
+            if(te) {
+                const val = te.value;
+                te.innerHTML='<option value="">-- اختر --</option>'+Object.values(data.teachers||{}).map(t=>`<option value="${t.name}">${t.name}</option>`).join('');
+                if(val) te.value = val; else { const s=localStorage.getItem('teacher'); if(s) te.value=s; }
+            }
+        }
+
+        function loadStudentsForRole(c, id) { 
+            const e=document.getElementById(id); e.innerHTML='<option value="">اختر الطالب</option>'; e.disabled=false; 
+            Object.values(data.students||{}).filter(s=>s.class===c).forEach(s=>e.innerHTML+=`<option value="${s.name}">${s.name}</option>`); 
         }
 
         function sendPermit() { 
-            const teacherName = document.getElementById('global-teacher-name').value;
-            if(!teacherName && userRole === 'teacher') return Swal.fire('تنبيه', 'اختر اسم المعلم', 'warning');
-            if(!validate(['t-stu','t-class','t-dest'])) return;
-            let timeVal = document.getElementById('t-time').value; if(!timeVal) return Swal.fire('تنبيه', 'أدخل المدة', 'warning');
-            const stu = document.getElementById('t-stu').value;
-            
-            const activePermits = Object.values(data.permits||{}).filter(p => p.student === stu && p.active);
-            if(activePermits.length > 0) return Swal.fire('عذراً', 'الطالب خارج الفصل!', 'error');
+            if(!document.getElementById('t-stu').value) return showToast('اختر الطالب');
+            db.ref('permits').push({
+                student:document.getElementById('t-stu').value, teacher:document.getElementById('global-teacher-name').value, 
+                class:document.getElementById('t-class').value, dest:document.getElementById('t-dest').value, 
+                limit:document.getElementById('t-time').value || 10, start:new Date().toISOString(), active:true
+            });
+            showToast('تم الخروج'); navigate('monitor');
+        }
 
-            if(!document.getElementById('t-special').checked) {
-                const lastPermit = Object.values(data.permits||{}).filter(p => p.student === stu && !p.active).sort((a,b)=>new Date(b.end)-new Date(a.end))[0];
-                if(lastPermit && lastPermit.end) { const diff = (new Date() - new Date(lastPermit.end)) / 60000; if(diff < 120) return Swal.fire('تنبيه', `يجب الانتظار. متبقى ${Math.round(120-diff)} دقيقة`, 'warning'); }
-            }
-            db.ref('permits').push({student:stu, teacher:teacherName, class:document.getElementById('t-class').value, dest:document.getElementById('t-dest').value, limit:parseInt(timeVal), start:new Date().toISOString(), active:true});
-            Swal.fire({title:'تم!',text:'انطلق المؤقت',icon:'success',timer:1500,showConfirmButton:false}); navigate('monitor');
-        }
-        
-        function sendStar() { 
-            const teacherName = document.getElementById('global-teacher-name').value;
-            if(!teacherName && userRole === 'teacher') return Swal.fire('تنبيه', 'اختر اسم المعلم', 'warning');
-            if(validate(['b-stu','b-reason'])) { db.ref('stars').push({student:document.getElementById('b-stu').value, reason:document.getElementById('b-reason').value, teacher:teacherName, value:1, date:new Date().toISOString()}); showToast('تم منح نجمة'); } 
-        }
-        function deductStar() {
-            const stu = document.getElementById('b-stu').value; const teacherName = document.getElementById('global-teacher-name').value;
-            if(!teacherName && userRole === 'teacher') return Swal.fire('تنبيه', 'اختر اسم المعلم', 'warning'); if(!stu) return Swal.fire('تنبيه', 'اختر الطالب', 'warning');
-            const today = new Date().toLocaleDateString('en-CA'); const deductions = Object.values(data.stars||{}).filter(s => s.student === stu && s.value === -1 && new Date(s.date).toLocaleDateString('en-CA') === today);
-            if(deductions.length >= 2) return Swal.fire('عذراً', 'الحد الأقصى للخصم نجمتان', 'error');
-            db.ref('stars').push({student:stu, reason:'سحب نجمة', teacher:teacherName, value:-1, date:new Date().toISOString()}); showToast('تم سحب النجمة');
-        }
-        function sendViolation() { if(validate(['v-stu','v-type','v-desc'])) { db.ref('violations').push({student:document.getElementById('v-stu').value, type:document.getElementById('v-type').value, desc:document.getElementById('v-desc').value, status:'pending_admin', date:new Date().toLocaleDateString('ar-SA')}); Swal.fire('تم الرفع للوكيل'); } }
-        function sendVisitorReq() { if(validate(['g-v-name','g-v-id','g-v-reason'])) { db.ref('visitors').push({name:document.getElementById('g-v-name').value, id:document.getElementById('g-v-id').value, reason:document.getElementById('g-v-reason').value, status:'pending', time:new Date().toISOString()}); document.getElementById('g-v-name').value=''; showToast('تم إرسال الطلب'); } }
-        function sendDeparture() { if(validate(['adm-dep-name'])) { db.ref('departures').push({name:document.getElementById('adm-dep-name').value, status:'pending'}); document.getElementById('adm-dep-name').value=''; showToast('تم الإرسال للحارس'); } }
-        function registerLate() { if(validate(['late-stu'])) { db.ref('tardiness').push({student:document.getElementById('late-stu').value, date:new Date().toISOString()}); showToast('تم رصد التأخر'); } }
-        
-        function loadStudentsForRole(c, id) { 
-            const l=Object.values(data.students||{}).filter(s=>s.class===c); 
-            const e=document.getElementById(id); 
-            e.innerHTML='<option value="">اختر الطالب</option>'; 
-            e.disabled=false; 
-            l.forEach(s=>e.innerHTML+=`<option value="${s.name}">${s.name}</option>`); 
+        function renderMonitor() { 
+            const g = document.getElementById('monitor-grid'); 
+            const l = Object.entries(data.permits||{}).filter(x=>x[1].active); 
+            document.getElementById('no-students').classList.toggle('d-none', l.length>0); 
+            g.innerHTML = l.map(([k,p])=>{ 
+                const m = Math.floor((new Date()-new Date(p.start))/60000); 
+                return `<div class="col-6 col-md-4"><div class="monitor-card ${m>=p.limit?'danger':'safe'}"><h6 class="fw-bold mb-1">${p.student}</h6><small class="d-block mb-2 text-muted">${p.dest}</small><h3 class="mb-2">${m} د</h3><button class="btn btn-dark btn-sm w-100 rounded-pill" onclick="db.ref('permits/${k}').update({active:false})">عودة</button></div></div>`; 
+            }).join(''); 
         }
 
         function setAttMode(mode) { attMode = mode; document.getElementById('btn-mode-period').className = mode === 'period' ? 'btn btn-primary w-50 rounded-pill' : 'btn btn-outline-primary w-50 rounded-pill'; document.getElementById('btn-mode-day').className = mode === 'day' ? 'btn btn-primary w-50 rounded-pill' : 'btn btn-outline-primary w-50 rounded-pill'; document.getElementById('div-att-period').style.visibility = mode === 'period' ? 'visible' : 'hidden'; loadAttendanceList(); }
-        function loadAttendanceList() { const cls = document.getElementById('att-class').value; const period = document.getElementById('att-period').value; const body = document.getElementById('att-list-body'); if(!cls) { body.innerHTML = '<tr><td colspan="2">اختر الفصل أولاً</td></tr>'; return; } const today = new Date().toLocaleDateString('en-CA'); const students = Object.values(data.students || {}).filter(s => s.class === cls); body.innerHTML = students.map(s => { let isAbsent = false; if (attMode === 'day') { isAbsent = data.attendance && data.attendance[today] && data.attendance[today]['full_day'] && data.attendance[today]['full_day'][s.name] === true; } else { isAbsent = data.attendance && data.attendance[today] && data.attendance[today]['periods'] && data.attendance[today]['periods'][period] && data.attendance[today]['periods'][period][s.name] === 'absent'; } return `<tr><td>${s.name}</td><td><button class="btn btn-sm ${isAbsent ? 'btn-danger' : 'btn-success'} w-50 rounded-pill" onclick="toggleAtt('${today}', '${s.name}', ${isAbsent})">${isAbsent ? 'غائب' : 'حاضر'}</button></td></tr>`; }).join(''); }
-        function toggleAtt(date, name, currentlyAbsent) { const period = document.getElementById('att-period').value; const newState = !currentlyAbsent; if (attMode === 'day') { if (newState) { db.ref(`attendance/${date}/full_day/${name}`).set(true); } else { db.ref(`attendance/${date}/full_day/${name}`).remove(); } } else { if (newState) { db.ref(`attendance/${date}/periods/${period}/${name}`).set('absent'); } else { db.ref(`attendance/${date}/periods/${period}/${name}`).remove(); } } setTimeout(() => loadAttendanceList(), 100); }
-        function saveSettings() { db.ref('settings').update({school:document.getElementById('s-school').value, manager:document.getElementById('s-manager').value, deputy:document.getElementById('s-deputy').value, admin_email:document.getElementById('s-email').value}); }
-        function savePasswords() { db.ref('settings').update({admin_pin:document.getElementById('pin-admin').value, teacher_pin:document.getElementById('pin-teacher').value, guard_pin:document.getElementById('pin-guard').value, counselor_pin:document.getElementById('pin-counselor').value}); Swal.fire('تم حفظ الرموز'); }
-        function uploadLogo() { const f=document.getElementById('logo-upload').files[0]; if(f){const r=new FileReader(); r.onload=e=>{db.ref('settings/logo').set(e.target.result); document.getElementById('logo-preview').src = e.target.result; document.getElementById('logo-preview').style.display='block';}; r.readAsDataURL(f);} }
-        function importData(inp) { const c=document.getElementById('imp-cls-name').value; if(!c) return alert('الفصل؟'); const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(r=>{if(r[0]) db.ref('students').push({name:r[0],class:c})}); let cl=data.classes||[]; if(!cl.includes(c)) {cl.push(c); db.ref('classes').set(cl);} Swal.fire('تم الاستيراد'); }; r.readAsArrayBuffer(inp.files[0]); }
-        function importTeachers(inp) { const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(r=>{if(r[0]) db.ref('teachers').push({name:r[0]})}); Swal.fire('تم الاستيراد'); }; r.readAsArrayBuffer(inp.files[0]); }
-        function exportData() { const blob = new Blob([JSON.stringify(data)], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "backup.json"; a.click(); }
-        function secureReset(type) { const email = data.settings.admin_email || 'البريد'; const pin = data.settings.admin_pin; Swal.fire({ title: 'تحقق', text: `أدخل الرمز (للتجربة: ${pin})`, input: 'password', showCancelButton: true, confirmButtonText: 'تأكيد' }).then((r) => { if (r.value == pin) { if (type === 'reports') { ['permits','visitors','violations','departures','attendance','stars','tardiness'].forEach(p=>db.ref(p).remove()); Swal.fire('تم التصفير'); } else if (type === 'factory') { db.ref('/').remove(); location.reload(); } } else if (r.isConfirmed) Swal.fire('الرمز خطأ'); }); }
-        function checkSecurityAlerts() { if((userRole==='guard' && Object.values(data.departures||{}).some(d=>d.status==='pending')) || (userRole==='admin' && Object.values(data.visitors||{}).some(v=>v.status==='pending'))) { if(!isMuted) document.getElementById('bell')?.play().catch(()=>{}); } }
-        function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor(); }
-        function logOut() { localStorage.removeItem('userRole'); localStorage.removeItem('currentView'); location.reload(); }
-        function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute"></i>':'<i class="fas fa-volume-up"></i>'; }
-        function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-        function savePermissions() { const perms = { counselor: document.getElementById('perm-counselor').checked, teacher: document.getElementById('perm-teacher').checked, guard: document.getElementById('perm-guard').checked }; db.ref('settings/permissions').set(perms).then(() => Swal.fire('تم')); }
-        function saveBroadcastSettings() { const updates = { eventTitle: document.getElementById('set-event-title').value, eventMsg: document.getElementById('set-event-msg').value, showcaseTitle: document.getElementById('set-showcase-title').value }; const file = document.getElementById('set-showcase-img').files[0]; if(file) { const r = new FileReader(); r.onload = e => { updates.showcaseImg = e.target.result; db.ref('settings/broadcast').update(updates).then(()=>Swal.fire('تم الحفظ')); }; r.readAsDataURL(file); } else { db.ref('settings/broadcast').update(updates).then(()=>Swal.fire('تم الحفظ')); } }
-        function updateDashboardStats() { if(userRole==='admin') { document.getElementById('adm-vis-list').previousElementSibling.querySelector('span.badge')?.remove(); } }
         
-        function openHallOfFame() {
-            const title = data.settings.broadcast?.hofTitle || '💎 لوحة الشرف 💎';
-            document.getElementById('disp-hof-title').innerText = title;
-            const scores = {}; Object.values(data.stars||{}).forEach(s => { const val = s.value !== undefined ? s.value : 1; scores[s.student] = (scores[s.student]||0) + val; });
-            const sorted = Object.entries(scores).filter(s => s[1] > 0).sort((a,b)=>b[1]-a[1]).slice(0, 10);
-            
-            if(sorted.length === 0) {
-                document.getElementById('hof-content').innerHTML = `<div class="empty-state-message">المنافسة بدأت! 🌟</div>`;
-            } else {
-                const champ = sorted[0];
-                const champObj = Object.values(data.students||{}).find(s=>s.name===champ[0]);
-                const champPhoto = champObj && champObj.photo ? `<img src="${champObj.photo}">` : '<i class="fas fa-user-graduate"></i>';
-                
-                let html = `<div class="champion-area"><div class="champion-avatar">${champPhoto}</div><h2 class="champion-name">${champ[0]}</h2><h3 class="text-warning">${champ[1]} نجمة</h3><h5 class="text-white-50">${champObj?champObj.class:''}</h5></div><div id="challengers-slider"></div>`;
-                document.getElementById('hof-content').innerHTML = html;
-                
-                const others = sorted.slice(1);
-                if(others.length > 0) {
-                    const slider = document.getElementById('challengers-slider');
-                    slider.innerHTML = '';
-                    others.forEach((s, i) => { if(i<5) slider.innerHTML += `<div class="challenger-card"><div class="challenger-rank">${i+2}</div><h2 class="challenger-name">${s[0]}</h2><div class="challenger-stars">${s[1]} نجمة</div></div>`; });
-                }
-            }
-            document.getElementById('hall-of-fame-overlay').style.display='block';
+        function loadAttendanceList() {
+            const cls = document.getElementById('att-class').value;
+            const period = document.getElementById('att-period').value;
+            const body = document.getElementById('att-list-body');
+            const today = new Date().toLocaleDateString('en-CA');
+            if(!cls) return;
+            const students = Object.values(data.students || {}).filter(s => s.class === cls);
+            body.innerHTML = students.map(s => {
+                let isAbsent = attMode === 'day' ? data.attendance?.[today]?.['full_day']?.[s.name] === true : data.attendance?.[today]?.['periods']?.[period]?.[s.name] === 'absent';
+                return `<div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-4 mb-2 shadow-sm border" onclick="toggleAtt('${today}', '${s.name}', ${isAbsent})">
+                    <span class="fw-bold">${s.name}</span>
+                    <span class="badge rounded-pill ${isAbsent ? 'bg-danger' : 'bg-success'} p-2 px-3">${isAbsent ? 'غائب' : 'حاضر'}</span>
+                </div>`;
+            }).join('');
         }
-        function closeOverlay(id) { document.getElementById(id).style.display='none'; }
-        function openEventsScreen() { document.getElementById('disp-event-title').innerText = data.settings.broadcast?.eventTitle || 'مرحباً'; document.getElementById('disp-event-msg').innerText = data.settings.broadcast?.eventMsg || ''; document.getElementById('events-overlay').style.display='block'; }
-        function openShowcaseScreen() { if(data.settings.broadcast?.showcaseImg) { document.getElementById('disp-showcase-img').src=data.settings.broadcast.showcaseImg; document.getElementById('disp-showcase-title').innerText=data.settings.broadcast.showcaseTitle; document.getElementById('showcase-overlay').style.display='block'; } }
+        
+        function toggleAtt(date, name, currentlyAbsent) {
+            const period = document.getElementById('att-period').value;
+            if (attMode === 'day') {
+                if (currentlyAbsent) db.ref(`attendance/${date}/full_day/${name}`).remove(); else db.ref(`attendance/${date}/full_day/${name}`).set(true);
+            } else {
+                if (currentlyAbsent) db.ref(`attendance/${date}/periods/${period}/${name}`).remove(); else db.ref(`attendance/${date}/periods/${period}/${name}`).set('absent');
+            }
+            setTimeout(() => loadAttendanceList(), 100);
+        }
 
-        function showReportModal(type) {
-            const modal = new bootstrap.Modal(document.getElementById('printModal')); const logo = data.settings.logo || "";
-            const titles = { 'permits': 'سجل الأذونات', 'visitors': 'سجل الزوار', 'violations': 'المخالفات السلوكية', 'attendance': 'الغياب اليومي', 'stars': 'لوحة الشرف', 'late': 'تأخر الصباح', 'top_class': 'الفصل المثالي' };
+        // Actions
+        function sendStar() { db.ref('stars').push({student:document.getElementById('b-stu').value, reason:document.getElementById('b-reason').value, teacher:document.getElementById('global-teacher-name').value, value:1, date:new Date().toISOString()}); showToast('تم المنح'); }
+        function deductStar() { db.ref('stars').push({student:document.getElementById('b-stu').value, reason:'خصم', teacher:document.getElementById('global-teacher-name').value, value:-1, date:new Date().toISOString()}); showToast('تم الخصم'); }
+        function sendViolation() { db.ref('violations').push({student:document.getElementById('v-stu').value, type:document.getElementById('v-type').value, desc:document.getElementById('v-desc').value, status:'pending_admin', date:new Date().toLocaleDateString('ar-SA')}); showToast('تم الرفع'); }
+        function registerLate() { db.ref('tardiness').push({student:document.getElementById('late-stu').value, date:new Date().toISOString()}); showToast('تم الرصد'); }
+        function sendVisitorReq() { db.ref('visitors').push({name:document.getElementById('g-v-name').value, id:document.getElementById('g-v-id').value, reason:document.getElementById('g-v-reason').value, status:'pending', time:new Date().toISOString()}); document.getElementById('g-v-name').value=''; showToast('تم الإرسال'); }
+        function sendDeparture() { db.ref('departures').push({name:document.getElementById('adm-dep-name').value, status:'pending'}); document.getElementById('adm-dep-name').value=''; showToast('تم الإرسال'); }
+
+        // Admin & Stats
+        function renderAdmin() {
+            document.getElementById('adm-vis-list').innerHTML = Object.entries(data.visitors||{}).filter(x=>x[1].status==='pending').map(([k,v])=>`<div class="list-group-item d-flex justify-content-between align-items-center p-3 bg-white mb-1"><small class="fw-bold">${v.name}</small><div class="btn-group"><button class="btn btn-success btn-sm" onclick="db.ref('visitors/${k}').update({status:'approved'})">✔</button><button class="btn btn-danger btn-sm" onclick="db.ref('visitors/${k}').update({status:'rejected'})">✘</button></div></div>`).join(''); 
+            document.getElementById('adm-vio-list').innerHTML = Object.entries(data.violations||{}).filter(x=>x[1].status==='pending_admin').map(([k,v])=>`<div class="alert alert-danger p-2 small mb-2 d-flex justify-content-between align-items-center"><div><strong>${v.student}</strong><br>${v.type}</div><button class="btn btn-dark btn-sm" onclick="db.ref('violations/${k}').update({status:'pending_counselor'})">تحويل</button></div>`).join('');
+            document.getElementById('g-dep-list').innerHTML = Object.entries(data.departures||{}).filter(x=>x[1].status==='pending').map(([k,d])=>`<div class="alert alert-danger d-flex justify-content-between align-items-center p-2 mb-2"><strong>${d.name}</strong><button class="btn btn-success btn-sm" onclick="db.ref('departures/${k}').update({status:'exited'})">خرج</button></div>`).join('');
             
-            let h = `<div style="text-align:center; border-bottom:1px solid #ccc; padding-bottom:10px; margin-bottom:15px;"><h5>${data.settings.school}</h5><h6>${titles[type]}</h6><small>${new Date().toLocaleDateString('ar-SA')}</small></div>`;
+            document.getElementById('stat-exit').innerText = Object.values(data.permits||{}).filter(p=>p.active).length;
+            document.getElementById('stat-visit').innerText = Object.values(data.visitors||{}).filter(v=>v.status==='pending').length;
+            document.getElementById('stat-vio').innerText = Object.values(data.violations||{}).filter(v=>v.status==='pending_admin').length;
+        }
+        
+        function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor(); }
+        function rememberTeacher(v) { localStorage.setItem('teacher', v); }
+        function logOut() { localStorage.removeItem('userRole'); location.reload(); }
+        
+        function showReportModal(type) { 
+             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
+             const titles = { 'permits': 'سجل الأذونات', 'visitors': 'سجل الزوار', 'violations': 'المخالفات', 'attendance': 'الغياب اليومي', 'stars': 'نجوم التميز', 'late': 'تأخر الصباح', 'top_class': 'الفصل المثالي' };
             
-             if(type==='permits') {
-                h += `<table class="table table-bordered text-center table-sm small"><thead><tr class="table-dark"><th>الطالب</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).reverse().map(p=>{ return `<tr><td>${p.student}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`;
-            } else if(type==='stars') { 
-                let s = {}; Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; });
-                h+=`<table class="table table-bordered text-center table-sm small"><thead><tr class="table-dark"><th>الطالب</th><th>الرصيد</th></tr></thead><tbody>`;
-                Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).forEach(x=> { h+=`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`; });
-                h+=`</tbody></table>`;
+            let h = `<div class="text-center mb-4"><h4 class="fw-bold">${titles[type]}</h4><small class="text-muted">${new Date().toLocaleDateString('ar-SA')}</small></div>`;
+            
+            if(type==='permits') {
+                h += `<table class="table table-striped text-center"><thead><tr><th>الطالب</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).reverse().map(p=>`<tr><td>${p.student}<br><small class="text-muted">${p.dest}</small></td><td>${new Date(p.start).toLocaleTimeString('ar-SA', {hour:'2-digit',minute:'2-digit'})}</td></tr>`).join('')}</tbody></table>`;
             } else if(type==='attendance') {
                 const t = new Date().toLocaleDateString('en-CA');
-                h += `<table class="table table-bordered text-center table-striped table-sm small"><thead><tr class="table-dark"><th>الطالب</th><th>الحالة</th></tr></thead><tbody>`;
-                Object.values(data.students||{}).forEach(s => {
-                    if(data.attendance?.[t]?.['full_day']?.[s.name]) h+=`<tr><td>${s.name}</td><td class="text-danger">غياب</td></tr>`;
-                });
+                h += `<table class="table table-striped text-center"><thead><tr><th>الطالب</th><th>الحالة</th></tr></thead><tbody>`;
+                Object.values(data.students||{}).forEach(s => { if(data.attendance?.[t]?.['full_day']?.[s.name]) h+=`<tr><td>${s.name}</td><td class="text-danger fw-bold">غياب</td></tr>`; });
                 h+=`</tbody></table>`;
-            } else if(type==='violations') {
-                 h += `<table class="table table-bordered text-center table-sm small"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th></tr></thead><tbody>${Object.values(data.violations||{}).reverse().map(v=>`<tr><td>${v.student}</td><td>${v.type}</td></tr>`).join('')}</tbody></table>`;
+            } else if(type==='stars') { 
+                 let s = {}; Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; });
+                 h+=`<table class="table table-striped text-center"><thead><tr><th>الطالب</th><th>الرصيد</th></tr></thead><tbody>`;
+                 Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).forEach(x=> { h+=`<tr><td>${x[0]}</td><td><span class="badge bg-warning text-dark">${x[1]}</span></td></tr>`; });
+                 h+=`</tbody></table>`;
             }
 
             document.getElementById('modal-print-content').innerHTML = h; modal.show();
         }
+        
         function executePrint() { window.print(); }
-        function renderMonitor() { const g = document.getElementById('monitor-grid'); const l = Object.entries(data.permits||{}).filter(x=>x[1].active); document.getElementById('no-students').classList.toggle('d-none', l.length>0); g.innerHTML = l.map(([k,p])=>{ const m = Math.floor((new Date()-new Date(p.start))/60000); return `<div class="col-6 col-md-4"><div class="monitor-card ${m>=p.limit?'danger':'safe'} p-2"><h6 class="fw-bold mb-1">${p.student}</h6><small class="d-block mb-2 text-muted">${p.dest}</small><h3 class="mb-2">${m}</h3><button class="btn btn-dark btn-sm w-100 rounded-pill" onclick="closePermit('${k}')">عودة</button></div></div>`; }).join(''); }
-        function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
-        function renderAdmin() { 
-            document.getElementById('adm-vis-list').innerHTML = Object.entries(data.visitors||{}).filter(x=>x[1].status==='pending').map(([k,v])=>`<div class="list-group-item d-flex justify-content-between align-items-center p-2"><small>${v.name}</small><div class="btn-group"><button class="btn btn-success btn-sm py-0" onclick="db.ref('visitors/${k}').update({status:'approved'})"><i class="fas fa-check"></i></button><button class="btn btn-danger btn-sm py-0" onclick="db.ref('visitors/${k}').update({status:'rejected'})"><i class="fas fa-times"></i></button></div></div>`).join(''); 
-            document.getElementById('adm-vio-list').innerHTML = Object.entries(data.violations||{}).filter(x=>x[1].status==='pending_admin').map(([k,v])=>`<div class="alert alert-danger p-2 small mb-2 d-flex justify-content-between align-items-center"><div><strong>${v.student}</strong><br>${v.type}</div><button class="btn btn-dark btn-sm py-1" onclick="db.ref('violations/${k}').update({status:'pending_counselor'})">تحويل</button></div>`).join(''); 
+        
+        function saveBroadcastSettings() {
+            const updates = { showcaseTitle: document.getElementById('set-showcase-title').value };
+            const file = document.getElementById('set-showcase-img').files[0];
+            if(file) { const r = new FileReader(); r.onload = e => { updates.showcaseImg = e.target.result; db.ref('settings/broadcast').update(updates).then(()=>showToast('تم الحفظ')); }; r.readAsDataURL(file); } else { db.ref('settings/broadcast').update(updates).then(()=>showToast('تم الحفظ')); }
         }
-        function renderGuard() { 
-            document.getElementById('g-dep-list').innerHTML = Object.entries(data.departures||{}).filter(x=>x[1].status==='pending').map(([k,d])=>`<div class="alert alert-danger d-flex justify-content-between align-items-center p-2 mb-2"><strong>${d.name}</strong><button class="btn btn-success btn-sm" onclick="db.ref('departures/${k}').update({status:'exited'})">خرج</button></div>`).join(''); 
+        function populateSettingsUI() {
+             if(document.getElementById('pin-admin')) {
+                 document.getElementById('pin-admin').value = data.settings.admin_pin || '';
+                 document.getElementById('pin-teacher').value = data.settings.teacher_pin || '';
+                 document.getElementById('pin-guard').value = data.settings.guard_pin || '';
+                 document.getElementById('set-showcase-title').value = data.settings.broadcast?.showcaseTitle || '';
+             }
         }
-        function searchStudentHistory() {
-            const name = document.getElementById('stu-search-name').value;
-            if(!name) return;
-            const history = Object.values(data.violations||{}).filter(v=>v.student.includes(name));
-            const stars = Object.values(data.stars||{}).filter(s=>s.student.includes(name));
-            let h = `<strong>${name}</strong><br>المخالفات: ${history.length}<br>النجوم: ${stars.length}`;
-            document.getElementById('stu-history-res').innerHTML = h;
-            document.getElementById('stu-history-res').classList.remove('d-none');
-        }
+        function savePasswords() { db.ref('settings').update({admin_pin:document.getElementById('pin-admin').value, teacher_pin:document.getElementById('pin-teacher').value, guard_pin:document.getElementById('pin-guard').value}); showToast('تم التحديث'); }
+        function importData(inp) { const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); const c=document.getElementById('imp-cls-name').value; j.forEach(r=>{if(r[0]) db.ref('students').push({name:r[0],class:c})}); let cl=data.classes||[]; if(!cl.includes(c)) {cl.push(c); db.ref('classes').set(cl);} showToast('تم الاستيراد'); }; r.readAsArrayBuffer(inp.files[0]); }
+        function importTeachers(inp) { const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(r=>{if(r[0]) db.ref('teachers').push({name:r[0]})}); showToast('تم الاستيراد'); }; r.readAsArrayBuffer(inp.files[0]); }
+        function secureReset(type) { if(confirm('هل أنت متأكد؟')) { if(type==='reports') ['permits','visitors','violations','attendance','stars','tardiness'].forEach(p=>db.ref(p).remove()); location.reload(); } }
     </script>
 </body>
 </html>

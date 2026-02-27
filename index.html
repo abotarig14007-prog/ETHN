@@ -27,6 +27,9 @@
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
         
+        /* حل مشكلة اختفاء التنبيهات خلف الشاشة الخضراء */
+        .swal2-container { z-index: 110000 !important; }
+
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; transition: transform 0.3s ease; }
         .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
         
@@ -68,15 +71,15 @@
         .service-card-yellow { background-color: #fffdf0 !important; border: 3px solid #ffc107 !important; }
         .service-card-red { background-color: #fdf5f5 !important; border: 3px solid #dc3545 !important; }
         
-        /* تنظيف تصميم القوائم لمنع الأسهم المزدوجة وضمان سلاسة اللمس */
         .huge-input { 
             font-size: 1.6rem !important; 
             font-weight: 900 !important; 
-            padding: 15px 40px 15px 15px !important; /* مساحة للسهم */
+            padding: 15px 40px 15px 15px !important; 
             border-radius: 15px !important; 
             text-align: center; 
             background-color: #ffffff; 
             height: auto !important; 
+            appearance: auto !important; 
             cursor: pointer;
         }
         .huge-input:focus { border-color: var(--primary); box-shadow: 0 0 0 0.25rem rgba(0, 108, 53, 0.25); }
@@ -574,11 +577,27 @@
             db.ref('/').on('value', snap => {
                 const val = snap.val();
                 if(val) {
-                    data = { ...data, ...val };
+                    // دمج آمن للبيانات دون فقدان الهيكلة
+                    data.settings = { ...data.settings, ...(val.settings || {}) };
+                    data.classes = val.classes || [];
+                    data.students = val.students || {};
+                    data.teachers = val.teachers || {};
+                    data.permits = val.permits || {};
+                    data.visitors = val.visitors || {};
+                    data.departures = val.departures || {};
+                    data.violations = val.violations || {};
+                    data.attendance = val.attendance || {};
+                    data.stars = val.stars || {};
+                    data.tardiness = val.tardiness || {};
+                    data.screens = val.screens || {};
+                    
                     document.getElementById('disp-school').innerText = data.settings.school || 'المدرسة';
                     document.getElementById('login-school-name').innerText = data.settings.school || 'المدرسة';
                     document.body.style.visibility = 'visible';
-                    calculateBestClass(); renderDynamicAdminScreens();
+                    
+                    // استخدام try-catch لحماية البرنامج من أي خطأ غير متوقع
+                    try { calculateBestClass(); } catch(e) {}
+                    try { renderDynamicAdminScreens(); } catch(e) {}
                     
                     if(savedRole && !userRole) {
                         userRole = savedRole;
@@ -624,9 +643,12 @@
                 const bell = document.getElementById('bell');
                 if(bell) { bell.volume = 0; bell.play().then(()=>bell.pause()).catch(e=>{}); bell.volume = 1; }
 
+                // رسالة النجاح
+                Swal.fire({ title: 'تم تسجيل الدخول بنجاح', icon: 'success', timer: 1500, showConfirmButton: false });
+
                 buildMenu(); navigate('services'); 
                 showServiceDefault(); populateSettingsUI(); refreshScreens();
-            } else { Swal.fire('خطأ','الرمز غير صحيح','error'); } 
+            } else { Swal.fire('خطأ','الرمز السري غير صحيح','error'); } 
         }
 
         function toggleSidebar() {
@@ -764,37 +786,55 @@
             const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
         }
 
-        // ================= الحل الجذري للفلترة ومنع تحديث القوائم تلقائياً وإزعاج المستخدم =================
+        // ================= الحل الجذري والآمن 100% لمعالجة الفصول والطلاب ومنع إعادة الرسم العشوائي =================
+        function calculateBestClass() { 
+            let s = {}; 
+            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
+            classesArr.forEach(c => s[c] = 0); 
+            
+            let studentsArr = Object.values(data.students || {});
+            Object.values(data.stars || {}).forEach(st => { 
+                let o = studentsArr.find(x => x && x.name === st.student); 
+                if(o && o.class) s[o.class] = (s[o.class] || 0) + (st.value || 1); 
+            }); 
+            Object.values(data.violations || {}).forEach(v => { 
+                let o = studentsArr.find(x => x && x.name === v.student); 
+                if(o && o.class) s[o.class] = (s[o.class] || 0) - 1; 
+            }); 
+            
+            let best = Object.entries(s).sort((a,b) => b[1] - a[1])[0]; 
+            if(best && best[1] > 0) { 
+                document.getElementById('best-class-badge').classList.remove('d-none'); 
+                document.getElementById('best-class-txt').innerText = best[0]; 
+            } else {
+                document.getElementById('best-class-badge').classList.add('d-none');
+            }
+        }
+
         function refreshScreens() {
-            let classesArr = [];
-            if(data.classes) { classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes); }
+            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
             const safeClasses = classesArr.filter(c => c !== null && c !== undefined && c !== '');
 
-            const newClassDataString = safeClasses.join(',');
+            const classOptionsHtml = '<option value="">اختر الفصل</option>' + safeClasses.map(c => `<option value="${c}">${c}</option>`).join('');
 
             ['t-class','v-class','b-class','att-class','late-class'].forEach(id=>{ 
                 const e = document.getElementById(id); 
-                if(e) { 
-                    // تحديث القائمة فقط إذا تغيرت البيانات القادمة من قاعدة البيانات
-                    if (e.dataset.currentData !== newClassDataString) { 
-                        const currentVal = e.value; 
-                        e.innerHTML = '<option value="">اختر الفصل</option>' + safeClasses.map(c => `<option value="${c}">${c}</option>`).join(''); 
-                        if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal; 
-                        e.dataset.currentData = newClassDataString;
-                    }
+                if(e && e.innerHTML !== classOptionsHtml) { 
+                    const currentVal = e.value; 
+                    e.innerHTML = classOptionsHtml; 
+                    if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal; 
                 }
             });
 
             const te = document.getElementById('global-teacher-name'); 
             if(te) { 
                 const safeTeachers = Object.values(data.teachers || {}).filter(t => t && t.name).map(t => t.name);
-                const newTeacherDataString = safeTeachers.join(',');
+                const teacherOptionsHtml = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(t => `<option value="${t}">${t}</option>`).join('');
                 
-                if (te.dataset.currentData !== newTeacherDataString) {
+                if (te.innerHTML !== teacherOptionsHtml) {
                     const currentVal = te.value;
-                    te.innerHTML = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(t => `<option value="${t}">${t}</option>`).join('');
+                    te.innerHTML = teacherOptionsHtml;
                     if(currentVal) te.value = currentVal; else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; } 
-                    te.dataset.currentData = newTeacherDataString;
                 }
             }
             if(userRole==='admin') { renderAdmin(); renderDynamicAdminScreens(); } if(userRole==='guard') renderGuard();
@@ -804,18 +844,19 @@
             const safeStudents = Object.values(data.students || {}).filter(s => s && s.name && String(s.class) === String(c)).map(s => s.name); 
             const e = document.getElementById(id); 
             if(e) {
-                const newStudentDataString = safeStudents.join(',');
-                
-                if (e.dataset.currentData !== newStudentDataString) {
+                const stuOptionsHtml = '<option value="">اختر الطالب</option>' + safeStudents.map(name => `<option value="${name}">${name}</option>`).join('');
+                if (e.innerHTML !== stuOptionsHtml) {
                     const currentVal = e.value;
-                    e.innerHTML = '<option value="">اختر الطالب</option>' + safeStudents.map(name => `<option value="${name}">${name}</option>`).join('');
+                    e.innerHTML = stuOptionsHtml;
                     e.disabled = (safeStudents.length === 0);
                     if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal;
-                    e.dataset.currentData = newStudentDataString;
+                } else {
+                    e.disabled = (safeStudents.length === 0);
                 }
             }
         }
 
+        // ================= الإستيراد الآمن =================
         function importData(inp) { 
             const c=document.getElementById('imp-cls-name').value; 
             if(!c) return Swal.fire('تنبيه', 'أدخل اسم الفصل أولاً في المربع المخصص', 'warning'); 
@@ -824,8 +865,7 @@
                 const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); 
                 j.forEach(row=>{if(row[0]) db.ref('students').push({name:row[0],class:c})}); 
                 
-                let cl = [];
-                if(data.classes) { cl = Array.isArray(data.classes) ? data.classes : Object.values(data.classes); }
+                let cl = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
                 const safeClasses = cl.filter(item => item !== null && item !== undefined);
                 
                 if(!safeClasses.includes(c)) { safeClasses.push(c); db.ref('classes').set(safeClasses); } 
@@ -839,6 +879,7 @@
             const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(row=>{if(row[0]) db.ref('teachers').push({name:row[0]})}); Swal.fire('تم الاستيراد بنجاح'); inp.value = ''; }; r.readAsArrayBuffer(inp.files[0]); 
         }
 
+        // ================= التصدير الآمن (مدعوم في جميع المتصفحات والجوال) =================
         function exportData() { 
             const blob = new Blob([JSON.stringify(data)], {type: "application/json"}); 
             const a = document.createElement('a'); 
@@ -849,6 +890,7 @@
             document.body.removeChild(a); 
         }
 
+        // ================= التصفير الآمن =================
         function secureReset(type) { 
             const email = data.settings.admin_email || 'البريد المسجل'; 
             const pin = String(data.settings.admin_pin || '2026'); 
@@ -882,6 +924,7 @@
             document.getElementById('t-time').value = '';
         }
 
+        // ================= المتابعة الحية والإنذار الصوتي =================
         function renderMonitor() { 
             const g = document.getElementById('monitor-grid'); 
             const l = Object.entries(data.permits||{}).filter(x=>x[1] && x[1].active); 
@@ -911,6 +954,7 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
+        // ================= نظام معالجة المخالفات الذكي للوكيل =================
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
             const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
@@ -988,6 +1032,7 @@
             });
         }
 
+        // ================= الطباعة الرسمية =================
         function printOfficialForm(studentName, violationDesc, formType) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             

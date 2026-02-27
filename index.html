@@ -68,15 +68,15 @@
         .service-card-yellow { background-color: #fffdf0 !important; border: 3px solid #ffc107 !important; }
         .service-card-red { background-color: #fdf5f5 !important; border: 3px solid #dc3545 !important; }
         
+        /* تنظيف تصميم القوائم لمنع الأسهم المزدوجة وضمان سلاسة اللمس */
         .huge-input { 
             font-size: 1.6rem !important; 
             font-weight: 900 !important; 
-            padding: 15px !important; 
+            padding: 15px 40px 15px 15px !important; /* مساحة للسهم */
             border-radius: 15px !important; 
             text-align: center; 
             background-color: #ffffff; 
             height: auto !important; 
-            appearance: auto !important; 
             cursor: pointer;
         }
         .huge-input:focus { border-color: var(--primary); box-shadow: 0 0 0 0.25rem rgba(0, 108, 53, 0.25); }
@@ -550,7 +550,8 @@
                 <div><img id="cert-logo-img" src=""></div>
                 <div style="width: 250px;"></div>
             </div>
-            <div class="cert-body" id="dynamic-print-body"></div>
+            <div class="cert-body" id="dynamic-print-body">
+                </div>
             <div class="cert-signatures">
                 <div class="manager"><strong>مدير المدرسة</strong><br><br><span id="cert-manager-name" style="color:var(--primary); font-size:1.8rem;">...</span></div>
                 <div class="deputy"><strong>وكيل شؤون الطلاب</strong><br><br><span id="cert-deputy-name" style="color:var(--primary); font-size:1.8rem;">...</span></div>
@@ -763,53 +764,58 @@
             const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
         }
 
-        // ================= الحل الجذري للفلترة الآمنة (يمنع الانهيار) =================
+        // ================= الحل الجذري للفلترة ومنع تحديث القوائم تلقائياً وإزعاج المستخدم =================
         function refreshScreens() {
             let classesArr = [];
             if(data.classes) { classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes); }
             const safeClasses = classesArr.filter(c => c !== null && c !== undefined && c !== '');
 
-            const classOptions = '<option value="">اختر الفصل</option>' + safeClasses.map(c => `<option value="${c}">${c}</option>`).join('');
+            const newClassDataString = safeClasses.join(',');
 
             ['t-class','v-class','b-class','att-class','late-class'].forEach(id=>{ 
                 const e = document.getElementById(id); 
-                if(e && e.innerHTML !== classOptions) { 
-                    const currentVal = e.value; 
-                    e.innerHTML = classOptions; 
-                    if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal; 
+                if(e) { 
+                    // تحديث القائمة فقط إذا تغيرت البيانات القادمة من قاعدة البيانات
+                    if (e.dataset.currentData !== newClassDataString) { 
+                        const currentVal = e.value; 
+                        e.innerHTML = '<option value="">اختر الفصل</option>' + safeClasses.map(c => `<option value="${c}">${c}</option>`).join(''); 
+                        if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal; 
+                        e.dataset.currentData = newClassDataString;
+                    }
                 }
             });
 
             const te = document.getElementById('global-teacher-name'); 
             if(te) { 
-                const safeTeachers = Object.values(data.teachers || {}).filter(t => t && t.name);
-                const teacherOptions = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
-                if (te.innerHTML !== teacherOptions) {
+                const safeTeachers = Object.values(data.teachers || {}).filter(t => t && t.name).map(t => t.name);
+                const newTeacherDataString = safeTeachers.join(',');
+                
+                if (te.dataset.currentData !== newTeacherDataString) {
                     const currentVal = te.value;
-                    te.innerHTML = teacherOptions;
+                    te.innerHTML = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(t => `<option value="${t}">${t}</option>`).join('');
                     if(currentVal) te.value = currentVal; else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; } 
+                    te.dataset.currentData = newTeacherDataString;
                 }
             }
             if(userRole==='admin') { renderAdmin(); renderDynamicAdminScreens(); } if(userRole==='guard') renderGuard();
         }
 
         function loadStudentsForRole(c, id) { 
-            const safeStudents = Object.values(data.students || {}).filter(s => s && s.name && String(s.class) === String(c)); 
+            const safeStudents = Object.values(data.students || {}).filter(s => s && s.name && String(s.class) === String(c)).map(s => s.name); 
             const e = document.getElementById(id); 
             if(e) {
-                const stuOptions = '<option value="">اختر الطالب</option>' + safeStudents.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
-                if (e.innerHTML !== stuOptions) {
+                const newStudentDataString = safeStudents.join(',');
+                
+                if (e.dataset.currentData !== newStudentDataString) {
                     const currentVal = e.value;
-                    e.innerHTML = stuOptions;
+                    e.innerHTML = '<option value="">اختر الطالب</option>' + safeStudents.map(name => `<option value="${name}">${name}</option>`).join('');
                     e.disabled = (safeStudents.length === 0);
                     if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal;
-                } else {
-                    e.disabled = (safeStudents.length === 0);
+                    e.dataset.currentData = newStudentDataString;
                 }
             }
         }
 
-        // ================= الإستيراد الآمن =================
         function importData(inp) { 
             const c=document.getElementById('imp-cls-name').value; 
             if(!c) return Swal.fire('تنبيه', 'أدخل اسم الفصل أولاً في المربع المخصص', 'warning'); 
@@ -833,7 +839,6 @@
             const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(row=>{if(row[0]) db.ref('teachers').push({name:row[0]})}); Swal.fire('تم الاستيراد بنجاح'); inp.value = ''; }; r.readAsArrayBuffer(inp.files[0]); 
         }
 
-        // ================= التصدير الآمن (مدعوم في جميع المتصفحات والجوال) =================
         function exportData() { 
             const blob = new Blob([JSON.stringify(data)], {type: "application/json"}); 
             const a = document.createElement('a'); 
@@ -844,7 +849,6 @@
             document.body.removeChild(a); 
         }
 
-        // ================= التصفير الآمن =================
         function secureReset(type) { 
             const email = data.settings.admin_email || 'البريد المسجل'; 
             const pin = String(data.settings.admin_pin || '2026'); 
@@ -878,7 +882,6 @@
             document.getElementById('t-time').value = '';
         }
 
-        // ================= المتابعة الحية والإنذار الصوتي =================
         function renderMonitor() { 
             const g = document.getElementById('monitor-grid'); 
             const l = Object.entries(data.permits||{}).filter(x=>x[1] && x[1].active); 
@@ -908,7 +911,6 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
-        // ================= نظام معالجة المخالفات الذكي للوكيل =================
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
             const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
@@ -986,7 +988,6 @@
             });
         }
 
-        // ================= الطباعة الرسمية =================
         function printOfficialForm(studentName, violationDesc, formType) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             

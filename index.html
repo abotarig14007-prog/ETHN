@@ -27,7 +27,7 @@
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
         
-        /* حل مشكلة اختفاء التنبيهات خلف الشاشة الخضراء */
+        /* حل جذري لظهور رسائل التنبيه فوق شاشة تسجيل الدخول */
         .swal2-container { z-index: 110000 !important; }
 
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; transition: transform 0.3s ease; }
@@ -47,9 +47,14 @@
             #pin-input { font-size: 3rem !important; height: 75px !important; letter-spacing: 15px; }
             .login-card h4 { font-size: 2.2rem !important; margin-bottom: 15px !important; }
 
+            /* تصميم شبكة الأزرار الثابتة بدون اختفاء للألوان */
             .services-grid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 15px; background: transparent !important; box-shadow: none !important; padding: 0 !important; }
-            .services-grid .btn { padding: 25px 5px !important; font-size: 1.6rem !important; font-weight: 900 !important; border-radius: 20px !important; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin: 0 !important; height: 160px !important; white-space: normal; line-height: 1.4; border: 2px solid transparent; }
-            .services-grid .btn.active { border-color: var(--gold); transform: scale(0.98); background-color: var(--primary) !important; color: white !important; }
+            .services-grid .btn { 
+                padding: 25px 5px !important; font-size: 1.5rem !important; font-weight: 900 !important; border-radius: 20px !important; 
+                display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin: 0 !important; 
+                height: 150px !important; white-space: normal; line-height: 1.4; border: none; opacity: 0.6; transition: all 0.2s ease;
+            }
+            .services-grid .btn.active-tab { opacity: 1; transform: scale(1.03); border: 3px solid #000; box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important; }
             .services-grid .btn i { font-size: 3.5rem !important; margin-bottom: 15px !important; display: block !important; }
             
             .admin-dash-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
@@ -60,26 +65,27 @@
 
         @media (min-width: 992px) {
             .services-grid { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-            .services-grid .btn { border-radius: 50rem !important; padding: 10px 30px; font-weight: bold; }
+            .services-grid .btn { border-radius: 50rem !important; padding: 10px 30px; font-weight: bold; opacity: 0.6; }
+            .services-grid .btn.active-tab { opacity: 1; transform: scale(1.05); border: 3px solid #000; }
             .services-grid .btn i { display: none; }
             .admin-dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         }
 
-        /* ================= تحسينات الحقول والبطاقات ================= */
+        /* ================= تحسينات الحقول والبطاقات (نظيفة وخالية من التعارض) ================= */
         .service-card-green { background-color: #e8f5e9 !important; border: 3px solid #28a745 !important; }
         .service-card-blue { background-color: #e7f1ff !important; border: 3px solid #0d6efd !important; }
         .service-card-yellow { background-color: #fffdf0 !important; border: 3px solid #ffc107 !important; }
         .service-card-red { background-color: #fdf5f5 !important; border: 3px solid #dc3545 !important; }
         
+        /* تنظيف الـ Select ليعمل بكفاءة دون أسهم مزدوجة */
         .huge-input { 
-            font-size: 1.6rem !important; 
+            font-size: 1.5rem !important; 
             font-weight: 900 !important; 
-            padding: 15px 40px 15px 15px !important; 
+            padding: 15px !important; 
             border-radius: 15px !important; 
-            text-align: center; 
             background-color: #ffffff; 
+            border: 2px solid #ccc;
             height: auto !important; 
-            appearance: auto !important; 
             cursor: pointer;
         }
         .huge-input:focus { border-color: var(--primary); box-shadow: 0 0 0 0.25rem rgba(0, 108, 53, 0.25); }
@@ -113,7 +119,6 @@
         .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         
-        /* ================= شاشة المتابعة التلفزيونية ================= */
         .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
         .monitor-card.safe { border-color: #198754; background-color: #f1fdf6; }
         .monitor-card.safe h5, .monitor-card.safe h2 { color: #198754 !important; }
@@ -149,7 +154,6 @@
 
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
-        .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; font-size: 1.5rem; }
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 90px; border-bottom: 1px solid var(--border); }
         
         .hidden { display: none !important; }
@@ -162,27 +166,10 @@
             html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; background: white; }
             body * { visibility: hidden; }
             #cert-print-area, #cert-print-area * { visibility: visible; }
-            #cert-print-area { 
-                display: flex !important; position: fixed; left: 0; top: 0; 
-                width: 297mm; height: 210mm; background: white; z-index: 999999; 
-                flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box;
-            }
+            #cert-print-area { display: flex !important; position: fixed; left: 0; top: 0; width: 297mm; height: 210mm; background: white; z-index: 999999; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; }
             @page { size: A4 landscape; margin: 0; }
-            
-            .cert-frame { 
-                width: 277mm; height: 190mm; border: 15px solid var(--gold); padding: 30px; 
-                text-align: center; display: flex; flex-direction: column; justify-content: space-between;
-                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="none" stroke="%23006C35" stroke-width="4" stroke-dasharray="10 10"/></svg>');
-                box-sizing: border-box; page-break-inside: avoid;
-            }
-            
-            .form-frame {
-                width: 210mm; height: 297mm; border: 5px double var(--primary); padding: 40px; 
-                display: flex; flex-direction: column; justify-content: flex-start;
-                box-sizing: border-box; background: white; page-break-inside: avoid;
-                direction: rtl; text-align: right;
-            }
-            
+            .cert-frame { width: 277mm; height: 190mm; border: 15px solid var(--gold); padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="none" stroke="%23006C35" stroke-width="4" stroke-dasharray="10 10"/></svg>'); box-sizing: border-box; page-break-inside: avoid; }
+            .form-frame { width: 210mm; height: 297mm; border: 5px double var(--primary); padding: 40px; display: flex; flex-direction: column; justify-content: flex-start; box-sizing: border-box; background: white; page-break-inside: avoid; direction: rtl; text-align: right; }
             .cert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
             .cert-header img { max-height: 100px; }
             .cert-body h1 { font-size: 3.5rem; color: var(--primary); font-weight: 900; margin-bottom: 20px; text-align: center; }
@@ -194,7 +181,6 @@
 </head>
 <body>
     <div class="gradient-bg"></div>
-    <div class="custom-toast" id="system-toast">تنبيه جديد!</div>
 
     <div id="media-slider-overlay" class="full-overlay">
         <button class="overlay-close" onclick="closeMediaSlider()">إغلاق <i class="fas fa-times ms-2"></i></button>
@@ -268,11 +254,11 @@
                         </div>
                     </div>
 
-                    <div class="services-grid mb-4">
-                        <button class="btn btn-success shadow-sm" onclick="tabService('permit')"><i class="fas fa-walking"></i> إذن خروج</button>
-                        <button class="btn btn-outline-primary bg-white shadow-sm" onclick="tabService('attendance')"><i class="fas fa-clipboard-check"></i> التحضير</button>
-                        <button class="btn btn-outline-warning text-dark bg-white shadow-sm" onclick="tabService('behavior')"><i class="fas fa-star"></i> تميز ⭐️</button>
-                        <button class="btn btn-outline-danger bg-white shadow-sm" onclick="tabService('violation')"><i class="fas fa-exclamation-triangle"></i> مخالفة</button>
+                    <div class="services-grid mb-4" id="service-tabs">
+                        <button class="btn btn-success active-tab" onclick="tabService('permit', this)"><i class="fas fa-walking"></i> إذن خروج</button>
+                        <button class="btn btn-primary" onclick="tabService('attendance', this)"><i class="fas fa-clipboard-check"></i> التحضير</button>
+                        <button class="btn btn-warning text-dark" onclick="tabService('behavior', this)"><i class="fas fa-star"></i> تميز ⭐️</button>
+                        <button class="btn btn-danger" onclick="tabService('violation', this)"><i class="fas fa-exclamation-triangle"></i> مخالفة</button>
                     </div>
                     
                     <div id="srv-permit-box" class="page-card p-3 p-md-4 service-card-green">
@@ -280,21 +266,21 @@
                         <div class="row g-4">
                             <div class="col-md-6 col-12">
                                 <label class="text-success huge-label"><i class="fas fa-door-open me-2"></i>الفصل</label>
-                                <select id="t-class" class="form-select border-success huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 't-stu')"></select>
+                                <select id="t-class" class="form-select huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 't-stu')"></select>
                             </div>
                             <div class="col-md-6 col-12">
                                 <label class="text-success huge-label"><i class="fas fa-user-graduate me-2"></i>الطالب</label>
-                                <select id="t-stu" class="form-select border-success huge-input shadow-sm" disabled></select>
+                                <select id="t-stu" class="form-select huge-input shadow-sm" disabled></select>
                             </div>
                             <div class="col-md-6 col-12">
                                 <label class="text-success huge-label"><i class="fas fa-map-marker-alt me-2"></i>الوجهة</label>
-                                <select id="t-dest" class="form-select border-success huge-input shadow-sm">
+                                <select id="t-dest" class="form-select huge-input shadow-sm">
                                     <option value="دورة مياه">دورة مياه</option><option value="الوكيل">الوكيل</option><option value="المقصف">المقصف</option><option value="الموجه الطلابي">الموجه الطلابي</option><option value="الإدارة">الإدارة</option>
                                 </select>
                             </div>
                             <div class="col-md-6 col-12">
                                 <label class="text-success huge-label"><i class="fas fa-stopwatch me-2"></i>المدة (دقائق)</label>
-                                <input type="number" id="t-time" class="form-control border-success huge-input shadow-sm" placeholder="أدخل الرقم">
+                                <input type="number" id="t-time" class="form-control huge-input shadow-sm" placeholder="أدخل الرقم">
                             </div>
                             <div class="col-12 mt-4">
                                 <div class="border border-warning border-3 p-4 rounded-4 d-flex align-items-center justify-content-center shadow-sm" style="background-color: #fffdf0;">
@@ -317,11 +303,11 @@
                         <div class="row g-4 mb-4">
                             <div class="col-md-6 col-12">
                                 <label class="text-primary huge-label">الفصل</label>
-                                <select id="att-class" class="form-select border-primary huge-input shadow-sm" onchange="loadAttendanceList()"></select>
+                                <select id="att-class" class="form-select huge-input shadow-sm" onchange="loadAttendanceList()"></select>
                             </div>
                             <div class="col-md-6 col-12" id="div-att-period">
                                 <label class="text-primary huge-label">الحصة</label>
-                                <select id="att-period" class="form-select border-primary huge-input shadow-sm" onchange="loadAttendanceList()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select>
+                                <select id="att-period" class="form-select huge-input shadow-sm" onchange="loadAttendanceList()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select>
                             </div>
                             <div class="col-12 mt-3"><button class="btn btn-primary w-100 fw-bold rounded-pill shadow" style="font-size: 1.8rem; padding: 15px;" onclick="loadAttendanceList()"><i class="fas fa-sync me-2"></i> تحديث القائمة</button></div>
                         </div>
@@ -333,15 +319,15 @@
                         <div class="row g-4">
                             <div class="col-md-6 col-12">
                                 <label class="text-dark huge-label">الفصل</label>
-                                <select id="b-class" class="form-select border-warning huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 'b-stu')"></select>
+                                <select id="b-class" class="form-select huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 'b-stu')"></select>
                             </div>
                             <div class="col-md-6 col-12">
                                 <label class="text-dark huge-label">الطالب</label>
-                                <select id="b-stu" class="form-select border-warning huge-input shadow-sm" disabled></select>
+                                <select id="b-stu" class="form-select huge-input shadow-sm" disabled></select>
                             </div>
                             <div class="col-12">
                                 <label class="text-dark huge-label">السبب</label>
-                                <select id="b-reason" class="form-select border-warning huge-input shadow-sm"><option value="مشاركة متميزة">مشاركة متميزة</option><option value="واجبات منزلية">واجبات منزلية</option><option value="انضباط وسلوك">انضباط وسلوك</option><option value="نظافة وترتيب">نظافة وترتيب</option><option value="مبادرة إيجابية">مبادرة إيجابية</option><option value="حفظ القرآن">حفظ القرآن</option></select>
+                                <select id="b-reason" class="form-select huge-input shadow-sm"><option value="مشاركة متميزة">مشاركة متميزة</option><option value="واجبات منزلية">واجبات منزلية</option><option value="انضباط وسلوك">انضباط وسلوك</option><option value="نظافة وترتيب">نظافة وترتيب</option><option value="مبادرة إيجابية">مبادرة إيجابية</option><option value="حفظ القرآن">حفظ القرآن</option></select>
                             </div>
                             <div class="col-12 mt-4"><button class="btn btn-warning w-100 fw-bold rounded-pill shadow text-dark" style="font-size: 1.8rem; padding: 18px;" onclick="sendStar()"><i class="fas fa-plus-circle me-2"></i> منح نجمة للطالب</button></div>
                             <div class="col-12 mt-2"><button class="btn btn-outline-danger w-100 fw-bold rounded-pill border-2" style="font-size: 1.5rem; padding: 15px;" onclick="deductStar()">سحب نجمة (-)</button></div>
@@ -353,19 +339,19 @@
                         <div class="row g-4">
                             <div class="col-md-6 col-12">
                                 <label class="text-danger huge-label">الفصل</label>
-                                <select id="v-class" class="form-select border-danger huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 'v-stu')"></select>
+                                <select id="v-class" class="form-select huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 'v-stu')"></select>
                             </div>
                             <div class="col-md-6 col-12">
                                 <label class="text-danger huge-label">الطالب</label>
-                                <select id="v-stu" class="form-select border-danger huge-input shadow-sm" disabled></select>
+                                <select id="v-stu" class="form-select huge-input shadow-sm" disabled></select>
                             </div>
                             <div class="col-12">
                                 <label class="text-danger huge-label">المخالفة المرتكبة</label>
-                                <input id="v-type" class="form-control border-danger huge-input shadow-sm" placeholder="مثال: تأخر، مشاغبة، غياب...">
+                                <input id="v-type" class="form-control huge-input shadow-sm" placeholder="مثال: تأخر، مشاغبة، غياب...">
                             </div>
                             <div class="col-12">
                                 <label class="text-danger huge-label">تفاصيل إضافية</label>
-                                <textarea id="v-desc" class="form-control border-danger bg-white shadow-sm fw-bold" rows="3" style="font-size:1.6rem; border-radius:15px; padding:15px;"></textarea>
+                                <textarea id="v-desc" class="form-control bg-white shadow-sm fw-bold" rows="3" style="font-size:1.6rem; border-radius:15px; padding:15px; border:2px solid #ccc;"></textarea>
                             </div>
                             <div class="col-12 mt-4"><button class="btn btn-danger w-100 fw-bold rounded-pill shadow" style="font-size: 1.8rem; padding: 20px;" onclick="sendViolation()"><i class="fas fa-paper-plane me-2"></i> رفع المخالفة للوكيل والموجه</button></div>
                         </div>
@@ -426,14 +412,14 @@
 
             <section id="sec-guard" class="view-section d-none fade-in">
                 <div class="row g-4">
-                    <div class="col-12"><div class="page-card p-4 border-top border-dark border-5 h-100"><h5 class="fw-bold mb-4 text-center fs-2">تسجيل زائر جديد</h5><input id="g-v-name" class="form-control huge-input border-dark mb-4" placeholder="اسم الزائر الرباعي *"><input id="g-v-id" class="form-control huge-input border-dark mb-4" placeholder="رقم الهوية الوطنية *"><input id="g-v-reason" class="form-control huge-input border-dark mb-4" placeholder="سبب الزيارة *"><button class="btn btn-dark w-100 py-4 rounded-pill fw-bold shadow" style="font-size:1.8rem;" onclick="sendVisitorReq()">إرسال طلب الدخول للإدارة</button></div></div>
+                    <div class="col-12"><div class="page-card p-4 border-top border-dark border-5 h-100"><h5 class="fw-bold mb-4 text-center fs-2">تسجيل زائر جديد</h5><input id="g-v-name" class="form-control huge-input mb-4" placeholder="اسم الزائر الرباعي *"><input id="g-v-id" class="form-control huge-input mb-4" placeholder="رقم الهوية الوطنية *"><input id="g-v-reason" class="form-control huge-input mb-4" placeholder="سبب الزيارة *"><button class="btn btn-dark w-100 py-4 rounded-pill fw-bold shadow" style="font-size:1.8rem;" onclick="sendVisitorReq()">إرسال طلب الدخول للإدارة</button></div></div>
                     <div class="col-12"><div class="page-card h-100 border-danger border-top border-5"><div class="card-header-custom bg-danger text-white fs-3">أوامر الخروج المعتمدة</div><div id="g-dep-list" class="p-3"></div></div></div>
                 </div>
             </section>
 
             <section id="sec-counselor" class="view-section d-none fade-in">
                 <div class="row g-4">
-                    <div class="col-12"><div class="page-card p-4 border-top border-success border-5 mb-3 bg-light"><h6 class="fw-bold mb-4 fs-3 text-success"><i class="fas fa-search me-2"></i> بحث سريع في سجل الطالب</h6><input type="text" id="stu-search-name" class="form-control huge-input border-success mb-4" placeholder="اكتب اسم الطالب هنا..."><button class="btn btn-success w-100 py-3 rounded-pill mb-3 fw-bold shadow" style="font-size:1.6rem;" onclick="searchStudentHistory()">بحث في السجلات</button><div id="stu-history-res" class="d-none bg-white p-3 rounded-4 shadow-sm border mt-3 fs-4"></div></div></div>
+                    <div class="col-12"><div class="page-card p-4 border-top border-success border-5 mb-3 bg-light"><h6 class="fw-bold mb-4 fs-3 text-success"><i class="fas fa-search me-2"></i> بحث سريع في سجل الطالب</h6><input type="text" id="stu-search-name" class="form-control huge-input mb-4" placeholder="اكتب اسم الطالب هنا..."><button class="btn btn-success w-100 py-3 rounded-pill mb-3 fw-bold shadow" style="font-size:1.6rem;" onclick="searchStudentHistory()">بحث في السجلات</button><div id="stu-history-res" class="d-none bg-white p-3 rounded-4 shadow-sm border mt-3 fs-4"></div></div></div>
                     <div class="col-12"><div class="page-card"><div class="card-header-custom bg-info text-white fs-3">ملفات ومخالفات الطلاب المعلقة</div><div class="table-responsive"><table class="table table-hover text-center align-middle mb-0" style="font-size:1.4rem;"><thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>إجراء</th></tr></thead><tbody id="counselor-list"></tbody></table><div id="counselor-empty" class="text-center p-5 text-muted d-none"><i class="fas fa-smile-beam fa-4x mb-3 text-success"></i><h4 class="fw-bold">لا توجد حالات معلقة</h4></div></div></div></div>
                 </div>
             </section>
@@ -445,9 +431,9 @@
                     <div class="setting-card-blue p-4 mb-4 rounded shadow-sm border-2">
                         <h5 class="fw-bold text-primary mb-4"><i class="fas fa-tv me-2"></i> إدارة شاشات العرض (الوسائط)</h5>
                         <div class="row g-4">
-                            <div class="col-12"><label class="fs-4 fw-bold mb-2">اختر الشاشة المراد تعديلها:</label><select id="set-screen-select" class="form-select huge-input border-primary" onchange="loadScreenMediaList()"><option value="safety">الأمن والسلامة (التوعية)</option><option value="showcase">المعرض الفني</option></select></div>
+                            <div class="col-12"><label class="fs-4 fw-bold mb-2">اختر الشاشة المراد تعديلها:</label><select id="set-screen-select" class="form-select huge-input" onchange="loadScreenMediaList()"><option value="safety">الأمن والسلامة (التوعية)</option><option value="showcase">المعرض الفني</option></select></div>
                             <div class="col-12"><div class="bg-white border border-success p-4 rounded-4 shadow-sm"><label class="text-success fw-bold fs-4 mb-3"><i class="fas fa-image me-2"></i> إضافة صورة من الجهاز:</label><input type="file" id="upload-screen-img" style="opacity:0; position:absolute; z-index:-1;" accept="image/*"><button class="btn btn-success w-100 rounded-pill fw-bold py-4 fs-3 mb-3 shadow" onclick="document.getElementById('upload-screen-img').click()"><i class="fas fa-file-upload me-2"></i> اختر الصورة وارفعها</button></div></div>
-                            <div class="col-12"><div class="bg-white border border-danger p-4 rounded-4 shadow-sm"><label class="text-danger fw-bold fs-4 mb-3"><i class="fas fa-video me-2"></i> إضافة رابط فيديو توعوي:</label><input type="url" id="upload-screen-vid" class="form-control huge-input border-danger mb-3 text-start" dir="ltr" placeholder="https://www.youtube.com/embed/..."><button class="btn btn-danger w-100 rounded-pill fw-bold py-3 fs-4 shadow" onclick="addMediaToScreen('video')">إضافة الفيديو للشاشة</button></div></div>
+                            <div class="col-12"><div class="bg-white border border-danger p-4 rounded-4 shadow-sm"><label class="text-danger fw-bold fs-4 mb-3"><i class="fas fa-video me-2"></i> إضافة رابط فيديو توعوي:</label><input type="url" id="upload-screen-vid" class="form-control huge-input mb-3 text-start" dir="ltr" placeholder="https://www.youtube.com/embed/..."><button class="btn btn-danger w-100 rounded-pill fw-bold py-3 fs-4 shadow" onclick="addMediaToScreen('video')">إضافة الفيديو للشاشة</button></div></div>
                             <div class="col-12"><h5 class="fw-bold mt-4 border-bottom pb-2">الوسائط المعروضة حالياً:</h5><div id="current-screen-media" class="list-group fs-4"></div></div>
                         </div>
                     </div>
@@ -455,29 +441,29 @@
                     <div class="setting-card-navy p-4 mb-5 rounded shadow-sm border-2">
                         <h5 class="fw-bold text-dark mb-4"><i class="fas fa-plus-circle me-2"></i> إنشاء زر وشاشة جديدة للإدارة</h5>
                         <div class="row g-4">
-                            <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم الشاشة الجديدة</label><input id="new-screen-name" class="form-control huge-input border-dark" placeholder="مثال: التوجيه الطلابي"></div>
-                            <div class="col-12"><label class="fs-4 fw-bold mb-2">رمز الأيقونة (FontAwesome)</label><input id="new-screen-icon" class="form-control huge-input border-dark text-start" dir="ltr" placeholder="fas fa-star" value="fas fa-folder-open"></div>
+                            <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم الشاشة الجديدة</label><input id="new-screen-name" class="form-control huge-input" placeholder="مثال: التوجيه الطلابي"></div>
+                            <div class="col-12"><label class="fs-4 fw-bold mb-2">رمز الأيقونة (FontAwesome)</label><input id="new-screen-icon" class="form-control huge-input text-start" dir="ltr" placeholder="fas fa-star" value="fas fa-folder-open"></div>
                             <div class="col-12"><button class="btn btn-dark w-100 py-3 fw-bold rounded-pill fs-4 shadow" onclick="createNewScreen()">اعتماد وإضافة الشاشة</button></div>
                         </div>
                     </div>
 
                     <h5 class="text-primary border-bottom pb-2 mt-5 fs-2 fw-bold">بيانات المدرسة والشهادات</h5>
                     <div class="row g-4 mb-5">
-                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم المدرسة المنظمة</label><input id="s-school" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
-                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم مدير المدرسة (يظهر بالشهادات)</label><input id="s-manager" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
-                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم وكيل شؤون الطلاب</label><input id="s-deputy" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
-                         <div class="col-12"><label class="fs-4 fw-bold mb-2">شعار المدرسة المعتمد</label><input type="file" id="logo-upload" class="form-control huge-input border-primary" accept="image/*" onchange="uploadLogo()"></div>
+                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم المدرسة المنظمة</label><input id="s-school" class="form-control huge-input" onchange="saveSettings()"></div>
+                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم مدير المدرسة (يظهر بالشهادات)</label><input id="s-manager" class="form-control huge-input" onchange="saveSettings()"></div>
+                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم وكيل شؤون الطلاب</label><input id="s-deputy" class="form-control huge-input" onchange="saveSettings()"></div>
+                         <div class="col-12"><label class="fs-4 fw-bold mb-2">شعار المدرسة المعتمد</label><input type="file" id="logo-upload" class="form-control huge-input" accept="image/*" onchange="uploadLogo()"></div>
                          <div class="col-12 text-center"><img id="logo-preview" src="" style="max-height: 150px; display: none; margin: 0 auto; border: 3px solid var(--primary); padding: 5px; border-radius: 10px;"></div>
                     </div>
 
                     <div class="setting-card-red p-4 mb-5 rounded shadow-sm border-2 border-danger">
                         <h5 class="fw-bold text-danger mb-4"><i class="fas fa-shield-alt me-2"></i> إدارة الرموز السرية للمستخدمين</h5>
                         <div class="row g-4">
-                            <div class="col-12"><label class="text-danger fw-bold fs-4 mb-2">الإيميل الإداري (للطوارئ)</label><div class="input-group"><input type="password" id="s-email" class="form-control huge-input border-danger" placeholder="example@gmail.com" onchange="saveSettings()"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('s-email')"><i class="fas fa-eye fa-2x"></i></button></div></div>
-                            <div class="col-12"><label class="fw-bold fs-4 mb-2">رمز دخول الإدارة</label><div class="input-group"><input type="password" id="pin-admin" class="form-control huge-input border-dark"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('pin-admin')"><i class="fas fa-eye fa-2x"></i></button></div></div>
-                            <div class="col-12"><label class="fw-bold fs-4 mb-2">رمز دخول المعلمين</label><div class="input-group"><input type="password" id="pin-teacher" class="form-control huge-input border-dark"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('pin-teacher')"><i class="fas fa-eye fa-2x"></i></button></div></div>
-                            <div class="col-12"><label class="fw-bold fs-4 mb-2">رمز دخول الحارس</label><div class="input-group"><input type="password" id="pin-guard" class="form-control huge-input border-dark"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('pin-guard')"><i class="fas fa-eye fa-2x"></i></button></div></div>
-                            <div class="col-12"><label class="fw-bold fs-4 mb-2">رمز دخول الموجه الطلابي</label><div class="input-group"><input type="password" id="pin-counselor" class="form-control huge-input border-dark"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('pin-counselor')"><i class="fas fa-eye fa-2x"></i></button></div></div>
+                            <div class="col-12"><label class="text-danger fw-bold fs-4 mb-2">الإيميل الإداري (للطوارئ)</label><div class="input-group"><input type="password" id="s-email" class="form-control huge-input" placeholder="example@gmail.com" onchange="saveSettings()"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('s-email')"><i class="fas fa-eye fa-2x"></i></button></div></div>
+                            <div class="col-12"><label class="fw-bold fs-4 mb-2">رمز دخول الإدارة</label><div class="input-group"><input type="password" id="pin-admin" class="form-control huge-input"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('pin-admin')"><i class="fas fa-eye fa-2x"></i></button></div></div>
+                            <div class="col-12"><label class="fw-bold fs-4 mb-2">رمز دخول المعلمين</label><div class="input-group"><input type="password" id="pin-teacher" class="form-control huge-input"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('pin-teacher')"><i class="fas fa-eye fa-2x"></i></button></div></div>
+                            <div class="col-12"><label class="fw-bold fs-4 mb-2">رمز دخول الحارس</label><div class="input-group"><input type="password" id="pin-guard" class="form-control huge-input"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('pin-guard')"><i class="fas fa-eye fa-2x"></i></button></div></div>
+                            <div class="col-12"><label class="fw-bold fs-4 mb-2">رمز دخول الموجه الطلابي</label><div class="input-group"><input type="password" id="pin-counselor" class="form-control huge-input"><button class="btn btn-outline-secondary px-4 bg-light" onclick="toggleVisibility('pin-counselor')"><i class="fas fa-eye fa-2x"></i></button></div></div>
                             <div class="col-12 mt-4"><button class="btn btn-danger w-100 fw-bold py-3 rounded-pill fs-4 shadow" onclick="savePasswords()"><i class="fas fa-save me-2"></i> حفظ الرموز السرية</button></div>
                         </div>
                     </div>
@@ -497,7 +483,7 @@
                         <div class="col-12">
                             <div class="bg-light p-4 rounded-4 border border-primary shadow-sm text-center">
                                 <label class="fs-4 fw-bold text-primary mb-3">اكتب اسم الفصل أولاً ثم ارفع ملف الطلاب:</label>
-                                <input id="imp-cls-name" class="form-control huge-input mb-4 border-primary" placeholder="مثال: أول متوسط أ">
+                                <input id="imp-cls-name" class="form-control huge-input mb-4" placeholder="مثال: أول متوسط أ">
                                 <input type="file" id="f-excel" style="opacity:0; position:absolute; z-index:-1;" onchange="importData(this)">
                                 <button class="btn btn-primary w-100 rounded-pill fw-bold py-4 fs-3 shadow" onclick="document.getElementById('f-excel').click()"><i class="fas fa-users me-2"></i> استيراد طلاب الفصل</button>
                             </div>
@@ -553,8 +539,7 @@
                 <div><img id="cert-logo-img" src=""></div>
                 <div style="width: 250px;"></div>
             </div>
-            <div class="cert-body" id="dynamic-print-body">
-                </div>
+            <div class="cert-body" id="dynamic-print-body"></div>
             <div class="cert-signatures">
                 <div class="manager"><strong>مدير المدرسة</strong><br><br><span id="cert-manager-name" style="color:var(--primary); font-size:1.8rem;">...</span></div>
                 <div class="deputy"><strong>وكيل شؤون الطلاب</strong><br><br><span id="cert-deputy-name" style="color:var(--primary); font-size:1.8rem;">...</span></div>
@@ -572,12 +557,16 @@
         let userRole='', isMuted=true, attMode='period'; 
         let data = { settings: {school:'متوسطة الإمام النووي', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:'', admin_email:'', permissions:{}}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, stars:{}, tardiness:{}, screens:{} };
 
+        // متغيرات الكاش (الذاكرة) لمنع انهيار القوائم
+        let cache_classes = "";
+        let cache_teachers = "";
+        let cache_students = "";
+
         window.onload = () => {
             const savedRole = localStorage.getItem('userRole');
             db.ref('/').on('value', snap => {
                 const val = snap.val();
                 if(val) {
-                    // دمج آمن للبيانات دون فقدان الهيكلة
                     data.settings = { ...data.settings, ...(val.settings || {}) };
                     data.classes = val.classes || [];
                     data.students = val.students || {};
@@ -595,7 +584,8 @@
                     document.getElementById('login-school-name').innerText = data.settings.school || 'المدرسة';
                     document.body.style.visibility = 'visible';
                     
-                    // استخدام try-catch لحماية البرنامج من أي خطأ غير متوقع
+                    // تحديثات ذكية لا تقطع عمل المستخدم
+                    smartRefreshDropdowns();
                     try { calculateBestClass(); } catch(e) {}
                     try { renderDynamicAdminScreens(); } catch(e) {}
                     
@@ -607,8 +597,10 @@
                         navigate(localStorage.getItem('currentView') || 'services');
                         showServiceDefault(); populateSettingsUI(); 
                     } else if(userRole) {
-                        refreshScreens(); populateSettingsUI(); 
+                        populateSettingsUI(); 
                         if(document.getElementById('set-screen-select')) loadScreenMediaList();
+                        if(userRole==='admin') renderAdmin();
+                        if(userRole==='guard') renderGuard();
                     }
                 }
             });
@@ -643,11 +635,10 @@
                 const bell = document.getElementById('bell');
                 if(bell) { bell.volume = 0; bell.play().then(()=>bell.pause()).catch(e=>{}); bell.volume = 1; }
 
-                // رسالة النجاح
                 Swal.fire({ title: 'تم تسجيل الدخول بنجاح', icon: 'success', timer: 1500, showConfirmButton: false });
 
                 buildMenu(); navigate('services'); 
-                showServiceDefault(); populateSettingsUI(); refreshScreens();
+                showServiceDefault(); populateSettingsUI(); smartRefreshDropdowns();
             } else { Swal.fire('خطأ','الرمز السري غير صحيح','error'); } 
         }
 
@@ -701,7 +692,6 @@
                 document.getElementById('sidebar-handle-icon').className = 'fas fa-chevron-left';
             }
             updateFloatingHomeBtn(id);
-            refreshScreens(); 
         }
 
         function updateFloatingHomeBtn(currentView) {
@@ -779,84 +769,65 @@
         function validate(ids) { for(let id of ids) { const e=document.getElementById(id); if(!e.value) { Swal.fire('تنبيه', 'الرجاء تعبئة جميع الحقول المطلوبة', 'warning'); e.focus(); return false; } } return true; }
         function rememberTeacher(v) { localStorage.setItem('teacher', v); }
         
-        function tabService(tab) {
+        function tabService(tab, btnElement) {
             document.querySelectorAll('#teacher-services-container .page-card').forEach(c => { if(c.id.includes('srv-')) c.classList.add('d-none'); });
-            document.querySelectorAll('.services-grid .btn').forEach(b => { b.classList.remove('active'); });
-            if(event && event.currentTarget) { event.currentTarget.classList.add('active'); }
+            document.querySelectorAll('.services-grid .btn').forEach(b => { b.classList.remove('active-tab'); });
+            if(btnElement) { btnElement.classList.add('active-tab'); }
             const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
         }
 
-        // ================= الحل الجذري والآمن 100% لمعالجة الفصول والطلاب ومنع إعادة الرسم العشوائي =================
-        function calculateBestClass() { 
-            let s = {}; 
-            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
-            classesArr.forEach(c => s[c] = 0); 
-            
-            let studentsArr = Object.values(data.students || {});
-            Object.values(data.stars || {}).forEach(st => { 
-                let o = studentsArr.find(x => x && x.name === st.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) + (st.value || 1); 
-            }); 
-            Object.values(data.violations || {}).forEach(v => { 
-                let o = studentsArr.find(x => x && x.name === v.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) - 1; 
-            }); 
-            
-            let best = Object.entries(s).sort((a,b) => b[1] - a[1])[0]; 
-            if(best && best[1] > 0) { 
-                document.getElementById('best-class-badge').classList.remove('d-none'); 
-                document.getElementById('best-class-txt').innerText = best[0]; 
-            } else {
-                document.getElementById('best-class-badge').classList.add('d-none');
-            }
-        }
+        // ================= الحل الجذري لمنع إغلاق القوائم المنسدلة (التحكم في التحديث اللحظي) =================
+        function smartRefreshDropdowns() {
+            try {
+                // الفصول
+                let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
+                const safeClasses = classesArr.filter(c => c !== null && c !== undefined && c !== '');
+                const newClassDataString = JSON.stringify(safeClasses);
 
-        function refreshScreens() {
-            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
-            const safeClasses = classesArr.filter(c => c !== null && c !== undefined && c !== '');
-
-            const classOptionsHtml = '<option value="">اختر الفصل</option>' + safeClasses.map(c => `<option value="${c}">${c}</option>`).join('');
-
-            ['t-class','v-class','b-class','att-class','late-class'].forEach(id=>{ 
-                const e = document.getElementById(id); 
-                if(e && e.innerHTML !== classOptionsHtml) { 
-                    const currentVal = e.value; 
-                    e.innerHTML = classOptionsHtml; 
-                    if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal; 
+                if (cache_classes !== newClassDataString) {
+                    cache_classes = newClassDataString;
+                    const classOptionsHtml = '<option value="">اختر الفصل</option>' + safeClasses.map(c => `<option value="${c}">${c}</option>`).join('');
+                    
+                    ['t-class','v-class','b-class','att-class','late-class'].forEach(id=>{ 
+                        const e = document.getElementById(id); 
+                        if(e) { 
+                            const currentVal = e.value; 
+                            e.innerHTML = classOptionsHtml; 
+                            if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal; 
+                        }
+                    });
                 }
-            });
 
-            const te = document.getElementById('global-teacher-name'); 
-            if(te) { 
+                // المعلمين
                 const safeTeachers = Object.values(data.teachers || {}).filter(t => t && t.name).map(t => t.name);
-                const teacherOptionsHtml = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(t => `<option value="${t}">${t}</option>`).join('');
+                const newTeacherDataString = JSON.stringify(safeTeachers);
                 
-                if (te.innerHTML !== teacherOptionsHtml) {
+                const te = document.getElementById('global-teacher-name'); 
+                if (te && cache_teachers !== newTeacherDataString) {
+                    cache_teachers = newTeacherDataString;
+                    const teacherOptionsHtml = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(t => `<option value="${t}">${t}</option>`).join('');
                     const currentVal = te.value;
                     te.innerHTML = teacherOptionsHtml;
                     if(currentVal) te.value = currentVal; else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; } 
                 }
+
+            } catch (error) {
+                console.error("Error refreshing dropdowns:", error);
             }
-            if(userRole==='admin') { renderAdmin(); renderDynamicAdminScreens(); } if(userRole==='guard') renderGuard();
         }
 
         function loadStudentsForRole(c, id) { 
             const safeStudents = Object.values(data.students || {}).filter(s => s && s.name && String(s.class) === String(c)).map(s => s.name); 
             const e = document.getElementById(id); 
             if(e) {
-                const stuOptionsHtml = '<option value="">اختر الطالب</option>' + safeStudents.map(name => `<option value="${name}">${name}</option>`).join('');
-                if (e.innerHTML !== stuOptionsHtml) {
-                    const currentVal = e.value;
-                    e.innerHTML = stuOptionsHtml;
-                    e.disabled = (safeStudents.length === 0);
-                    if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal;
-                } else {
-                    e.disabled = (safeStudents.length === 0);
-                }
+                const currentVal = e.value;
+                e.innerHTML = '<option value="">اختر الطالب</option>' + safeStudents.map(name => `<option value="${name}">${name}</option>`).join('');
+                e.disabled = (safeStudents.length === 0);
+                if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal;
             }
         }
 
-        // ================= الإستيراد الآمن =================
+        // ================= الإستيراد والتصدير الآمن =================
         function importData(inp) { 
             const c=document.getElementById('imp-cls-name').value; 
             if(!c) return Swal.fire('تنبيه', 'أدخل اسم الفصل أولاً في المربع المخصص', 'warning'); 
@@ -869,17 +840,16 @@
                 const safeClasses = cl.filter(item => item !== null && item !== undefined);
                 
                 if(!safeClasses.includes(c)) { safeClasses.push(c); db.ref('classes').set(safeClasses); } 
-                Swal.fire('تم الاستيراد بنجاح'); 
+                Swal.fire('تم الاستيراد بنجاح', '', 'success'); 
                 inp.value = '';
             }; 
             r.readAsArrayBuffer(inp.files[0]); 
         }
 
         function importTeachers(inp) { 
-            const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(row=>{if(row[0]) db.ref('teachers').push({name:row[0]})}); Swal.fire('تم الاستيراد بنجاح'); inp.value = ''; }; r.readAsArrayBuffer(inp.files[0]); 
+            const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(row=>{if(row[0]) db.ref('teachers').push({name:row[0]})}); Swal.fire('تم الاستيراد بنجاح', '', 'success'); inp.value = ''; }; r.readAsArrayBuffer(inp.files[0]); 
         }
 
-        // ================= التصدير الآمن (مدعوم في جميع المتصفحات والجوال) =================
         function exportData() { 
             const blob = new Blob([JSON.stringify(data)], {type: "application/json"}); 
             const a = document.createElement('a'); 
@@ -890,7 +860,6 @@
             document.body.removeChild(a); 
         }
 
-        // ================= التصفير الآمن =================
         function secureReset(type) { 
             const email = data.settings.admin_email || 'البريد المسجل'; 
             const pin = String(data.settings.admin_pin || '2026'); 
@@ -924,7 +893,6 @@
             document.getElementById('t-time').value = '';
         }
 
-        // ================= المتابعة الحية والإنذار الصوتي =================
         function renderMonitor() { 
             const g = document.getElementById('monitor-grid'); 
             const l = Object.entries(data.permits||{}).filter(x=>x[1] && x[1].active); 
@@ -954,7 +922,6 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
-        // ================= نظام معالجة المخالفات الذكي للوكيل =================
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
             const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
@@ -1032,7 +999,6 @@
             });
         }
 
-        // ================= الطباعة الرسمية =================
         function printOfficialForm(studentName, violationDesc, formType) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
@@ -1090,6 +1056,30 @@
             setTimeout(() => window.print(), 500);
         }
 
+        // ================= معالجة الفصول للرئيسية =================
+        function calculateBestClass() { 
+            let s = {}; 
+            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
+            classesArr.forEach(c => s[c] = 0); 
+            
+            let studentsArr = Object.values(data.students || {});
+            Object.values(data.stars || {}).forEach(st => { 
+                let o = studentsArr.find(x => x && x.name === st.student); 
+                if(o && o.class) s[o.class] = (s[o.class] || 0) + (st.value || 1); 
+            }); 
+            Object.values(data.violations || {}).forEach(v => { 
+                let o = studentsArr.find(x => x && x.name === v.student); 
+                if(o && o.class) s[o.class] = (s[o.class] || 0) - 1; 
+            }); 
+            
+            let best = Object.entries(s).sort((a,b) => b[1] - a[1])[0]; 
+            if(best && best[1] > 0) { 
+                document.getElementById('best-class-badge').classList.remove('d-none'); 
+                document.getElementById('best-class-txt').innerText = best[0]; 
+            } else {
+                document.getElementById('best-class-badge').classList.add('d-none');
+            }
+        }
     </script>
 </body>
 </html>

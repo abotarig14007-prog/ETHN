@@ -88,7 +88,6 @@
         .carousel, .carousel-inner, .carousel-item { height: 100%; width: 100%; }
         .carousel-item img { height: 100%; width: 100%; object-fit: contain; background: #000; }
         .carousel-item iframe { height: 100%; width: 100%; border: none; }
-        .carousel-caption-custom { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 20px 50px; border-radius: 50px; font-size: 2.5rem; font-weight: 900; color: #FFD700; border: 3px solid #FFD700; z-index: 10; }
 
         /* Hall of Fame */
         .champion-area { text-align: center; margin-bottom: 40px; animation: float 4s infinite; padding-top: 50px; width: 100%; display: flex; flex-direction: column; align-items: center; }
@@ -195,10 +194,6 @@
 
                 <div id="admin-panel-content" class="d-none">
                      <div class="admin-dash-grid mb-4" id="admin-screens-container">
-                        <button class="btn btn-dark shadow fw-bold" onclick="openHallOfFame()" style="border: 2px solid #FFD700;"><i class="fas fa-crown d-block mb-2 fa-2x"></i> لوحة الشرف</button>
-                        <button class="btn btn-success shadow fw-bold" onclick="openMediaScreen('safety')"><i class="fas fa-shield-alt d-block mb-2 fa-2x"></i> الأمن والسلامة</button>
-                        <button class="btn btn-primary shadow fw-bold" onclick="openMediaScreen('showcase')"><i class="fas fa-palette d-block mb-2 fa-2x"></i> المعرض الفني</button>
-                        <button class="btn btn-warning shadow fw-bold text-dark" onclick="showReportModal('stars')"><i class="fas fa-certificate d-block mb-2 fa-2x"></i> الشهادات</button>
                         </div>
                      <div class="row g-3 mb-4 text-center">
                         <div class="col-4"><div class="stat-box blue"><h2 class="mb-1">0</h2><small class="fs-5 fw-bold">بالخارج</small></div></div>
@@ -227,6 +222,7 @@
                         <div class="col-12"><label>الطالب</label><select id="t-stu" class="form-select form-select-lg" disabled></select></div>
                         <div class="col-12"><label>الوجهة</label><select id="t-dest" class="form-select form-select-lg"><option>دورة مياه</option><option>الوكيل</option><option>المقصف</option><option>الموجه الطلابي</option><option>الإدارة</option></select></div>
                         <div class="col-12"><label>المدة (د)</label><input type="number" id="t-time" class="form-control form-control-lg" placeholder="دقيقة" style="font-size:1.5rem;"></div>
+                        <div class="col-12 d-flex align-items-center mt-3"><input class="form-check-input ms-2" type="checkbox" id="t-special" style="transform: scale(1.5);"><label class="me-2 fs-4">حالة خاصة (تجاوز الوقت)</label></div>
                         <div class="col-12 mt-4"><button class="btn btn-success w-100 py-3 fw-bold rounded-pill btn-lg-mobile" onclick="sendPermit()">تسجيل خروج الطالب</button></div>
                     </div>
                 </div>
@@ -315,33 +311,11 @@
                     
                     <div class="setting-card-blue p-4 mb-4 rounded shadow-sm border-2">
                         <h6 class="fw-bold text-primary mb-3 fs-4"><i class="fas fa-tv me-2"></i> إدارة شاشات العرض (الوسائط)</h6>
-                        <p class="text-muted small">قم بإضافة صور ومقاطع توعوية لتُعرض في الشاشات. للفيديوهات يرجى إدخال الرابط المباشر أو اليوتيوب لتجنب ثقل النظام.</p>
                         <div class="row g-3">
-                            <div class="col-12">
-                                <label>اختر الشاشة المراد تعديلها:</label>
-                                <select id="set-screen-select" class="form-select form-select-lg" onchange="loadScreenMediaList()">
-                                    <option value="safety">الأمن والسلامة (التوعية)</option>
-                                    <option value="showcase">المعرض الفني</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <div class="bg-light p-3 rounded">
-                                    <label class="text-success fw-bold">إضافة صورة جديدة:</label>
-                                    <input type="file" id="upload-screen-img" class="form-control form-control-lg mb-2" accept="image/*">
-                                    <button class="btn btn-success w-100 rounded-pill fw-bold" onclick="addMediaToScreen('image')">رفع وحفظ الصورة</button>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="bg-light p-3 rounded">
-                                    <label class="text-danger fw-bold">إضافة رابط فيديو (YouTube / Drive):</label>
-                                    <input type="url" id="upload-screen-vid" class="form-control form-control-lg mb-2" placeholder="https://www.youtube.com/embed/...">
-                                    <button class="btn btn-danger w-100 rounded-pill fw-bold" onclick="addMediaToScreen('video')">إضافة الفيديو</button>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <h6 class="fw-bold mt-3">الوسائط الحالية للشاشة:</h6>
-                                <div id="current-screen-media" class="list-group"></div>
-                            </div>
+                            <div class="col-12"><label>اختر الشاشة المراد تعديلها:</label><select id="set-screen-select" class="form-select form-select-lg" onchange="loadScreenMediaList()"><option value="safety">الأمن والسلامة (التوعية)</option><option value="showcase">المعرض الفني</option></select></div>
+                            <div class="col-12"><div class="bg-light p-3 rounded"><label class="text-success fw-bold">إضافة صورة جديدة:</label><input type="file" id="upload-screen-img" class="form-control form-control-lg mb-2" accept="image/*"><button class="btn btn-success w-100 rounded-pill fw-bold" onclick="addMediaToScreen('image')">رفع وحفظ الصورة</button></div></div>
+                            <div class="col-12"><div class="bg-light p-3 rounded"><label class="text-danger fw-bold">إضافة رابط فيديو (YouTube / Drive):</label><input type="url" id="upload-screen-vid" class="form-control form-control-lg mb-2" placeholder="https://www.youtube.com/embed/..."><button class="btn btn-danger w-100 rounded-pill fw-bold" onclick="addMediaToScreen('video')">إضافة الفيديو</button></div></div>
+                            <div class="col-12"><h6 class="fw-bold mt-3">الوسائط الحالية للشاشة:</h6><div id="current-screen-media" class="list-group"></div></div>
                         </div>
                     </div>
 
@@ -401,7 +375,8 @@
             <div class="cert-header">
                 <div style="text-align:right; font-weight:bold; font-size:1.5rem;">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span id="cert-school-name"></span></div>
                 <div><img id="cert-logo-img" src=""></div>
-                <div style="width: 250px;"></div> </div>
+                <div style="width: 250px;"></div>
+            </div>
             <div class="cert-body">
                 <h1>شهادة شكر وتقدير</h1>
                 <p>تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
@@ -514,140 +489,85 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // --- ميزات الشاشات التفاعلية (Media Slider) ---
         function openMediaScreen(screenId) {
             const screenData = data.screens && data.screens[screenId] ? data.screens[screenId] : [];
             const inner = document.getElementById('media-carousel-inner');
-            if(!screenData || Object.keys(screenData).length === 0) {
-                Swal.fire('تنبيه', 'لا توجد وسائط مضافة في هذه الشاشة بعد. يمكنك إضافتها من الإعدادات.', 'info');
-                return;
-            }
-            inner.innerHTML = '';
-            let isFirst = true;
+            if(!screenData || Object.keys(screenData).length === 0) { Swal.fire('تنبيه', 'لا توجد وسائط مضافة في هذه الشاشة بعد. يمكنك إضافتها من الإعدادات.', 'info'); return; }
+            inner.innerHTML = ''; let isFirst = true;
             Object.values(screenData).forEach(media => {
                 let content = '';
                 if(media.type === 'image') { content = `<img src="${media.url}" class="d-block w-100" alt="عرض">`; } 
-                else if(media.type === 'video') { 
-                    // تحويل روابط يوتيوب العادية إلى Embed
-                    let vUrl = media.url;
-                    if(vUrl.includes('watch?v=')) vUrl = vUrl.replace('watch?v=', 'embed/');
-                    content = `<iframe src="${vUrl}?autoplay=1&mute=1&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; 
-                }
-                const activeClass = isFirst ? 'active' : '';
-                inner.innerHTML += `<div class="carousel-item ${activeClass}">${content}</div>`;
-                isFirst = false;
+                else if(media.type === 'video') { let vUrl = media.url; if(vUrl.includes('watch?v=')) vUrl = vUrl.replace('watch?v=', 'embed/'); content = `<iframe src="${vUrl}?autoplay=1&mute=1&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; }
+                const activeClass = isFirst ? 'active' : ''; inner.innerHTML += `<div class="carousel-item ${activeClass}">${content}</div>`; isFirst = false;
             });
             document.getElementById('media-slider-overlay').style.display = 'block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
         }
         function closeMediaSlider() { document.getElementById('media-slider-overlay').style.display='none'; document.getElementById('media-carousel-inner').innerHTML=''; if(document.exitFullscreen) document.exitFullscreen(); }
 
-        // --- إدارة الشاشات الديناميكية في الإعدادات ---
         function createNewScreen() {
-            const name = document.getElementById('new-screen-name').value;
-            const icon = document.getElementById('new-screen-icon').value;
+            const name = document.getElementById('new-screen-name').value; const icon = document.getElementById('new-screen-icon').value;
             if(!name) return Swal.fire('خطأ', 'يرجى كتابة اسم الشاشة', 'error');
             const newId = 'custom_' + Date.now();
             db.ref('settings/customScreens/' + newId).set({ name: name, icon: icon }).then(() => {
-                Swal.fire('تم', 'تمت إضافة الشاشة بنجاح', 'success');
-                document.getElementById('new-screen-name').value = '';
-                renderDynamicAdminScreens(); // تحديث الأزرار
-                // إضافة الخيار للقائمة المنسدلة في نفس الوقت
-                const select = document.getElementById('set-screen-select');
-                if(select) select.innerHTML += `<option value="${newId}">${name}</option>`;
+                Swal.fire('تم', 'تمت إضافة الشاشة بنجاح', 'success'); document.getElementById('new-screen-name').value = ''; renderDynamicAdminScreens(); 
+                const select = document.getElementById('set-screen-select'); if(select) select.innerHTML += `<option value="${newId}">${name}</option>`;
             });
         }
 
         function renderDynamicAdminScreens() {
-            const container = document.getElementById('admin-screens-container');
-            if(!container) return;
-            // الأساسيات
+            const container = document.getElementById('admin-screens-container'); if(!container) return;
             let html = `<button class="btn btn-dark shadow fw-bold" onclick="openHallOfFame()" style="border: 2px solid #FFD700;"><i class="fas fa-crown d-block mb-2 fa-2x"></i> لوحة الشرف</button>
                         <button class="btn btn-success shadow fw-bold" onclick="openMediaScreen('safety')"><i class="fas fa-shield-alt d-block mb-2 fa-2x"></i> الأمن والسلامة</button>
                         <button class="btn btn-primary shadow fw-bold" onclick="openMediaScreen('showcase')"><i class="fas fa-palette d-block mb-2 fa-2x"></i> المعرض الفني</button>
                         <button class="btn btn-warning shadow fw-bold text-dark" onclick="showReportModal('stars')"><i class="fas fa-certificate d-block mb-2 fa-2x"></i> الشهادات</button>`;
-            
-            // المخصصة
-            const custom = data.settings.customScreens || {};
-            const select = document.getElementById('set-screen-select');
+            const custom = data.settings.customScreens || {}; const select = document.getElementById('set-screen-select');
             if(select) select.innerHTML = `<option value="safety">الأمن والسلامة (التوعية)</option><option value="showcase">المعرض الفني</option>`;
-
-            Object.keys(custom).forEach(key => {
-                html += `<button class="btn btn-info text-white shadow fw-bold" onclick="openMediaScreen('${key}')"><i class="${custom[key].icon} d-block mb-2 fa-2x"></i> ${custom[key].name}</button>`;
-                if(select) select.innerHTML += `<option value="${key}">${custom[key].name}</option>`;
-            });
+            Object.keys(custom).forEach(key => { html += `<button class="btn btn-info text-white shadow fw-bold" onclick="openMediaScreen('${key}')"><i class="${custom[key].icon} d-block mb-2 fa-2x"></i> ${custom[key].name}</button>`; if(select) select.innerHTML += `<option value="${key}">${custom[key].name}</option>`; });
             container.innerHTML = html;
         }
 
         function addMediaToScreen(type) {
             const screenId = document.getElementById('set-screen-select').value;
             if(type === 'image') {
-                const file = document.getElementById('upload-screen-img').files[0];
-                if(!file) return Swal.fire('خطأ', 'الرجاء اختيار صورة', 'error');
-                const reader = new FileReader();
-                reader.onload = e => {
-                    db.ref(`screens/${screenId}`).push({ type: 'image', url: e.target.result }).then(() => { Swal.fire('تم', 'تم رفع الصورة', 'success'); loadScreenMediaList(); });
-                };
-                reader.readAsDataURL(file);
+                const file = document.getElementById('upload-screen-img').files[0]; if(!file) return Swal.fire('خطأ', 'الرجاء اختيار صورة', 'error');
+                const reader = new FileReader(); reader.onload = e => { db.ref(`screens/${screenId}`).push({ type: 'image', url: e.target.result }).then(() => { Swal.fire('تم', 'تم رفع الصورة', 'success'); loadScreenMediaList(); }); }; reader.readAsDataURL(file);
             } else if(type === 'video') {
-                const url = document.getElementById('upload-screen-vid').value;
-                if(!url) return Swal.fire('خطأ', 'الرجاء إدخال رابط الفيديو', 'error');
+                const url = document.getElementById('upload-screen-vid').value; if(!url) return Swal.fire('خطأ', 'الرجاء إدخال رابط الفيديو', 'error');
                 db.ref(`screens/${screenId}`).push({ type: 'video', url: url }).then(() => { Swal.fire('تم', 'تم إضافة الفيديو', 'success'); loadScreenMediaList(); document.getElementById('upload-screen-vid').value=''; });
             }
         }
 
         function loadScreenMediaList() {
-            const screenId = document.getElementById('set-screen-select').value;
-            const list = document.getElementById('current-screen-media');
-            const items = data.screens && data.screens[screenId] ? data.screens[screenId] : {};
+            const screenId = document.getElementById('set-screen-select').value; const list = document.getElementById('current-screen-media'); const items = data.screens && data.screens[screenId] ? data.screens[screenId] : {};
             if(Object.keys(items).length === 0) { list.innerHTML = '<div class="text-muted text-center p-3">لا يوجد وسائط</div>'; return; }
-            list.innerHTML = Object.keys(items).map(k => {
-                const isVid = items[k].type === 'video';
-                return `<div class="list-group-item d-flex justify-content-between align-items-center"><span class="text-truncate" style="max-width:70%;"><i class="${isVid?'fas fa-video text-danger':'fas fa-image text-success'} me-2"></i> ${isVid ? 'فيديو: '+items[k].url : 'صورة مرفوعة'}</span><button class="btn btn-danger btn-sm" onclick="db.ref('screens/${screenId}/${k}').remove().then(()=>loadScreenMediaList())">حذف</button></div>`;
-            }).join('');
+            list.innerHTML = Object.keys(items).map(k => { const isVid = items[k].type === 'video'; return `<div class="list-group-item d-flex justify-content-between align-items-center"><span class="text-truncate" style="max-width:70%;"><i class="${isVid?'fas fa-video text-danger':'fas fa-image text-success'} me-2"></i> ${isVid ? 'فيديو: '+items[k].url : 'صورة مرفوعة'}</span><button class="btn btn-danger btn-sm" onclick="db.ref('screens/${screenId}/${k}').remove().then(()=>loadScreenMediaList())">حذف</button></div>`; }).join('');
         }
 
-        // --- طباعة الشهادات المخصصة ---
         function printStudentCert(studentName) {
-            const modal = bootstrap.Modal.getInstance(document.getElementById('printModal'));
-            if(modal) modal.hide(); // إغلاق جدول التقارير
-            
-            document.getElementById('cert-school-name').innerText = data.settings.school || 'المدرسة';
-            document.getElementById('cert-logo-img').src = data.settings.logo || '';
-            document.getElementById('cert-target-student').innerText = studentName;
-            document.getElementById('cert-manager-name').innerText = data.settings.manager || '.......................';
-            document.getElementById('cert-deputy-name').innerText = data.settings.deputy || '.......................';
-            
-            // نقل الـ HTML إلى حاوية الطباعة النهائية وإخفاء الباقي عبر CSS @media print
-            document.getElementById('final-print-container').innerHTML = ''; // تفريغ التقرير العادي
-            setTimeout(() => window.print(), 500);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
+            document.getElementById('cert-school-name').innerText = data.settings.school || 'المدرسة'; document.getElementById('cert-logo-img').src = data.settings.logo || ''; document.getElementById('cert-target-student').innerText = studentName; document.getElementById('cert-manager-name').innerText = data.settings.manager || '.......................'; document.getElementById('cert-deputy-name').innerText = data.settings.deputy || '.......................';
+            document.getElementById('final-print-container').innerHTML = ''; setTimeout(() => window.print(), 500);
         }
 
-        // --- تعديل تقرير النجوم ليتضمن زر طباعة الشهادة ---
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const logo = data.settings.logo || "";
             const titles = { 'permits': 'سجل الأذونات', 'visitors': 'سجل الزوار', 'violations': 'المخالفات السلوكية', 'attendance': 'الغياب اليومي', 'stars': 'لوحة الشرف والشهادات', 'late': 'تأخر الصباح', 'top_class': 'الفصل المثالي' };
             let h = `<div style="border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; direction:rtl;"><div style="text-align:right; width:33%; font-weight:bold; font-size:1.2rem;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div><div style="text-align:center; width:33%"><img src="${logo}" style="max-height:100px"></div><div style="text-align:left; width:33%; font-weight:bold; font-size:1.2rem;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br><span style="text-decoration:underline;">${titles[type]||'تقرير'}</span></div></div>`;
-            
             if(type==='stars') { 
                 let s = {}; Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
                 h+=`<table class="table table-bordered text-center align-middle" style="font-size:1.4rem;"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>النجوم</th><th class="no-print">الإجراء</th></tr></thead><tbody>`; 
-                Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).forEach(x=> { 
-                    const sObj=Object.values(data.students).find(s=>s.name===x[0]); 
-                    h+=`<tr><td class="fw-bold">${x[0]}</td><td>${sObj?sObj.class:'-'}</td><td class="fw-bold text-warning">${x[1]} ⭐</td><td class="no-print"><button class="btn btn-warning rounded-pill fw-bold" onclick="printStudentCert('${x[0]}')"><i class="fas fa-print"></i> طباعة الشهادة</button></td></tr>`; 
-                }); h+=`</tbody></table>`; 
+                Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).forEach(x=> { const sObj=Object.values(data.students).find(s=>s.name===x[0]); h+=`<tr><td class="fw-bold">${x[0]}</td><td>${sObj?sObj.class:'-'}</td><td class="fw-bold text-warning">${x[1]} ⭐</td><td class="no-print"><button class="btn btn-warning rounded-pill fw-bold" onclick="printStudentCert('${x[0]}')"><i class="fas fa-print"></i> طباعة الشهادة</button></td></tr>`; }); h+=`</tbody></table>`; 
             } else if(type==='permits') { h += `<table class="table table-bordered text-center" style="font-size:1.3rem;"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).reverse().map(p=>{ const sObj=Object.values(data.students).find(s=>s.name===p.student); return `<tr><td>${p.student}</td><td>${sObj?sObj.class:'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`; } 
             else if(type==='attendance') { const t = new Date().toLocaleDateString('en-CA'); h += `<table class="table table-bordered text-center table-striped" style="font-size:1.3rem;"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>الحالة</th></tr></thead><tbody>`; Object.values(data.students||{}).forEach(s => { if(data.attendance?.[t]?.['full_day']?.[s.name]) h+=`<tr><td>${s.name}</td><td>${s.class}</td><td class="bg-danger text-white">غائب يوم كامل</td></tr>`; else { let p = []; for(let i=1;i<=7;i++) if(data.attendance?.[t]?.['periods']?.[i]?.[s.name]==='absent') p.push(i); if(p.length) h+=`<tr><td>${s.name}</td><td>${s.class}</td><td>حصص: ${p.join(',')}</td></tr>`; } }); h+=`</tbody></table>`; } 
             else if(type==='violations') { h += `<table class="table table-bordered text-center" style="font-size:1.3rem;"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.violations||{}).reverse().map(v=>`<tr><td>${v.student}</td><td>${v.type}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`; } 
             else if(type==='visitors') { h += `<table class="table table-bordered text-center" style="font-size:1.3rem;"><thead><tr class="table-dark"><th>الاسم</th><th>السبب</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`; } 
             else if(type==='late') { h += `<table class="table table-bordered text-center" style="font-size:1.3rem;"><thead><tr class="table-dark"><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).reverse().map(t=>`<tr><td>${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; }
-            
             h+=`<div style="display:flex; justify-content:space-between; margin-top:50px; padding:0 40px; font-size:1.3rem;"><div style="text-align:center"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy}</div><div style="text-align:center"><strong>مدير المدرسة</strong><br><br>${data.settings.manager}</div></div>`;
             document.getElementById('modal-print-content').innerHTML = h; modal.show();
         }
         function executePrint() { document.getElementById('final-print-container').innerHTML = document.getElementById('modal-print-content').innerHTML; setTimeout(()=>window.print(), 500); }
 
-        // --- Core Application Logic ---
         function calculateBestClass() { let s = {}; (data.classes||[]).forEach(c=>s[c]=0); Object.values(data.stars||{}).forEach(st=>{ let o=Object.values(data.students).find(x=>x.name===st.student); if(o) s[o.class]+=(st.value||1); }); Object.values(data.violations||{}).forEach(v=>{ let o=Object.values(data.students).find(x=>x.name===v.student); if(o) s[o.class]--; }); let best = Object.entries(s).sort((a,b)=>b[1]-a[1])[0]; if(best && best[1]>0) { document.getElementById('best-class-badge').classList.remove('d-none'); document.getElementById('best-class-txt').innerText=best[0]; } }
         function refreshScreens() {
             ['t-class','v-class','b-class','att-class','late-class'].forEach(id=>{ const e=document.getElementById(id); if(e) { const currentVal = e.value; e.innerHTML='<option value="">اختر الفصل</option>'+(data.classes||[]).map(c=>`<option value="${c}">${c}</option>`).join(''); if(currentVal) e.value = currentVal; }});
@@ -671,7 +591,14 @@
             const stu = document.getElementById('t-stu').value;
             const activePermits = Object.values(data.permits||{}).filter(p => p.student === stu && p.active);
             if(activePermits.length > 0) return Swal.fire('عذراً', 'الطالب موجود خارج الفصل حالياً!', 'error');
-            if(!document.getElementById('t-special').checked) { const lastPermit = Object.values(data.permits||{}).filter(p => p.student === stu && !p.active).sort((a,b)=>new Date(b.end)-new Date(a.end))[0]; if(lastPermit && lastPermit.end) { const diff = (new Date() - new Date(lastPermit.end)) / 60000; if(diff < 120) return Swal.fire('تنبيه', `يجب الانتظار ساعتين. متبقى ${Math.round(120-diff)} دقيقة`, 'warning'); } }
+            
+            const specialCheck = document.getElementById('t-special');
+            const isSpecial = specialCheck && specialCheck.checked;
+            
+            if(!isSpecial) { 
+                const lastPermit = Object.values(data.permits||{}).filter(p => p.student === stu && !p.active).sort((a,b)=>new Date(b.end)-new Date(a.end))[0]; 
+                if(lastPermit && lastPermit.end) { const diff = (new Date() - new Date(lastPermit.end)) / 60000; if(diff < 120) return Swal.fire('تنبيه', `يجب الانتظار ساعتين. متبقى ${Math.round(120-diff)} دقيقة`, 'warning'); } 
+            }
             db.ref('permits').push({student:stu, teacher:teacherName, class:document.getElementById('t-class').value, dest:document.getElementById('t-dest').value, limit:parseInt(timeVal), start:new Date().toISOString(), active:true});
             Swal.fire('تم','بدأ المؤقت','success'); navigate('monitor');
         }

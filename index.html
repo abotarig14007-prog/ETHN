@@ -27,7 +27,7 @@
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
         
-        .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: flex; flex-direction: column; }
+        .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; }
         .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
         
         /* ================= Mobile & High Visibility Enhancements ================= */
@@ -179,8 +179,7 @@
     <div id="app-body" class="d-none">
         <aside class="sidebar no-print">
             <div class="text-center py-5 px-3"><div class="bg-white p-3 rounded-circle d-inline-block shadow mb-3"><i class="fas fa-mosque fa-3x text-success"></i></div><h5 class="fw-bold text-white mt-2" id="disp-school">...</h5></div>
-            <div id="nav-items" class="flex-grow-1 px-2"></div>
-            <div class="p-4"><button class="btn btn-outline-light w-100 rounded-pill fw-bold fs-5" onclick="logOut()">خروج آمن</button></div>
+            <div id="nav-items" class="px-2 pb-5 mb-5"></div>
         </aside>
 
         <main class="main-content">
@@ -464,9 +463,16 @@
             if(userRole==='guard') links = [['guard','الحارس','shield-alt']]; 
             if(userRole==='counselor') links = [['counselor','الموجه','user-graduate']];
             if(hasReportPerm && userRole !== 'admin') links.push(['reports','التقارير','file-alt']);
+            
             const uniqueLinks = []; const map = new Map();
             for (const item of links) { if(!map.has(item[0])){ map.set(item[0], true); uniqueLinks.push(item); }}
-            m.innerHTML = uniqueLinks.map(l => `<div class="nav-link" id="nav-${l[0]}" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-2"></i> ${l[1]}</div>`).join(''); 
+            
+            let navHtml = uniqueLinks.map(l => `<div class="nav-link" id="nav-${l[0]}" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-2"></i> ${l[1]}</div>`).join(''); 
+            
+            // إضافة زر الخروج كجزء من القائمة ليتناسب مع الجوال ويكون أسفل الأيقونات
+            navHtml += `<div class="nav-link mt-4" style="background-color: #dc3545; color: white; border-radius: 12px; font-weight: bold; text-align: center; justify-content: center; padding: 15px;" onclick="logOut()"><i class="fas fa-sign-out-alt me-2"></i> خروج آمن</div>`;
+            
+            m.innerHTML = navHtml;
         }
 
         function navigate(id) { 

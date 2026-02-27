@@ -110,7 +110,7 @@
         .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         
-        /* ================= شاشة المتابعة التلفزيونية (الألوان والنبض) ================= */
+        /* ================= شاشة المتابعة التلفزيونية ================= */
         .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
         .monitor-card.safe { border-color: #198754; background-color: #f1fdf6; }
         .monitor-card.safe h5, .monitor-card.safe h2 { color: #198754 !important; }
@@ -153,7 +153,7 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* Print Styles - One Page Certificate & Forms */
+        /* Print Styles */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; background: white; }
@@ -443,8 +443,8 @@
                         <h5 class="fw-bold text-primary mb-4"><i class="fas fa-tv me-2"></i> إدارة شاشات العرض (الوسائط)</h5>
                         <div class="row g-4">
                             <div class="col-12"><label class="fs-4 fw-bold mb-2">اختر الشاشة المراد تعديلها:</label><select id="set-screen-select" class="form-select huge-input border-primary" onchange="loadScreenMediaList()"><option value="safety">الأمن والسلامة (التوعية)</option><option value="showcase">المعرض الفني</option></select></div>
-                            <div class="col-12"><div class="bg-white border border-success p-4 rounded-4 shadow-sm"><label class="text-success fw-bold fs-4 mb-3"><i class="fas fa-image me-2"></i> إضافة صورة من الجهاز:</label><input type="file" id="upload-screen-img" class="form-control huge-input border-success mb-3" accept="image/*"><button class="btn btn-success w-100 rounded-pill fw-bold py-3 fs-5" onclick="addMediaToScreen('image')">رفع وحفظ الصورة</button></div></div>
-                            <div class="col-12"><div class="bg-white border border-danger p-4 rounded-4 shadow-sm"><label class="text-danger fw-bold fs-4 mb-3"><i class="fas fa-video me-2"></i> إضافة رابط فيديو توعوي:</label><input type="url" id="upload-screen-vid" class="form-control huge-input border-danger mb-3 text-start" dir="ltr" placeholder="https://www.youtube.com/embed/..."><button class="btn btn-danger w-100 rounded-pill fw-bold py-3 fs-5" onclick="addMediaToScreen('video')">إضافة الفيديو للشاشة</button></div></div>
+                            <div class="col-12"><div class="bg-white border border-success p-4 rounded-4 shadow-sm"><label class="text-success fw-bold fs-4 mb-3"><i class="fas fa-image me-2"></i> إضافة صورة من الجهاز:</label><input type="file" id="upload-screen-img" style="opacity:0; position:absolute; z-index:-1;" accept="image/*"><button class="btn btn-success w-100 rounded-pill fw-bold py-4 fs-3 mb-3 shadow" onclick="document.getElementById('upload-screen-img').click()"><i class="fas fa-file-upload me-2"></i> اختر الصورة وارفعها</button></div></div>
+                            <div class="col-12"><div class="bg-white border border-danger p-4 rounded-4 shadow-sm"><label class="text-danger fw-bold fs-4 mb-3"><i class="fas fa-video me-2"></i> إضافة رابط فيديو توعوي:</label><input type="url" id="upload-screen-vid" class="form-control huge-input border-danger mb-3 text-start" dir="ltr" placeholder="https://www.youtube.com/embed/..."><button class="btn btn-danger w-100 rounded-pill fw-bold py-3 fs-4 shadow" onclick="addMediaToScreen('video')">إضافة الفيديو للشاشة</button></div></div>
                             <div class="col-12"><h5 class="fw-bold mt-4 border-bottom pb-2">الوسائط المعروضة حالياً:</h5><div id="current-screen-media" class="list-group fs-4"></div></div>
                         </div>
                     </div>
@@ -480,20 +480,23 @@
                     </div>
 
                     <div class="row g-4 mb-5">
-                        <div class="col-12"><button class="btn btn-outline-dark w-100 py-3 rounded-pill fw-bold fs-4" onclick="exportData()"><i class="fas fa-download me-2"></i> سحب نسخة احتياطية من النظام</button></div>
+                        <div class="col-12"><button class="btn btn-outline-dark w-100 py-4 rounded-pill fw-bold fs-3 shadow-sm" onclick="exportData()"><i class="fas fa-download me-2"></i> تحميل نسخة احتياطية من النظام</button></div>
                         <div class="col-12"><button class="btn btn-outline-warning text-dark w-100 py-3 rounded-pill fw-bold fs-4" onclick="secureReset('reports')"><i class="fas fa-eraser me-2"></i> تصفير سجلات السنة الحالية</button></div>
                         <div class="col-12"><button class="btn btn-danger w-100 py-3 rounded-pill fw-bold fs-4 shadow" onclick="secureReset('factory')"><i class="fas fa-trash-alt me-2"></i> تصفير النظام بالكامل (ضبط المصنع)</button></div>
                     </div>
                     
                     <h5 class="fw-bold mb-4 text-success fs-2 text-center border-bottom pb-3 border-success">إدارة الأسماء والفصول (Excel)</h5>
                     <div class="row g-4 mb-4">
-                        <div class="col-12"><button class="btn btn-success w-100 py-4 rounded-pill fw-bold fs-3 shadow" onclick="document.getElementById('f-tea-excel').click()"><i class="fas fa-chalkboard-teacher me-2"></i> استيراد قائمة المعلمين</button><input type="file" id="f-tea-excel" hidden onchange="importTeachers(this)"></div>
+                        <div class="col-12">
+                            <input type="file" id="f-tea-excel" style="opacity:0; position:absolute; z-index:-1;" onchange="importTeachers(this)">
+                            <button class="btn btn-success w-100 py-4 rounded-pill fw-bold fs-3 shadow" onclick="document.getElementById('f-tea-excel').click()"><i class="fas fa-chalkboard-teacher me-2"></i> استيراد قائمة المعلمين</button>
+                        </div>
                         <div class="col-12">
                             <div class="bg-light p-4 rounded-4 border border-primary shadow-sm text-center">
                                 <label class="fs-4 fw-bold text-primary mb-3">اكتب اسم الفصل أولاً ثم ارفع ملف الطلاب:</label>
                                 <input id="imp-cls-name" class="form-control huge-input mb-4 border-primary" placeholder="مثال: أول متوسط أ">
+                                <input type="file" id="f-excel" style="opacity:0; position:absolute; z-index:-1;" onchange="importData(this)">
                                 <button class="btn btn-primary w-100 rounded-pill fw-bold py-4 fs-3 shadow" onclick="document.getElementById('f-excel').click()"><i class="fas fa-users me-2"></i> استيراد طلاب الفصل</button>
-                                <input type="file" id="f-excel" hidden onchange="importData(this)">
                             </div>
                         </div>
                     </div>
@@ -547,8 +550,7 @@
                 <div><img id="cert-logo-img" src=""></div>
                 <div style="width: 250px;"></div>
             </div>
-            <div class="cert-body" id="dynamic-print-body">
-                </div>
+            <div class="cert-body" id="dynamic-print-body"></div>
             <div class="cert-signatures">
                 <div class="manager"><strong>مدير المدرسة</strong><br><br><span id="cert-manager-name" style="color:var(--primary); font-size:1.8rem;">...</span></div>
                 <div class="deputy"><strong>وكيل شؤون الطلاب</strong><br><br><span id="cert-deputy-name" style="color:var(--primary); font-size:1.8rem;">...</span></div>
@@ -761,44 +763,53 @@
             const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
         }
 
-        // ================= تحديثات الفلترة الآمنة ضد الانهيار (الحل الجذري) =================
+        // ================= الحل الجذري للفلترة الآمنة (يمنع الانهيار) =================
         function refreshScreens() {
-            // معالجة آمنة لمصفوفة الفصول
             let classesArr = [];
             if(data.classes) { classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes); }
             const safeClasses = classesArr.filter(c => c !== null && c !== undefined && c !== '');
 
+            const classOptions = '<option value="">اختر الفصل</option>' + safeClasses.map(c => `<option value="${c}">${c}</option>`).join('');
+
             ['t-class','v-class','b-class','att-class','late-class'].forEach(id=>{ 
                 const e = document.getElementById(id); 
-                if(e) { 
+                if(e && e.innerHTML !== classOptions) { 
                     const currentVal = e.value; 
-                    e.innerHTML = '<option value="">اختر الفصل</option>' + safeClasses.map(c => `<option value="${c}">${c}</option>`).join(''); 
+                    e.innerHTML = classOptions; 
                     if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal; 
                 }
             });
 
-            // معالجة آمنة لمصفوفة المعلمين
             const te = document.getElementById('global-teacher-name'); 
             if(te) { 
-                const currentVal = te.value; 
                 const safeTeachers = Object.values(data.teachers || {}).filter(t => t && t.name);
-                te.innerHTML = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(t => `<option value="${t.name}">${t.name}</option>`).join(''); 
-                if(currentVal) te.value = currentVal; else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; } 
+                const teacherOptions = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+                if (te.innerHTML !== teacherOptions) {
+                    const currentVal = te.value;
+                    te.innerHTML = teacherOptions;
+                    if(currentVal) te.value = currentVal; else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; } 
+                }
             }
             if(userRole==='admin') { renderAdmin(); renderDynamicAdminScreens(); } if(userRole==='guard') renderGuard();
         }
 
         function loadStudentsForRole(c, id) { 
-            // معالجة آمنة لمصفوفة الطلاب
             const safeStudents = Object.values(data.students || {}).filter(s => s && s.name && String(s.class) === String(c)); 
             const e = document.getElementById(id); 
             if(e) {
-                e.innerHTML = '<option value="">اختر الطالب</option>'; 
-                e.disabled = (safeStudents.length === 0); 
-                safeStudents.forEach(s => e.innerHTML += `<option value="${s.name}">${s.name}</option>`); 
+                const stuOptions = '<option value="">اختر الطالب</option>' + safeStudents.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+                if (e.innerHTML !== stuOptions) {
+                    const currentVal = e.value;
+                    e.innerHTML = stuOptions;
+                    e.disabled = (safeStudents.length === 0);
+                    if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal;
+                } else {
+                    e.disabled = (safeStudents.length === 0);
+                }
             }
         }
 
+        // ================= الإستيراد الآمن =================
         function importData(inp) { 
             const c=document.getElementById('imp-cls-name').value; 
             if(!c) return Swal.fire('تنبيه', 'أدخل اسم الفصل أولاً في المربع المخصص', 'warning'); 
@@ -816,6 +827,35 @@
                 inp.value = '';
             }; 
             r.readAsArrayBuffer(inp.files[0]); 
+        }
+
+        function importTeachers(inp) { 
+            const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(row=>{if(row[0]) db.ref('teachers').push({name:row[0]})}); Swal.fire('تم الاستيراد بنجاح'); inp.value = ''; }; r.readAsArrayBuffer(inp.files[0]); 
+        }
+
+        // ================= التصدير الآمن (مدعوم في جميع المتصفحات والجوال) =================
+        function exportData() { 
+            const blob = new Blob([JSON.stringify(data)], {type: "application/json"}); 
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(blob); 
+            a.download = "backup_school_system.json"; 
+            document.body.appendChild(a); 
+            a.click(); 
+            document.body.removeChild(a); 
+        }
+
+        // ================= التصفير الآمن =================
+        function secureReset(type) { 
+            const email = data.settings.admin_email || 'البريد المسجل'; 
+            const pin = String(data.settings.admin_pin || '2026'); 
+            Swal.fire({ title: '🔒 تحقق أمني', text: `أدخل رمز الإدارة السري للتأكيد:`, input: 'password', showCancelButton: true, confirmButtonText: 'تأكيد الحذف' }).then((r) => { 
+                if (r.isConfirmed) {
+                    if (r.value === pin) { 
+                        if (type === 'reports') { ['permits','visitors','violations','departures','attendance','stars','tardiness'].forEach(p=>db.ref(p).remove()); Swal.fire('تم التصفير', 'تم حذف السجلات بنجاح', 'success'); } 
+                        else if (type === 'factory') { db.ref('/').remove().then(() => location.reload()); } 
+                    } else { Swal.fire('خطأ', 'الرمز السري غير صحيح!', 'error'); }
+                } 
+            }); 
         }
 
         function sendPermit() { 
@@ -867,7 +907,6 @@
         
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
-
 
         // ================= نظام معالجة المخالفات الذكي للوكيل =================
         function renderAdmin() { 

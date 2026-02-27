@@ -27,7 +27,7 @@
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
         
-        .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; }
+        .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; transition: transform 0.3s ease; }
         .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
         
         /* ================= Mobile & High Visibility Enhancements ================= */
@@ -62,6 +62,65 @@
             .services-grid .btn { border-radius: 50rem !important; padding: 10px 30px; font-weight: bold; }
             .services-grid .btn i { display: none; }
             .admin-dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        }
+
+        /* ================= الزر العائم والمقبض الجانبي (التعديلات الجديدة) ================= */
+        .floating-home-btn {
+            position: fixed;
+            bottom: 40px; /* مسافة واضحة من الأسفل لتجنب شريط الجوال */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 990; /* أقل من القائمة الجانبية بقليل */
+            background: #0d6efd;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4);
+            display: none; /* مخفي افتراضياً ويظهر بالجافاسكربت */
+            align-items: center;
+            gap: 10px;
+            font-weight: 900;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+        .floating-home-btn:hover { background: #0b5ed7; transform: translateX(-50%) scale(1.05); }
+
+        .sidebar-handle {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            z-index: 1001; /* فوق كل شيء */
+            background: var(--gold);
+            color: #fff;
+            width: 45px;
+            height: 90px;
+            border-radius: 25px 0 0 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: right 0.3s ease, background 0.3s;
+            font-size: 1.5rem;
+            border: 2px solid white;
+            border-right: none;
+        }
+        .sidebar-handle:active { background: #a67c4d; }
+        
+        @media (min-width: 992px) {
+            .sidebar-handle { display: none !important; } /* مخفي في الكمبيوتر */
+        }
+        
+        /* حركة المقبض عند فتح القائمة */
+        .sidebar.active ~ .sidebar-handle {
+            right: 280px; /* يتحرك مع عرض القائمة */
+            border-radius: 0 25px 25px 0;
+            border: 2px solid white;
+            border-left: none;
+            background: var(--primary);
         }
 
         .nav-link { padding: 15px 25px; margin: 5px 15px; color: rgba(255,255,255,0.85); cursor: pointer; border-radius: 12px; font-weight: 700; transition: 0.2s; display: flex; align-items: center; }
@@ -174,7 +233,11 @@
 
     <div id="top-bar" class="fixed-top no-print">
         <div class="d-flex align-items-center"><div style="width:15px; height:15px; background:red; border-radius:50%; margin-left:15px;" id="status-dot"></div><h5 class="m-0 fw-bold text-dark d-none d-sm-block">نظام إذن <span class="text-success">الاحترافي</span></h5><h4 class="m-0 fw-bold text-dark d-sm-none">نظام إذن</h4></div>
-        <div class="d-flex align-items-center gap-3"><div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div><button class="btn btn-light rounded-circle border p-3" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up fa-lg"></i></button><button class="btn btn-outline-dark d-lg-none p-2" onclick="document.querySelector('.sidebar').classList.toggle('active')"><i class="fas fa-bars fa-2x"></i></button></div>
+        <div class="d-flex align-items-center gap-3">
+            <div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div>
+            <button class="btn btn-light rounded-circle border p-3" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up fa-lg"></i></button>
+            <button class="btn btn-outline-dark d-lg-none p-2" onclick="toggleSidebar()"><i class="fas fa-bars fa-2x"></i></button>
+        </div>
     </div>
 
     <div id="auth-overlay">
@@ -195,10 +258,18 @@
     </div>
 
     <div id="app-body" class="d-none">
-        <aside class="sidebar no-print">
+        
+        <aside class="sidebar no-print" id="main-sidebar">
             <div class="text-center py-5 px-3"><div class="bg-white p-3 rounded-circle d-inline-block shadow mb-3"><i class="fas fa-mosque fa-3x text-success"></i></div><h5 class="fw-bold text-white mt-2" id="disp-school">...</h5></div>
-            <div id="nav-items" class="px-2 pb-5 mb-5"></div>
+            <div id="nav-items" class="px-2 pb-3"></div>
+            <div class="px-3 pb-5 mb-5 mt-4">
+                <button class="btn w-100 rounded-pill fw-bold fs-5" style="background-color: #dc3545; color: white; padding: 15px;" onclick="logOut()"><i class="fas fa-sign-out-alt me-2"></i> خروج آمن</button>
+            </div>
         </aside>
+
+        <div class="sidebar-handle no-print" id="sidebar-drag-handle" onclick="toggleSidebar()">
+            <i class="fas fa-chevron-left" id="sidebar-handle-icon"></i>
+        </div>
 
         <main class="main-content">
             <section id="sec-services" class="view-section d-none fade-in">
@@ -269,19 +340,20 @@
                      <div class="admin-dash-grid mb-4" id="admin-screens-container">
                         </div>
                      <div class="row g-3 mb-4 text-center">
-                        <div class="col-4"><div class="stat-box blue"><h2 class="mb-1">0</h2><small class="fs-5 fw-bold">بالخارج</small></div></div>
-                        <div class="col-4"><div class="stat-box green"><h2 class="mb-1">0</h2><small class="fs-5 fw-bold">زوار</small></div></div>
-                        <div class="col-4"><div class="stat-box red"><h2 class="mb-1">0</h2><small class="fs-5 fw-bold">مخالفات</small></div></div>
+                        <div class="col-4"><div class="stat-box blue"><h2 class="mb-1" id="adm-stat-out">0</h2><small class="fs-5 fw-bold">بالخارج</small></div></div>
+                        <div class="col-4"><div class="stat-box green"><h2 class="mb-1" id="adm-stat-vis">0</h2><small class="fs-5 fw-bold">زوار</small></div></div>
+                        <div class="col-4"><div class="stat-box red"><h2 class="mb-1" id="adm-stat-vio">0</h2><small class="fs-5 fw-bold">مخالفات</small></div></div>
                     </div>
                     <div class="row g-4 mb-4">
                         <div class="col-md-4 col-12"><div class="page-card h-100"><div class="card-header-custom">الزوار</div><div id="adm-vis-list" class="list-group list-group-flush p-2"></div></div></div>
                         
                         <div class="col-md-4 col-12">
-                            <div class="page-card h-100">
-                                <div class="card-header-custom cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')">
-                                    المخالفات المسجلة <span class="badge bg-danger rounded-pill fs-5" id="adm-vio-count">0</span>
+                            <div class="page-card h-100 border-danger">
+                                <div class="card-header-custom bg-danger text-white cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')">
+                                    <span>المخالفات المعلقة</span>
+                                    <span class="badge bg-light text-danger rounded-pill fs-5 px-3 py-2" id="adm-vio-count">0</span>
                                 </div>
-                                <div id="adm-vio-list" class="p-3 d-none"></div>
+                                <div id="adm-vio-list" class="p-3 d-none bg-light"></div>
                             </div>
                         </div>
                         
@@ -384,6 +456,10 @@
         </main>
     </div>
 
+    <div class="floating-home-btn no-print" id="floating-home-btn" onclick="goToMainScreen()">
+        <i class="fas fa-home"></i> الرئيسية
+    </div>
+
     <div class="modal fade" id="printModal" tabindex="-1"><div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title fw-bold">التقرير</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-white" id="modal-print-content"></div><div class="modal-footer"><button type="button" class="btn btn-primary w-100 fw-bold rounded-pill btn-lg-mobile" onclick="executePrint()">طباعة التقرير الكامل</button></div></div></div></div>
     
     <div id="cert-print-area">
@@ -466,41 +542,44 @@
                 localStorage.setItem('userRole', userRole); 
                 document.getElementById('auth-overlay').style.display='none'; 
                 document.getElementById('app-body').classList.remove('d-none'); 
-                buildMenu(); navigate('services'); // توحيد الدخول للشاشة المناسبة في دالة navigate
+                buildMenu(); navigate('services'); 
                 showServiceDefault(); populateSettingsUI();
             } else { Swal.fire('خطأ','الرمز غير صحيح','error'); } 
         }
 
-        // --- إضافة زر الشاشة الرئيسية وخروج آمن في أسفل القائمة ---
+        // دالة التحكم في القائمة الجانبية والمقبض (Sidebar Toggle)
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const icon = document.getElementById('sidebar-handle-icon');
+            sidebar.classList.toggle('active');
+            
+            if(sidebar.classList.contains('active')) {
+                icon.className = 'fas fa-chevron-right';
+            } else {
+                icon.className = 'fas fa-chevron-left';
+            }
+        }
+
         function buildMenu() { 
             const m = document.getElementById('nav-items'); 
-            let links = [['services','الخدمات المدرسية','concierge-bell'],['monitor','المتابعة الحية','desktop']]; 
+            let links = [['services','الشاشة الرئيسية','home'],['monitor','المتابعة الحية','desktop']]; 
             const hasReportPerm = userRole==='admin' || (userRole==='teacher' && data.settings.permissions?.teacher) || (userRole==='guard' && data.settings.permissions?.guard) || (userRole==='counselor' && data.settings.permissions?.counselor);
             
             if(hasReportPerm) links.push(['reports','التقارير','file-alt']);
             if(userRole==='admin') links.push(['sec-data','الإعدادات العامة','cogs']); 
-            if(userRole==='guard') links = [['guard','الحارس','shield-alt']]; 
-            if(userRole==='counselor') links = [['counselor','الموجه','user-graduate']];
+            if(userRole==='guard') links = [['services','الشاشة الرئيسية','home'],['guard','الحارس','shield-alt']]; 
+            if(userRole==='counselor') links = [['services','الشاشة الرئيسية','home'],['counselor','الموجه','user-graduate']];
             if(hasReportPerm && userRole !== 'admin') links.push(['reports','التقارير','file-alt']);
             
             const uniqueLinks = []; const map = new Map();
             for (const item of links) { if(!map.has(item[0])){ map.set(item[0], true); uniqueLinks.push(item); }}
             
             let navHtml = uniqueLinks.map(l => `<div class="nav-link" id="nav-${l[0]}" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-2"></i> ${l[1]}</div>`).join(''); 
-            
-            // إضافة الأزرار الثابتة في الأسفل (الشاشة الرئيسية + الخروج)
-            navHtml += `<hr class="text-white opacity-25 my-4">`;
-            navHtml += `<div class="nav-link mt-2" style="background-color: #0d6efd; color: white; border-radius: 12px; font-weight: bold; text-align: center; justify-content: center; padding: 15px;" onclick="goToMainScreen()"><i class="fas fa-home me-2"></i> الشاشة الرئيسية</div>`;
-            navHtml += `<div class="nav-link mt-3" style="background-color: #dc3545; color: white; border-radius: 12px; font-weight: bold; text-align: center; justify-content: center; padding: 15px;" onclick="logOut()"><i class="fas fa-sign-out-alt me-2"></i> خروج آمن</div>`;
-            
             m.innerHTML = navHtml;
         }
 
-        // العودة للشاشة الرئيسية
         function goToMainScreen() {
-            if(userRole === 'admin' || userRole === 'teacher') navigate('services');
-            else if(userRole === 'guard') navigate('guard');
-            else if(userRole === 'counselor') navigate('counselor');
+            navigate('services');
         }
 
         function navigate(id) { 
@@ -510,10 +589,9 @@
             if(id === 'services') {
                 document.getElementById('sec-services').classList.remove('d-none');
                 
-                // تنظيف صفحة الإدارة وإخفاء خدمات المعلم
                 if(userRole === 'admin') { 
                     document.getElementById('admin-panel-content').classList.remove('d-none'); 
-                    document.getElementById('teacher-services-container').classList.add('d-none'); // إخفاء إذن الخروج والمعلم بالكامل
+                    document.getElementById('teacher-services-container').classList.add('d-none'); 
                 } else { 
                     document.getElementById('admin-panel-content').classList.add('d-none'); 
                     document.getElementById('teacher-services-container').classList.remove('d-none'); 
@@ -524,8 +602,27 @@
             
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); 
             if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active'); 
-            if(window.innerWidth < 992) { document.querySelector('.sidebar').classList.remove('active'); }
+            
+            // إغلاق القائمة الجانبية بعد الضغط (للجوال)
+            if(window.innerWidth < 992) { 
+                document.querySelector('.sidebar').classList.remove('active'); 
+                document.getElementById('sidebar-handle-icon').className = 'fas fa-chevron-left';
+            }
+
+            // إظهار/إخفاء الزر العائم الذكي
+            updateFloatingHomeBtn(id);
             refreshScreens(); 
+        }
+
+        // الزر العائم يختفي إذا كنت في الرئيسية
+        function updateFloatingHomeBtn(currentView) {
+            const btn = document.getElementById('floating-home-btn');
+            if(!btn) return;
+            if (currentView === 'services') {
+                btn.style.display = 'none';
+            } else {
+                btn.style.display = 'flex';
+            }
         }
 
         function showServiceDefault() { const boxes = ['srv-permit-box', 'srv-attendance-box', 'srv-behavior-box', 'srv-violation-box', 'srv-late-box']; let active = false; boxes.forEach(b => { if(!document.getElementById(b).classList.contains('d-none')) active = true; }); if(!active) tabService('permit'); }
@@ -587,7 +684,6 @@
             list.innerHTML = Object.keys(items).map(k => { const isVid = items[k].type === 'video'; return `<div class="list-group-item d-flex justify-content-between align-items-center"><span class="text-truncate" style="max-width:70%;"><i class="${isVid?'fas fa-video text-danger':'fas fa-image text-success'} me-2"></i> ${isVid ? 'فيديو: '+items[k].url : 'صورة مرفوعة'}</span><button class="btn btn-danger btn-sm" onclick="db.ref('screens/${screenId}/${k}').remove().then(()=>loadScreenMediaList())">حذف</button></div>`; }).join('');
         }
 
-        // عرض الشهادة بشكل أنيق وفخم على الشاشة 
         function displayStudentCertOnScreen(studentName) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
@@ -615,7 +711,6 @@
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
         }
 
-        // طباعة الشهادة بشكل منفرد
         function printStudentCert(studentName) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             document.getElementById('cert-school-name').innerText = data.settings.school || 'المدرسة'; document.getElementById('cert-logo-img').src = data.settings.logo || ''; document.getElementById('cert-target-student').innerText = studentName; document.getElementById('cert-manager-name').innerText = data.settings.manager || '.......................'; document.getElementById('cert-deputy-name').innerText = data.settings.deputy || '.......................';
@@ -626,6 +721,7 @@
             const modal = new bootstrap.Modal(document.getElementById('printModal')); const logo = data.settings.logo || "";
             const titles = { 'permits': 'سجل الأذونات', 'visitors': 'سجل الزوار', 'violations': 'المخالفات السلوكية', 'attendance': 'الغياب اليومي', 'stars': 'لوحة الشرف والشهادات', 'late': 'تأخر الصباح', 'top_class': 'الفصل المثالي' };
             let h = `<div style="border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; direction:rtl;"><div style="text-align:right; width:33%; font-weight:bold; font-size:1.2rem;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div><div style="text-align:center; width:33%"><img src="${logo}" style="max-height:100px"></div><div style="text-align:left; width:33%; font-weight:bold; font-size:1.2rem;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br><span style="text-decoration:underline;">${titles[type]||'تقرير'}</span></div></div>`;
+            
             if(type==='stars') { 
                 let s = {}; Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
                 h+=`<table class="table table-bordered text-center align-middle" style="font-size:1.4rem;"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>الرصيد</th><th class="no-print">الإجراءات</th></tr></thead><tbody>`; 
@@ -635,9 +731,9 @@
                         <td class="fw-bold">${x[0]}</td>
                         <td>${sObj?sObj.class:'-'}</td>
                         <td class="fw-bold text-warning">${x[1]} ⭐</td>
-                        <td class="no-print d-flex gap-2 justify-content-center">
-                            <button class="btn btn-warning rounded-pill fw-bold" onclick="printStudentCert('${x[0]}')"><i class="fas fa-print"></i> طباعة</button>
-                            <button class="btn btn-primary rounded-pill fw-bold" onclick="displayStudentCertOnScreen('${x[0]}')"><i class="fas fa-tv"></i> عرض بالشاشة</button>
+                        <td class="no-print d-flex gap-2 justify-content-center flex-wrap">
+                            <button class="btn btn-warning rounded-pill fw-bold m-1" onclick="printStudentCert('${x[0]}')"><i class="fas fa-print"></i> طباعة</button>
+                            <button class="btn btn-primary rounded-pill fw-bold m-1" onclick="displayStudentCertOnScreen('${x[0]}')"><i class="fas fa-tv"></i> عرض بالشاشة</button>
                         </td>
                     </tr>`; 
                 }); h+=`</tbody></table>`; 
@@ -732,21 +828,26 @@
             }
         }
         function closeOverlay(id) { document.getElementById(id).style.display='none'; if(document.exitFullscreen) document.exitFullscreen(); }
-        function openEventsScreen() { openMediaScreen('events'); }
-        function openShowcaseScreen() { openMediaScreen('showcase'); }
 
         function renderMonitor() { const g = document.getElementById('monitor-grid'); const l = Object.entries(data.permits||{}).filter(x=>x[1].active); document.getElementById('no-students').classList.toggle('d-none', l.length>0); g.innerHTML = l.map(([k,p])=>{ const m = Math.floor((new Date()-new Date(p.start))/60000); return `<div class="col-md-3 col-12"><div class="monitor-card ${m>=p.limit?'danger':'safe'}"><h5 class="fs-2">${p.student}</h5><small class="text-muted d-block fs-4">${p.class} | ${p.dest}</small><h2 class="text-center my-3 fw-bold fs-1">${m} د</h2><button class="btn btn-dark btn-sm w-100 rounded-pill py-3 btn-lg-mobile fw-bold" onclick="closePermit('${k}')">عودة للفصل</button></div></div>`; }).join(''); }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
         
         function renderAdmin() { 
+            // تحديث الإحصائيات العلوية
+            const activePermits = Object.values(data.permits||{}).filter(p=>p.active).length;
+            const activeVisitors = Object.values(data.visitors||{}).filter(v=>v.status==='pending').length;
+            const pendingViolations = Object.entries(data.violations||{}).filter(x=>x[1].status==='pending_admin');
+            
+            document.getElementById('adm-stat-out').innerText = activePermits;
+            document.getElementById('adm-stat-vis').innerText = activeVisitors;
+            document.getElementById('adm-stat-vio').innerText = pendingViolations.length;
+
             document.getElementById('adm-vis-list').innerHTML = Object.entries(data.visitors||{}).filter(x=>x[1].status==='pending').map(([k,v])=>`<div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center p-3 gap-2"><span class="fs-4 fw-bold text-primary">${v.name}</span><span class="text-muted">${v.reason}</span><div class="btn-group w-100"><button class="btn btn-success py-2 fw-bold" onclick="db.ref('visitors/${k}').update({status:'approved'})">موافقة</button><button class="btn btn-danger py-2 fw-bold" onclick="db.ref('visitors/${k}').update({status:'rejected'})">رفض</button></div></div>`).join(''); 
             
-            // عدد المخالفات الذكي للإدارة
-            const pendingViolations = Object.entries(data.violations||{}).filter(x=>x[1].status==='pending_admin');
             const vioCountEl = document.getElementById('adm-vio-count');
             if(vioCountEl) vioCountEl.innerText = pendingViolations.length;
             
-            document.getElementById('adm-vio-list').innerHTML = pendingViolations.map(([k,v])=>`<div class="alert alert-danger p-3 mb-2"><strong class="fs-4 d-block mb-2">${v.student}</strong><span class="fs-5">${v.type}</span><button class="btn btn-dark w-100 mt-3 py-2 fw-bold rounded-pill" onclick="db.ref('violations/${k}').update({status:'pending_counselor'})">تحويل للموجه</button></div>`).join(''); 
+            document.getElementById('adm-vio-list').innerHTML = pendingViolations.map(([k,v])=>`<div class="alert alert-danger p-3 mb-2 border-danger shadow-sm"><strong class="fs-4 d-block mb-2 text-danger"><i class="fas fa-user me-2"></i>${v.student}</strong><span class="fs-5 d-block text-dark"><i class="fas fa-exclamation-circle me-2"></i>${v.type}</span><button class="btn btn-dark w-100 mt-3 py-2 fw-bold rounded-pill" onclick="db.ref('violations/${k}').update({status:'pending_counselor'})">تحويل للموجه الطلابي</button></div>`).join(''); 
         }
         
         function renderGuard() { 

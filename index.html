@@ -64,7 +64,7 @@
             .admin-dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         }
 
-        /* ================= الحقول والبطاقات ================= */
+        /* ================= تحسينات الحقول والبطاقات ================= */
         .service-card-green { background-color: #e8f5e9 !important; border: 3px solid #28a745 !important; }
         .service-card-blue { background-color: #e7f1ff !important; border: 3px solid #0d6efd !important; }
         .service-card-yellow { background-color: #fffdf0 !important; border: 3px solid #ffc107 !important; }
@@ -75,7 +75,7 @@
         .huge-label { font-size: 1.4rem !important; font-weight: 900 !important; margin-bottom: 8px !important; display: block; }
         .checkbox-huge { transform: scale(2.5); margin-left: 20px !important; margin-right: 10px !important; cursor: pointer; }
 
-        /* ================= الأزرار العائمة والقائمة ================= */
+        /* ================= المقبض والزر العائم ================= */
         .floating-home-btn { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 990; background: #0d6efd; color: white; padding: 15px 40px; border-radius: 50px; box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4); display: none; align-items: center; gap: 10px; font-weight: 900; font-size: 1.4rem; cursor: pointer; transition: all 0.3s ease; border: 2px solid white; }
         .sidebar-handle { position: fixed; top: 50%; right: 0; transform: translateY(-50%); z-index: 1001; background: var(--gold); color: #fff; width: 50px; height: 100px; border-radius: 25px 0 0 25px; display: flex; align-items: center; justify-content: center; box-shadow: -4px 0 15px rgba(0,0,0,0.2); cursor: pointer; transition: right 0.3s ease, background 0.3s; font-size: 1.8rem; border: 3px solid white; border-right: none; }
         @media (min-width: 992px) { .sidebar-handle { display: none !important; } }
@@ -99,13 +99,13 @@
         .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
         
-        /* ================= شاشات العرض والتلفزيون (التحصين الجديد) ================= */
+        /* ================= شاشات العرض والتلفزيون ================= */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
         
-        /* زر الإغلاق الأحمر المحصن ضد التعليق */
+        /* زر الإغلاق الأحمر المحصن */
         .overlay-close { 
             position: fixed; top: 20px; right: 20px; 
-            z-index: 2147483647 !important; /* أعلى طبقة ممكنة */
+            z-index: 2147483647 !important; 
             background: #dc3545 !important; 
             color: white !important; 
             border: 3px solid white !important; 
@@ -119,7 +119,6 @@
 
         .carousel, .carousel-inner { height: 100vh; width: 100vw; }
         .carousel-item { height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; background: #000; }
-        /* فرض مقاسات الفيديو والصور */
         .carousel-item iframe, .carousel-item img { width: 100vw !important; height: 100vh !important; object-fit: contain; border: none; pointer-events: auto; }
 
         /* ================= لوحة الشرف ================= */
@@ -137,7 +136,7 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= الطباعة الرسمية ================= */
+        /* ================= الطباعة الرسمية (النسخة النهائية الصارمة) ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0; padding: 0; background: white !important; font-family: 'Tajawal', sans-serif; }
@@ -221,11 +220,33 @@
         </div>
     </div>
 
+    <div class="modal fade" id="mediaLibraryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-info text-white">
+                    <h4 class="modal-title fw-bold"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط المحفوظة</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light">
+                    <div class="bg-white p-3 rounded-4 mb-4 border border-info shadow-sm">
+                        <h5 class="fw-bold text-info mb-3">إضافة مقطع جديد للمكتبة</h5>
+                        <div class="row g-2">
+                            <div class="col-md-4"><input type="text" id="lib-name" class="form-control huge-input" placeholder="اسم المقطع (مثال: أذكار)"></div>
+                            <div class="col-md-5"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="رابط اليوتيوب أو الصورة..."></div>
+                            <div class="col-md-3"><button class="btn btn-info text-white w-100 fw-bold rounded-pill h-100 fs-4" onclick="saveToLibrary()">حفظ في المكتبة</button></div>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-3">المقاطع المحفوظة مسبقاً:</h5>
+                    <div id="media-library-list" style="max-height: 400px; overflow-y: auto;">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="top-bar" class="fixed-top no-print">
         <div class="d-flex align-items-center"><div style="width:15px; height:15px; background:red; border-radius:50%; margin-left:15px;" id="status-dot"></div><h5 class="m-0 fw-bold text-dark d-none d-sm-block">نظام إذن <span class="text-success">الاحترافي</span></h5><h4 class="m-0 fw-bold text-dark d-sm-none">نظام إذن</h4></div>
         <div class="d-flex align-items-center gap-3">
-            <button class="btn btn-dark rounded-pill fw-bold d-none d-md-block shadow-sm" onclick="openTvMenu()"><i class="fas fa-tv me-2"></i> شاشة العرض</button>
-            <button class="btn btn-dark rounded-circle p-3 d-md-none shadow-sm" onclick="openTvMenu()"><i class="fas fa-tv fa-lg"></i></button>
             <div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div>
             <button class="btn btn-light rounded-circle border p-3 shadow-sm" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up fa-lg"></i></button>
             <button class="btn btn-outline-dark d-lg-none p-2 shadow-sm" onclick="toggleSidebar()"><i class="fas fa-bars fa-2x"></i></button>
@@ -264,6 +285,7 @@
 
         <main class="main-content">
             <section id="sec-services" class="view-section d-none fade-in">
+                
                 <div id="teacher-services-container" class="d-none">
                     <div class="page-card p-4 mb-4 bg-white border-0 shadow-sm rounded-4">
                         <div class="d-flex flex-column gap-2 text-center">
@@ -334,23 +356,19 @@
                      <div class="page-card p-4 mb-4 border-2 border-primary bg-light shadow-sm">
                         <h4 class="fw-bold text-primary mb-4 text-center"><i class="fas fa-tv me-2"></i> التحكم السريع بشاشة المدرسة 📺</h4>
                         
-                        <div class="bg-white p-3 rounded-4 mb-4 border border-info">
-                            <h5 class="fw-bold text-info mb-3"><i class="fas fa-save me-2"></i> مكتبة الوسائط (لحفظ الروابط والصور للرجوع إليها)</h5>
-                            <div class="row g-2">
-                                <div class="col-md-4"><input type="text" id="lib-name" class="form-control" placeholder="اسم المقطع (مثال: أذكار الصباح)"></div>
-                                <div class="col-md-5"><input type="text" id="lib-url" class="form-control text-start" dir="ltr" placeholder="رابط اليوتيوب..."></div>
-                                <div class="col-md-3"><button class="btn btn-info text-white w-100 fw-bold" onclick="saveToLibrary()">حفظ في المكتبة</button></div>
-                            </div>
-                            <div class="mt-3" id="media-library-list" style="max-height: 200px; overflow-y: auto;"></div>
-                        </div>
-
-                        <div class="row g-3 border-top pt-3 mt-3">
-                            <div class="col-md-6 col-12">
-                                <button class="btn btn-success w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="document.getElementById('quick-img-upload').click()"><i class="fas fa-image me-2"></i> إرسال صورة الآن</button>
+                        <div class="row g-3">
+                            <div class="col-md-3 col-6">
+                                <button class="btn btn-success w-100 py-3 fw-bold fs-5 shadow-sm rounded-pill" onclick="document.getElementById('quick-img-upload').click()"><i class="fas fa-image me-1"></i> إرسال صورة</button>
                                 <input type="file" id="quick-img-upload" style="display:none;" accept="image/*" onchange="quickAddMedia('image', this)">
                             </div>
-                            <div class="col-md-6 col-12">
-                                <button class="btn btn-dark w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="openTvMenu()"><i class="fas fa-play-circle me-2"></i> تشغيل الشاشة للطلاب</button>
+                            <div class="col-md-3 col-6">
+                                <button class="btn btn-danger w-100 py-3 fw-bold fs-5 shadow-sm rounded-pill" onclick="quickAddMedia('video')"><i class="fab fa-youtube me-1"></i> إرسال فيديو</button>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <button class="btn btn-info text-white w-100 py-3 fw-bold fs-5 shadow-sm rounded-pill" onclick="openMediaLibraryModal()"><i class="fas fa-folder-open me-1"></i> مكتبة الوسائط</button>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <button class="btn btn-dark w-100 py-3 fw-bold fs-5 shadow-sm rounded-pill" onclick="openTvMenu()"><i class="fas fa-play-circle me-1"></i> تشغيل الشاشة</button>
                             </div>
                         </div>
                     </div>
@@ -426,6 +444,22 @@
                 <div class="page-card p-4">
                     <h4 class="fw-bold mb-5 text-primary border-bottom pb-3 fs-2 text-center">الإعدادات الشاملة</h4>
                     
+                    <div class="setting-card-yellow p-4 mb-5 rounded shadow-sm border-2 border-warning bg-light">
+                        <h5 class="fw-bold text-dark mb-4"><i class="fas fa-lock me-2"></i> صلاحيات الدخول للتقارير (للإدارة فقط)</h5>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="perm-teacher" onchange="saveSettings()" style="transform: scale(1.5); margin-left: 15px;">
+                            <label class="form-check-label fs-4 fw-bold">السماح للمعلمين بمشاهدة التقارير</label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="perm-guard" onchange="saveSettings()" style="transform: scale(1.5); margin-left: 15px;">
+                            <label class="form-check-label fs-4 fw-bold">السماح للحارس بمشاهدة التقارير</label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="perm-counselor" onchange="saveSettings()" style="transform: scale(1.5); margin-left: 15px;">
+                            <label class="form-check-label fs-4 fw-bold">السماح للموجه الطلابي بمشاهدة التقارير</label>
+                        </div>
+                    </div>
+
                     <h5 class="text-primary border-bottom pb-2 mt-5 fs-2 fw-bold">بيانات المدرسة والشهادات</h5>
                     <div class="row g-4 mb-5">
                          <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم المدرسة المنظمة</label><input id="s-school" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
@@ -473,6 +507,29 @@
         </main>
     </div>
 
+    <div class="modal fade" id="mediaLibraryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-info text-white">
+                    <h4 class="modal-title fw-bold"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط المحفوظة</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light">
+                    <div class="bg-white p-3 rounded-4 mb-4 border border-info shadow-sm">
+                        <h5 class="fw-bold text-info mb-3">إضافة مقطع جديد للمكتبة</h5>
+                        <div class="row g-2">
+                            <div class="col-md-4"><input type="text" id="lib-name" class="form-control huge-input" placeholder="اسم المقطع (مثال: أذكار)"></div>
+                            <div class="col-md-5"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="رابط اليوتيوب أو الصورة..."></div>
+                            <div class="col-md-3"><button class="btn btn-info text-white w-100 fw-bold rounded-pill h-100 fs-4" onclick="saveToLibrary()">حفظ في المكتبة</button></div>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-3">المقاطع المحفوظة مسبقاً:</h5>
+                    <div id="media-library-list" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="violationActionModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-4 border-0 shadow-lg">
@@ -498,7 +555,6 @@
                     
                     <label class="fw-bold fs-4 mb-2">تفاصيل الإجراء / ملاحظات للطباعة (اختياري):</label>
                     <textarea id="va-custom-note" class="form-control bg-white shadow-sm fw-bold mb-2" rows="3" style="font-size:1.4rem; border-radius:15px; padding:15px; border:2px solid #ccc;" placeholder="اكتب هنا الدرجة المستحقة للمخالفة أو التوجيه للموجه الطلابي..."></textarea>
-
                     <input type="hidden" id="va-violation-id">
                 </div>
                 <div class="modal-footer bg-white d-flex justify-content-between">
@@ -520,7 +576,6 @@
     </div>
     
     <div id="final-print-container"></div>
-    
     <audio id="bell" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" preload="auto"></audio>
 
     <script>
@@ -532,7 +587,6 @@
         let cache_classes = "";
         let cache_teachers = "";
 
-        // المزامنة الحية
         function syncLiveViews() {
             if(userRole === 'admin') { renderAdmin(); renderMediaLibrary(); }
             if(userRole === 'counselor') renderCounselor();
@@ -588,6 +642,46 @@
         function showToast(m) { const t=document.getElementById('system-toast'); t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; t.style.display='block'; setTimeout(()=>{t.style.display='none'},3000); }
         function toggleVisibility(id) { const e=document.getElementById(id); e.type=e.type==='password'?'text':'password'; }
 
+        // ================= دالة حفظ الإعدادات والصلاحيات =================
+        function saveSettings() {
+            const updates = {
+                school: document.getElementById('s-school').value || '',
+                manager: document.getElementById('s-manager').value || '',
+                deputy: document.getElementById('s-deputy').value || '',
+                admin_email: document.getElementById('s-email').value || '',
+                permissions: {
+                    teacher: document.getElementById('perm-teacher').checked,
+                    guard: document.getElementById('perm-guard').checked,
+                    counselor: document.getElementById('perm-counselor').checked
+                }
+            };
+            db.ref('settings').update(updates).then(() => showToast('تم حفظ الإعدادات'));
+        }
+
+        function savePasswords() {
+            const updates = {
+                admin_pin: document.getElementById('pin-admin').value,
+                teacher_pin: document.getElementById('pin-teacher').value,
+                guard_pin: document.getElementById('pin-guard').value,
+                counselor_pin: document.getElementById('pin-counselor').value
+            };
+            db.ref('settings').update(updates).then(() => Swal.fire('تم', 'تم حفظ الرموز السرية', 'success'));
+        }
+
+        function uploadLogo() {
+            const file = document.getElementById('logo-upload').files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                db.ref('settings/logo').set(e.target.result).then(() => {
+                    showToast('تم رفع الشعار بنجاح');
+                    document.getElementById('logo-preview').src = e.target.result;
+                    document.getElementById('logo-preview').style.display = 'block';
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
         function populateSettingsUI() {
              if(document.getElementById('s-school')) {
                  document.getElementById('s-school').value = data.settings.school || '';
@@ -599,6 +693,13 @@
                  document.getElementById('pin-teacher').value = data.settings.teacher_pin || '';
                  document.getElementById('pin-guard').value = data.settings.guard_pin || '';
                  document.getElementById('pin-counselor').value = data.settings.counselor_pin || '';
+                 
+                 // تفعيل أزرار الصلاحيات
+                 if(document.getElementById('perm-teacher')) {
+                     document.getElementById('perm-teacher').checked = data.settings.permissions?.teacher || false;
+                     document.getElementById('perm-guard').checked = data.settings.permissions?.guard || false;
+                     document.getElementById('perm-counselor').checked = data.settings.permissions?.counselor || false;
+                 }
              }
         }
 
@@ -705,7 +806,13 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // ================= الإدارة السريعة للتلفزيون والمكتبة =================
+        // ================= الإدارة السريعة للتلفزيون + مكتبة الوسائط =================
+        function openMediaLibraryModal() {
+            const modal = new bootstrap.Modal(document.getElementById('mediaLibraryModal'));
+            renderMediaLibrary();
+            modal.show();
+        }
+
         function getEmbedUrl(url) {
             let videoId = '';
             if (url.includes('youtube.com/watch?v=')) { videoId = url.split('v=')[1].split('&')[0]; } 
@@ -742,10 +849,10 @@
                 const item = items[k];
                 const icon = item.type === 'video' ? 'fas fa-video text-danger' : 'fas fa-image text-success';
                 return `
-                <div class="list-group-item d-flex justify-content-between align-items-center mb-2 rounded shadow-sm border">
-                    <span class="fw-bold fs-4"><i class="${icon} me-2"></i> ${item.name}</span>
-                    <div class="btn-group">
-                        <button class="btn btn-primary fw-bold" onclick="playFromLibrary('${item.url}', '${item.type}')"><i class="fas fa-play me-1"></i> عرض للشاشة</button>
+                <div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 rounded shadow-sm border p-3">
+                    <span class="fw-bold fs-4 mb-2 mb-md-0"><i class="${icon} me-2"></i> ${item.name}</span>
+                    <div class="btn-group w-100 w-md-auto">
+                        <button class="btn btn-primary fw-bold" onclick="playFromLibrary('${item.url}', '${item.type}')"><i class="fas fa-play me-1"></i> عرض</button>
                         <button class="btn btn-danger" onclick="db.ref('mediaLibrary/${k}').remove()"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`; 
@@ -753,9 +860,10 @@
         }
 
         function playFromLibrary(url, type) {
-            // إضافة الرابط للستوري الحية (شاشة الساحة) ثم تشغيل الشاشة
             const screenId = 'showcase';
             db.ref(`screens/${screenId}`).push({ type: type, url: url }).then(() => { 
+                const modal = bootstrap.Modal.getInstance(document.getElementById('mediaLibraryModal'));
+                if(modal) modal.hide();
                 openMediaScreen('showcase');
             });
         }
@@ -864,82 +972,7 @@
             if(document.exitFullscreen) document.exitFullscreen(); 
         }
 
-        // ================= لوحة الشرف الذكية 3 بـ 3 =================
-        function openHallOfFame() {
-            document.getElementById('hall-of-fame-overlay').style.display='block';
-            if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-
-            let scores = {};
-            Object.values(data.stars||{}).forEach(s => {
-                const val = s.value !== undefined ? s.value : 1;
-                scores[s.student] = (scores[s.student]||0) + val;
-            });
-            const sorted = Object.entries(scores).filter(s => s[1] > 0).sort((a,b)=>b[1]-a[1]).slice(0, 10);
-
-            const content = document.getElementById('hof-content');
-            if(sorted.length === 0) {
-                content.innerHTML = `<div class="empty-state-message text-center"><i class="fas fa-crown fa-5x mb-4 text-warning"></i><br><h2 class="text-white">المنافسة بدأت! كن أول من يتصدر الشاشة 🌟</h2></div>`;
-                return;
-            }
-
-            const champ = sorted[0];
-            const champObj = Object.values(data.students||{}).find(s=>s.name===champ[0]);
-            
-            let html = `
-                <div class="champion-area mb-4">
-                    <div class="champion-avatar animate__animated animate__pulse animate__infinite"><i class="fas fa-user-graduate"></i></div>
-                    <h1 class="champion-name text-warning">${champ[0]}</h1>
-                    <h2 class="text-white mt-2">${champ[1]} نجمة 🌟</h2>
-                    <h3 class="text-info">${champObj?champObj.class:''}</h3>
-                </div>
-                <div id="challengers-container"></div>
-            `;
-            content.innerHTML = html;
-
-            const others = sorted.slice(1);
-            if(others.length > 0) {
-                const container = document.getElementById('challengers-container');
-                let groups = [];
-                for(let i=0; i<others.length; i+=3) { groups.push(others.slice(i, i+3)); }
-                
-                container.innerHTML = groups.map((g, gIdx) => `
-                    <div class="challenger-group ${gIdx === 0 ? 'animate__fadeInUp' : 'd-none'} animate__animated" id="hof-group-${gIdx}" style="display:flex; gap:20px; justify-content:center; width:100%; position: absolute; left:0;">
-                        ${g.map((s, i) => {
-                            const rank = (gIdx * 3) + i + 2;
-                            return `
-                            <div class="challenger-card">
-                                <div class="challenger-rank">${rank}</div>
-                                <h3 class="text-white fw-bold">${s[0]}</h3>
-                                <h4 class="text-warning">${s[1]} نجمة</h4>
-                            </div>`;
-                        }).join('')}
-                    </div>
-                `).join('');
-
-                let currentGroup = 0;
-                clearInterval(window.hofSlideInterval);
-                if(groups.length > 1) {
-                    window.hofSlideInterval = setInterval(() => {
-                        const oldEl = document.getElementById(`hof-group-${currentGroup}`);
-                        if(oldEl) {
-                            oldEl.classList.remove('animate__fadeInUp');
-                            oldEl.classList.add('animate__fadeOutDown');
-                            setTimeout(() => {
-                                oldEl.classList.add('d-none');
-                                oldEl.classList.remove('animate__fadeOutDown');
-                                currentGroup = (currentGroup + 1) % groups.length;
-                                const newEl = document.getElementById(`hof-group-${currentGroup}`);
-                                if(newEl) {
-                                    newEl.classList.remove('d-none');
-                                    newEl.classList.add('animate__fadeInUp');
-                                }
-                            }, 500); 
-                        }
-                    }, 4000); 
-                }
-            }
-        }
-
+        // ================= مشغل الوسائط المتطور =================
         function openMediaScreen(screenId) {
             const screenData = data.screens && data.screens[screenId] ? data.screens[screenId] : [];
             const inner = document.getElementById('media-carousel-inner');
@@ -961,71 +994,6 @@
         }
 
         function closeMediaSlider() { document.getElementById('media-slider-overlay').style.display='none'; document.getElementById('media-carousel-inner').innerHTML=''; if(document.exitFullscreen) document.exitFullscreen(); }
-
-        function createNewScreen() {
-            const name = document.getElementById('new-screen-name').value; const icon = document.getElementById('new-screen-icon').value;
-            if(!name) return Swal.fire('خطأ', 'يرجى كتابة اسم الشاشة', 'error');
-            const newId = 'custom_' + Date.now();
-            db.ref('settings/customScreens/' + newId).set({ name: name, icon: icon }).then(() => {
-                Swal.fire('تم', 'تمت إضافة الشاشة بنجاح', 'success'); document.getElementById('new-screen-name').value = ''; renderDynamicAdminScreens(); 
-                const select = document.getElementById('set-screen-select'); if(select) select.innerHTML += `<option value="${newId}">${name}</option>`;
-            });
-        }
-
-        function renderDynamicAdminScreens() {
-            const container = document.getElementById('admin-screens-container'); if(!container) return;
-            let html = ``;
-            const custom = data.settings.customScreens || {}; const select = document.getElementById('set-screen-select');
-            if(select) select.innerHTML = `<option value="showcase">المعرض الفني / الساحة</option>`;
-            Object.keys(custom).forEach(key => { html += `<button class="btn btn-info text-white shadow fw-bold" onclick="openMediaScreen('${key}')"><i class="${custom[key].icon} d-block mb-2 fa-2x"></i> ${custom[key].name}</button>`; if(select) select.innerHTML += `<option value="${key}">${custom[key].name}</option>`; });
-            container.innerHTML = html;
-        }
-
-        function addMediaToScreen(type) {
-            const screenId = document.getElementById('set-screen-select').value;
-            if(type === 'image') {
-                const file = document.getElementById('upload-screen-img').files[0]; if(!file) return Swal.fire('خطأ', 'الرجاء اختيار صورة', 'error');
-                const reader = new FileReader(); reader.onload = e => { db.ref(`screens/${screenId}`).push({ type: 'image', url: e.target.result }).then(() => { Swal.fire('تم', 'تم رفع الصورة', 'success'); loadScreenMediaList(); }); }; reader.readAsDataURL(file);
-            } else if(type === 'video') {
-                const url = document.getElementById('upload-screen-vid').value; if(!url) return Swal.fire('خطأ', 'الرجاء إدخال رابط الفيديو', 'error');
-                const finalUrl = getEmbedUrl(url);
-                db.ref(`screens/${screenId}`).push({ type: 'video', url: finalUrl }).then(() => { Swal.fire('تم', 'تم إضافة الفيديو', 'success'); loadScreenMediaList(); document.getElementById('upload-screen-vid').value=''; });
-            }
-        }
-
-        function loadScreenMediaList() {
-            const screenId = document.getElementById('set-screen-select').value; const list = document.getElementById('current-screen-media'); const items = data.screens && data.screens[screenId] ? data.screens[screenId] : {};
-            if(Object.keys(items).length === 0) { list.innerHTML = '<div class="text-muted text-center p-3">لا يوجد وسائط</div>'; return; }
-            list.innerHTML = Object.keys(items).map(k => { const isVid = items[k].type === 'video'; return `<div class="list-group-item d-flex justify-content-between align-items-center"><span class="text-truncate" style="max-width:70%;"><i class="${isVid?'fas fa-video text-danger':'fas fa-image text-success'} me-2"></i> ${isVid ? 'فيديو يوتيوب' : 'صورة مرفوعة'}</span><button class="btn btn-danger btn-sm fs-5" onclick="db.ref('screens/${screenId}/${k}').remove().then(()=>loadScreenMediaList())"><i class="fas fa-trash"></i> حذف</button></div>`; }).join('');
-        }
-
-        function getStrictTeacherName() {
-            if(userRole !== 'teacher') return userRole;
-            const tName = document.getElementById('global-teacher-name').value;
-            if(!tName) { Swal.fire({icon: 'warning', title: 'تنبيه هام', text: 'الرجاء اختيار اسم المعلم من أعلى الشاشة أولاً قبل إتمام العملية.'}); return null; }
-            return tName;
-        }
-
-        function validate(ids) { 
-            for(let id of ids) { 
-                const e=document.getElementById(id); 
-                if(!e || !e.value) { 
-                    Swal.fire('تنبيه', 'الرجاء تعبئة جميع الحقول المطلوبة', 'warning'); 
-                    if(e) e.focus(); 
-                    return false; 
-                } 
-            } 
-            return true; 
-        }
-        
-        function rememberTeacher(v) { localStorage.setItem('teacher', v); }
-        
-        function tabService(tab, btnElement) {
-            document.querySelectorAll('#teacher-services-container .page-card').forEach(c => { if(c.id.includes('srv-')) c.classList.add('d-none'); });
-            document.querySelectorAll('.services-grid .btn').forEach(b => { b.classList.remove('active-tab'); });
-            if(btnElement) { btnElement.classList.add('active-tab'); }
-            const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
-        }
 
         function smartRefreshDropdowns() {
             try {
@@ -1071,6 +1039,34 @@
                 e.disabled = (safeStudents.length === 0);
                 if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal;
             }
+        }
+
+        function getStrictTeacherName() {
+            if(userRole !== 'teacher') return userRole;
+            const tName = document.getElementById('global-teacher-name').value;
+            if(!tName) { Swal.fire({icon: 'warning', title: 'تنبيه هام', text: 'الرجاء اختيار اسم المعلم من أعلى الشاشة أولاً قبل إتمام العملية.'}); return null; }
+            return tName;
+        }
+
+        function validate(ids) { 
+            for(let id of ids) { 
+                const e=document.getElementById(id); 
+                if(!e || !e.value) { 
+                    Swal.fire('تنبيه', 'الرجاء تعبئة جميع الحقول المطلوبة', 'warning'); 
+                    if(e) e.focus(); 
+                    return false; 
+                } 
+            } 
+            return true; 
+        }
+        
+        function rememberTeacher(v) { localStorage.setItem('teacher', v); }
+        
+        function tabService(tab, btnElement) {
+            document.querySelectorAll('#teacher-services-container .page-card').forEach(c => { if(c.id.includes('srv-')) c.classList.add('d-none'); });
+            document.querySelectorAll('.services-grid .btn').forEach(b => { b.classList.remove('active-tab'); });
+            if(btnElement) { btnElement.classList.add('active-tab'); }
+            const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
         }
 
         function sendPermit() { 
@@ -1469,7 +1465,6 @@
             });
         }
 
-        // ================= الطباعة الرسمية =================
         function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
@@ -1519,9 +1514,7 @@
                     <div class="form-header-left">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
                 `;
 
-                footerContainer.innerHTML = `
-                    <div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
-                `;
+                footerContainer.innerHTML = `<div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>`;
 
                 let noteHtml = customNote ? `<div class="form-body-details"><strong>ملاحظات الوكيل / الإجراء:</strong> ${customNote}</div>` : '';
 
@@ -1557,7 +1550,6 @@
             setTimeout(() => { window.print(); document.body.className = ''; }, 500);
         }
 
-        // ================= التقارير المدرسية =================
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
             const logo = data.settings.logo || "";

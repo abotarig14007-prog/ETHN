@@ -32,7 +32,7 @@
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; transition: transform 0.3s ease; }
         .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
         
-        /* ================= Mobile & High Visibility Enhancements ================= */
+        /* ================= Mobile & High Visibility ================= */
         body, button, input, select, textarea { font-size: 1.1rem; }
 
         @media (max-width: 991px) { 
@@ -57,7 +57,6 @@
             
             .admin-dash-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
             .admin-dash-grid .btn { font-size: 1.8rem; padding: 20px; border-radius: 20px; }
-
             .btn-lg-mobile { font-size: 1.7rem !important; padding: 18px !important; border-radius: 50px !important; }
         }
 
@@ -105,7 +104,10 @@
         .nav-link.active { border-right: 5px solid var(--gold); }
 
         .page-card { background: var(--card); border-radius: 25px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
+        .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         
+        /* ================= شاشة المتابعة التلفزيونية ================= */
         .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
         .monitor-card.safe { border-color: #198754; background-color: #f1fdf6; }
         .monitor-card.safe h5, .monitor-card.safe h2 { color: #198754 !important; }
@@ -115,28 +117,39 @@
 
         .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
-        .cursor-pointer { cursor: pointer; transition: 0.2s; }
 
+        /* ================= إعدادات زر الإغلاق الأحمر ================= */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
-        .overlay-close { position: absolute; top: 30px; left: 30px; z-index: 10001; background: rgba(255,255,255,0.2); border: 2px solid white; color: white; padding: 10px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.5rem; }
-        .carousel-item iframe, .carousel-item img { height: 100%; width: 100%; }
+        .overlay-close { 
+            position: absolute; top: 20px; left: 20px; 
+            z-index: 1000000 !important; /* طبقة عليا جداً */
+            background: #dc3545 !important; /* أحمر بارز */
+            color: white !important; 
+            border: 2px solid white !important; 
+            padding: 10px 30px; border-radius: 50px; 
+            font-weight: 900; cursor: pointer; font-size: 1.5rem; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .carousel, .carousel-inner, .carousel-item { height: 100%; width: 100%; }
+        .carousel-item img { height: 100%; width: 100%; object-fit: contain; background: #000; }
+        .carousel-item iframe { height: 100%; width: 100%; border: none; }
 
-        .champion-area { text-align: center; margin-bottom: 40px; animation: float 4s infinite; padding-top: 50px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .champion-avatar { width: 220px; height: 220px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 5rem; color: #333; margin: 0 auto 20px; box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); }
-        .champion-name { font-size: 4rem; font-weight: 900; animation: colorCycle 5s infinite; }
+        /* ================= لوحة الشرف ================= */
+        .champion-area { text-align: center; margin-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .champion-avatar { width: 180px; height: 180px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: #333; margin: 0 auto 15px; box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); }
+        .champion-name { font-size: 3.5rem; font-weight: 900; animation: colorCycle 5s infinite; text-shadow: 0 0 20px rgba(0,0,0,0.8); }
         @keyframes colorCycle { 0%,100% {color:#fff; text-shadow:0 0 20px #FFD700;} 50% {color:#FFD700; text-shadow:0 0 20px #fff;} }
-        #challengers-slider { width: 95%; max-width: 1500px; display: flex; justify-content: center; gap: 30px; margin: 0 auto; flex-wrap: wrap; }
-        .challenger-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 215, 0, 0.3); border-radius: 25px; padding: 30px; text-align: center; width: 350px; margin-bottom: 15px;}
-        .challenger-rank { background: #FFD700; color: #000; width: 60px; height: 60px; border-radius: 50%; font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border: 4px solid #fff; }
-
+        
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
+        .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; font-size: 1.5rem; }
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 90px; border-bottom: 1px solid var(--border); }
+        
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= Print Styles ================= */
+        /* ================= الطباعة الرسمية (صفحة واحدة 100% وتوقيع الوكيل) ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0; padding: 0; background: white !important; font-family: 'Tajawal', sans-serif; }
@@ -154,35 +167,42 @@
                 width: 100%; height: 100%;
             }
 
+            /* إطار التعهد والمخالفة (A4 Portrait) - محكم بصفحة واحدة تماماً */
             .form-frame {
                 width: 210mm; 
-                height: 275mm; 
-                border: 5px double var(--primary); 
-                padding: 15mm; 
+                height: 285mm; 
+                max-height: 290mm; /* منع التمدد لصفحتين */
+                border: 6px double var(--primary); 
+                padding: 10mm 15mm; 
                 display: flex; flex-direction: column; justify-content: space-between;
-                box-sizing: border-box; background: white; page-break-inside: avoid;
-                direction: rtl; text-align: right; margin: 0 auto;
+                box-sizing: border-box; background: white; page-break-inside: avoid; page-break-after: avoid;
+                direction: rtl; text-align: right; margin: 0 auto; overflow: hidden;
             }
-            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
+            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
             .form-header img { max-height: 80px; }
-            .form-header-text { font-weight: bold; font-size: 1.2rem; line-height: 1.5; color: #000; text-align: right; }
-            .form-header-left { text-align: left; font-size: 1.1rem; font-weight: bold; line-height: 1.5; color: #000; direction: ltr;}
+            .form-header-text { font-weight: bold; font-size: 1.1rem; line-height: 1.5; color: #000; text-align: right; }
+            .form-header-left { text-align: left; font-size: 1rem; font-weight: bold; line-height: 1.5; color: #000; direction: ltr;}
             
-            .form-title { text-align: center; font-size: 2.2rem; font-weight: 900; color: #000; margin: 20px 0; text-decoration: underline; }
-            .form-body { font-size: 1.3rem; line-height: 1.8; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 10px; }
-            .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 1.2rem;}
+            .form-title { text-align: center; font-size: 2.2rem; font-weight: 900; color: #000; margin: 15px 0; text-decoration: underline; }
             
-            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.3rem; font-weight: bold; color: #000; padding-top: 20px; }
+            .form-body { font-size: 1.4rem; line-height: 1.8; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; }
+            .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.2rem;}
             
+            /* توقيع الوكيل فقط */
+            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.4rem; font-weight: bold; color: #000; padding-top: 10px; }
+            
+            /* إطار شهادة الشكر (عرضي 96%) */
             .cert-frame { 
-                width: 297mm; height: 200mm; border: 15px solid var(--gold); padding: 20mm; 
+                width: 96vw; height: 96vh; margin: 2vh auto; 
+                border: 15px solid var(--gold); padding: 20mm; 
                 text-align: center; display: flex; flex-direction: column; justify-content: space-between;
                 background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="none" stroke="%23006C35" stroke-width="4" stroke-dasharray="10 10"/></svg>');
-                box-sizing: border-box; page-break-inside: avoid; margin: 0 auto;
+                box-sizing: border-box; page-break-inside: avoid;
             }
             .cert-body h1 { font-size: 4rem; color: var(--primary); font-weight: 900; margin-bottom: 20px; }
             .cert-name-box { border-bottom: 4px solid var(--gold); display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: var(--gold); margin: 30px 0; }
             
+            /* التقارير العادية (جداول) */
             #modal-print-content {
                 visibility: visible; position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 20px; direction: rtl;
             }
@@ -198,7 +218,7 @@
     <div class="custom-toast" id="system-toast">تنبيه جديد!</div>
 
     <div id="media-slider-overlay" class="full-overlay">
-        <button class="overlay-close" onclick="closeMediaSlider()">إغلاق <i class="fas fa-times ms-2"></i></button>
+        <button class="overlay-close" onclick="closeMediaSlider()"><i class="fas fa-times me-2"></i> إغلاق الشاشة</button>
         <div id="mediaCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner" id="media-carousel-inner"></div>
             <button class="carousel-control-prev" type="button" data-bs-target="#mediaCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon" style="width: 4rem; height: 4rem;"></span></button>
@@ -207,13 +227,16 @@
     </div>
 
     <div id="cert-display-overlay" class="full-overlay" style="background: rgba(0,0,0,0.95);">
-        <button class="overlay-close" onclick="closeOverlay('cert-display-overlay')">إغلاق <i class="fas fa-times ms-2"></i></button>
+        <button class="overlay-close" onclick="closeOverlay('cert-display-overlay')"><i class="fas fa-times me-2"></i> إغلاق الشهادات</button>
         <div id="cert-display-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"></div>
     </div>
 
     <div id="hall-of-fame-overlay" class="full-overlay" style="background: radial-gradient(circle at center, #001f3f 0%, #000000 100%);">
-        <button class="overlay-close" onclick="closeOverlay('hall-of-fame-overlay')">إغلاق</button>
-        <div class="hof-container"><h1 class="hof-title text-center mt-4 mb-4" id="disp-hof-title">💎 لوحة الشرف 💎</h1><div id="hof-content" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div></div>
+        <button class="overlay-close" onclick="closeOverlay('hall-of-fame-overlay')"><i class="fas fa-times me-2"></i> إغلاق اللوحة</button>
+        <div class="hof-container" style="width:100%; height:100%; padding-top: 50px;">
+            <h1 class="text-center mb-4 text-warning" id="disp-hof-title" style="font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">💎 لوحة الشرف 💎</h1>
+            <div id="hof-content" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+        </div>
     </div>
 
     <div id="top-bar" class="fixed-top no-print">
@@ -245,7 +268,6 @@
     </div>
 
     <div id="app-body" class="d-none">
-        
         <aside class="sidebar no-print" id="main-sidebar">
             <div class="text-center py-5 px-3"><div class="bg-white p-3 rounded-circle d-inline-block shadow mb-3"><i class="fas fa-mosque fa-3x text-success"></i></div><h5 class="fw-bold text-white mt-2" id="disp-school">...</h5></div>
             <div id="nav-items" class="px-2 pb-3"></div>
@@ -260,7 +282,6 @@
 
         <main class="main-content">
             <section id="sec-services" class="view-section d-none fade-in">
-                
                 <div id="teacher-services-container" class="d-none">
                     <div class="page-card p-4 mb-4 bg-white border-0 shadow-sm rounded-4">
                         <div class="d-flex flex-column gap-2 text-center">
@@ -281,33 +302,12 @@
                     <div id="srv-permit-box" class="page-card p-3 p-md-4 service-card-green">
                         <h4 class="fw-bold mb-4 text-success text-center border-bottom border-success pb-3"><i class="fas fa-walking me-2"></i> إصدار إذن خروج</h4>
                         <div class="row g-4">
-                            <div class="col-md-6 col-12">
-                                <label class="text-success huge-label"><i class="fas fa-door-open me-2"></i>الفصل</label>
-                                <select id="t-class" class="form-select border-success huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 't-stu')"></select>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <label class="text-success huge-label"><i class="fas fa-user-graduate me-2"></i>الطالب</label>
-                                <select id="t-stu" class="form-select border-success huge-input shadow-sm" disabled></select>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <label class="text-success huge-label"><i class="fas fa-map-marker-alt me-2"></i>الوجهة</label>
-                                <select id="t-dest" class="form-select border-success huge-input shadow-sm">
-                                    <option value="دورة مياه">دورة مياه</option><option value="الوكيل">الوكيل</option><option value="المقصف">المقصف</option><option value="الموجه الطلابي">الموجه الطلابي</option><option value="الإدارة">الإدارة</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <label class="text-success huge-label"><i class="fas fa-stopwatch me-2"></i>المدة (دقائق)</label>
-                                <input type="number" id="t-time" class="form-control border-success huge-input shadow-sm" placeholder="أدخل الرقم (اختياري)">
-                            </div>
-                            <div class="col-12 mt-4">
-                                <div class="border border-warning border-3 p-4 rounded-4 d-flex align-items-center justify-content-center shadow-sm" style="background-color: #fffdf0;">
-                                    <input class="form-check-input checkbox-huge m-0" type="checkbox" id="t-special">
-                                    <label class="text-dark mb-0 fs-2 fw-bold ms-4 cursor-pointer" for="t-special" style="user-select: none;">حالة خاصة (تجاوز الوقت)</label>
-                                </div>
-                            </div>
-                            <div class="col-12 mt-4">
-                                <button class="btn btn-success w-100 fw-bold rounded-pill shadow" style="font-size: 2rem; padding: 20px;" onclick="sendPermit()"><i class="fas fa-check-circle me-2"></i> تأكيد خروج الطالب</button>
-                            </div>
+                            <div class="col-md-6 col-12"><label class="text-success huge-label">الفصل</label><select id="t-class" class="form-select border-success huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 't-stu')"></select></div>
+                            <div class="col-md-6 col-12"><label class="text-success huge-label">الطالب</label><select id="t-stu" class="form-select border-success huge-input shadow-sm" disabled></select></div>
+                            <div class="col-md-6 col-12"><label class="text-success huge-label">الوجهة</label><select id="t-dest" class="form-select border-success huge-input shadow-sm"><option value="دورة مياه">دورة مياه</option><option value="الوكيل">الوكيل</option><option value="المقصف">المقصف</option><option value="الموجه الطلابي">الموجه الطلابي</option><option value="الإدارة">الإدارة</option></select></div>
+                            <div class="col-md-6 col-12"><label class="text-success huge-label">المدة (دقائق)</label><input type="number" id="t-time" class="form-control border-success huge-input shadow-sm" placeholder="أدخل الرقم (اختياري)"></div>
+                            <div class="col-12 mt-4"><div class="border border-warning border-3 p-4 rounded-4 d-flex align-items-center justify-content-center shadow-sm" style="background-color: #fffdf0;"><input class="form-check-input checkbox-huge m-0" type="checkbox" id="t-special"><label class="text-dark mb-0 fs-2 fw-bold ms-4 cursor-pointer" for="t-special" style="user-select: none;">حالة خاصة (تجاوز الوقت)</label></div></div>
+                            <div class="col-12 mt-4"><button class="btn btn-success w-100 fw-bold rounded-pill shadow" style="font-size: 2rem; padding: 20px;" onclick="sendPermit()"><i class="fas fa-check-circle me-2"></i> تأكيد خروج الطالب</button></div>
                         </div>
                     </div>
 
@@ -318,14 +318,8 @@
                             <button class="btn btn-outline-primary w-50 rounded-pill btn-lg-mobile fw-bold" id="btn-mode-day" onclick="setAttMode('day')">يوم كامل</button>
                         </div>
                         <div class="row g-4 mb-4">
-                            <div class="col-md-6 col-12">
-                                <label class="text-primary huge-label">الفصل</label>
-                                <select id="att-class" class="form-select border-primary huge-input shadow-sm" onchange="loadAttendanceList()"></select>
-                            </div>
-                            <div class="col-md-6 col-12" id="div-att-period">
-                                <label class="text-primary huge-label">الحصة</label>
-                                <select id="att-period" class="form-select border-primary huge-input shadow-sm" onchange="loadAttendanceList()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select>
-                            </div>
+                            <div class="col-md-6 col-12"><label class="text-primary huge-label">الفصل</label><select id="att-class" class="form-select border-primary huge-input shadow-sm" onchange="loadAttendanceList()"></select></div>
+                            <div class="col-md-6 col-12" id="div-att-period"><label class="text-primary huge-label">الحصة</label><select id="att-period" class="form-select border-primary huge-input shadow-sm" onchange="loadAttendanceList()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></div>
                             <div class="col-12 mt-3"><button class="btn btn-primary w-100 fw-bold rounded-pill shadow" style="font-size: 1.8rem; padding: 15px;" onclick="loadAttendanceList()"><i class="fas fa-sync me-2"></i> تحديث القائمة</button></div>
                         </div>
                         <div class="table-responsive bg-white rounded-4 shadow-sm p-2"><table class="table table-bordered text-center align-middle m-0" style="font-size:1.6rem;"><thead class="table-primary text-primary"><tr><th>اسم الطالب</th><th>الحالة</th></tr></thead><tbody id="att-list-body"></tbody></table></div>
@@ -334,18 +328,9 @@
                     <div id="srv-behavior-box" class="page-card p-3 p-md-4 service-card-yellow d-none">
                         <h4 class="fw-bold mb-4 text-warning text-dark text-center border-bottom border-warning pb-3"><i class="fas fa-star me-2"></i> التميز ومنح النجوم</h4>
                         <div class="row g-4">
-                            <div class="col-md-6 col-12">
-                                <label class="text-dark huge-label">الفصل</label>
-                                <select id="b-class" class="form-select border-warning huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 'b-stu')"></select>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <label class="text-dark huge-label">الطالب</label>
-                                <select id="b-stu" class="form-select border-warning huge-input shadow-sm" disabled></select>
-                            </div>
-                            <div class="col-12">
-                                <label class="text-dark huge-label">السبب</label>
-                                <select id="b-reason" class="form-select border-warning huge-input shadow-sm"><option value="مشاركة متميزة">مشاركة متميزة</option><option value="واجبات منزلية">واجبات منزلية</option><option value="انضباط وسلوك">انضباط وسلوك</option><option value="نظافة وترتيب">نظافة وترتيب</option><option value="مبادرة إيجابية">مبادرة إيجابية</option><option value="حفظ القرآن">حفظ القرآن</option></select>
-                            </div>
+                            <div class="col-md-6 col-12"><label class="text-dark huge-label">الفصل</label><select id="b-class" class="form-select border-warning huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 'b-stu')"></select></div>
+                            <div class="col-md-6 col-12"><label class="text-dark huge-label">الطالب</label><select id="b-stu" class="form-select border-warning huge-input shadow-sm" disabled></select></div>
+                            <div class="col-12"><label class="text-dark huge-label">السبب</label><select id="b-reason" class="form-select border-warning huge-input shadow-sm"><option value="مشاركة متميزة">مشاركة متميزة</option><option value="واجبات منزلية">واجبات منزلية</option><option value="انضباط وسلوك">انضباط وسلوك</option><option value="نظافة وترتيب">نظافة وترتيب</option><option value="مبادرة إيجابية">مبادرة إيجابية</option><option value="حفظ القرآن">حفظ القرآن</option></select></div>
                             <div class="col-12 mt-4"><button class="btn btn-warning w-100 fw-bold rounded-pill shadow text-dark" style="font-size: 1.8rem; padding: 18px;" onclick="sendStar()"><i class="fas fa-plus-circle me-2"></i> منح نجمة للطالب</button></div>
                             <div class="col-12 mt-2"><button class="btn btn-outline-danger w-100 fw-bold rounded-pill border-2" style="font-size: 1.5rem; padding: 15px;" onclick="deductStar()">سحب نجمة (-)</button></div>
                         </div>
@@ -354,22 +339,10 @@
                     <div id="srv-violation-box" class="page-card p-3 p-md-4 service-card-red d-none">
                         <h4 class="fw-bold mb-4 text-danger text-center border-bottom border-danger pb-3"><i class="fas fa-exclamation-triangle me-2"></i> تسجيل مخالفة سلوكية</h4>
                         <div class="row g-4">
-                            <div class="col-md-6 col-12">
-                                <label class="text-danger huge-label">الفصل</label>
-                                <select id="v-class" class="form-select border-danger huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 'v-stu')"></select>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <label class="text-danger huge-label">الطالب</label>
-                                <select id="v-stu" class="form-select border-danger huge-input shadow-sm" disabled></select>
-                            </div>
-                            <div class="col-12">
-                                <label class="text-danger huge-label">المخالفة المرتكبة</label>
-                                <input id="v-type" class="form-control border-danger huge-input shadow-sm" placeholder="مثال: تأخر، مشاغبة، غياب...">
-                            </div>
-                            <div class="col-12">
-                                <label class="text-danger huge-label">تفاصيل إضافية (اختياري)</label>
-                                <textarea id="v-desc" class="form-control border-danger bg-white shadow-sm fw-bold" rows="3" style="font-size:1.6rem; border-radius:15px; padding:15px; border:2px solid #ccc;"></textarea>
-                            </div>
+                            <div class="col-md-6 col-12"><label class="text-danger huge-label">الفصل</label><select id="v-class" class="form-select border-danger huge-input shadow-sm" onchange="loadStudentsForRole(this.value, 'v-stu')"></select></div>
+                            <div class="col-md-6 col-12"><label class="text-danger huge-label">الطالب</label><select id="v-stu" class="form-select border-danger huge-input shadow-sm" disabled></select></div>
+                            <div class="col-12"><label class="text-danger huge-label">المخالفة المرتكبة</label><input id="v-type" class="form-control border-danger huge-input shadow-sm" placeholder="مثال: تأخر، مشاغبة، غياب..."></div>
+                            <div class="col-12"><label class="text-danger huge-label">تفاصيل إضافية (اختياري)</label><textarea id="v-desc" class="form-control border-danger bg-white shadow-sm fw-bold" rows="3" style="font-size:1.6rem; border-radius:15px; padding:15px; border:2px solid #ccc;"></textarea></div>
                             <div class="col-12 mt-4"><button class="btn btn-danger w-100 fw-bold rounded-pill shadow" style="font-size: 1.8rem; padding: 20px;" onclick="sendViolation()"><i class="fas fa-paper-plane me-2"></i> رفع المخالفة للوكيل</button></div>
                         </div>
                     </div>
@@ -380,21 +353,11 @@
                         <h4 class="fw-bold text-primary mb-4 text-center"><i class="fas fa-tv me-2"></i> التحكم السريع بشاشة الساحة</h4>
                         <div class="row g-3">
                             <div class="col-md-4 col-12">
-                                <button class="btn btn-success w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="document.getElementById('quick-img-upload').click()">
-                                    <i class="fas fa-image me-2"></i> إرسال صورة
-                                </button>
+                                <button class="btn btn-success w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="document.getElementById('quick-img-upload').click()"><i class="fas fa-image me-2"></i> إرسال صورة للشاشة</button>
                                 <input type="file" id="quick-img-upload" style="display:none;" accept="image/*" onchange="quickAddMedia('image', this)">
                             </div>
-                            <div class="col-md-4 col-12">
-                                <button class="btn btn-danger w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="quickAddMedia('video')">
-                                    <i class="fab fa-youtube me-2"></i> إرسال فيديو يوتيوب
-                                </button>
-                            </div>
-                            <div class="col-md-4 col-12">
-                                <button class="btn btn-dark w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="openTvMenu()">
-                                    <i class="fas fa-play-circle me-2"></i> تشغيل الشاشة
-                                </button>
-                            </div>
+                            <div class="col-md-4 col-12"><button class="btn btn-danger w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="quickAddMedia('video')"><i class="fab fa-youtube me-2"></i> إرسال فيديو يوتيوب</button></div>
+                            <div class="col-md-4 col-12"><button class="btn btn-dark w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="openTvMenu()"><i class="fas fa-play-circle me-2"></i> تشغيل الشاشة الآن</button></div>
                         </div>
                     </div>
 
@@ -406,28 +369,19 @@
                     </div>
                     <div class="row g-4 mb-4">
                         <div class="col-md-4 col-12"><div class="page-card h-100"><div class="card-header-custom">الزوار في المدرسة</div><div id="adm-vis-list" class="list-group list-group-flush p-2"></div></div></div>
-                        
                         <div class="col-md-4 col-12">
                             <div class="page-card h-100 border-danger border-2">
                                 <div class="card-header-custom bg-danger text-white cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')">
                                     <span class="fs-3"><i class="fas fa-bell me-2"></i> المخالفات المعلقة</span>
-                                    <div class="d-flex gap-2">
-                                        <button class="btn btn-sm btn-light rounded-pill fw-bold text-danger" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button>
-                                        <span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="adm-vio-count">0</span>
-                                    </div>
+                                    <div class="d-flex gap-2"><button class="btn btn-sm btn-light rounded-pill fw-bold text-danger" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="adm-vio-count">0</span></div>
                                 </div>
                                 <div id="adm-vio-list" class="p-3 bg-light d-none"></div>
                             </div>
                         </div>
-                        
                         <div class="col-md-4 col-12">
                             <div class="page-card h-100">
                                 <div class="card-header-custom">أمر انصراف نهائي للطالب</div>
-                                <div class="p-4">
-                                    <label class="fs-4 fw-bold mb-3 text-primary">اسم الطالب <span class="text-danger">*</span></label>
-                                    <input id="adm-dep-name" class="form-control mb-4" style="font-size:1.6rem; height:60px; border-radius:15px; text-align:center;">
-                                    <button class="btn btn-primary w-100 rounded-pill btn-lg-mobile fw-bold shadow" style="font-size:1.6rem; padding:15px;" onclick="sendDeparture()">إرسال الأمر للحارس</button>
-                                </div>
+                                <div class="p-4"><label class="fs-4 fw-bold mb-3 text-primary">اسم الطالب <span class="text-danger">*</span></label><input id="adm-dep-name" class="form-control mb-4" style="font-size:1.6rem; height:60px; border-radius:15px; text-align:center;"><button class="btn btn-primary w-100 rounded-pill btn-lg-mobile fw-bold shadow" style="font-size:1.6rem; padding:15px;" onclick="sendDeparture()">إرسال الأمر للحارس</button></div>
                             </div>
                         </div>
                     </div>
@@ -466,18 +420,9 @@
                         <div class="page-card h-100 border-info border-2">
                             <div class="card-header-custom bg-info text-white">
                                 <span class="fs-3"><i class="fas fa-folder-open me-2"></i> الحالات المحالة للموجه</span>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-light rounded-pill fw-bold text-info" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button>
-                                    <span class="badge bg-danger rounded-pill fs-3 px-3 py-2" id="counselor-vio-count">0</span>
-                                </div>
+                                <div class="d-flex gap-2"><button class="btn btn-sm btn-light rounded-pill fw-bold text-info" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button><span class="badge bg-danger rounded-pill fs-3 px-3 py-2" id="counselor-vio-count">0</span></div>
                             </div>
-                            <div class="table-responsive p-3">
-                                <table class="table table-hover text-center align-middle mb-0" style="font-size:1.4rem;">
-                                    <thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>إجراء</th></tr></thead>
-                                    <tbody id="counselor-list"></tbody>
-                                </table>
-                                <div id="counselor-empty" class="text-center p-5 text-muted d-none"><i class="fas fa-smile-beam fa-4x mb-3 text-success"></i><h4 class="fw-bold">لا توجد حالات معلقة</h4></div>
-                            </div>
+                            <div class="table-responsive p-3"><table class="table table-hover text-center align-middle mb-0" style="font-size:1.4rem;"><thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>إجراء</th></tr></thead><tbody id="counselor-list"></tbody></table><div id="counselor-empty" class="text-center p-5 text-muted d-none"><i class="fas fa-smile-beam fa-4x mb-3 text-success"></i><h4 class="fw-bold">لا توجد حالات معلقة</h4></div></div>
                         </div>
                     </div>
                 </div>
@@ -510,7 +455,7 @@
                     <div class="row g-4 mb-5">
                          <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم المدرسة المنظمة</label><input id="s-school" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
                          <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم مدير المدرسة (يظهر بالشهادات)</label><input id="s-manager" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
-                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم وكيل شؤون الطلاب</label><input id="s-deputy" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
+                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم وكيل شؤون الطلاب (للنماذج)</label><input id="s-deputy" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
                          <div class="col-12"><label class="fs-4 fw-bold mb-2">شعار المدرسة المعتمد</label><input type="file" id="logo-upload" class="form-control huge-input border-primary" accept="image/*" onchange="uploadLogo()"></div>
                          <div class="col-12 text-center"><img id="logo-preview" src="" style="max-height: 150px; display: none; margin: 0 auto; border: 3px solid var(--primary); padding: 5px; border-radius: 10px;"></div>
                     </div>
@@ -618,8 +563,8 @@
 
         let cache_classes = "";
         let cache_teachers = "";
-        let certSlideInterval;
 
+        // دالة المزامنة الحية
         function syncLiveViews() {
             if(userRole === 'admin') renderAdmin();
             if(userRole === 'counselor') renderCounselor();
@@ -792,7 +737,16 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // ================= الإدارة السريعة للتلفزيون (الشاشة الرئيسية) =================
+        // ================= الإدارة السريعة للتلفزيون + روابط اليوتيوب الذكية =================
+        function getEmbedUrl(url) {
+            let videoId = '';
+            if (url.includes('youtube.com/watch?v=')) { videoId = url.split('v=')[1].split('&')[0]; } 
+            else if (url.includes('youtu.be/')) { videoId = url.split('youtu.be/')[1].split('?')[0]; } 
+            else if (url.includes('youtube.com/embed/')) { return url; }
+            if (videoId) { return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}`; }
+            return url; 
+        }
+
         function quickAddMedia(type, inputEl) {
             const screenId = 'showcase'; 
             if(type === 'image') {
@@ -815,7 +769,8 @@
                     cancelButtonText: 'إلغاء'
                 }).then((result) => {
                     if (result.isConfirmed && result.value) {
-                        db.ref(`screens/${screenId}`).push({ type: 'video', url: result.value }).then(() => { 
+                        const finalUrl = getEmbedUrl(result.value);
+                        db.ref(`screens/${screenId}`).push({ type: 'video', url: finalUrl }).then(() => { 
                             Swal.fire('تم', 'تم إرسال الفيديو للشاشة بنجاح', 'success'); 
                         });
                     }
@@ -834,8 +789,8 @@
                         <button class="btn btn-warning text-dark btn-lg rounded-pill fw-bold py-3 shadow" onclick="Swal.close(); setTimeout(startCertSlideshow, 300)">
                             <i class="fas fa-certificate me-2"></i> عرض شهادات المتميزين
                         </button>
-                        <button class="btn btn-dark btn-lg rounded-pill fw-bold py-3 shadow" onclick="Swal.close(); setTimeout(()=>{document.getElementById('hall-of-fame-overlay').style.display='block'; if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();}, 300)">
-                            <i class="fas fa-crown me-2"></i> عرض لوحة الشرف
+                        <button class="btn btn-dark btn-lg rounded-pill fw-bold py-3 shadow" onclick="Swal.close(); setTimeout(()=>{openHallOfFame();}, 300)">
+                            <i class="fas fa-crown me-2"></i> عرض لوحة الشرف (التوب 10)
                         </button>
                     </div>
                 `,
@@ -856,8 +811,8 @@
             let idx = 0;
             displayStudentCertOnScreen(topStudents[idx]);
             
-            clearInterval(certSlideInterval);
-            certSlideInterval = setInterval(() => {
+            clearInterval(window.certSlideInterval);
+            window.certSlideInterval = setInterval(() => {
                 idx++;
                 if(idx >= topStudents.length) idx = 0;
                 displayStudentCertOnScreen(topStudents[idx]);
@@ -879,8 +834,9 @@
                     <div style="border-bottom: 4px solid #C69C6D; display: inline-block; padding: 15px 60px; font-size: 5rem; font-weight: 900; color: #C69C6D; margin: 30px 0;">${studentName}</div>
                     <p style="font-size: 2.2rem; color: #333; line-height:1.6;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
                 </div>
-                <div style="display: flex; justify-content: space-around; width: 100%; padding: 0 50px; margin-top: 30px; font-size: 2rem; font-weight: bold; color:#000;">
-                    <div style="text-align: center;"><strong>وكيل شؤون الطلاب</strong><br><br><span style="color:#006C35">${data.settings.deputy || '.......................'}</span></div>
+                <div style="display: flex; justify-content: space-between; width: 100%; padding: 0 50px; margin-top: 30px; font-size: 2rem; font-weight: bold; color:#000;">
+                    <div style="text-align: right;"><strong>وكيل شؤون الطلاب</strong><br><br><span style="color:#006C35">${data.settings.deputy || '.......................'}</span></div>
+                    <div style="text-align: left;"><strong>مدير المدرسة</strong><br><br><span style="color:#006C35">${data.settings.manager || '.......................'}</span></div>
                 </div>
             </div>`;
             document.getElementById('cert-display-content').innerHTML = certHtml;
@@ -889,12 +845,92 @@
         }
 
         function closeOverlay(id) { 
-            clearInterval(certSlideInterval); 
+            clearInterval(window.certSlideInterval); 
+            clearInterval(window.hofSlideInterval);
             document.getElementById(id).style.display='none'; 
             if(document.exitFullscreen) document.exitFullscreen(); 
         }
 
-        // ================= مشغل الوسائط المتطور (الصور والفيديوهات) =================
+        // ================= نظام لوحة الشرف الذكي المحدث 3 بـ 3 =================
+        function openHallOfFame() {
+            document.getElementById('hall-of-fame-overlay').style.display='block';
+            if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+
+            document.getElementById('disp-hof-title').innerText = data.settings.broadcast?.hofTitle || '💎 لوحة الشرف والمتميزين 💎';
+            
+            let scores = {};
+            Object.values(data.stars||{}).forEach(s => {
+                const val = s.value !== undefined ? s.value : 1;
+                scores[s.student] = (scores[s.student]||0) + val;
+            });
+            const sorted = Object.entries(scores).filter(s => s[1] > 0).sort((a,b)=>b[1]-a[1]).slice(0, 10);
+
+            const content = document.getElementById('hof-content');
+            if(sorted.length === 0) {
+                content.innerHTML = `<div class="empty-state-message text-center"><i class="fas fa-crown fa-5x mb-4 text-warning animate__animated animate__pulse animate__infinite"></i><br><h2 class="text-white">المنافسة بدأت! كن أول من يتصدر الشاشة 🌟</h2></div>`;
+                return;
+            }
+
+            const champ = sorted[0];
+            const champObj = Object.values(data.students||{}).find(s=>s.name===champ[0]);
+            
+            let html = `
+                <div class="champion-area mb-5">
+                    <div class="champion-avatar animate__animated animate__pulse animate__infinite"><i class="fas fa-user-graduate"></i></div>
+                    <h1 class="champion-name text-warning" style="font-size: 5rem;">${champ[0]}</h1>
+                    <h2 class="text-white mt-2">${champ[1]} نجمة 🌟</h2>
+                    <h3 class="text-info">${champObj?champObj.class:''}</h3>
+                </div>
+                <div id="challengers-container" style="width: 100%; max-width: 1200px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; position: relative; height: 250px;">
+                </div>
+            `;
+            content.innerHTML = html;
+
+            const others = sorted.slice(1);
+            if(others.length > 0) {
+                const container = document.getElementById('challengers-container');
+                let groups = [];
+                for(let i=0; i<others.length; i+=3) { groups.push(others.slice(i, i+3)); }
+                
+                container.innerHTML = groups.map((g, gIdx) => `
+                    <div class="challenger-group ${gIdx === 0 ? 'animate__fadeInUp' : 'd-none'} animate__animated" id="hof-group-${gIdx}" style="display:flex; gap:20px; justify-content:center; width:100%; position: absolute; top:0;">
+                        ${g.map((s, i) => {
+                            const rank = (gIdx * 3) + i + 2;
+                            return `
+                            <div class="challenger-card" style="background: rgba(255,255,255,0.1); border: 2px solid #FFD700; border-radius: 20px; padding: 20px; width: 300px; text-align: center;">
+                                <div class="badge bg-warning text-dark fs-3 rounded-circle p-3 mb-3">${rank}</div>
+                                <h3 class="text-white fw-bold">${s[0]}</h3>
+                                <h4 class="text-warning">${s[1]} نجمة</h4>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                `).join('');
+
+                let currentGroup = 0;
+                clearInterval(window.hofSlideInterval);
+                if(groups.length > 1) {
+                    window.hofSlideInterval = setInterval(() => {
+                        const oldEl = document.getElementById(`hof-group-${currentGroup}`);
+                        if(oldEl) {
+                            oldEl.classList.remove('animate__fadeInUp');
+                            oldEl.classList.add('animate__fadeOutDown');
+                            setTimeout(() => {
+                                oldEl.classList.add('d-none');
+                                oldEl.classList.remove('animate__fadeOutDown');
+                                currentGroup = (currentGroup + 1) % groups.length;
+                                const newEl = document.getElementById(`hof-group-${currentGroup}`);
+                                if(newEl) {
+                                    newEl.classList.remove('d-none');
+                                    newEl.classList.add('animate__fadeInUp');
+                                }
+                            }, 500); 
+                        }
+                    }, 5000); 
+                }
+            }
+        }
+
+        // ================= مشغل الوسائط =================
         function openMediaScreen(screenId) {
             const screenData = data.screens && data.screens[screenId] ? data.screens[screenId] : [];
             const inner = document.getElementById('media-carousel-inner');
@@ -906,24 +942,14 @@
                     content = `<img src="${media.url}" class="d-block w-100" alt="عرض">`; 
                 } 
                 else if(media.type === 'video') { 
-                    let vUrl = media.url; 
-                    // تحويل ذكي لروابط اليوتيوب لتعمل تلقائياً
-                    if(vUrl.includes('youtube.com/watch?v=')) {
-                        vUrl = vUrl.replace('watch?v=', 'embed/');
-                        vUrl = vUrl.split('&')[0];
-                    } else if (vUrl.includes('youtu.be/')) {
-                        vUrl = vUrl.replace('youtu.be/', 'youtube.com/embed/');
-                        vUrl = vUrl.split('?')[0];
-                    }
-                    content = `<iframe src="${vUrl}?autoplay=1&mute=0&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; 
+                    let vUrl = getEmbedUrl(media.url);
+                    content = `<iframe src="${vUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; 
                 }
                 const activeClass = isFirst ? 'active' : ''; inner.innerHTML += `<div class="carousel-item ${activeClass}">${content}</div>`; isFirst = false;
             });
             document.getElementById('media-slider-overlay').style.display = 'block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
         }
-
-        function closeMediaSlider() { document.getElementById('media-slider-overlay').style.display='none'; document.getElementById('media-carousel-inner').innerHTML=''; if(document.exitFullscreen) document.exitFullscreen(); }
 
         function createNewScreen() {
             const name = document.getElementById('new-screen-name').value; const icon = document.getElementById('new-screen-icon').value;
@@ -937,10 +963,7 @@
 
         function renderDynamicAdminScreens() {
             const container = document.getElementById('admin-screens-container'); if(!container) return;
-            let html = `<button class="btn btn-dark shadow fw-bold" onclick="openHallOfFame()" style="border: 2px solid #FFD700;"><i class="fas fa-crown d-block mb-2 fa-2x"></i> لوحة الشرف</button>
-                        <button class="btn btn-success shadow fw-bold" onclick="openMediaScreen('safety')"><i class="fas fa-shield-alt d-block mb-2 fa-2x"></i> الأمن والسلامة</button>
-                        <button class="btn btn-primary shadow fw-bold" onclick="openMediaScreen('showcase')"><i class="fas fa-palette d-block mb-2 fa-2x"></i> المعرض الفني</button>
-                        <button class="btn btn-warning shadow fw-bold text-dark" onclick="showReportModal('stars')"><i class="fas fa-certificate d-block mb-2 fa-2x"></i> الشهادات</button>`;
+            let html = ``;
             const custom = data.settings.customScreens || {}; const select = document.getElementById('set-screen-select');
             if(select) select.innerHTML = `<option value="safety">الأمن والسلامة (التوعية)</option><option value="showcase">المعرض الفني</option>`;
             Object.keys(custom).forEach(key => { html += `<button class="btn btn-info text-white shadow fw-bold" onclick="openMediaScreen('${key}')"><i class="${custom[key].icon} d-block mb-2 fa-2x"></i> ${custom[key].name}</button>`; if(select) select.innerHTML += `<option value="${key}">${custom[key].name}</option>`; });
@@ -954,7 +977,8 @@
                 const reader = new FileReader(); reader.onload = e => { db.ref(`screens/${screenId}`).push({ type: 'image', url: e.target.result }).then(() => { Swal.fire('تم', 'تم رفع الصورة', 'success'); loadScreenMediaList(); }); }; reader.readAsDataURL(file);
             } else if(type === 'video') {
                 const url = document.getElementById('upload-screen-vid').value; if(!url) return Swal.fire('خطأ', 'الرجاء إدخال رابط الفيديو', 'error');
-                db.ref(`screens/${screenId}`).push({ type: 'video', url: url }).then(() => { Swal.fire('تم', 'تم إضافة الفيديو', 'success'); loadScreenMediaList(); document.getElementById('upload-screen-vid').value=''; });
+                const finalUrl = getEmbedUrl(url);
+                db.ref(`screens/${screenId}`).push({ type: 'video', url: finalUrl }).then(() => { Swal.fire('تم', 'تم إضافة الفيديو', 'success'); loadScreenMediaList(); document.getElementById('upload-screen-vid').value=''; });
             }
         }
 
@@ -1197,30 +1221,6 @@
             setTimeout(() => loadAttendanceList(), 100); 
         }
 
-        function calculateBestClass() { 
-            let s = {}; 
-            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
-            classesArr.forEach(c => s[c] = 0); 
-            
-            let studentsArr = Object.values(data.students || {});
-            Object.values(data.stars || {}).forEach(st => { 
-                let o = studentsArr.find(x => x && x.name === st.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) + (st.value || 1); 
-            }); 
-            Object.values(data.violations || {}).forEach(v => { 
-                let o = studentsArr.find(x => x && x.name === v.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) - 1; 
-            }); 
-            
-            let best = Object.entries(s).sort((a,b) => b[1] - a[1])[0]; 
-            if(best && best[1] > 0) { 
-                document.getElementById('best-class-badge').classList.remove('d-none'); 
-                document.getElementById('best-class-txt').innerText = best[0]; 
-            } else {
-                document.getElementById('best-class-badge').classList.add('d-none');
-            }
-        }
-
         function importData(inp) { 
             const c=document.getElementById('imp-cls-name').value; 
             if(!c) return Swal.fire('تنبيه', 'أدخل اسم الفصل أولاً في المربع المخصص', 'warning'); 
@@ -1294,6 +1294,16 @@
         
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
+
+        function logOut() {
+            localStorage.clear();
+            sessionStorage.clear();
+            userRole = '';
+            
+            Swal.fire({ title: 'تم تسجيل الخروج', text: 'نراك قريباً!', icon: 'info', timer: 1500, showConfirmButton: false }).then(() => {
+                window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime(); 
+            });
+        }
 
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
@@ -1434,7 +1444,7 @@
             });
         }
 
-        // ================= الطباعة الرسمية (الكليشة والمحاذاة والصفحة الواحدة) =================
+        // ================= الطباعة الرسمية (تعهد/إحالة/شهادة) =================
         function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
@@ -1478,17 +1488,13 @@
                 headerContainer.style.display = 'flex';
                 footerContainer.style.display = 'flex';
                 
-                // الكليشة الرسمية
                 headerContainer.innerHTML = `
                     <div class="form-header-text">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:var(--primary);">${data.settings.school || ''}</span></div>
                     <div><img src="${data.settings.logo || ''}" style="max-height: 80px;"></div>
                     <div class="form-header-left">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
                 `;
 
-                // التوقيع للوكيل فقط في المنتصف
-                footerContainer.innerHTML = `
-                    <div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
-                `;
+                footerContainer.innerHTML = `<div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>`;
 
                 let noteHtml = customNote ? `<div class="form-body-details"><strong>ملاحظات الوكيل / الإجراء:</strong> ${customNote}</div>` : '';
 
@@ -1524,7 +1530,7 @@
             setTimeout(() => { window.print(); document.body.className = ''; }, 500);
         }
 
-        // ================= التقارير الذكية (مفلترة وآمنة) =================
+        // ================= التقارير المدرسية (الوكيل يمين - المدير يسار) =================
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
             const logo = data.settings.logo || "";

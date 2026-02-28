@@ -27,13 +27,12 @@
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
         
-        /* حلول التنبيهات */
         .swal2-container { z-index: 110000 !important; }
 
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; transition: transform 0.3s ease; }
         .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
         
-        /* ================= Mobile & High Visibility Enhancements ================= */
+        /* ================= Mobile & High Visibility ================= */
         body, button, input, select, textarea { font-size: 1.1rem; }
 
         @media (max-width: 991px) { 
@@ -77,37 +76,27 @@
         .service-card-red { background-color: #fdf5f5 !important; border: 3px solid #dc3545 !important; }
         
         .huge-input { 
-            font-size: 1.6rem !important; 
-            font-weight: 900 !important; 
-            padding: 15px 40px 15px 15px !important; 
-            border-radius: 15px !important; 
-            text-align: center; 
-            background-color: #ffffff; 
-            border: 2px solid #ccc;
-            height: auto !important; 
-            appearance: auto !important; 
-            cursor: pointer;
+            font-size: 1.6rem !important; font-weight: 900 !important; padding: 15px 40px 15px 15px !important; 
+            border-radius: 15px !important; text-align: center; background-color: #ffffff; border: 2px solid #ccc;
+            height: auto !important; appearance: auto !important; cursor: pointer;
         }
         .huge-input:focus { border-color: var(--primary); box-shadow: 0 0 0 0.25rem rgba(0, 108, 53, 0.25); }
         .huge-label { font-size: 1.4rem !important; font-weight: 900 !important; margin-bottom: 8px !important; display: block; }
         .checkbox-huge { transform: scale(2.5); margin-left: 20px !important; margin-right: 10px !important; cursor: pointer; }
 
-        /* ================= المقبض الجانبي والزر العائم ================= */
+        /* ================= المقبض والزر العائم ================= */
         .floating-home-btn {
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 990; 
             background: #0d6efd; color: white; padding: 15px 40px; border-radius: 50px; 
             box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4); display: none; align-items: center; 
             gap: 10px; font-weight: 900; font-size: 1.4rem; cursor: pointer; transition: all 0.3s ease; border: 2px solid white;
         }
-        .floating-home-btn:hover { background: #0b5ed7; transform: translateX(-50%) scale(1.05); }
-
         .sidebar-handle {
             position: fixed; top: 50%; right: 0; transform: translateY(-50%); z-index: 1001; 
             background: var(--gold); color: #fff; width: 50px; height: 100px; border-radius: 25px 0 0 25px; 
             display: flex; align-items: center; justify-content: center; box-shadow: -4px 0 15px rgba(0,0,0,0.2); 
             cursor: pointer; transition: right 0.3s ease, background 0.3s; font-size: 1.8rem; border: 3px solid white; border-right: none;
         }
-        .sidebar-handle:active { background: #a67c4d; }
         @media (min-width: 992px) { .sidebar-handle { display: none !important; } }
         .sidebar.active ~ .sidebar-handle { right: 280px; border-radius: 0 25px 25px 0; border: 3px solid white; border-left: none; background: var(--primary); }
 
@@ -116,93 +105,86 @@
         .nav-link.active { border-right: 5px solid var(--gold); }
 
         .page-card { background: var(--card); border-radius: 25px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
-        .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         
         .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
         .monitor-card.safe { border-color: #198754; background-color: #f1fdf6; }
         .monitor-card.safe h5, .monitor-card.safe h2 { color: #198754 !important; }
         .monitor-card.danger { border-color: #dc3545; background-color: #fff5f5; animation: dangerPulse 1.5s infinite; }
         .monitor-card.danger h5, .monitor-card.danger h2 { color: #dc3545 !important; }
-        
-        @keyframes dangerPulse { 
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 
-            50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(220, 53, 69, 0); } 
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } 
-        }
+        @keyframes dangerPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(220, 53, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
 
         .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
-        .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
         .cursor-pointer { cursor: pointer; transition: 0.2s; }
-        .cursor-pointer:hover { background: rgba(var(--primary), 0.1); }
 
         .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
         .overlay-close { position: absolute; top: 30px; left: 30px; z-index: 10001; background: rgba(255,255,255,0.2); border: 2px solid white; color: white; padding: 10px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.5rem; }
-        
-        .carousel, .carousel-inner, .carousel-item { height: 100%; width: 100%; }
-        .carousel-item img { height: 100%; width: 100%; object-fit: contain; background: #000; }
-        .carousel-item iframe { height: 100%; width: 100%; border: none; }
+        .carousel-item iframe, .carousel-item img { height: 100%; width: 100%; }
 
         .champion-area { text-align: center; margin-bottom: 40px; animation: float 4s infinite; padding-top: 50px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .champion-avatar { width: 220px; height: 220px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 5rem; color: #333; margin: 0 auto 20px; overflow: hidden; box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); }
+        .champion-avatar { width: 220px; height: 220px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 5rem; color: #333; margin: 0 auto 20px; box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); }
         .champion-name { font-size: 4rem; font-weight: 900; animation: colorCycle 5s infinite; }
-        @keyframes colorCycle { 0% {color:#fff; text-shadow:0 0 20px #FFD700;} 50% {color:#FFD700; text-shadow:0 0 20px #fff;} 100% {color:#fff; text-shadow:0 0 20px #FFD700;} }
+        @keyframes colorCycle { 0%,100% {color:#fff; text-shadow:0 0 20px #FFD700;} 50% {color:#FFD700; text-shadow:0 0 20px #fff;} }
         #challengers-slider { width: 95%; max-width: 1500px; display: flex; justify-content: center; gap: 30px; margin: 0 auto; flex-wrap: wrap; }
         .challenger-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 215, 0, 0.3); border-radius: 25px; padding: 30px; text-align: center; width: 350px; margin-bottom: 15px;}
-        .challenger-rank { background: #FFD700; color: #000; width: 60px; height: 60px; border-radius: 50%; font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 4px solid #fff; margin: 0 auto 15px; }
+        .challenger-rank { background: #FFD700; color: #000; width: 60px; height: 60px; border-radius: 50%; font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border: 4px solid #fff; }
 
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
-        .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; font-size: 1.5rem; }
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 90px; border-bottom: 1px solid var(--border); }
-        
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= Print Styles (حل مشكلة الصفحتين وتعديل التوقيعات) ================= */
+        /* ================= هندسة الطباعة (صفحة واحدة 100% وتوقيع الوكيل فقط والتاريخ) ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0; padding: 0; background: white !important; font-family: 'Tajawal', sans-serif; }
             body * { visibility: hidden; }
             .no-print { display: none !important; }
             
+            body.print-landscape @page { size: A4 landscape; margin: 0; }
+            body.print-portrait @page { size: A4 portrait; margin: 0; }
+            
             #cert-print-area, #cert-print-area * { visibility: visible; }
             #cert-print-area { 
                 display: flex !important; position: absolute; left: 0; top: 0; 
                 background: white; z-index: 999999; 
                 flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box;
-                width: 100%; height: 100%;
+                width: 100%;
             }
 
-            /* إطار التعهد والمخالفة (A4 Portrait) - محكم بصفحة واحدة تماماً */
+            /* إطار التعهد والمخالفة (صفحة A4 طولية) */
             .form-frame {
                 width: 210mm; 
-                height: 270mm; /* تم تقليل الارتفاع لضمان عدم تجاوز الصفحة */
-                border: 5px double var(--primary); 
-                padding: 15mm; 
+                height: 285mm; /* حصر قاسي لمنع تمدد الصفحة */
+                max-height: 290mm;
+                border: 6px double var(--primary); 
+                padding: 10mm 15mm; 
                 display: flex; flex-direction: column; justify-content: space-between;
-                box-sizing: border-box; background: white; page-break-inside: avoid;
-                direction: rtl; text-align: right; margin: 0 auto;
+                box-sizing: border-box; background: white; page-break-inside: avoid; page-break-after: avoid;
+                direction: rtl; text-align: right; margin: 0 auto; overflow: hidden;
             }
-            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
+            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
             .form-header img { max-height: 80px; }
-            .form-header-text { font-weight: bold; font-size: 1.2rem; line-height: 1.5; color: #000; text-align: right; }
+            .form-header-text { font-weight: bold; font-size: 1.1rem; line-height: 1.5; color: #000; text-align: right; }
+            .form-header-left { text-align: left; font-size: 1.1rem; font-weight: bold; line-height: 1.5; color: #000; direction: ltr;}
             
-            .form-title { text-align: center; font-size: 2.2rem; font-weight: 900; color: #000; margin-bottom: 20px; text-decoration: underline; }
-            /* تصغير الخط وتقليل التباعد لتسع الصفحة */
-            .form-body { font-size: 1.3rem; line-height: 1.8; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 10px; }
+            .form-title { text-align: center; font-size: 2.2rem; font-weight: 900; color: #000; margin: 15px 0; text-decoration: underline; }
             
-            /* توقيعات النماذج (عكسنا الترتيب: يمين وكيل، يسار مدير) */
-            .form-signatures { display: flex; justify-content: space-between; margin-top: auto; font-size: 1.3rem; font-weight: bold; color: #000; padding-top: 20px; }
+            .form-body { font-size: 1.4rem; line-height: 1.8; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; }
+            .form-body-details { background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin: 15px 0; font-size: 1.3rem;}
             
-            /* إطار شهادة الشكر (A4 Landscape) */
+            /* توقيع الوكيل فقط */
+            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.4rem; font-weight: bold; color: #000; padding-top: 10px; }
+            
+            /* إطار شهادة الشكر (عرضي 96%) */
             .cert-frame { 
-                width: 297mm; height: 200mm; border: 15px solid var(--gold); padding: 20mm; 
+                width: 96vw; height: 96vh; margin: 2vh auto; 
+                border: 15px solid var(--gold); padding: 20mm; 
                 text-align: center; display: flex; flex-direction: column; justify-content: space-between;
                 background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="none" stroke="%23006C35" stroke-width="4" stroke-dasharray="10 10"/></svg>');
-                box-sizing: border-box; page-break-inside: avoid; margin: 0 auto;
+                box-sizing: border-box; page-break-inside: avoid;
             }
             .cert-body h1 { font-size: 4rem; color: var(--primary); font-weight: 900; margin-bottom: 20px; }
             .cert-name-box { border-bottom: 4px solid var(--gold); display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: var(--gold); margin: 30px 0; }
@@ -244,6 +226,7 @@
     <div id="top-bar" class="fixed-top no-print">
         <div class="d-flex align-items-center"><div style="width:15px; height:15px; background:red; border-radius:50%; margin-left:15px;" id="status-dot"></div><h5 class="m-0 fw-bold text-dark d-none d-sm-block">نظام إذن <span class="text-success">الاحترافي</span></h5><h4 class="m-0 fw-bold text-dark d-sm-none">نظام إذن</h4></div>
         <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-dark rounded-pill fw-bold" onclick="openTvMenu()"><i class="fas fa-tv me-2"></i> شاشة العرض</button>
             <div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div>
             <button class="btn btn-light rounded-circle border p-3" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up fa-lg"></i></button>
             <button class="btn btn-outline-dark d-lg-none p-2" onclick="toggleSidebar()"><i class="fas fa-bars fa-2x"></i></button>
@@ -410,10 +393,10 @@
                         
                         <div class="col-md-4 col-12">
                             <div class="page-card h-100 border-danger border-2">
-                                <div class="card-header-custom bg-danger text-white">
-                                    <span class="fs-3 cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')"><i class="fas fa-bell me-2"></i> المخالفات المعلقة</span>
+                                <div class="card-header-custom bg-danger text-white cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')">
+                                    <span class="fs-3"><i class="fas fa-bell me-2"></i> المخالفات المعلقة</span>
                                     <div class="d-flex gap-2">
-                                        <button class="btn btn-sm btn-light rounded-pill fw-bold" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button>
+                                        <button class="btn btn-sm btn-light rounded-pill fw-bold text-danger" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button>
                                         <span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="adm-vio-count">0</span>
                                     </div>
                                 </div>
@@ -510,8 +493,7 @@
                     <h5 class="text-primary border-bottom pb-2 mt-5 fs-2 fw-bold">بيانات المدرسة والشهادات</h5>
                     <div class="row g-4 mb-5">
                          <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم المدرسة المنظمة</label><input id="s-school" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
-                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم مدير المدرسة (يظهر بالشهادات)</label><input id="s-manager" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
-                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم وكيل شؤون الطلاب</label><input id="s-deputy" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
+                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم وكيل شؤون الطلاب (للنماذج)</label><input id="s-deputy" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
                          <div class="col-12"><label class="fs-4 fw-bold mb-2">شعار المدرسة المعتمد</label><input type="file" id="logo-upload" class="form-control huge-input border-primary" accept="image/*" onchange="uploadLogo()"></div>
                          <div class="col-12 text-center"><img id="logo-preview" src="" style="max-height: 150px; display: none; margin: 0 auto; border: 3px solid var(--primary); padding: 5px; border-radius: 10px;"></div>
                     </div>
@@ -576,11 +558,15 @@
                         <option value="written_pledge">أخذ تعهد خطي على الطالب</option>
                         <option value="refer_to_counselor">إحالة للموجه الطلابي</option>
                     </select>
+                    
+                    <label class="fw-bold fs-4 mb-2">تفاصيل الإجراء / ملاحظات للطباعة (اختياري):</label>
+                    <textarea id="va-custom-note" class="form-control bg-white shadow-sm fw-bold mb-2" rows="3" style="font-size:1.4rem; border-radius:15px; padding:15px; border:2px solid #ccc;" placeholder="اكتب هنا تفاصيل القرار أو التوجيه للموجه الطلابي..."></textarea>
+
                     <input type="hidden" id="va-violation-id">
                 </div>
                 <div class="modal-footer bg-white d-flex justify-content-between">
                     <button type="button" class="btn btn-secondary fs-4 px-4 rounded-pill" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="button" class="btn btn-success fw-bold fs-4 px-5 rounded-pill shadow" onclick="submitViolationAction()">اعتماد الإجراء</button>
+                    <button type="button" class="btn btn-success fw-bold fs-4 px-5 rounded-pill shadow" onclick="submitViolationAction()">اعتماد الإجراء والطباعة</button>
                 </div>
             </div>
         </div>
@@ -594,21 +580,12 @@
     
     <div id="cert-print-area">
         <div class="cert-frame" id="dynamic-print-frame">
-            <div class="cert-header" style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
-                <div style="text-align: right; line-height: 1.6; font-size: 1.4rem; font-weight: bold; color: #000;">
-                    المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span id="cert-school-name" style="color:var(--primary);"></span>
+            <div class="form-header" id="dynamic-print-header" style="display: none;">
                 </div>
-                <div style="text-align: center;">
-                    <img id="cert-logo-img" src="" style="max-height: 100px;">
+            <div class="cert-body" id="dynamic-print-body" style="flex-grow: 1;">
                 </div>
-                <div style="width: 200px;"></div>
-            </div>
-            <div class="cert-body" id="dynamic-print-body">
+            <div class="form-signatures" id="dynamic-print-footer" style="display: none;">
                 </div>
-            <div class="cert-signatures" style="display: flex; justify-content: space-between; width: 100%; padding: 0 20px; margin-top: auto; font-size: 1.4rem; font-weight: bold; color: #000;">
-                <div class="deputy" style="text-align: right;"><strong>وكيل شؤون الطلاب</strong><br><br><span id="cert-deputy-name">...</span></div>
-                <div class="manager" style="text-align: left;"><strong>مدير المدرسة</strong><br><br><span id="cert-manager-name">...</span></div>
-            </div>
         </div>
     </div>
     
@@ -620,12 +597,12 @@
         const firebaseConfig = { apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE", authDomain: "ethn-63848.firebaseapp.com", databaseURL: "https://ethn-63848-default-rtdb.firebaseio.com", projectId: "ethn-63848", storageBucket: "ethn-63848.appspot.com", messagingSenderId: "747489913596", appId: "1:747489913596:web:d98d88447e4a25cc808579" };
         firebase.initializeApp(firebaseConfig); const db = firebase.database();
         let userRole='', isMuted=true, attMode='period'; 
-        let data = { settings: {school:'متوسطة الإمام النووي', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:'', admin_email:'', permissions:{}}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, stars:{}, tardiness:{}, screens:{} };
+        let data = { settings: {school:'متوسطة الإمام النووي', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:'', admin_email:'', permissions:{}}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, stars:{}, tardiness:{}, screens:{} };
 
         let cache_classes = "";
         let cache_teachers = "";
+        let certSlideInterval;
 
-        // ================= الدالة المسؤولة عن التحديث اللحظي لكل الشاشات =================
         function syncLiveViews() {
             if(userRole === 'admin') renderAdmin();
             if(userRole === 'counselor') renderCounselor();
@@ -657,13 +634,9 @@
                     document.body.style.visibility = 'visible';
                     
                     try { calculateBestClass(); } catch(e) {}
-                    try { renderDynamicAdminScreens(); } catch(e) {}
                     smartRefreshDropdowns();
 
-                    // تحديث الشاشات لحظياً عند ورود أي بيانات جديدة من فايربيس
-                    if(userRole) {
-                        syncLiveViews();
-                    }
+                    if(userRole) syncLiveViews();
                     
                     if(savedRole && !userRole) {
                         userRole = savedRole;
@@ -682,22 +655,12 @@
             setInterval(monitorLoop, 10000);
         };
 
-        function showToast(m) { 
-            const t=document.getElementById('system-toast'); 
-            t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; 
-            t.style.display='block'; 
-            setTimeout(()=>{t.style.display='none'},3000); 
-        }
-
-        function toggleVisibility(id) { 
-            const e=document.getElementById(id); 
-            e.type=e.type==='password'?'text':'password'; 
-        }
+        function showToast(m) { const t=document.getElementById('system-toast'); t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; t.style.display='block'; setTimeout(()=>{t.style.display='none'},3000); }
+        function toggleVisibility(id) { const e=document.getElementById(id); e.type=e.type==='password'?'text':'password'; }
 
         function populateSettingsUI() {
              if(document.getElementById('s-school')) {
                  document.getElementById('s-school').value = data.settings.school || '';
-                 document.getElementById('s-manager').value = data.settings.manager || '';
                  document.getElementById('s-deputy').value = data.settings.deputy || '';
                  document.getElementById('s-email').value = data.settings.admin_email || '';
                  if(data.settings.logo) { document.getElementById('logo-preview').src = data.settings.logo; document.getElementById('logo-preview').style.display = 'block'; }
@@ -811,21 +774,76 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        function openMediaScreen(screenId) {
-            const screenData = data.screens && data.screens[screenId] ? data.screens[screenId] : [];
-            const inner = document.getElementById('media-carousel-inner');
-            if(!screenData || Object.keys(screenData).length === 0) { Swal.fire('تنبيه', 'لا توجد وسائط مضافة في هذه الشاشة بعد. يمكنك إضافتها من الإعدادات.', 'info'); return; }
-            inner.innerHTML = ''; let isFirst = true;
-            Object.values(screenData).forEach(media => {
-                let content = '';
-                if(media.type === 'image') { content = `<img src="${media.url}" class="d-block w-100" alt="عرض">`; } 
-                else if(media.type === 'video') { let vUrl = media.url; if(vUrl.includes('watch?v=')) vUrl = vUrl.replace('watch?v=', 'embed/'); content = `<iframe src="${vUrl}?autoplay=1&mute=1&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; }
-                const activeClass = isFirst ? 'active' : ''; inner.innerHTML += `<div class="carousel-item ${activeClass}">${content}</div>`; isFirst = false;
+        // ================= التلفزيون الذكي لعرض الشهادات =================
+        function openTvMenu() {
+            Swal.fire({
+                title: 'شاشة العرض المدرسية 📺',
+                text: 'اختر ماذا تريد أن تعرض على الشاشة الكبيرة للمدرسة:',
+                icon: 'question',
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: 'الشهادات (المتميزين)',
+                denyButtonText: 'لوحة الشرف',
+                cancelButtonText: 'إلغاء',
+                confirmButtonColor: '#0d6efd',
+                denyButtonColor: '#198754'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    startCertSlideshow();
+                } else if (result.isDenied) {
+                    document.getElementById('hall-of-fame-overlay').style.display='block'; 
+                    if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+                }
             });
-            document.getElementById('media-slider-overlay').style.display = 'block';
+        }
+
+        function startCertSlideshow() {
+            let s = {}; 
+            Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
+            const topStudents = Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+            
+            if(topStudents.length === 0) return Swal.fire('تنبيه', 'لا يوجد طلاب متميزين لعرض شهاداتهم بعد.', 'info');
+            
+            let idx = 0;
+            displayStudentCertOnScreen(topStudents[idx]);
+            
+            clearInterval(certSlideInterval);
+            certSlideInterval = setInterval(() => {
+                idx++;
+                if(idx >= topStudents.length) idx = 0;
+                displayStudentCertOnScreen(topStudents[idx]);
+            }, 6000); // تغيير كل 6 ثواني
+        }
+
+        function displayStudentCertOnScreen(studentName) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
+            let certHtml = `
+            <div style="width: 96vw; height: 96vh; border: 20px solid #C69C6D; padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; background: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22none%22 stroke=%22%23006C35%22 stroke-width=%224%22 stroke-dasharray=%2210 10%22/></svg>') white; border-radius: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="text-align:right; font-weight:bold; font-size:1.8rem; color:#000; line-height: 1.8;">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:#006C35;">${data.settings.school || ''}</span></div>
+                    <div><img src="${data.settings.logo || ''}" style="max-height: 120px;"></div>
+                    <div style="width: 250px;"></div>
+                </div>
+                <div>
+                    <h1 style="font-size: 5rem; color: #006C35; font-weight: 900; margin-bottom: 30px;">شهادة شكر وتقدير</h1>
+                    <p style="font-size: 2.5rem; color: #333;">تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
+                    <div style="border-bottom: 4px solid #C69C6D; display: inline-block; padding: 15px 60px; font-size: 5rem; font-weight: 900; color: #C69C6D; margin: 30px 0;">${studentName}</div>
+                    <p style="font-size: 2.2rem; color: #333; line-height:1.6;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
+                </div>
+                <div style="display: flex; justify-content: space-around; width: 100%; padding: 0 50px; margin-top: 30px; font-size: 2rem; font-weight: bold; color:#000;">
+                    <div style="text-align: center;"><strong>وكيل شؤون الطلاب</strong><br><br><span style="color:#006C35">${data.settings.deputy || '.......................'}</span></div>
+                </div>
+            </div>`;
+            document.getElementById('cert-display-content').innerHTML = certHtml;
+            document.getElementById('cert-display-overlay').style.display = 'block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
         }
-        function closeMediaSlider() { document.getElementById('media-slider-overlay').style.display='none'; document.getElementById('media-carousel-inner').innerHTML=''; if(document.exitFullscreen) document.exitFullscreen(); }
+
+        function closeOverlay(id) { 
+            clearInterval(certSlideInterval); // إيقاف العرض التلقائي عند الإغلاق
+            document.getElementById(id).style.display='none'; 
+            if(document.exitFullscreen) document.exitFullscreen(); 
+        }
 
         function createNewScreen() {
             const name = document.getElementById('new-screen-name').value; const icon = document.getElementById('new-screen-icon').value;
@@ -998,7 +1016,8 @@
                 status: 'pending_admin', 
                 date: new Date().toLocaleDateString('ar-SA'), 
                 teacher: teacherName,
-                actionTaken: 'none'
+                actionTaken: 'none',
+                deputyNote: ''
             }).then(() => {
                 Swal.fire('تم', 'تم رفع المخالفة للوكيل بنجاح', 'success'); 
                 document.getElementById('v-type').value = '';
@@ -1053,14 +1072,12 @@
             }
         }
 
-        // ================= الإخفاء السليم في التحضير ليوم كامل =================
         function setAttMode(mode) { 
             attMode = mode; 
             document.getElementById('btn-mode-period').className = mode === 'period' ? 'btn btn-primary w-50 rounded-pill btn-lg-mobile fw-bold' : 'btn btn-outline-primary w-50 rounded-pill btn-lg-mobile fw-bold'; 
             document.getElementById('btn-mode-day').className = mode === 'day' ? 'btn btn-primary w-50 rounded-pill btn-lg-mobile fw-bold' : 'btn btn-outline-primary w-50 rounded-pill btn-lg-mobile fw-bold'; 
             
             const periodDiv = document.getElementById('div-att-period');
-            // استخدام d-none للتحكم بالإخفاء بشكل آمن
             if(mode === 'day') { periodDiv.classList.add('d-none'); } else { periodDiv.classList.remove('d-none'); }
             
             loadAttendanceList(); 
@@ -1098,30 +1115,6 @@
                 if (newState) { db.ref(`attendance/${date}/periods/${period}/${name}`).set({status: 'absent', teacher: teacherName}); } else { db.ref(`attendance/${date}/periods/${period}/${name}`).remove(); } 
             } 
             setTimeout(() => loadAttendanceList(), 100); 
-        }
-
-        function calculateBestClass() { 
-            let s = {}; 
-            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
-            classesArr.forEach(c => s[c] = 0); 
-            
-            let studentsArr = Object.values(data.students || {});
-            Object.values(data.stars || {}).forEach(st => { 
-                let o = studentsArr.find(x => x && x.name === st.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) + (st.value || 1); 
-            }); 
-            Object.values(data.violations || {}).forEach(v => { 
-                let o = studentsArr.find(x => x && x.name === v.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) - 1; 
-            }); 
-            
-            let best = Object.entries(s).sort((a,b) => b[1] - a[1])[0]; 
-            if(best && best[1] > 0) { 
-                document.getElementById('best-class-badge').classList.remove('d-none'); 
-                document.getElementById('best-class-txt').innerText = best[0]; 
-            } else {
-                document.getElementById('best-class-badge').classList.add('d-none');
-            }
         }
 
         function importData(inp) { 
@@ -1198,22 +1191,6 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
-        function logOut() {
-            localStorage.clear();
-            sessionStorage.clear();
-            userRole = '';
-            document.getElementById('app-body').classList.add('d-none');
-            document.getElementById('auth-overlay').style.display = 'flex';
-            document.getElementById('pin-area').classList.add('hidden');
-            document.getElementById('role-selection').classList.remove('hidden');
-            document.getElementById('pin-input').value = '';
-            
-            Swal.fire({ title: 'تم تسجيل الخروج', text: 'نراك قريباً!', icon: 'info', timer: 1500, showConfirmButton: false }).then(() => {
-                window.location.reload(true); 
-            });
-        }
-
-        // ================= الإدارة والموجه والحارس =================
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
             const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
@@ -1325,102 +1302,142 @@
             const action = document.getElementById('va-action-select').value;
             const stuName = document.getElementById('va-student-name').innerText;
             const vType = document.getElementById('va-violation-desc').innerText;
+            const customNote = document.getElementById('va-custom-note').value; // جلب ملاحظات الوكيل
 
             let newStatus = '';
             if(action === 'verbal_warning') newStatus = 'closed_warning';
             else if(action === 'written_pledge') newStatus = 'closed_pledge';
             else if(action === 'refer_to_counselor') newStatus = 'pending_counselor';
 
-            db.ref(`violations/${vId}`).update({ status: newStatus, actionTaken: action }).then(() => {
+            db.ref(`violations/${vId}`).update({ status: newStatus, actionTaken: action, deputyNote: customNote }).then(() => {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('violationActionModal'));
                 if(modal) modal.hide();
+                document.getElementById('va-custom-note').value = '';
                 
                 if(action === 'written_pledge') {
                     Swal.fire({
                         title: 'تم الإغلاق', text: 'تم تسجيل التعهد. هل تريد طباعة النموذج الآن؟', icon: 'success',
                         showCancelButton: true, confirmButtonText: 'نعم، طباعة التعهد', cancelButtonText: 'لاحقاً'
-                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'pledge'); });
+                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'pledge', customNote); });
                 } else if(action === 'refer_to_counselor') {
                     Swal.fire({
                         title: 'تم التحويل', text: 'تم التحويل للموجه. هل تريد طباعة الإحالة؟', icon: 'info',
                         showCancelButton: true, confirmButtonText: 'نعم، طباعة التحويل', cancelButtonText: 'لاحقاً'
-                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'referral'); });
+                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'referral', customNote); });
                 } else {
                     Swal.fire('تم', 'تم تسجيل الإنذار الشفهي وإغلاق المخالفة.', 'success');
                 }
             });
         }
 
-        // ================= الطباعة الرسمية =================
-        function printOfficialForm(studentName, violationDesc, formType) {
+        // ================= الطباعة الرسمية (صفحة واحدة 100% + الكليشة المعتمدة + توقيع الوكيل فقط) =================
+        function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
             document.getElementById('cert-school-name').innerText = data.settings.school || 'المدرسة'; 
             document.getElementById('cert-logo-img').src = data.settings.logo || ''; 
-            document.getElementById('cert-manager-name').innerText = data.settings.manager || '.......................'; 
-            document.getElementById('cert-deputy-name').innerText = data.settings.deputy || '.......................';
+            
+            // تهيئة التاريخ والوقت
+            const dateStr = new Date().toLocaleDateString('ar-SA');
+            const dayStr = new Date().toLocaleDateString('ar-SA', {weekday: 'long'});
+            const timeStr = new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
 
             const frame = document.getElementById('dynamic-print-frame');
+            const headerContainer = document.getElementById('dynamic-print-header');
             const bodyContainer = document.getElementById('dynamic-print-body');
+            const footerContainer = document.getElementById('dynamic-print-footer');
             
             if (formType === 'certificate') {
                 frame.className = 'cert-frame';
                 frame.style.background = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="none" stroke="%23006C35" stroke-width="4" stroke-dasharray="10 10"/></svg>')`;
+                
+                headerContainer.style.display = 'none';
+                footerContainer.style.display = 'none';
+                
                 bodyContainer.innerHTML = `
-                    <h1 style="font-size:4.5rem; margin-top: 30px;">شهادة شكر وتقدير</h1>
-                    <p style="font-size:2.2rem; margin-top:20px;">تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
+                        <div style="text-align:right; font-weight:bold; font-size:1.4rem; color:#000; line-height: 1.5;">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:var(--primary);">${data.settings.school || ''}</span></div>
+                        <div><img src="${data.settings.logo || ''}" style="max-height: 100px;"></div>
+                        <div style="width: 200px;"></div>
+                    </div>
+                    <h1 style="font-size:4rem; color:var(--primary); font-weight:900; margin-bottom:10px;">شهادة شكر وتقدير</h1>
+                    <p style="font-size:2rem; margin-top:10px; color:#000;">تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
                     <div class="cert-name-box">${studentName}</div>
-                    <p style="font-size:2rem; line-height: 1.6; margin-top:20px;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
+                    <p style="font-size:1.8rem; line-height: 1.6; margin-top:10px; color:#000;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
+                    <div style="display:flex; justify-content:space-around; width:100%; margin-top:auto; font-size:1.5rem; font-weight:bold; color:#000;">
+                        <div style="text-align:center;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
+                    </div>
                 `;
-            } else if(formType === 'pledge') {
+            } else {
                 frame.className = 'form-frame';
                 frame.style.background = 'white';
-                bodyContainer.innerHTML = `
-                    <div class="form-title">تعهد خطي على طالب</div>
-                    <p class="form-body">
-                        أقر أنا الطالب / <strong>${studentName}</strong>، بأني قد ارتكبت المخالفة السلوكية المتمثلة في: <br>
-                        ( <strong style="color:red;">${violationDesc}</strong> )<br><br>
-                        وأتعهد لإدارة المدرسة بالالتزام التام بأنظمة وضوابط السلوك والمواظبة، وعدم تكرار هذه المخالفة أو غيرها مستقبلاً. وفي حال تكرار ذلك، يحق لإدارة المدرسة اتخاذ الإجراءات النظامية المعتمدة في قواعد السلوك والمواظبة بما في ذلك الحسم من درجات السلوك أو الاستدعاء الرسمي لولي الأمر.
-                    </p>
-                    <div style="font-size:1.4rem; margin-bottom:10px; text-align:right; color:#000;">
-                        <strong>توقيع الطالب:</strong> .....................................<br><br>
-                        <strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-SA')} م
-                    </div>
+                headerContainer.style.display = 'flex';
+                footerContainer.style.display = 'flex';
+                
+                // الكليشة الرسمية
+                headerContainer.innerHTML = `
+                    <div class="form-header-text">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:var(--primary);">${data.settings.school || ''}</span></div>
+                    <div><img src="${data.settings.logo || ''}" style="max-height: 80px;"></div>
+                    <div class="form-header-left">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
                 `;
-            } else if (formType === 'referral') {
-                frame.className = 'form-frame';
-                frame.style.background = 'white';
-                bodyContainer.innerHTML = `
-                    <div class="form-title">نموذج إحالة للموجه الطلابي</div>
-                    <div class="form-body" style="text-align:right;">
-                        <strong>المكرم / الموجه الطلابي المحترم</strong><br>
-                        السلام عليكم ورحمة الله وبركاته، وبعد:<br><br>
-                        نحيل إليكم الطالب / <strong>${studentName}</strong><br>
-                        وذلك بسبب ارتكابه لمخالفة: ( <strong style="color:red;">${violationDesc}</strong> )<br><br>
-                        نأمل منكم دراسة حالة الطالب، واتخاذ الإجراءات الإرشادية والتربوية المناسبة وفقاً للائحة السلوك والمواظبة، وإفادتنا بما يتم حيال ذلك.
-                    </div>
-                    <div style="font-size:1.4rem; text-align:center; font-weight:bold; margin-top:20px; color:#000;">
-                        وتقبلوا تحيات إدارة المدرسة،،،
-                    </div>
+
+                // التوقيع للوكيل فقط في المنتصف
+                footerContainer.innerHTML = `
+                    <div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
                 `;
+
+                let noteHtml = customNote ? `<div class="form-body-details"><strong>ملاحظات الوكيل / الإجراء:</strong> ${customNote}</div>` : '';
+
+                if(formType === 'pledge') {
+                    bodyContainer.innerHTML = `
+                        <div class="form-title">تعهد خطي على طالب</div>
+                        <div class="form-body">
+                            أقر أنا الطالب / <strong>${studentName}</strong>، بأني قد ارتكبت المخالفة السلوكية المتمثلة في: <br>
+                            ( <strong style="color:red;">${violationDesc}</strong> )<br>
+                            ${noteHtml}
+                            <br>وأتعهد لإدارة المدرسة بالالتزام التام بأنظمة وضوابط السلوك والمواظبة، وعدم تكرار هذه المخالفة أو غيرها مستقبلاً. وفي حال تكرار ذلك، يحق لإدارة المدرسة اتخاذ الإجراءات النظامية المعتمدة في قواعد السلوك والمواظبة بما في ذلك الحسم من درجات السلوك أو الاستدعاء الرسمي لولي الأمر.
+                        </div>
+                        <div style="font-size:1.3rem; text-align:left; color:#000; font-weight:bold; margin-top:20px;">توقيع الطالب: .....................................</div>
+                    `;
+                } else if (formType === 'referral') {
+                    bodyContainer.innerHTML = `
+                        <div class="form-title">نموذج إحالة للموجه الطلابي</div>
+                        <div class="form-body">
+                            <strong>المكرم / الموجه الطلابي المحترم</strong><br>
+                            السلام عليكم ورحمة الله وبركاته، وبعد:<br><br>
+                            نحيل إليكم الطالب / <strong>${studentName}</strong><br>
+                            وذلك بسبب ارتكابه لمخالفة: ( <strong style="color:red;">${violationDesc}</strong> )<br>
+                            ${noteHtml}
+                            <br>نأمل منكم دراسة حالة الطالب، واتخاذ الإجراءات الإرشادية والتربوية المناسبة وفقاً للائحة السلوك والمواظبة، وإفادتنا بما يتم حيال ذلك.
+                        </div>
+                        <div style="font-size:1.3rem; text-align:center; font-weight:bold; margin-top:20px; color:#000;">وتقبلوا تحيات إدارة المدرسة،،،</div>
+                    `;
+                }
             }
 
             document.getElementById('final-print-container').innerHTML = ''; 
-            setTimeout(() => window.print(), 500);
+            document.body.className = formType === 'certificate' ? 'print-landscape' : 'print-portrait'; // لتوجيه الطابعة
+            setTimeout(() => { window.print(); document.body.className = ''; }, 500);
         }
 
-        // ================= التقارير (مفلترة وآمنة) =================
+        // ================= التقارير الذكية (مفلترة وآمنة) =================
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
             const logo = data.settings.logo || "";
             const titles = { 'permits': 'سجل الأذونات', 'visitors': 'سجل الزوار', 'violations': 'المخالفات السلوكية', 'attendance': 'الغياب اليومي', 'stars': 'لوحة الشرف والشهادات', 'late': 'تأخر الصباح' };
             
+            const dateStr = new Date().toLocaleDateString('ar-SA');
+            const dayStr = new Date().toLocaleDateString('ar-SA', {weekday: 'long'});
+            const timeStr = new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
+
             let h = `
-            <div style="border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; direction:rtl;">
-                <div style="text-align:right; width:33%; font-weight:bold; font-size:1.2rem;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div>
-                <div style="text-align:center; width:33%"><img src="${logo}" style="max-height:80px"></div>
-                <div style="text-align:left; width:33%; font-weight:bold; font-size:1.2rem;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br><span style="text-decoration:underline;">${titles[type]||'تقرير'}</span></div>
-            </div>`;
+            <div style="border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:flex-start; direction:rtl;">
+                <div style="text-align:right; width:33%; font-weight:bold; font-size:1.1rem; line-height:1.5;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div>
+                <div style="text-align:center; width:33%"><img src="${logo}" style="max-height:70px"></div>
+                <div style="text-align:left; width:33%; font-weight:bold; font-size:1.1rem; line-height:1.5; direction:ltr;">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
+            </div>
+            <div style="text-align:center; font-weight:bold; font-size:1.6rem; text-decoration:underline; margin-bottom:20px;">${titles[type]||'تقرير'}</div>
+            `;
             
             try {
                 if(type==='stars') { 
@@ -1434,7 +1451,6 @@
                             <td class="fw-bold text-warning fs-4">${x[1]} ⭐</td>
                             <td class="no-print d-flex gap-2 justify-content-center flex-wrap">
                                 <button class="btn btn-warning rounded-pill fw-bold m-1" onclick="printOfficialForm('${x[0]}', '', 'certificate')"><i class="fas fa-print me-2"></i> طباعة</button>
-                                <button class="btn btn-primary rounded-pill fw-bold m-1" onclick="displayStudentCertOnScreen('${x[0]}')"><i class="fas fa-tv me-2"></i> عرض</button>
                             </td>
                         </tr>`; 
                     }); h+=`</tbody></table></div>`; 
@@ -1443,7 +1459,7 @@
                 } else if(type==='attendance') { 
                     const t = new Date().toLocaleDateString('en-CA'); h += `<table class="table table-bordered text-center table-striped"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المعلم الراصد</th><th>الحالة</th></tr></thead><tbody>`; Object.values(data.students||{}).forEach(s => { if(!s) return; if(data.attendance?.[t]?.['full_day']?.[s.name]) { const rec = data.attendance[t]['full_day'][s.name]; h+=`<tr><td>${s.name}</td><td>${s.class}</td><td class="text-primary">${rec.teacher||'-'}</td><td class="bg-danger text-white">غائب يوم كامل</td></tr>`; } else { let p = []; let tea = '-'; for(let i=1;i<=7;i++) { const rec = data.attendance?.[t]?.['periods']?.[i]?.[s.name]; if(rec && (rec === 'absent' || rec.status === 'absent')) { p.push(i); tea = rec.teacher || tea; } } if(p.length) h+=`<tr><td>${s.name}</td><td>${s.class}</td><td class="text-primary">${tea}</td><td>حصص: ${p.join(',')}</td></tr>`; } }); h+=`</tbody></table>`; 
                 } else if(type==='violations') { 
-                    h += `<div class="table-responsive"><table class="table table-bordered text-center align-middle"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>الإجراء المتخذ</th><th class="no-print">النماذج</th></tr></thead><tbody>`; 
+                    h += `<div class="table-responsive"><table class="table table-bordered text-center align-middle"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>الإجراء المتخذ</th><th class="no-print">طباعة المستند</th></tr></thead><tbody>`; 
                     Object.values(data.violations||{}).filter(v=>v).reverse().forEach(v => {
                         let actionText = 'معلقة';
                         if(v.actionTaken === 'verbal_warning') actionText = 'إنذار شفهي';
@@ -1454,9 +1470,9 @@
 
                         let printBtn = '-';
                         if(v.actionTaken === 'written_pledge') {
-                            printBtn = `<button class="btn btn-warning btn-sm rounded-pill fw-bold" onclick="printOfficialForm('${v.student}', '${v.type}', 'pledge')"><i class="fas fa-print"></i> التعهد</button>`;
+                            printBtn = `<button class="btn btn-warning btn-sm rounded-pill fw-bold" onclick="printOfficialForm('${v.student}', '${v.type}', 'pledge', '${v.deputyNote||''}')"><i class="fas fa-print"></i> التعهد</button>`;
                         } else if (v.actionTaken === 'refer_to_counselor' || v.status === 'pending_counselor' || v.status === 'closed_counselor') {
-                            printBtn = `<button class="btn btn-info text-white btn-sm rounded-pill fw-bold" onclick="printOfficialForm('${v.student}', '${v.type}', 'referral')"><i class="fas fa-print"></i> الإحالة</button>`;
+                            printBtn = `<button class="btn btn-info text-white btn-sm rounded-pill fw-bold" onclick="printOfficialForm('${v.student}', '${v.type}', 'referral', '${v.deputyNote||''}')"><i class="fas fa-print"></i> الإحالة</button>`;
                         }
                         h += `<tr><td class="fw-bold">${v.student}</td><td>${v.type}</td><td class="text-primary fw-bold">${actionText}</td><td class="no-print">${printBtn}</td></tr>`;
                     });
@@ -1468,9 +1484,8 @@
                 }
                 
                 h+=`
-                <div style="display:flex; justify-content:space-between; margin-top:30px; padding:0 20px; font-size:1.3rem;">
-                    <div style="text-align:right"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
-                    <div style="text-align:left"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
+                <div style="display:flex; justify-content:center; margin-top:30px; padding:0 20px; font-size:1.3rem;">
+                    <div style="text-align:center"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
                 </div>`;
                 
                 document.getElementById('modal-print-content').innerHTML = h; 

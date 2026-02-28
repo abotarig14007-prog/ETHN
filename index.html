@@ -27,6 +27,7 @@
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
         
+        /* حلول التنبيهات */
         .swal2-container { z-index: 110000 !important; }
 
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; transition: transform 0.3s ease; }
@@ -84,6 +85,7 @@
             background-color: #ffffff; 
             border: 2px solid #ccc;
             height: auto !important; 
+            appearance: auto !important; 
             cursor: pointer;
         }
         .huge-input:focus { border-color: var(--primary); box-shadow: 0 0 0 0.25rem rgba(0, 108, 53, 0.25); }
@@ -117,7 +119,6 @@
         .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         
-        /* ================= شاشة المتابعة التلفزيونية ================= */
         .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
         .monitor-card.safe { border-color: #198754; background-color: #f1fdf6; }
         .monitor-card.safe h5, .monitor-card.safe h2 { color: #198754 !important; }
@@ -159,7 +160,7 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= Print Styles (احترافية عالية لصفحة واحدة) ================= */
+        /* ================= Print Styles (حل مشكلة الصفحتين وتعديل التوقيعات) ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0; padding: 0; background: white !important; font-family: 'Tajawal', sans-serif; }
@@ -171,23 +172,29 @@
                 display: flex !important; position: absolute; left: 0; top: 0; 
                 background: white; z-index: 999999; 
                 flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box;
-                width: 100%;
+                width: 100%; height: 100%;
             }
 
-            /* إطار التعهد والمخالفة (A4 Portrait) محكم بصفحة واحدة */
+            /* إطار التعهد والمخالفة (A4 Portrait) - محكم بصفحة واحدة تماماً */
             .form-frame {
-                width: 210mm; height: 285mm; /* حصر الارتفاع لمنع التمدد لصفحتين */
-                border: 6px double var(--primary); padding: 20mm; 
+                width: 210mm; 
+                height: 275mm; /* تم تقليل الارتفاع لضمان عدم تجاوز الصفحة */
+                border: 5px double var(--primary); 
+                padding: 15mm; /* تم تقليل الهوامش الداخلية */
                 display: flex; flex-direction: column; justify-content: space-between;
                 box-sizing: border-box; background: white; page-break-inside: avoid;
                 direction: rtl; text-align: right; margin: 0 auto;
             }
-            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 15px;}
-            .form-header img { max-height: 90px; }
-            .form-header-text { font-weight: bold; font-size: 1.4rem; line-height: 1.6; color: #000; text-align: right; }
-            .form-title { text-align: center; font-size: 2.8rem; font-weight: 900; color: #000; margin-bottom: 30px; text-decoration: underline; }
-            .form-body { font-size: 1.8rem; line-height: 2.2; color: #000; text-align: justify; flex-grow: 1; }
-            .form-signatures { display: flex; justify-content: space-between; margin-top: 30px; font-size: 1.6rem; font-weight: bold; color: #000; }
+            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
+            .form-header img { max-height: 80px; }
+            .form-header-text { font-weight: bold; font-size: 1.2rem; line-height: 1.5; color: #000; text-align: right; }
+            
+            .form-title { text-align: center; font-size: 2.2rem; font-weight: 900; color: #000; margin-bottom: 20px; text-decoration: underline; }
+            /* تصغير الخط وتقليل التباعد لتسع الصفحة */
+            .form-body { font-size: 1.3rem; line-height: 1.8; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 10px; }
+            
+            /* توقيعات النماذج (عكسنا الترتيب: يمين وكيل، يسار مدير) */
+            .form-signatures { display: flex; justify-content: space-between; margin-top: auto; font-size: 1.3rem; font-weight: bold; color: #000; padding-top: 20px; }
             
             /* إطار شهادة الشكر (A4 Landscape) */
             .cert-frame { 
@@ -205,13 +212,14 @@
             }
             #modal-print-content * { visibility: visible; }
             .table-bordered { border: 2px solid #000 !important; width: 100%; margin-bottom: 20px; border-collapse: collapse; }
-            .table-bordered th, .table-bordered td { border: 1px solid #000 !important; padding: 10px; font-size: 1.2rem; text-align: center; }
+            .table-bordered th, .table-bordered td { border: 1px solid #000 !important; padding: 8px; font-size: 1.1rem; text-align: center; }
             .table-dark th { background-color: #eee !important; color: #000 !important; font-weight: bold; }
         }
     </style>
 </head>
 <body>
     <div class="gradient-bg"></div>
+    <div class="custom-toast" id="system-toast">تنبيه جديد!</div>
 
     <div id="media-slider-overlay" class="full-overlay">
         <button class="overlay-close" onclick="closeMediaSlider()">إغلاق <i class="fas fa-times ms-2"></i></button>
@@ -576,9 +584,9 @@
             </div>
             <div class="cert-body" id="dynamic-print-body">
                 </div>
-            <div class="cert-signatures" style="display: flex; justify-content: space-between; width: 100%; padding: 0 50px; margin-top: auto; font-size: 1.6rem; font-weight: bold; color: #000;">
-                <div class="manager"><strong>مدير المدرسة</strong><br><br><span id="cert-manager-name">...</span></div>
-                <div class="deputy"><strong>وكيل شؤون الطلاب</strong><br><br><span id="cert-deputy-name">...</span></div>
+            <div class="cert-signatures" style="display: flex; justify-content: space-between; width: 100%; padding: 0 20px; margin-top: auto; font-size: 1.4rem; font-weight: bold; color: #000;">
+                <div class="deputy" style="text-align: right;"><strong>وكيل شؤون الطلاب</strong><br><br><span id="cert-deputy-name">...</span></div>
+                <div class="manager" style="text-align: left;"><strong>مدير المدرسة</strong><br><br><span id="cert-manager-name">...</span></div>
             </div>
         </div>
     </div>
@@ -998,6 +1006,52 @@
             } 
         }
 
+        // ================= الإخفاء السليم في التحضير ليوم كامل =================
+        function setAttMode(mode) { 
+            attMode = mode; 
+            document.getElementById('btn-mode-period').className = mode === 'period' ? 'btn btn-primary w-50 rounded-pill btn-lg-mobile fw-bold' : 'btn btn-outline-primary w-50 rounded-pill btn-lg-mobile fw-bold'; 
+            document.getElementById('btn-mode-day').className = mode === 'day' ? 'btn btn-primary w-50 rounded-pill btn-lg-mobile fw-bold' : 'btn btn-outline-primary w-50 rounded-pill btn-lg-mobile fw-bold'; 
+            
+            const periodDiv = document.getElementById('div-att-period');
+            if(mode === 'day') { periodDiv.classList.add('d-none'); } else { periodDiv.classList.remove('d-none'); }
+            
+            loadAttendanceList(); 
+        }
+
+        function loadAttendanceList() { 
+            const cls = document.getElementById('att-class').value; 
+            const period = document.getElementById('att-period').value; 
+            const body = document.getElementById('att-list-body'); 
+            if(!cls) { body.innerHTML = '<tr><td colspan="2">اختر الفصل أولاً</td></tr>'; return; } 
+            
+            const today = new Date().toLocaleDateString('en-CA'); 
+            const safeStudents = Object.values(data.students || {}).filter(s => s && s.name && String(s.class) === String(cls)); 
+            
+            body.innerHTML = safeStudents.map(s => { 
+                let isAbsent = false; 
+                if (attMode === 'day') { 
+                    const attData = data.attendance?.[today]?.['full_day']?.[s.name]; 
+                    isAbsent = attData === true || (attData && attData.status === true); 
+                } else { 
+                    const attData = data.attendance?.[today]?.['periods']?.[period]?.[s.name]; 
+                    isAbsent = attData === 'absent' || (attData && attData.status === 'absent'); 
+                } 
+                return `<tr><td class="fw-bold">${s.name}</td><td><button class="btn btn-sm ${isAbsent ? 'btn-danger' : 'btn-success'} w-75 rounded-pill fw-bold fs-4 py-2 shadow-sm" onclick="toggleAtt('${today}', '${s.name}', ${isAbsent})">${isAbsent ? 'غائب' : 'حاضر'}</button></td></tr>`; 
+            }).join(''); 
+        }
+
+        function toggleAtt(date, name, currentlyAbsent) { 
+            const teacherName = getStrictTeacherName(); if(!teacherName) return; 
+            const period = document.getElementById('att-period').value; 
+            const newState = !currentlyAbsent; 
+            if (attMode === 'day') { 
+                if (newState) { db.ref(`attendance/${date}/full_day/${name}`).set({status: true, teacher: teacherName}); } else { db.ref(`attendance/${date}/full_day/${name}`).remove(); } 
+            } else { 
+                if (newState) { db.ref(`attendance/${date}/periods/${period}/${name}`).set({status: 'absent', teacher: teacherName}); } else { db.ref(`attendance/${date}/periods/${period}/${name}`).remove(); } 
+            } 
+            setTimeout(() => loadAttendanceList(), 100); 
+        }
+
         function calculateBestClass() { 
             let s = {}; 
             let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
@@ -1111,7 +1165,6 @@
             });
         }
 
-        // ================= الإدارة والموجه والحارس =================
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
             const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
@@ -1228,54 +1281,7 @@
             });
         }
 
-        // ================= الإخفاء السليم في التحضير ليوم كامل =================
-        function setAttMode(mode) { 
-            attMode = mode; 
-            document.getElementById('btn-mode-period').className = mode === 'period' ? 'btn btn-primary w-50 rounded-pill btn-lg-mobile fw-bold' : 'btn btn-outline-primary w-50 rounded-pill btn-lg-mobile fw-bold'; 
-            document.getElementById('btn-mode-day').className = mode === 'day' ? 'btn btn-primary w-50 rounded-pill btn-lg-mobile fw-bold' : 'btn btn-outline-primary w-50 rounded-pill btn-lg-mobile fw-bold'; 
-            
-            // استخدام d-none بدلاً من visibility للإخفاء الكامل
-            const periodDiv = document.getElementById('div-att-period');
-            if(mode === 'day') { periodDiv.classList.add('d-none'); } else { periodDiv.classList.remove('d-none'); }
-            
-            loadAttendanceList(); 
-        }
-
-        function loadAttendanceList() { 
-            const cls = document.getElementById('att-class').value; 
-            const period = document.getElementById('att-period').value; 
-            const body = document.getElementById('att-list-body'); 
-            if(!cls) { body.innerHTML = '<tr><td colspan="2">اختر الفصل أولاً</td></tr>'; return; } 
-            
-            const today = new Date().toLocaleDateString('en-CA'); 
-            const safeStudents = Object.values(data.students || {}).filter(s => s && s.name && String(s.class) === String(cls)); 
-            
-            body.innerHTML = safeStudents.map(s => { 
-                let isAbsent = false; 
-                if (attMode === 'day') { 
-                    const attData = data.attendance?.[today]?.['full_day']?.[s.name]; 
-                    isAbsent = attData === true || (attData && attData.status === true); 
-                } else { 
-                    const attData = data.attendance?.[today]?.['periods']?.[period]?.[s.name]; 
-                    isAbsent = attData === 'absent' || (attData && attData.status === 'absent'); 
-                } 
-                return `<tr><td class="fw-bold">${s.name}</td><td><button class="btn btn-sm ${isAbsent ? 'btn-danger' : 'btn-success'} w-75 rounded-pill fw-bold fs-4 py-2 shadow-sm" onclick="toggleAtt('${today}', '${s.name}', ${isAbsent})">${isAbsent ? 'غائب' : 'حاضر'}</button></td></tr>`; 
-            }).join(''); 
-        }
-
-        function toggleAtt(date, name, currentlyAbsent) { 
-            const teacherName = getStrictTeacherName(); if(!teacherName) return; 
-            const period = document.getElementById('att-period').value; 
-            const newState = !currentlyAbsent; 
-            if (attMode === 'day') { 
-                if (newState) { db.ref(`attendance/${date}/full_day/${name}`).set({status: true, teacher: teacherName}); } else { db.ref(`attendance/${date}/full_day/${name}`).remove(); } 
-            } else { 
-                if (newState) { db.ref(`attendance/${date}/periods/${period}/${name}`).set({status: 'absent', teacher: teacherName}); } else { db.ref(`attendance/${date}/periods/${period}/${name}`).remove(); } 
-            } 
-            setTimeout(() => loadAttendanceList(), 100); 
-        }
-
-        // ================= الطباعة الرسمية =================
+        // ================= الطباعة الرسمية (تم تصحيح المحاذاة والصفحة الواحدة) =================
         function printOfficialForm(studentName, violationDesc, formType) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
@@ -1300,15 +1306,13 @@
                 frame.className = 'form-frame';
                 frame.style.background = 'white';
                 bodyContainer.innerHTML = `
-                    <div style="text-align: center; margin-bottom: 30px;">
-                        <h1 style="font-size:2.8rem; text-decoration:underline; font-weight: bold; color:#000;">تعهد خطي على طالب</h1>
-                    </div>
-                    <p style="font-size:1.8rem; line-height:2.2; text-align:justify; margin-bottom:50px; color:#000;">
-                        أقر أنا الطالب / <strong style="color:var(--primary); font-size:2rem;">${studentName}</strong>، بأني قد ارتكبت المخالفة السلوكية المتمثلة في: <br>
+                    <div class="form-title">تعهد خطي على طالب</div>
+                    <p class="form-body">
+                        أقر أنا الطالب / <strong>${studentName}</strong>، بأني قد ارتكبت المخالفة السلوكية المتمثلة في: <br>
                         ( <strong style="color:red;">${violationDesc}</strong> )<br><br>
                         وأتعهد لإدارة المدرسة بالالتزام التام بأنظمة وضوابط السلوك والمواظبة، وعدم تكرار هذه المخالفة أو غيرها مستقبلاً. وفي حال تكرار ذلك، يحق لإدارة المدرسة اتخاذ الإجراءات النظامية المعتمدة في قواعد السلوك والمواظبة بما في ذلك الحسم من درجات السلوك أو الاستدعاء الرسمي لولي الأمر.
                     </p>
-                    <div style="font-size:1.8rem; margin-bottom:30px; text-align:right; color:#000;">
+                    <div style="font-size:1.4rem; margin-bottom:10px; text-align:right; color:#000;">
                         <strong>توقيع الطالب:</strong> .....................................<br><br>
                         <strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-SA')} م
                     </div>
@@ -1317,17 +1321,15 @@
                 frame.className = 'form-frame';
                 frame.style.background = 'white';
                 bodyContainer.innerHTML = `
-                    <div style="text-align: center; margin-bottom: 30px;">
-                        <h1 style="font-size:2.8rem; text-decoration:underline; font-weight: bold; color:#000;">نموذج إحالة للموجه الطلابي</h1>
-                    </div>
-                    <div style="font-size:1.8rem; line-height:2.2; text-align:right; margin-bottom:50px; color:#000;">
+                    <div class="form-title">نموذج إحالة للموجه الطلابي</div>
+                    <div class="form-body" style="text-align:right;">
                         <strong>المكرم / الموجه الطلابي المحترم</strong><br>
                         السلام عليكم ورحمة الله وبركاته، وبعد:<br><br>
-                        نحيل إليكم الطالب / <strong style="color:var(--primary); font-size:2rem;">${studentName}</strong><br>
+                        نحيل إليكم الطالب / <strong>${studentName}</strong><br>
                         وذلك بسبب ارتكابه لمخالفة: ( <strong style="color:red;">${violationDesc}</strong> )<br><br>
                         نأمل منكم دراسة حالة الطالب، واتخاذ الإجراءات الإرشادية والتربوية المناسبة وفقاً للائحة السلوك والمواظبة، وإفادتنا بما يتم حيال ذلك.
                     </div>
-                    <div style="font-size:1.8rem; text-align:center; font-weight:bold; margin-top:30px; color:#000;">
+                    <div style="font-size:1.4rem; text-align:center; font-weight:bold; margin-top:20px; color:#000;">
                         وتقبلوا تحيات إدارة المدرسة،،،
                     </div>
                 `;
@@ -1337,36 +1339,42 @@
             setTimeout(() => window.print(), 500);
         }
 
-        // ================= التقارير (محمية ومفلترة) =================
+        // ================= التقارير الذكية (مع أزرار الطباعة المعكوسة) =================
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
             const logo = data.settings.logo || "";
-            const titles = { 'permits': 'سجل الأذونات', 'visitors': 'سجل الزوار', 'violations': 'المخالفات السلوكية', 'attendance': 'الغياب اليومي', 'stars': 'لوحة الشرف والشهادات', 'late': 'تأخر الصباح', 'top_class': 'الفصل المثالي' };
-            let h = `<div style="border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; direction:rtl;"><div style="text-align:right; width:33%; font-weight:bold; font-size:1.4rem;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div><div style="text-align:center; width:33%"><img src="${logo}" style="max-height:100px"></div><div style="text-align:left; width:33%; font-weight:bold; font-size:1.4rem;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br><span style="text-decoration:underline;">${titles[type]||'تقرير'}</span></div></div>`;
+            const titles = { 'permits': 'سجل الأذونات', 'visitors': 'سجل الزوار', 'violations': 'المخالفات السلوكية', 'attendance': 'الغياب اليومي', 'stars': 'لوحة الشرف والشهادات', 'late': 'تأخر الصباح' };
+            
+            // ترويسة التقارير العادية (تم عكس التوقيعات فيها أيضاً)
+            let h = `
+            <div style="border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; direction:rtl;">
+                <div style="text-align:right; width:33%; font-weight:bold; font-size:1.2rem;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div>
+                <div style="text-align:center; width:33%"><img src="${logo}" style="max-height:80px"></div>
+                <div style="text-align:left; width:33%; font-weight:bold; font-size:1.2rem;">التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br><span style="text-decoration:underline;">${titles[type]||'تقرير'}</span></div>
+            </div>`;
             
             try {
                 if(type==='stars') { 
                     let s = {}; Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
-                    h+=`<div class="table-responsive"><table class="table table-bordered text-center align-middle" style="font-size:1.6rem;"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>الرصيد</th><th class="no-print">إجراءات الشهادة</th></tr></thead><tbody>`; 
+                    h+=`<div class="table-responsive"><table class="table table-bordered text-center align-middle"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>الرصيد</th><th class="no-print">إجراءات الشهادة</th></tr></thead><tbody>`; 
                     Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).forEach(x=> { 
                         const sObj=Object.values(data.students||{}).find(stu=>stu && stu.name===x[0]); 
                         h+=`<tr>
                             <td class="fw-bold">${x[0]}</td>
                             <td>${sObj?sObj.class:'-'}</td>
-                            <td class="fw-bold text-warning fs-3">${x[1]} ⭐</td>
+                            <td class="fw-bold text-warning fs-4">${x[1]} ⭐</td>
                             <td class="no-print d-flex gap-2 justify-content-center flex-wrap">
-                                <button class="btn btn-warning rounded-pill fw-bold m-1 fs-5 px-4" onclick="printOfficialForm('${x[0]}', '', 'certificate')"><i class="fas fa-print me-2"></i> طباعة</button>
-                                <button class="btn btn-primary rounded-pill fw-bold m-1 fs-5 px-4" onclick="displayStudentCertOnScreen('${x[0]}')"><i class="fas fa-tv me-2"></i> عرض</button>
+                                <button class="btn btn-warning rounded-pill fw-bold m-1" onclick="printOfficialForm('${x[0]}', '', 'certificate')"><i class="fas fa-print me-2"></i> طباعة</button>
+                                <button class="btn btn-primary rounded-pill fw-bold m-1" onclick="displayStudentCertOnScreen('${x[0]}')"><i class="fas fa-tv me-2"></i> عرض</button>
                             </td>
                         </tr>`; 
                     }); h+=`</tbody></table></div>`; 
                 } else if(type==='permits') { 
-                    h += `<table class="table table-bordered text-center" style="font-size:1.5rem;"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المعلم</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).filter(p=>p).reverse().map(p=>{ const sObj=Object.values(data.students||{}).find(stu=>stu && stu.name===p.student); return `<tr><td>${p.student}</td><td>${sObj?sObj.class:'-'}</td><td class="text-primary">${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`; 
+                    h += `<table class="table table-bordered text-center"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المعلم</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).filter(p=>p).reverse().map(p=>{ const sObj=Object.values(data.students||{}).find(stu=>stu && stu.name===p.student); return `<tr><td>${p.student}</td><td>${sObj?sObj.class:'-'}</td><td class="text-primary">${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`; 
                 } else if(type==='attendance') { 
-                    const t = new Date().toLocaleDateString('en-CA'); h += `<table class="table table-bordered text-center table-striped" style="font-size:1.5rem;"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المعلم الراصد</th><th>الحالة</th></tr></thead><tbody>`; Object.values(data.students||{}).forEach(s => { if(!s) return; if(data.attendance?.[t]?.['full_day']?.[s.name]) { const rec = data.attendance[t]['full_day'][s.name]; h+=`<tr><td>${s.name}</td><td>${s.class}</td><td class="text-primary">${rec.teacher||'-'}</td><td class="bg-danger text-white">غائب يوم كامل</td></tr>`; } else { let p = []; let tea = '-'; for(let i=1;i<=7;i++) { const rec = data.attendance?.[t]?.['periods']?.[i]?.[s.name]; if(rec && (rec === 'absent' || rec.status === 'absent')) { p.push(i); tea = rec.teacher || tea; } } if(p.length) h+=`<tr><td>${s.name}</td><td>${s.class}</td><td class="text-primary">${tea}</td><td>حصص: ${p.join(',')}</td></tr>`; } }); h+=`</tbody></table>`; 
+                    const t = new Date().toLocaleDateString('en-CA'); h += `<table class="table table-bordered text-center table-striped"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المعلم الراصد</th><th>الحالة</th></tr></thead><tbody>`; Object.values(data.students||{}).forEach(s => { if(!s) return; if(data.attendance?.[t]?.['full_day']?.[s.name]) { const rec = data.attendance[t]['full_day'][s.name]; h+=`<tr><td>${s.name}</td><td>${s.class}</td><td class="text-primary">${rec.teacher||'-'}</td><td class="bg-danger text-white">غائب يوم كامل</td></tr>`; } else { let p = []; let tea = '-'; for(let i=1;i<=7;i++) { const rec = data.attendance?.[t]?.['periods']?.[i]?.[s.name]; if(rec && (rec === 'absent' || rec.status === 'absent')) { p.push(i); tea = rec.teacher || tea; } } if(p.length) h+=`<tr><td>${s.name}</td><td>${s.class}</td><td class="text-primary">${tea}</td><td>حصص: ${p.join(',')}</td></tr>`; } }); h+=`</tbody></table>`; 
                 } else if(type==='violations') { 
-                    // تحديث تقرير المخالفات ليشمل أزرار الطباعة والإجراء
-                    h += `<div class="table-responsive"><table class="table table-bordered text-center align-middle" style="font-size:1.5rem;"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>الحالة/الإجراء</th><th class="no-print">طباعة المستند</th></tr></thead><tbody>`; 
+                    h += `<div class="table-responsive"><table class="table table-bordered text-center align-middle"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>الإجراء المتخذ</th><th class="no-print">النماذج</th></tr></thead><tbody>`; 
                     Object.values(data.violations||{}).filter(v=>v).reverse().forEach(v => {
                         let actionText = 'معلقة';
                         if(v.actionTaken === 'verbal_warning') actionText = 'إنذار شفهي';
@@ -1381,20 +1389,27 @@
                         } else if (v.actionTaken === 'refer_to_counselor' || v.status === 'pending_counselor' || v.status === 'closed_counselor') {
                             printBtn = `<button class="btn btn-info text-white btn-sm rounded-pill fw-bold" onclick="printOfficialForm('${v.student}', '${v.type}', 'referral')"><i class="fas fa-print"></i> طباعة الإحالة</button>`;
                         }
-
                         h += `<tr><td class="fw-bold">${v.student}</td><td>${v.type}</td><td class="text-primary fw-bold">${actionText}</td><td class="no-print">${printBtn}</td></tr>`;
                     });
                     h += `</tbody></table></div>`; 
                 } else if(type==='visitors') { 
-                    h += `<table class="table table-bordered text-center" style="font-size:1.5rem;"><thead><tr class="table-dark"><th>الاسم</th><th>السبب</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).filter(v=>v).reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`; 
+                    h += `<table class="table table-bordered text-center"><thead><tr class="table-dark"><th>الاسم</th><th>السبب</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).filter(v=>v).reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`; 
                 } else if(type==='late') { 
-                    h += `<table class="table table-bordered text-center" style="font-size:1.5rem;"><thead><tr class="table-dark"><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).filter(t=>t).reverse().map(t=>`<tr><td>${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
+                    h += `<table class="table table-bordered text-center"><thead><tr class="table-dark"><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).filter(t=>t).reverse().map(t=>`<tr><td>${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
                 }
-                h+=`<div style="display:flex; justify-content:space-between; margin-top:50px; padding:0 40px; font-size:1.5rem;"><div style="text-align:center"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy}</div><div style="text-align:center"><strong>مدير المدرسة</strong><br><br>${data.settings.manager}</div></div>`;
-                document.getElementById('modal-print-content').innerHTML = h; modal.show();
+                
+                // توقيعات نهاية التقارير (معكوسة: الوكيل يمين، المدير يسار)
+                h+=`
+                <div style="display:flex; justify-content:space-between; margin-top:30px; padding:0 20px; font-size:1.3rem;">
+                    <div style="text-align:right"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
+                    <div style="text-align:left"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
+                </div>`;
+                
+                document.getElementById('modal-print-content').innerHTML = h; 
+                modal.show();
             } catch (e) {
                 console.error(e);
-                Swal.fire('خطأ', 'حدث خطأ أثناء تحميل التقرير، تأكد من سلامة البيانات المدخلة.', 'error');
+                Swal.fire('خطأ', 'حدث خطأ أثناء تحميل التقرير.', 'error');
             }
         }
 

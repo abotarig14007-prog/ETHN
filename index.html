@@ -32,7 +32,7 @@
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; transition: transform 0.3s ease; }
         .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
         
-        /* ================= Mobile & High Visibility ================= */
+        /* ================= Mobile & High Visibility Enhancements ================= */
         body, button, input, select, textarea { font-size: 1.1rem; }
 
         @media (max-width: 991px) { 
@@ -76,9 +76,16 @@
         .service-card-red { background-color: #fdf5f5 !important; border: 3px solid #dc3545 !important; }
         
         .huge-input { 
-            font-size: 1.6rem !important; font-weight: 900 !important; padding: 15px 40px 15px 15px !important; 
-            border-radius: 15px !important; text-align: center; background-color: #ffffff; border: 2px solid #ccc;
-            height: auto !important; appearance: auto !important; cursor: pointer;
+            font-size: 1.6rem !important; 
+            font-weight: 900 !important; 
+            padding: 15px 40px 15px 15px !important; 
+            border-radius: 15px !important; 
+            text-align: center; 
+            background-color: #ffffff; 
+            border: 2px solid #ccc;
+            height: auto !important; 
+            appearance: auto !important; 
+            cursor: pointer;
         }
         .huge-input:focus { border-color: var(--primary); box-shadow: 0 0 0 0.25rem rgba(0, 108, 53, 0.25); }
         .huge-label { font-size: 1.4rem !important; font-weight: 900 !important; margin-bottom: 8px !important; display: block; }
@@ -105,6 +112,8 @@
         .nav-link.active { border-right: 5px solid var(--gold); }
 
         .page-card { background: var(--card); border-radius: 25px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
+        .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         
         .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
         .monitor-card.safe { border-color: #198754; background-color: #f1fdf6; }
@@ -114,6 +123,7 @@
         @keyframes dangerPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(220, 53, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
 
         .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
+        .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
         .cursor-pointer { cursor: pointer; transition: 0.2s; }
 
@@ -136,7 +146,7 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= هندسة الطباعة (صفحة واحدة 100% وتوقيع الوكيل فقط والتاريخ) ================= */
+        /* ================= هندسة الطباعة الاحترافية ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0; padding: 0; background: white !important; font-family: 'Tajawal', sans-serif; }
@@ -154,11 +164,11 @@
                 width: 100%;
             }
 
-            /* إطار التعهد والمخالفة (صفحة A4 طولية) */
+            /* إطار التعهد والمخالفة (A4 Portrait) - محمي ضد التمدد لصفحتين */
             .form-frame {
                 width: 210mm; 
-                height: 285mm; /* حصر قاسي لمنع تمدد الصفحة */
-                max-height: 290mm;
+                height: 280mm; 
+                max-height: 285mm; /* الحد الأقصى المطلق */
                 border: 6px double var(--primary); 
                 padding: 10mm 15mm; 
                 display: flex; flex-direction: column; justify-content: space-between;
@@ -166,17 +176,17 @@
                 direction: rtl; text-align: right; margin: 0 auto; overflow: hidden;
             }
             .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
-            .form-header img { max-height: 80px; }
-            .form-header-text { font-weight: bold; font-size: 1.1rem; line-height: 1.5; color: #000; text-align: right; }
-            .form-header-left { text-align: left; font-size: 1.1rem; font-weight: bold; line-height: 1.5; color: #000; direction: ltr;}
+            .form-header img { max-height: 70px; }
+            .form-header-text { font-weight: bold; font-size: 1.1rem; line-height: 1.4; color: #000; text-align: right; }
+            .form-header-left { text-align: left; font-size: 1rem; font-weight: bold; line-height: 1.4; color: #000; direction: ltr;}
             
-            .form-title { text-align: center; font-size: 2.2rem; font-weight: 900; color: #000; margin: 15px 0; text-decoration: underline; }
+            .form-title { text-align: center; font-size: 2rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; }
             
-            .form-body { font-size: 1.4rem; line-height: 1.8; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; }
-            .form-body-details { background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin: 15px 0; font-size: 1.3rem;}
+            .form-body { font-size: 1.3rem; line-height: 1.7; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; }
+            .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.2rem;}
             
-            /* توقيع الوكيل فقط */
-            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.4rem; font-weight: bold; color: #000; padding-top: 10px; }
+            /* التوقيع - الوكيل فقط في النماذج */
+            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.3rem; font-weight: bold; color: #000; padding-top: 10px; }
             
             /* إطار شهادة الشكر (عرضي 96%) */
             .cert-frame { 
@@ -226,7 +236,8 @@
     <div id="top-bar" class="fixed-top no-print">
         <div class="d-flex align-items-center"><div style="width:15px; height:15px; background:red; border-radius:50%; margin-left:15px;" id="status-dot"></div><h5 class="m-0 fw-bold text-dark d-none d-sm-block">نظام إذن <span class="text-success">الاحترافي</span></h5><h4 class="m-0 fw-bold text-dark d-sm-none">نظام إذن</h4></div>
         <div class="d-flex align-items-center gap-3">
-            <button class="btn btn-dark rounded-pill fw-bold" onclick="openTvMenu()"><i class="fas fa-tv me-2"></i> شاشة العرض</button>
+            <button class="btn btn-dark rounded-pill fw-bold d-none d-md-block" onclick="openTvMenu()"><i class="fas fa-tv me-2"></i> شاشة العرض</button>
+            <button class="btn btn-dark rounded-circle p-3 d-md-none" onclick="openTvMenu()"><i class="fas fa-tv fa-lg"></i></button>
             <div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div>
             <button class="btn btn-light rounded-circle border p-3" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up fa-lg"></i></button>
             <button class="btn btn-outline-dark d-lg-none p-2" onclick="toggleSidebar()"><i class="fas fa-bars fa-2x"></i></button>
@@ -256,7 +267,7 @@
             <div class="text-center py-5 px-3"><div class="bg-white p-3 rounded-circle d-inline-block shadow mb-3"><i class="fas fa-mosque fa-3x text-success"></i></div><h5 class="fw-bold text-white mt-2" id="disp-school">...</h5></div>
             <div id="nav-items" class="px-2 pb-3"></div>
             <div class="px-3 pb-5 mb-5 mt-4" style="padding-bottom: 120px !important;">
-                <button class="btn w-100 rounded-pill fw-bold fs-4 shadow" style="background-color: #dc3545; color: white; padding: 18px;" onclick="logOut()"><i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج</button>
+                <button class="btn w-100 rounded-pill fw-bold fs-4 shadow" style="background-color: #dc3545; color: white; padding: 18px; z-index: 1050; position: relative;" onclick="logOut()"><i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج</button>
             </div>
         </aside>
 
@@ -382,6 +393,28 @@
                 </div> 
 
                 <div id="admin-panel-content" class="d-none">
+                     <div class="page-card p-4 mb-4 border-2 border-primary bg-light shadow-sm">
+                        <h4 class="fw-bold text-primary mb-3 text-center"><i class="fas fa-tv me-2"></i> التحكم السريع بشاشة الساحة</h4>
+                        <div class="row g-3">
+                            <div class="col-md-4 col-12">
+                                <button class="btn btn-success w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="document.getElementById('quick-img-upload').click()">
+                                    <i class="fas fa-image me-2"></i> إرسال صورة
+                                </button>
+                                <input type="file" id="quick-img-upload" style="display:none;" accept="image/*" onchange="quickAddMedia('image', this)">
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <button class="btn btn-danger w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="quickAddMedia('video')">
+                                    <i class="fas fa-video me-2"></i> إرسال فيديو يوتيوب
+                                </button>
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <button class="btn btn-dark w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="openTvMenu()">
+                                    <i class="fas fa-play-circle me-2"></i> تشغيل الشاشة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                      <div class="admin-dash-grid mb-4" id="admin-screens-container"></div>
                      <div class="row g-3 mb-4 text-center">
                         <div class="col-4"><div class="stat-box blue"><h2 class="mb-1" id="adm-stat-out">0</h2><small class="fs-4 fw-bold">بالخارج</small></div></div>
@@ -400,7 +433,7 @@
                                         <span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="adm-vio-count">0</span>
                                     </div>
                                 </div>
-                                <div id="adm-vio-list" class="p-3 bg-light"></div>
+                                <div id="adm-vio-list" class="p-3 bg-light d-none"></div>
                             </div>
                         </div>
                         
@@ -493,7 +526,8 @@
                     <h5 class="text-primary border-bottom pb-2 mt-5 fs-2 fw-bold">بيانات المدرسة والشهادات</h5>
                     <div class="row g-4 mb-5">
                          <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم المدرسة المنظمة</label><input id="s-school" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
-                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم وكيل شؤون الطلاب (للنماذج)</label><input id="s-deputy" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
+                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم مدير المدرسة (يظهر بالشهادات)</label><input id="s-manager" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
+                         <div class="col-12"><label class="fs-4 fw-bold mb-2">اسم وكيل شؤون الطلاب</label><input id="s-deputy" class="form-control huge-input border-primary" onchange="saveSettings()"></div>
                          <div class="col-12"><label class="fs-4 fw-bold mb-2">شعار المدرسة المعتمد</label><input type="file" id="logo-upload" class="form-control huge-input border-primary" accept="image/*" onchange="uploadLogo()"></div>
                          <div class="col-12 text-center"><img id="logo-preview" src="" style="max-height: 150px; display: none; margin: 0 auto; border: 3px solid var(--primary); padding: 5px; border-radius: 10px;"></div>
                     </div>
@@ -560,7 +594,7 @@
                     </select>
                     
                     <label class="fw-bold fs-4 mb-2">تفاصيل الإجراء / ملاحظات للطباعة (اختياري):</label>
-                    <textarea id="va-custom-note" class="form-control bg-white shadow-sm fw-bold mb-2" rows="3" style="font-size:1.4rem; border-radius:15px; padding:15px; border:2px solid #ccc;" placeholder="اكتب هنا تفاصيل القرار أو التوجيه للموجه الطلابي..."></textarea>
+                    <textarea id="va-custom-note" class="form-control bg-white shadow-sm fw-bold mb-2" rows="3" style="font-size:1.4rem; border-radius:15px; padding:15px; border:2px solid #ccc;" placeholder="اكتب هنا الدرجة المستحقة للمخالفة أو التوجيه للموجه الطلابي..."></textarea>
 
                     <input type="hidden" id="va-violation-id">
                 </div>
@@ -597,7 +631,7 @@
         const firebaseConfig = { apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE", authDomain: "ethn-63848.firebaseapp.com", databaseURL: "https://ethn-63848-default-rtdb.firebaseio.com", projectId: "ethn-63848", storageBucket: "ethn-63848.appspot.com", messagingSenderId: "747489913596", appId: "1:747489913596:web:d98d88447e4a25cc808579" };
         firebase.initializeApp(firebaseConfig); const db = firebase.database();
         let userRole='', isMuted=true, attMode='period'; 
-        let data = { settings: {school:'متوسطة الإمام النووي', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:'', admin_email:'', permissions:{}}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, stars:{}, tardiness:{}, screens:{} };
+        let data = { settings: {school:'متوسطة الإمام النووي', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:'', admin_email:'', permissions:{}}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, stars:{}, tardiness:{}, screens:{} };
 
         let cache_classes = "";
         let cache_teachers = "";
@@ -661,6 +695,7 @@
         function populateSettingsUI() {
              if(document.getElementById('s-school')) {
                  document.getElementById('s-school').value = data.settings.school || '';
+                 document.getElementById('s-manager').value = data.settings.manager || '';
                  document.getElementById('s-deputy').value = data.settings.deputy || '';
                  document.getElementById('s-email').value = data.settings.admin_email || '';
                  if(data.settings.logo) { document.getElementById('logo-preview').src = data.settings.logo; document.getElementById('logo-preview').style.display = 'block'; }
@@ -774,7 +809,37 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // ================= التلفزيون الذكي لعرض الشهادات =================
+        // ================= الإدارة السريعة للتلفزيون (الشاشة الرئيسية) =================
+        function quickAddMedia(type, inputEl) {
+            const screenId = 'showcase'; 
+            if(type === 'image') {
+                const file = inputEl.files[0]; if(!file) return;
+                const reader = new FileReader(); 
+                reader.onload = e => { 
+                    db.ref(`screens/${screenId}`).push({ type: 'image', url: e.target.result }).then(() => { 
+                        Swal.fire('تم', 'تم إرسال الصورة لشاشة العرض المدرسية بنجاح', 'success'); 
+                        inputEl.value = '';
+                    }); 
+                }; 
+                reader.readAsDataURL(file);
+            } else if(type === 'video') {
+                Swal.fire({
+                    title: 'إضافة رابط يوتيوب التوعوي',
+                    input: 'url',
+                    inputPlaceholder: 'أدخل رابط اليوتيوب هنا...',
+                    showCancelButton: true,
+                    confirmButtonText: 'إرسال للشاشة',
+                    cancelButtonText: 'إلغاء'
+                }).then((result) => {
+                    if (result.isConfirmed && result.value) {
+                        db.ref(`screens/${screenId}`).push({ type: 'video', url: result.value }).then(() => { 
+                            Swal.fire('تم', 'تم إرسال الفيديو للشاشة بنجاح', 'success'); 
+                        });
+                    }
+                });
+            }
+        }
+
         function openTvMenu() {
             Swal.fire({
                 title: 'شاشة العرض المدرسية 📺',
@@ -812,7 +877,7 @@
                 idx++;
                 if(idx >= topStudents.length) idx = 0;
                 displayStudentCertOnScreen(topStudents[idx]);
-            }, 6000); // تغيير كل 6 ثواني
+            }, 6000); 
         }
 
         function displayStudentCertOnScreen(studentName) {
@@ -840,10 +905,26 @@
         }
 
         function closeOverlay(id) { 
-            clearInterval(certSlideInterval); // إيقاف العرض التلقائي عند الإغلاق
+            clearInterval(certSlideInterval); 
             document.getElementById(id).style.display='none'; 
             if(document.exitFullscreen) document.exitFullscreen(); 
         }
+
+        function openMediaScreen(screenId) {
+            const screenData = data.screens && data.screens[screenId] ? data.screens[screenId] : [];
+            const inner = document.getElementById('media-carousel-inner');
+            if(!screenData || Object.keys(screenData).length === 0) { Swal.fire('تنبيه', 'لا توجد وسائط مضافة في هذه الشاشة بعد. يمكنك إضافتها من الإعدادات.', 'info'); return; }
+            inner.innerHTML = ''; let isFirst = true;
+            Object.values(screenData).forEach(media => {
+                let content = '';
+                if(media.type === 'image') { content = `<img src="${media.url}" class="d-block w-100" alt="عرض">`; } 
+                else if(media.type === 'video') { let vUrl = media.url; if(vUrl.includes('watch?v=')) vUrl = vUrl.replace('watch?v=', 'embed/'); content = `<iframe src="${vUrl}?autoplay=1&mute=1&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; }
+                const activeClass = isFirst ? 'active' : ''; inner.innerHTML += `<div class="carousel-item ${activeClass}">${content}</div>`; isFirst = false;
+            });
+            document.getElementById('media-slider-overlay').style.display = 'block';
+            if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+        }
+        function closeMediaSlider() { document.getElementById('media-slider-overlay').style.display='none'; document.getElementById('media-carousel-inner').innerHTML=''; if(document.exitFullscreen) document.exitFullscreen(); }
 
         function createNewScreen() {
             const name = document.getElementById('new-screen-name').value; const icon = document.getElementById('new-screen-icon').value;
@@ -960,7 +1041,6 @@
 
         function sendPermit() { 
             const teacherName = getStrictTeacherName(); if(!teacherName) return;
-            
             if(!validate(['t-class', 't-stu', 't-dest'])) return; 
             
             let timeVal = document.getElementById('t-time').value; 
@@ -1117,6 +1197,30 @@
             setTimeout(() => loadAttendanceList(), 100); 
         }
 
+        function calculateBestClass() { 
+            let s = {}; 
+            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
+            classesArr.forEach(c => s[c] = 0); 
+            
+            let studentsArr = Object.values(data.students || {});
+            Object.values(data.stars || {}).forEach(st => { 
+                let o = studentsArr.find(x => x && x.name === st.student); 
+                if(o && o.class) s[o.class] = (s[o.class] || 0) + (st.value || 1); 
+            }); 
+            Object.values(data.violations || {}).forEach(v => { 
+                let o = studentsArr.find(x => x && x.name === v.student); 
+                if(o && o.class) s[o.class] = (s[o.class] || 0) - 1; 
+            }); 
+            
+            let best = Object.entries(s).sort((a,b) => b[1] - a[1])[0]; 
+            if(best && best[1] > 0) { 
+                document.getElementById('best-class-badge').classList.remove('d-none'); 
+                document.getElementById('best-class-txt').innerText = best[0]; 
+            } else {
+                document.getElementById('best-class-badge').classList.add('d-none');
+            }
+        }
+
         function importData(inp) { 
             const c=document.getElementById('imp-cls-name').value; 
             if(!c) return Swal.fire('تنبيه', 'أدخل اسم الفصل أولاً في المربع المخصص', 'warning'); 
@@ -1190,6 +1294,15 @@
         
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
+
+        function logOut() {
+            localStorage.clear();
+            sessionStorage.clear();
+            userRole = '';
+            
+            // تحديث قسري للمتصفح لتنظيف الكاش
+            window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
+        }
 
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
@@ -1302,7 +1415,7 @@
             const action = document.getElementById('va-action-select').value;
             const stuName = document.getElementById('va-student-name').innerText;
             const vType = document.getElementById('va-violation-desc').innerText;
-            const customNote = document.getElementById('va-custom-note').value; // جلب ملاحظات الوكيل
+            const customNote = document.getElementById('va-custom-note').value; 
 
             let newStatus = '';
             if(action === 'verbal_warning') newStatus = 'closed_warning';
@@ -1330,14 +1443,13 @@
             });
         }
 
-        // ================= الطباعة الرسمية (صفحة واحدة 100% + الكليشة المعتمدة + توقيع الوكيل فقط) =================
+        // ================= الطباعة الرسمية (الكليشة الجديدة والشهادات العرضية) =================
         function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
             document.getElementById('cert-school-name').innerText = data.settings.school || 'المدرسة'; 
             document.getElementById('cert-logo-img').src = data.settings.logo || ''; 
             
-            // تهيئة التاريخ والوقت
             const dateStr = new Date().toLocaleDateString('ar-SA');
             const dayStr = new Date().toLocaleDateString('ar-SA', {weekday: 'long'});
             const timeStr = new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
@@ -1364,8 +1476,9 @@
                     <p style="font-size:2rem; margin-top:10px; color:#000;">تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
                     <div class="cert-name-box">${studentName}</div>
                     <p style="font-size:1.8rem; line-height: 1.6; margin-top:10px; color:#000;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
-                    <div style="display:flex; justify-content:space-around; width:100%; margin-top:auto; font-size:1.5rem; font-weight:bold; color:#000;">
-                        <div style="text-align:center;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
+                    <div style="display:flex; justify-content:space-between; width:100%; margin-top:auto; font-size:1.5rem; font-weight:bold; color:#000;">
+                        <div style="text-align:right;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
+                        <div style="text-align:left;"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
                     </div>
                 `;
             } else {
@@ -1374,14 +1487,13 @@
                 headerContainer.style.display = 'flex';
                 footerContainer.style.display = 'flex';
                 
-                // الكليشة الرسمية
                 headerContainer.innerHTML = `
                     <div class="form-header-text">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:var(--primary);">${data.settings.school || ''}</span></div>
                     <div><img src="${data.settings.logo || ''}" style="max-height: 80px;"></div>
                     <div class="form-header-left">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
                 `;
 
-                // التوقيع للوكيل فقط في المنتصف
+                // توقيع الوكيل فقط
                 footerContainer.innerHTML = `
                     <div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
                 `;
@@ -1416,11 +1528,11 @@
             }
 
             document.getElementById('final-print-container').innerHTML = ''; 
-            document.body.className = formType === 'certificate' ? 'print-landscape' : 'print-portrait'; // لتوجيه الطابعة
+            document.body.className = formType === 'certificate' ? 'print-landscape' : 'print-portrait'; 
             setTimeout(() => { window.print(); document.body.className = ''; }, 500);
         }
 
-        // ================= التقارير الذكية (مفلترة وآمنة) =================
+        // ================= التقارير الذكية (الوكيل يمين - المدير يسار) =================
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
             const logo = data.settings.logo || "";
@@ -1483,9 +1595,11 @@
                     h += `<table class="table table-bordered text-center"><thead><tr class="table-dark"><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).filter(t=>t).reverse().map(t=>`<tr><td>${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
                 }
                 
+                // توقيعات نهاية التقارير (الوكيل يمين - المدير يسار)
                 h+=`
-                <div style="display:flex; justify-content:center; margin-top:30px; padding:0 20px; font-size:1.3rem;">
-                    <div style="text-align:center"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
+                <div style="display:flex; justify-content:space-between; margin-top:30px; padding:0 20px; font-size:1.3rem;">
+                    <div style="text-align:right"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
+                    <div style="text-align:left"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
                 </div>`;
                 
                 document.getElementById('modal-print-content').innerHTML = h; 
@@ -1496,7 +1610,11 @@
             }
         }
 
-        function executePrint() { document.getElementById('final-print-container').innerHTML = document.getElementById('modal-print-content').innerHTML; setTimeout(()=>window.print(), 500); }
+        function executePrint() { 
+            document.getElementById('final-print-container').innerHTML = document.getElementById('modal-print-content').innerHTML; 
+            document.body.className = 'print-portrait';
+            setTimeout(()=>{ window.print(); document.body.className = ''; }, 500); 
+        }
 
     </script>
 </body>

@@ -27,7 +27,6 @@
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
         
-        /* حل جذري لظهور رسائل التنبيه فوق شاشة تسجيل الدخول */
         .swal2-container { z-index: 110000 !important; }
 
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; transition: transform 0.3s ease; }
@@ -47,7 +46,6 @@
             #pin-input { font-size: 3rem !important; height: 75px !important; letter-spacing: 15px; }
             .login-card h4 { font-size: 2.2rem !important; margin-bottom: 15px !important; }
 
-            /* تصميم شبكة الأزرار الثابتة بدون اختفاء للألوان */
             .services-grid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 15px; background: transparent !important; box-shadow: none !important; padding: 0 !important; }
             .services-grid .btn { 
                 padding: 25px 5px !important; font-size: 1.5rem !important; font-weight: 900 !important; border-radius: 20px !important; 
@@ -156,7 +154,6 @@
 
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
-        .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; font-size: 1.5rem; }
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 90px; border-bottom: 1px solid var(--border); }
         
         .hidden { display: none !important; }
@@ -201,7 +198,6 @@
 </head>
 <body>
     <div class="gradient-bg"></div>
-    <div class="custom-toast" id="system-toast">تنبيه جديد!</div>
 
     <div id="media-slider-overlay" class="full-overlay">
         <button class="overlay-close" onclick="closeMediaSlider()">إغلاق <i class="fas fa-times ms-2"></i></button>
@@ -265,7 +261,7 @@
         <main class="main-content">
             <section id="sec-services" class="view-section d-none fade-in">
                 
-                <div id="teacher-services-container">
+                <div id="teacher-services-container" class="d-none">
                     <div class="page-card p-4 mb-4 bg-white border-0 shadow-sm rounded-4">
                         <div class="d-flex flex-column gap-2 text-center">
                             <label class="fw-bold text-primary fs-3 mb-2"><i class="fas fa-chalkboard-teacher me-2"></i> اختر اسمك (مطلوب لجميع العمليات):</label>
@@ -669,21 +665,31 @@
 
         function buildMenu() { 
             const m = document.getElementById('nav-items'); 
-            let links = [['services','الشاشة الرئيسية','home'],['monitor','المتابعة الحية','desktop']]; 
-            const hasReportPerm = userRole==='admin' || (userRole==='teacher' && data.settings.permissions?.teacher) || (userRole==='guard' && data.settings.permissions?.guard) || (userRole==='counselor' && data.settings.permissions?.counselor);
+            let links = [];
+            const hasRep = data.settings.permissions;
+
+            if (userRole === 'admin') {
+                links = [['services','لوحة الإدارة','home'],['monitor','المتابعة الحية','desktop'],['reports','التقارير','file-alt'],['sec-data','الإعدادات العامة','cogs']];
+            } else if (userRole === 'teacher') {
+                links = [['services','خدمات المعلم','home'],['monitor','المتابعة الحية','desktop']];
+                if(hasRep?.teacher) links.push(['reports','التقارير','file-alt']);
+            } else if (userRole === 'guard') {
+                links = [['guard','شاشة الحارس','shield-alt'],['monitor','المتابعة الحية','desktop']];
+                if(hasRep?.guard) links.push(['reports','التقارير','file-alt']);
+            } else if (userRole === 'counselor') {
+                links = [['counselor','شاشة الموجه','user-graduate'],['monitor','المتابعة الحية','desktop']];
+                if(hasRep?.counselor) links.push(['reports','التقارير','file-alt']);
+            }
             
-            if(hasReportPerm) links.push(['reports','التقارير','file-alt']);
-            if(userRole==='admin') links.push(['sec-data','الإعدادات العامة','cogs']); 
-            if(userRole==='guard') links = [['services','الشاشة الرئيسية','home'],['guard','الحارس','shield-alt']]; 
-            if(userRole==='counselor') links = [['services','الشاشة الرئيسية','home'],['counselor','الموجه','user-graduate']];
-            
-            const uniqueLinks = []; const map = new Map();
-            for (const item of links) { if(!map.has(item[0])){ map.set(item[0], true); uniqueLinks.push(item); }}
-            let navHtml = uniqueLinks.map(l => `<div class="nav-link fs-4 py-3" id="nav-${l[0]}" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-3 fa-lg"></i> ${l[1]}</div>`).join(''); 
+            let navHtml = links.map(l => `<div class="nav-link fs-4 py-3" id="nav-${l[0]}" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-3 fa-lg"></i> ${l[1]}</div>`).join(''); 
             m.innerHTML = navHtml;
         }
 
-        function goToMainScreen() { navigate('services'); }
+        function goToMainScreen() { 
+            if(userRole === 'admin' || userRole === 'teacher') navigate('services');
+            else if(userRole === 'guard') navigate('guard');
+            else if(userRole === 'counselor') navigate('counselor');
+        }
 
         function navigate(id) { 
             localStorage.setItem('currentView', id); 
@@ -694,11 +700,14 @@
                 if(userRole === 'admin') { 
                     document.getElementById('admin-panel-content').classList.remove('d-none'); 
                     document.getElementById('teacher-services-container').classList.add('d-none'); 
-                } else { 
+                } else if(userRole === 'teacher') { 
                     document.getElementById('admin-panel-content').classList.add('d-none'); 
                     document.getElementById('teacher-services-container').classList.remove('d-none'); 
+                } else {
+                    document.getElementById('admin-panel-content').classList.add('d-none'); 
+                    document.getElementById('teacher-services-container').classList.add('d-none'); 
                 }
-                showServiceDefault();
+                if(userRole === 'teacher') showServiceDefault();
             } else if (id === 'sec-data') { document.getElementById('sec-data').classList.remove('d-none'); populateSettingsUI(); } 
             else { const el = document.getElementById('sec-'+id); if(el) el.classList.remove('d-none'); if(id==='monitor') renderMonitor(); }
             
@@ -716,7 +725,11 @@
         function updateFloatingHomeBtn(currentView) {
             const btn = document.getElementById('floating-home-btn');
             if(!btn) return;
-            if (currentView === 'services') { btn.style.display = 'none'; } else { btn.style.display = 'flex'; }
+            // إخفاء الزر العائم إذا كان المستخدم في شاشته الرئيسية
+            if ((userRole === 'admin' || userRole === 'teacher') && currentView === 'services') { btn.style.display = 'none'; } 
+            else if (userRole === 'guard' && currentView === 'guard') { btn.style.display = 'none'; }
+            else if (userRole === 'counselor' && currentView === 'counselor') { btn.style.display = 'none'; }
+            else { btn.style.display = 'flex'; }
         }
 
         function showServiceDefault() { const boxes = ['srv-permit-box', 'srv-attendance-box', 'srv-behavior-box', 'srv-violation-box', 'srv-late-box']; let active = false; boxes.forEach(b => { if(!document.getElementById(b).classList.contains('d-none')) active = true; }); if(!active) tabService('permit'); }
@@ -806,7 +819,6 @@
             const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
         }
 
-        // ================= الحل الجذري لمنع إغلاق القوائم المنسدلة =================
         function smartRefreshDropdowns() {
             try {
                 let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
@@ -839,9 +851,7 @@
                     if(currentVal) te.value = currentVal; else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; } 
                 }
 
-            } catch (error) {
-                console.error("Error refreshing dropdowns:", error);
-            }
+            } catch (error) {}
         }
 
         function loadStudentsForRole(c, id) { 
@@ -855,7 +865,6 @@
             }
         }
 
-        // ================= الإرسال المرن للإذن والمخالفة =================
         function sendPermit() { 
             const teacherName = getStrictTeacherName(); if(!teacherName) return;
             
@@ -950,7 +959,6 @@
             }
         }
 
-        // ================= الإستيراد والتصدير الآمن =================
         function importData(inp) { 
             const c=document.getElementById('imp-cls-name').value; 
             if(!c) return Swal.fire('تنبيه', 'أدخل اسم الفصل أولاً في المربع المخصص', 'warning'); 
@@ -1025,14 +1033,10 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
-        // ================= نظام الدالة الصلبة للـ Logout =================
         function logOut() {
-            // مسح جميع بيانات التخزين
             localStorage.clear();
             sessionStorage.clear();
             userRole = '';
-            
-            // إخفاء النظام وإظهار شاشة الدخول فوراً وبدون تحديث (تجربة مستخدم سريعة)
             document.getElementById('app-body').classList.add('d-none');
             document.getElementById('auth-overlay').style.display = 'flex';
             document.getElementById('pin-area').classList.add('hidden');
@@ -1046,7 +1050,7 @@
                 timer: 1500,
                 showConfirmButton: false
             }).then(() => {
-                window.location.href = window.location.href.split('#')[0]; // إعادة تحميل نظيفة ومضمونة 100%
+                window.location.reload(true); // تفريغ الكاش الإجباري وإعادة التحميل
             });
         }
 

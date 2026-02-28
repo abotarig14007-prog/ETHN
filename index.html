@@ -76,16 +76,9 @@
         .service-card-red { background-color: #fdf5f5 !important; border: 3px solid #dc3545 !important; }
         
         .huge-input { 
-            font-size: 1.6rem !important; 
-            font-weight: 900 !important; 
-            padding: 15px 40px 15px 15px !important; 
-            border-radius: 15px !important; 
-            text-align: center; 
-            background-color: #ffffff; 
-            border: 2px solid #ccc;
-            height: auto !important; 
-            appearance: auto !important; 
-            cursor: pointer;
+            font-size: 1.6rem !important; font-weight: 900 !important; padding: 15px 40px 15px 15px !important; 
+            border-radius: 15px !important; text-align: center; background-color: #ffffff; border: 2px solid #ccc;
+            height: auto !important; appearance: auto !important; cursor: pointer;
         }
         .huge-input:focus { border-color: var(--primary); box-shadow: 0 0 0 0.25rem rgba(0, 108, 53, 0.25); }
         .huge-label { font-size: 1.4rem !important; font-weight: 900 !important; margin-bottom: 8px !important; display: block; }
@@ -112,8 +105,6 @@
         .nav-link.active { border-right: 5px solid var(--gold); }
 
         .page-card { background: var(--card); border-radius: 25px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
-        .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         
         .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
         .monitor-card.safe { border-color: #198754; background-color: #f1fdf6; }
@@ -123,7 +114,6 @@
         @keyframes dangerPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(220, 53, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
 
         .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
-        .report-grid-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
         .cursor-pointer { cursor: pointer; transition: 0.2s; }
 
@@ -146,7 +136,7 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= هندسة الطباعة الاحترافية ================= */
+        /* ================= Print Styles ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0; padding: 0; background: white !important; font-family: 'Tajawal', sans-serif; }
@@ -161,45 +151,38 @@
                 display: flex !important; position: absolute; left: 0; top: 0; 
                 background: white; z-index: 999999; 
                 flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box;
-                width: 100%;
+                width: 100%; height: 100%;
             }
 
-            /* إطار التعهد والمخالفة (A4 Portrait) - محمي ضد التمدد لصفحتين */
             .form-frame {
                 width: 210mm; 
-                height: 280mm; 
-                max-height: 285mm; /* الحد الأقصى المطلق */
-                border: 6px double var(--primary); 
-                padding: 10mm 15mm; 
+                height: 275mm; 
+                border: 5px double var(--primary); 
+                padding: 15mm; 
                 display: flex; flex-direction: column; justify-content: space-between;
-                box-sizing: border-box; background: white; page-break-inside: avoid; page-break-after: avoid;
-                direction: rtl; text-align: right; margin: 0 auto; overflow: hidden;
+                box-sizing: border-box; background: white; page-break-inside: avoid;
+                direction: rtl; text-align: right; margin: 0 auto;
             }
-            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
-            .form-header img { max-height: 70px; }
-            .form-header-text { font-weight: bold; font-size: 1.1rem; line-height: 1.4; color: #000; text-align: right; }
-            .form-header-left { text-align: left; font-size: 1rem; font-weight: bold; line-height: 1.4; color: #000; direction: ltr;}
+            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
+            .form-header img { max-height: 80px; }
+            .form-header-text { font-weight: bold; font-size: 1.2rem; line-height: 1.5; color: #000; text-align: right; }
+            .form-header-left { text-align: left; font-size: 1.1rem; font-weight: bold; line-height: 1.5; color: #000; direction: ltr;}
             
-            .form-title { text-align: center; font-size: 2rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; }
+            .form-title { text-align: center; font-size: 2.2rem; font-weight: 900; color: #000; margin: 20px 0; text-decoration: underline; }
+            .form-body { font-size: 1.3rem; line-height: 1.8; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 10px; }
+            .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 1.2rem;}
             
-            .form-body { font-size: 1.3rem; line-height: 1.7; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; }
-            .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.2rem;}
+            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.3rem; font-weight: bold; color: #000; padding-top: 20px; }
             
-            /* التوقيع - الوكيل فقط في النماذج */
-            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.3rem; font-weight: bold; color: #000; padding-top: 10px; }
-            
-            /* إطار شهادة الشكر (عرضي 96%) */
             .cert-frame { 
-                width: 96vw; height: 96vh; margin: 2vh auto; 
-                border: 15px solid var(--gold); padding: 20mm; 
+                width: 297mm; height: 200mm; border: 15px solid var(--gold); padding: 20mm; 
                 text-align: center; display: flex; flex-direction: column; justify-content: space-between;
                 background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="none" stroke="%23006C35" stroke-width="4" stroke-dasharray="10 10"/></svg>');
-                box-sizing: border-box; page-break-inside: avoid;
+                box-sizing: border-box; page-break-inside: avoid; margin: 0 auto;
             }
             .cert-body h1 { font-size: 4rem; color: var(--primary); font-weight: 900; margin-bottom: 20px; }
             .cert-name-box { border-bottom: 4px solid var(--gold); display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: var(--gold); margin: 30px 0; }
             
-            /* التقارير العادية (جداول) */
             #modal-print-content {
                 visibility: visible; position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 20px; direction: rtl;
             }
@@ -236,11 +219,11 @@
     <div id="top-bar" class="fixed-top no-print">
         <div class="d-flex align-items-center"><div style="width:15px; height:15px; background:red; border-radius:50%; margin-left:15px;" id="status-dot"></div><h5 class="m-0 fw-bold text-dark d-none d-sm-block">نظام إذن <span class="text-success">الاحترافي</span></h5><h4 class="m-0 fw-bold text-dark d-sm-none">نظام إذن</h4></div>
         <div class="d-flex align-items-center gap-3">
-            <button class="btn btn-dark rounded-pill fw-bold d-none d-md-block" onclick="openTvMenu()"><i class="fas fa-tv me-2"></i> شاشة العرض</button>
-            <button class="btn btn-dark rounded-circle p-3 d-md-none" onclick="openTvMenu()"><i class="fas fa-tv fa-lg"></i></button>
+            <button class="btn btn-dark rounded-pill fw-bold d-none d-md-block shadow-sm" onclick="openTvMenu()"><i class="fas fa-tv me-2"></i> شاشة العرض</button>
+            <button class="btn btn-dark rounded-circle p-3 d-md-none shadow-sm" onclick="openTvMenu()"><i class="fas fa-tv fa-lg"></i></button>
             <div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div>
-            <button class="btn btn-light rounded-circle border p-3" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up fa-lg"></i></button>
-            <button class="btn btn-outline-dark d-lg-none p-2" onclick="toggleSidebar()"><i class="fas fa-bars fa-2x"></i></button>
+            <button class="btn btn-light rounded-circle border p-3 shadow-sm" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up fa-lg"></i></button>
+            <button class="btn btn-outline-dark d-lg-none p-2 shadow-sm" onclick="toggleSidebar()"><i class="fas fa-bars fa-2x"></i></button>
         </div>
     </div>
 
@@ -394,7 +377,7 @@
 
                 <div id="admin-panel-content" class="d-none">
                      <div class="page-card p-4 mb-4 border-2 border-primary bg-light shadow-sm">
-                        <h4 class="fw-bold text-primary mb-3 text-center"><i class="fas fa-tv me-2"></i> التحكم السريع بشاشة الساحة</h4>
+                        <h4 class="fw-bold text-primary mb-4 text-center"><i class="fas fa-tv me-2"></i> التحكم السريع بشاشة الساحة</h4>
                         <div class="row g-3">
                             <div class="col-md-4 col-12">
                                 <button class="btn btn-success w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="document.getElementById('quick-img-upload').click()">
@@ -404,7 +387,7 @@
                             </div>
                             <div class="col-md-4 col-12">
                                 <button class="btn btn-danger w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="quickAddMedia('video')">
-                                    <i class="fas fa-video me-2"></i> إرسال فيديو يوتيوب
+                                    <i class="fab fa-youtube me-2"></i> إرسال فيديو يوتيوب
                                 </button>
                             </div>
                             <div class="col-md-4 col-12">
@@ -842,23 +825,24 @@
 
         function openTvMenu() {
             Swal.fire({
-                title: 'شاشة العرض المدرسية 📺',
-                text: 'اختر ماذا تريد أن تعرض على الشاشة الكبيرة للمدرسة:',
-                icon: 'question',
+                title: '📺 تحكم شاشة العرض',
+                html: `
+                    <div class="d-flex flex-column gap-3 mt-3">
+                        <button class="btn btn-success btn-lg rounded-pill fw-bold py-3 shadow" onclick="Swal.close(); setTimeout(()=>openMediaScreen('showcase'), 300)">
+                            <i class="fas fa-images me-2"></i> عرض الصور وفيديوهات الساحة
+                        </button>
+                        <button class="btn btn-warning text-dark btn-lg rounded-pill fw-bold py-3 shadow" onclick="Swal.close(); setTimeout(startCertSlideshow, 300)">
+                            <i class="fas fa-certificate me-2"></i> عرض شهادات المتميزين
+                        </button>
+                        <button class="btn btn-dark btn-lg rounded-pill fw-bold py-3 shadow" onclick="Swal.close(); setTimeout(()=>{document.getElementById('hall-of-fame-overlay').style.display='block'; if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();}, 300)">
+                            <i class="fas fa-crown me-2"></i> عرض لوحة الشرف
+                        </button>
+                    </div>
+                `,
+                showConfirmButton: false,
                 showCancelButton: true,
-                showDenyButton: true,
-                confirmButtonText: 'الشهادات (المتميزين)',
-                denyButtonText: 'لوحة الشرف',
-                cancelButtonText: 'إلغاء',
-                confirmButtonColor: '#0d6efd',
-                denyButtonColor: '#198754'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    startCertSlideshow();
-                } else if (result.isDenied) {
-                    document.getElementById('hall-of-fame-overlay').style.display='block'; 
-                    if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-                }
+                cancelButtonText: 'إغلاق القائمة',
+                cancelButtonColor: '#dc3545'
             });
         }
 
@@ -910,6 +894,7 @@
             if(document.exitFullscreen) document.exitFullscreen(); 
         }
 
+        // ================= مشغل الوسائط المتطور (الصور والفيديوهات) =================
         function openMediaScreen(screenId) {
             const screenData = data.screens && data.screens[screenId] ? data.screens[screenId] : [];
             const inner = document.getElementById('media-carousel-inner');
@@ -917,13 +902,27 @@
             inner.innerHTML = ''; let isFirst = true;
             Object.values(screenData).forEach(media => {
                 let content = '';
-                if(media.type === 'image') { content = `<img src="${media.url}" class="d-block w-100" alt="عرض">`; } 
-                else if(media.type === 'video') { let vUrl = media.url; if(vUrl.includes('watch?v=')) vUrl = vUrl.replace('watch?v=', 'embed/'); content = `<iframe src="${vUrl}?autoplay=1&mute=1&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; }
+                if(media.type === 'image') { 
+                    content = `<img src="${media.url}" class="d-block w-100" alt="عرض">`; 
+                } 
+                else if(media.type === 'video') { 
+                    let vUrl = media.url; 
+                    // تحويل ذكي لروابط اليوتيوب لتعمل تلقائياً
+                    if(vUrl.includes('youtube.com/watch?v=')) {
+                        vUrl = vUrl.replace('watch?v=', 'embed/');
+                        vUrl = vUrl.split('&')[0];
+                    } else if (vUrl.includes('youtu.be/')) {
+                        vUrl = vUrl.replace('youtu.be/', 'youtube.com/embed/');
+                        vUrl = vUrl.split('?')[0];
+                    }
+                    content = `<iframe src="${vUrl}?autoplay=1&mute=0&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; 
+                }
                 const activeClass = isFirst ? 'active' : ''; inner.innerHTML += `<div class="carousel-item ${activeClass}">${content}</div>`; isFirst = false;
             });
             document.getElementById('media-slider-overlay').style.display = 'block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
         }
+
         function closeMediaSlider() { document.getElementById('media-slider-overlay').style.display='none'; document.getElementById('media-carousel-inner').innerHTML=''; if(document.exitFullscreen) document.exitFullscreen(); }
 
         function createNewScreen() {
@@ -1041,6 +1040,7 @@
 
         function sendPermit() { 
             const teacherName = getStrictTeacherName(); if(!teacherName) return;
+            
             if(!validate(['t-class', 't-stu', 't-dest'])) return; 
             
             let timeVal = document.getElementById('t-time').value; 
@@ -1295,15 +1295,6 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
-        function logOut() {
-            localStorage.clear();
-            sessionStorage.clear();
-            userRole = '';
-            
-            // تحديث قسري للمتصفح لتنظيف الكاش
-            window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
-        }
-
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
             const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
@@ -1443,7 +1434,7 @@
             });
         }
 
-        // ================= الطباعة الرسمية (الكليشة الجديدة والشهادات العرضية) =================
+        // ================= الطباعة الرسمية (الكليشة والمحاذاة والصفحة الواحدة) =================
         function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
@@ -1487,13 +1478,14 @@
                 headerContainer.style.display = 'flex';
                 footerContainer.style.display = 'flex';
                 
+                // الكليشة الرسمية
                 headerContainer.innerHTML = `
                     <div class="form-header-text">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:var(--primary);">${data.settings.school || ''}</span></div>
                     <div><img src="${data.settings.logo || ''}" style="max-height: 80px;"></div>
                     <div class="form-header-left">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
                 `;
 
-                // توقيع الوكيل فقط
+                // التوقيع للوكيل فقط في المنتصف
                 footerContainer.innerHTML = `
                     <div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
                 `;
@@ -1532,7 +1524,7 @@
             setTimeout(() => { window.print(); document.body.className = ''; }, 500);
         }
 
-        // ================= التقارير الذكية (الوكيل يمين - المدير يسار) =================
+        // ================= التقارير الذكية (مفلترة وآمنة) =================
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
             const logo = data.settings.logo || "";
@@ -1595,7 +1587,6 @@
                     h += `<table class="table table-bordered text-center"><thead><tr class="table-dark"><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).filter(t=>t).reverse().map(t=>`<tr><td>${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
                 }
                 
-                // توقيعات نهاية التقارير (الوكيل يمين - المدير يسار)
                 h+=`
                 <div style="display:flex; justify-content:space-between; margin-top:30px; padding:0 20px; font-size:1.3rem;">
                     <div style="text-align:right"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>

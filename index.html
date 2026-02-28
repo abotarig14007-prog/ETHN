@@ -86,6 +86,7 @@
             background-color: #ffffff; 
             border: 2px solid #ccc;
             height: auto !important; 
+            appearance: auto !important; 
             cursor: pointer;
         }
         .huge-input:focus { border-color: var(--primary); box-shadow: 0 0 0 0.25rem rgba(0, 108, 53, 0.25); }
@@ -252,8 +253,8 @@
         <aside class="sidebar no-print" id="main-sidebar">
             <div class="text-center py-5 px-3"><div class="bg-white p-3 rounded-circle d-inline-block shadow mb-3"><i class="fas fa-mosque fa-3x text-success"></i></div><h5 class="fw-bold text-white mt-2" id="disp-school">...</h5></div>
             <div id="nav-items" class="px-2 pb-3"></div>
-            <div class="px-3 pb-5 mb-5 mt-4">
-                <button class="btn w-100 rounded-pill fw-bold fs-5 shadow" style="background-color: #dc3545; color: white; padding: 18px;" onclick="logOut()"><i class="fas fa-sign-out-alt me-2"></i> خروج آمن من النظام</button>
+            <div class="px-3 pb-5 mb-5 mt-4" style="padding-bottom: 120px !important;">
+                <button class="btn w-100 rounded-pill fw-bold fs-4 shadow" style="background-color: #dc3545; color: white; padding: 18px;" onclick="logOut()"><i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج</button>
             </div>
         </aside>
 
@@ -559,8 +560,7 @@
                 <div><img id="cert-logo-img" src=""></div>
                 <div style="width: 250px;"></div>
             </div>
-            <div class="cert-body" id="dynamic-print-body">
-                </div>
+            <div class="cert-body" id="dynamic-print-body"></div>
             <div class="cert-signatures">
                 <div class="manager"><strong>مدير المدرسة</strong><br><br><span id="cert-manager-name" style="color:var(--primary); font-size:1.8rem;">...</span></div>
                 <div class="deputy"><strong>وكيل شؤون الطلاب</strong><br><br><span id="cert-deputy-name" style="color:var(--primary); font-size:1.8rem;">...</span></div>
@@ -806,7 +806,7 @@
             const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
         }
 
-        // ================= الحل الجذري للفلترة ومنع تحديث القوائم تلقائياً وإزعاج المستخدم =================
+        // ================= الحل الجذري لمنع إغلاق القوائم المنسدلة =================
         function smartRefreshDropdowns() {
             try {
                 let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
@@ -855,15 +855,14 @@
             }
         }
 
-        // ================= الإرسال المرن للإذن والمخالفة (حل مشكلة عدم الإرسال) =================
+        // ================= الإرسال المرن للإذن والمخالفة =================
         function sendPermit() { 
             const teacherName = getStrictTeacherName(); if(!teacherName) return;
             
-            // قمنا بإزالة حقل الوقت (t-time) من الإجبارية لتكون مرنة
             if(!validate(['t-class', 't-stu', 't-dest'])) return; 
             
             let timeVal = document.getElementById('t-time').value; 
-            if(!timeVal || timeVal <= 0) timeVal = 10; // إذا نسي المعلم كتابة المدة، نضع 10 دقائق تلقائياً
+            if(!timeVal || timeVal <= 0) timeVal = 10; 
             
             const stu = document.getElementById('t-stu').value;
             const activePermits = Object.values(data.permits||{}).filter(p => p && p.student === stu && p.active);
@@ -900,8 +899,6 @@
 
         function sendViolation() { 
             const teacherName = getStrictTeacherName(); if(!teacherName) return; 
-            
-            // حقل التفاصيل الإضافية أصبح غير إجباري لعدم التعليق
             if(!validate(['v-class', 'v-stu', 'v-type'])) return; 
             
             const stu = document.getElementById('v-stu').value;
@@ -1027,6 +1024,31 @@
         
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
+
+        // ================= نظام الدالة الصلبة للـ Logout =================
+        function logOut() {
+            // مسح جميع بيانات التخزين
+            localStorage.clear();
+            sessionStorage.clear();
+            userRole = '';
+            
+            // إخفاء النظام وإظهار شاشة الدخول فوراً وبدون تحديث (تجربة مستخدم سريعة)
+            document.getElementById('app-body').classList.add('d-none');
+            document.getElementById('auth-overlay').style.display = 'flex';
+            document.getElementById('pin-area').classList.add('hidden');
+            document.getElementById('role-selection').classList.remove('hidden');
+            document.getElementById('pin-input').value = '';
+            
+            Swal.fire({
+                title: 'تم تسجيل الخروج',
+                text: 'نراك قريباً!',
+                icon: 'info',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = window.location.href.split('#')[0]; // إعادة تحميل نظيفة ومضمونة 100%
+            });
+        }
 
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;

@@ -51,6 +51,8 @@
             .services-grid .btn.active-tab { opacity: 1; transform: scale(1.03); border: 3px solid #000; box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important; }
             .services-grid .btn i { font-size: 3.5rem !important; margin-bottom: 15px !important; display: block !important; }
             
+            .admin-dash-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+            .admin-dash-grid .btn { font-size: 1.8rem; padding: 20px; border-radius: 20px; }
             .btn-lg-mobile { font-size: 1.7rem !important; padding: 18px !important; border-radius: 50px !important; }
         }
 
@@ -59,6 +61,7 @@
             .services-grid .btn { border-radius: 50rem !important; padding: 10px 30px; font-weight: bold; opacity: 0.6; }
             .services-grid .btn.active-tab { opacity: 1; transform: scale(1.05); border: 3px solid #000; }
             .services-grid .btn i { display: none; }
+            .admin-dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         }
 
         /* ================= تحسينات الحقول والبطاقات ================= */
@@ -96,7 +99,7 @@
         .report-grid-item { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
         
-        /* ================= شاشات العرض والتلفزيون ================= */
+        /* ================= شاشات العرض والتلفزيون واليوتيوب ================= */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
         
         .overlay-close { 
@@ -113,6 +116,7 @@
 
         .carousel, .carousel-inner { height: 100vh; width: 100vw; }
         .carousel-item { height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; background: #000; }
+        /* فرض مقاسات اليوتيوب بالقوة لتعمل بلا شاشة سوداء */
         .carousel-item iframe, .carousel-item img { width: 100vw !important; height: 100vh !important; object-fit: contain; border: none; pointer-events: auto; }
 
         /* ================= لوحة الشرف 👑 ================= */
@@ -130,7 +134,7 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= الطباعة الرسمية (النسخة النهائية المحصنة) ================= */
+        /* ================= الطباعة الرسمية (النسخة النهائية المحصنة لصفحة واحدة) ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; background: white !important; font-family: 'Tajawal', sans-serif; overflow: hidden !important; }
@@ -151,7 +155,7 @@
             /* إطار التعهد والمخالفة محمي بصفحة واحدة تماماً */
             .form-frame {
                 width: 210mm !important; 
-                height: 280mm !important; /* طول ثابت لمنع التمدد */
+                height: 280mm !important; 
                 max-height: 285mm !important; 
                 border: 5px double var(--primary) !important; 
                 padding: 10mm 15mm !important; 
@@ -170,7 +174,7 @@
             .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.1rem;}
             .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; flex-shrink: 0;}
             
-            /* إطار شهادة الشكر (عرضي 96%) */
+            /* إطار شهادة الشكر (عرضي 96% ومحمي للطباعة بالألوان) */
             .cert-frame { 
                 width: 285mm !important; height: 195mm !important; margin: 0 auto !important; 
                 border: 10px solid var(--gold) !important; outline: 4px solid var(--primary) !important; outline-offset: -8px !important;
@@ -220,6 +224,35 @@
         <div class="hof-container" style="width:100%; height:100%; padding-top: 30px;">
             <h1 class="text-center mb-4 text-warning" id="disp-hof-title" style="font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">💎 شاشة التميز 💎</h1>
             <div id="hof-content" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="mediaLibraryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-info text-white">
+                    <h4 class="modal-title fw-bold"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط (الصور والفيديوهات)</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light">
+                    <div class="bg-white p-4 rounded-4 mb-4 border border-info shadow-sm">
+                        <h5 class="fw-bold text-dark mb-4 text-center">إضافة مقطع جديد للمكتبة</h5>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6 col-12"><input type="text" id="lib-name" class="form-control huge-input" placeholder="اكتب اسم المقطع (مثال: أذكار، شعار)"></div>
+                            <div class="col-md-6 col-12"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="ضع رابط يوتيوب هنا..."></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6 col-12"><button type="button" class="btn btn-info text-white w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="saveToLibrary()"><i class="fas fa-save me-2"></i> حفظ الرابط في المكتبة</button></div>
+                            <div class="col-md-6 col-12">
+                                <input type="file" id="lib-file" style="display:none" accept="image/*" onchange="saveImageToLibrary(this)">
+                                <button type="button" class="btn btn-outline-success w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="document.getElementById('lib-file').click()"><i class="fas fa-upload me-2"></i> أو رفع صورة من الجهاز</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-3 border-bottom pb-2">المقاطع المحفوظة:</h5>
+                    <div id="media-library-list" style="max-height: 300px; overflow-y: auto; padding-right: 10px;"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -340,48 +373,10 @@
                      <div class="row g-4 mb-4">
                         
                         <div class="col-lg-4 col-12 order-lg-2">
-                            <div class="page-card p-3 mb-3 border-warning border-3 bg-light text-center shadow-sm">
-                                <button type="button" class="btn btn-warning w-100 py-3 fw-bold fs-3 rounded-pill shadow mb-2 text-dark" onclick="openHallOfFame()"><i class="fas fa-crown me-2"></i> شاشة التميز</button>
-                                <button type="button" class="btn btn-dark w-100 py-3 fw-bold fs-4 rounded-pill shadow" onclick="openMediaScreen('showcase')"><i class="fas fa-play-circle me-2"></i> تشغيل العرض الحالي</button>
-                            </div>
-
-                            <div class="page-card border-info border-2 bg-white shadow-sm mb-3">
-                                <div class="card-header-custom bg-info text-white text-center d-block">
-                                    <h5 class="fw-bold m-0"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط</h5>
-                                </div>
-                                <div class="p-3">
-                                    <div class="mb-3">
-                                        <input type="text" id="lib-name" class="form-control mb-2 fw-bold" placeholder="اسم المقطع...">
-                                        <input type="text" id="lib-url" class="form-control mb-2 text-start" dir="ltr" placeholder="رابط يوتيوب...">
-                                        <button type="button" class="btn btn-primary w-100 fw-bold shadow-sm" onclick="saveToLibrary()"><i class="fas fa-save me-1"></i> حفظ الرابط</button>
-                                    </div>
-                                    <div class="mb-3 border-bottom pb-3">
-                                        <input type="file" id="lib-file" style="display:none" accept="image/*" onchange="saveImageToLibrary(this)">
-                                        <button type="button" class="btn btn-outline-success w-100 fw-bold shadow-sm" onclick="document.getElementById('lib-file').click()"><i class="fas fa-upload me-1"></i> رفع صورة من الجهاز</button>
-                                    </div>
-                                    <h6 class="fw-bold text-dark">المقاطع المحفوظة:</h6>
-                                    <div id="media-library-list" style="max-height: 250px; overflow-y: auto;"></div>
-                                </div>
-                            </div>
-
-                            <div class="page-card border-secondary border-2 bg-white shadow-sm">
-                                <div class="card-header-custom bg-secondary text-white text-center d-block">
-                                    <h5 class="fw-bold m-0"><i class="fas fa-user-shield me-2"></i> صلاحيات التقارير</h5>
-                                </div>
-                                <div class="p-3">
-                                    <div class="form-check form-switch mb-3">
-                                        <input class="form-check-input" type="checkbox" id="perm-teacher" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;">
-                                        <label class="form-check-label fs-5 fw-bold text-dark">المعلمين</label>
-                                    </div>
-                                    <div class="form-check form-switch mb-3">
-                                        <input class="form-check-input" type="checkbox" id="perm-guard" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;">
-                                        <label class="form-check-label fs-5 fw-bold text-dark">الحارس</label>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="perm-counselor" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;">
-                                        <label class="form-check-label fs-5 fw-bold text-dark">الموجه الطلابي</label>
-                                    </div>
-                                </div>
+                            <div class="page-card p-4 mb-3 border-warning border-3 bg-white text-center shadow-sm">
+                                <h4 class="fw-bold text-dark mb-4 border-bottom pb-2"><i class="fas fa-tv me-2"></i> شاشات العرض</h4>
+                                <button type="button" class="btn btn-warning w-100 py-3 fw-bold fs-3 rounded-pill shadow mb-3 text-dark" onclick="openHallOfFame()"><i class="fas fa-crown me-2"></i> شاشة التميز المدرسية</button>
+                                <button type="button" class="btn btn-info text-white w-100 py-3 fw-bold fs-3 rounded-pill shadow" onclick="openMediaLibraryModal()"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط</button>
                             </div>
                         </div>
 
@@ -461,7 +456,28 @@
 
             <section id="sec-data" class="view-section d-none fade-in">
                 <div class="page-card p-4">
-                    <h4 class="fw-bold mb-5 text-primary border-bottom pb-3 fs-2 text-center">الإعدادات المتقدمة</h4>
+                    <h4 class="fw-bold mb-5 text-primary border-bottom pb-3 fs-1 text-center">الإعدادات الشاملة للمسؤول</h4>
+                    
+                    <div class="setting-card-yellow p-4 mb-5 rounded shadow-sm border-2 border-warning bg-light">
+                        <h4 class="fw-bold text-dark mb-4 border-bottom pb-2"><i class="fas fa-user-shield me-2"></i> صلاحيات المستخدمين الشاملة</h4>
+                        <div class="row g-4">
+                            <div class="col-md-4 col-12 border-end">
+                                <h5 class="fw-bold text-primary mb-3">المعلم</h5>
+                                <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="perm-teacher-rep" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold">التقارير</label></div>
+                                <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-teacher-mon" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold">المتابعة الحية</label></div>
+                            </div>
+                            <div class="col-md-4 col-12 border-end">
+                                <h5 class="fw-bold text-dark mb-3">الحارس</h5>
+                                <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="perm-guard-rep" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold">التقارير</label></div>
+                                <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-guard-mon" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold">المتابعة الحية</label></div>
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <h5 class="fw-bold text-info mb-3">الموجه الطلابي</h5>
+                                <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="perm-counselor-rep" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold">التقارير</label></div>
+                                <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-counselor-mon" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold">المتابعة الحية</label></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <h5 class="text-primary border-bottom pb-2 mt-5 fs-2 fw-bold">بيانات المدرسة والشهادات</h5>
                     <div class="row g-4 mb-5">
@@ -582,6 +598,7 @@
         let cache_classes = "";
         let cache_teachers = "";
 
+        // المزامنة الحية للبيانات
         function syncLiveViews() {
             if(userRole === 'admin') { renderAdmin(); renderMediaLibrary(); }
             if(userRole === 'counselor') renderCounselor();
@@ -637,6 +654,7 @@
         function showToast(m) { const t=document.getElementById('system-toast'); t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; t.style.display='block'; setTimeout(()=>{t.style.display='none'},3000); }
         function toggleVisibility(id) { const e=document.getElementById(id); e.type=e.type==='password'?'text':'password'; }
 
+        // ================= دالة حفظ الإعدادات والصلاحيات المحدثة =================
         function saveSettings() {
             const updates = {
                 school: document.getElementById('s-school').value || '',
@@ -644,12 +662,18 @@
                 deputy: document.getElementById('s-deputy').value || '',
                 admin_email: document.getElementById('s-email').value || '',
                 permissions: {
-                    teacher: document.getElementById('perm-teacher') ? document.getElementById('perm-teacher').checked : false,
-                    guard: document.getElementById('perm-guard') ? document.getElementById('perm-guard').checked : false,
-                    counselor: document.getElementById('perm-counselor') ? document.getElementById('perm-counselor').checked : false
+                    teacher_reports: document.getElementById('perm-teacher-rep') ? document.getElementById('perm-teacher-rep').checked : false,
+                    teacher_monitor: document.getElementById('perm-teacher-mon') ? document.getElementById('perm-teacher-mon').checked : false,
+                    guard_reports: document.getElementById('perm-guard-rep') ? document.getElementById('perm-guard-rep').checked : false,
+                    guard_monitor: document.getElementById('perm-guard-mon') ? document.getElementById('perm-guard-mon').checked : false,
+                    counselor_reports: document.getElementById('perm-counselor-rep') ? document.getElementById('perm-counselor-rep').checked : false,
+                    counselor_monitor: document.getElementById('perm-counselor-mon') ? document.getElementById('perm-counselor-mon').checked : false
                 }
             };
-            db.ref('settings').update(updates).then(() => showToast('تم حفظ الإعدادات بنجاح'));
+            db.ref('settings').update(updates).then(() => {
+                showToast('تم حفظ الإعدادات والصلاحيات بنجاح');
+                buildMenu(); // تحديث القائمة فوراً
+            });
         }
 
         function savePasswords() {
@@ -688,10 +712,14 @@
                  document.getElementById('pin-guard').value = data.settings.guard_pin || '';
                  document.getElementById('pin-counselor').value = data.settings.counselor_pin || '';
                  
-                 if(document.getElementById('perm-teacher')) {
-                     document.getElementById('perm-teacher').checked = data.settings.permissions?.teacher || false;
-                     document.getElementById('perm-guard').checked = data.settings.permissions?.guard || false;
-                     document.getElementById('perm-counselor').checked = data.settings.permissions?.counselor || false;
+                 // تفعيل أزرار الصلاحيات الشاملة
+                 if(document.getElementById('perm-teacher-rep')) {
+                     document.getElementById('perm-teacher-rep').checked = data.settings.permissions?.teacher_reports || false;
+                     document.getElementById('perm-teacher-mon').checked = data.settings.permissions?.teacher_monitor || false;
+                     document.getElementById('perm-guard-rep').checked = data.settings.permissions?.guard_reports || false;
+                     document.getElementById('perm-guard-mon').checked = data.settings.permissions?.guard_monitor || false;
+                     document.getElementById('perm-counselor-rep').checked = data.settings.permissions?.counselor_reports || false;
+                     document.getElementById('perm-counselor-mon').checked = data.settings.permissions?.counselor_monitor || false;
                  }
              }
         }
@@ -725,22 +753,26 @@
             if(sidebar.classList.contains('active')) { icon.className = 'fas fa-chevron-right'; } else { icon.className = 'fas fa-chevron-left'; }
         }
 
+        // بناء القائمة مع الصلاحيات الجديدة الشاملة
         function buildMenu() { 
             const m = document.getElementById('nav-items'); 
             let links = [];
-            const hasRep = data.settings.permissions;
+            const hasRep = data.settings.permissions || {};
 
             if (userRole === 'admin') {
                 links = [['services','لوحة الإدارة','home'],['monitor','المتابعة الحية','desktop'],['reports','التقارير','file-alt'],['sec-data','الإعدادات العامة','cogs']];
             } else if (userRole === 'teacher') {
-                links = [['services','خدمات المعلم','home'],['monitor','المتابعة الحية','desktop']];
-                if(hasRep?.teacher) links.push(['reports','التقارير','file-alt']);
+                links = [['services','خدمات المعلم','home']];
+                if(hasRep.teacher_monitor) links.push(['monitor','المتابعة الحية','desktop']);
+                if(hasRep.teacher_reports) links.push(['reports','التقارير','file-alt']);
             } else if (userRole === 'guard') {
-                links = [['guard','شاشة الحارس','shield-alt'],['monitor','المتابعة الحية','desktop']];
-                if(hasRep?.guard) links.push(['reports','التقارير','file-alt']);
+                links = [['guard','شاشة الحارس','shield-alt']];
+                if(hasRep.guard_monitor) links.push(['monitor','المتابعة الحية','desktop']);
+                if(hasRep.guard_reports) links.push(['reports','التقارير','file-alt']);
             } else if (userRole === 'counselor') {
-                links = [['counselor','شاشة الموجه','user-graduate'],['monitor','المتابعة الحية','desktop']];
-                if(hasRep?.counselor) links.push(['reports','التقارير','file-alt']);
+                links = [['counselor','شاشة الموجه','user-graduate']];
+                if(hasRep.counselor_monitor) links.push(['monitor','المتابعة الحية','desktop']);
+                if(hasRep.counselor_reports) links.push(['reports','التقارير','file-alt']);
             }
             
             const uniqueLinks = []; const map = new Map();
@@ -799,7 +831,7 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // ================= الإدارة السريعة للتلفزيون والمكتبة =================
+        // ================= الإدارة السريعة للتلفزيون ومكتبة الوسائط المدمجة =================
         function getEmbedUrl(url) {
             let videoId = '';
             if (url.includes('youtube.com/watch?v=')) { videoId = url.split('v=')[1].split('&')[0]; } 
@@ -846,13 +878,13 @@
             const list = document.getElementById('media-library-list');
             if(!list) return;
             const items = data.mediaLibrary || {};
-            if(Object.keys(items).length === 0) { list.innerHTML = '<div class="text-muted text-center p-3">المكتبة فارغة. قم بإضافة مقاطع.</div>'; return; }
+            if(Object.keys(items).length === 0) { list.innerHTML = '<div class="text-muted text-center p-3">المكتبة فارغة. قم بإضافة مقاطع أعلاه.</div>'; return; }
             
             list.innerHTML = Object.keys(items).map(k => { 
                 const item = items[k];
                 const icon = item.type === 'video' ? 'fas fa-video text-danger' : 'fas fa-image text-success';
                 return `
-                <div class="list-group-item d-flex flex-column justify-content-between align-items-center mb-2 rounded shadow-sm border p-3 bg-white">
+                <div class="list-group-item d-flex flex-column mb-2 rounded shadow-sm border p-3 bg-white">
                     <span class="fw-bold fs-4 mb-2 text-truncate w-100"><i class="${icon} me-2"></i> ${item.name}</span>
                     <div class="btn-group w-100">
                         <button type="button" class="btn btn-primary fw-bold" onclick="playFromLibrary('${item.url}', '${item.type}')"><i class="fas fa-play me-1"></i> تشغيل</button>
@@ -864,6 +896,7 @@
 
         function playFromLibrary(url, type) {
             const screenId = 'showcase';
+            // مسح العرض القديم وتثبيت الجديد
             db.ref(`screens/${screenId}`).remove().then(() => {
                 db.ref(`screens/${screenId}`).push({ type: type, url: url }).then(() => { 
                     openMediaScreen('showcase');
@@ -891,10 +924,20 @@
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
         }
 
+        // التدمير الكامل عند الإغلاق لمنع عمل الفيديو في الخلفية
         function closeOverlay(id) { 
             clearInterval(window.certSlideInterval); 
             clearInterval(window.hofSlideInterval);
             document.getElementById(id).style.display='none'; 
+            
+            if (id === 'media-slider-overlay') {
+                document.getElementById('media-carousel-inner').innerHTML = ''; // تدمير iframe اليوتيوب
+            } else if (id === 'cert-display-overlay') {
+                document.getElementById('cert-display-content').innerHTML = '';
+            } else if (id === 'hall-of-fame-overlay') {
+                document.getElementById('hof-content').innerHTML = '';
+            }
+
             if(document.exitFullscreen) document.exitFullscreen(); 
         }
 
@@ -1229,14 +1272,7 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
-        // الخروج النهائي المبرمج
-        function logOut() {
-            localStorage.clear();
-            sessionStorage.clear();
-            userRole = '';
-            window.location.replace(window.location.pathname); // العودة النظيفة للرئيسية بدون كاش
-        }
-
+        // ================= الإدارة والموجه والحارس =================
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
             const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
@@ -1262,6 +1298,7 @@
                 </div>`).join(''); 
         }
 
+        // تطوير قسم الموجه الطلابي
         function renderCounselor() {
             const counselorViolations = Object.entries(data.violations||{}).filter(x=>x[1] && x[1].status==='pending_counselor');
             const resolvedViolations = Object.entries(data.violations||{}).filter(x=>x[1] && x[1].status==='closed_counselor');
@@ -1287,6 +1324,7 @@
                 }
             }
             
+            // سجل الحالات المعالجة
             if(resolvedList) {
                 if(resolvedViolations.length === 0) {
                     resolvedList.innerHTML = '<tr><td colspan="3" class="text-muted p-4">لم يتم معالجة أي حالة بعد</td></tr>';
@@ -1391,7 +1429,7 @@
             });
         }
 
-        // ================= الطباعة الرسمية (النسخة الصارمة والمحصنة لصفحة واحدة) =================
+        // ================= الطباعة الرسمية =================
         function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
@@ -1437,7 +1475,7 @@
                 
                 headerContainer.innerHTML = `
                     <div class="form-header-text">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:var(--primary);">${data.settings.school || ''}</span></div>
-                    <div><img src="${data.settings.logo || ''}" style="max-height: 70px;"></div>
+                    <div><img src="${data.settings.logo || ''}" style="max-height: 80px;"></div>
                     <div class="form-header-left">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
                 `;
 
@@ -1454,7 +1492,7 @@
                             ${noteHtml}
                             <br>وأتعهد لإدارة المدرسة بالالتزام التام بأنظمة وضوابط السلوك والمواظبة، وعدم تكرار هذه المخالفة أو غيرها مستقبلاً. وفي حال تكرار ذلك، يحق لإدارة المدرسة اتخاذ الإجراءات النظامية المعتمدة في قواعد السلوك والمواظبة بما في ذلك الحسم من درجات السلوك أو الاستدعاء الرسمي لولي الأمر.
                         </div>
-                        <div style="font-size:1.2rem; text-align:left; color:#000; font-weight:bold; margin-top:20px;">توقيع الطالب: .....................................</div>
+                        <div style="font-size:1.3rem; text-align:left; color:#000; font-weight:bold; margin-top:20px;">توقيع الطالب: .....................................</div>
                     `;
                 } else if (formType === 'referral') {
                     bodyContainer.innerHTML = `
@@ -1467,14 +1505,14 @@
                             ${noteHtml}
                             <br>نأمل منكم دراسة حالة الطالب، واتخاذ الإجراءات الإرشادية والتربوية المناسبة وفقاً للائحة السلوك والمواظبة، وإفادتنا بما يتم حيال ذلك.
                         </div>
-                        <div style="font-size:1.2rem; text-align:center; font-weight:bold; margin-top:20px; color:#000;">وتقبلوا تحيات إدارة المدرسة،،،</div>
+                        <div style="font-size:1.3rem; text-align:center; font-weight:bold; margin-top:20px; color:#000;">وتقبلوا تحيات إدارة المدرسة،،،</div>
                     `;
                 }
             }
 
             document.getElementById('final-print-container').innerHTML = ''; 
             document.body.className = formType === 'certificate' ? 'print-landscape' : 'print-portrait'; 
-            setTimeout(() => { window.print(); document.body.className = ''; }, 800); // زيادة وقت الانتظار لضمان الاستقرار
+            setTimeout(() => { window.print(); document.body.className = ''; }, 500);
         }
 
         // ================= التقارير المدرسية (في صفحة واحدة محمية من التحديث) =================
@@ -1561,7 +1599,7 @@
         function executePrint() { 
             document.getElementById('final-print-container').innerHTML = document.getElementById('modal-print-content').innerHTML; 
             document.body.className = 'print-portrait';
-            setTimeout(()=>{ window.print(); document.body.className = ''; }, 800); 
+            setTimeout(()=>{ window.print(); document.body.className = ''; }, 500); 
         }
 
     </script>

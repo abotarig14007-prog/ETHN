@@ -29,7 +29,14 @@
         
         .swal2-container { z-index: 110000 !important; }
 
-        .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; display: block; transition: transform 0.3s ease; }
+        /* تعديل القائمة الجانبية بنظام Flexbox لتثبيت زر الخروج */
+        .sidebar { 
+            width: 280px; height: 100vh; background: var(--primary); color: white; 
+            position: fixed; right: 0; top: 0; z-index: 1000; 
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1); 
+            display: flex; flex-direction: column; 
+            transition: transform 0.3s ease; 
+        }
         .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
         
         /* ================= Mobile & High Visibility ================= */
@@ -102,7 +109,7 @@
         /* ================= شاشات العرض والتلفزيون ================= */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
         
-        /* زر الإغلاق الأحمر المحصن */
+        /* زر الإغلاق الأحمر المحصن ضد التعليق */
         .overlay-close { 
             position: fixed; top: 20px; right: 20px; 
             z-index: 2147483647 !important; 
@@ -136,7 +143,7 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= الطباعة الرسمية (النسخة النهائية الصارمة) ================= */
+        /* ================= الطباعة الرسمية ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0; padding: 0; background: white !important; font-family: 'Tajawal', sans-serif; }
@@ -271,11 +278,19 @@
     </div>
 
     <div id="app-body" class="d-none">
+        
         <aside class="sidebar no-print" id="main-sidebar">
-            <div class="text-center py-5 px-3"><div class="bg-white p-3 rounded-circle d-inline-block shadow mb-3"><i class="fas fa-mosque fa-3x text-success"></i></div><h5 class="fw-bold text-white mt-2" id="disp-school">...</h5></div>
-            <div id="nav-items" class="px-2 pb-3"></div>
-            <div class="px-3 pb-5 mb-5 mt-4" style="padding-bottom: 120px !important;">
-                <button class="btn w-100 rounded-pill fw-bold fs-4 shadow" style="background-color: #dc3545; color: white; padding: 18px; z-index: 1050; position: relative;" onclick="logOut()"><i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج</button>
+            <div class="text-center py-4 px-3" style="flex-shrink: 0;">
+                <div class="bg-white p-3 rounded-circle d-inline-block shadow mb-3"><i class="fas fa-mosque fa-3x text-success"></i></div>
+                <h5 class="fw-bold text-white mt-2" id="disp-school">...</h5>
+            </div>
+            
+            <div id="nav-items" class="px-2" style="flex-grow: 1; overflow-y: auto;"></div>
+            
+            <div class="px-3 pb-4 pt-3" style="flex-shrink: 0; background: rgba(0,0,0,0.1); margin-top: auto;">
+                <button class="btn btn-danger w-100 rounded-pill fw-bold fs-4 shadow border-2 border-white" style="padding: 15px;" onclick="logOut()">
+                    <i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج
+                </button>
             </div>
         </aside>
 
@@ -285,7 +300,6 @@
 
         <main class="main-content">
             <section id="sec-services" class="view-section d-none fade-in">
-                
                 <div id="teacher-services-container" class="d-none">
                     <div class="page-card p-4 mb-4 bg-white border-0 shadow-sm rounded-4">
                         <div class="d-flex flex-column gap-2 text-center">
@@ -507,29 +521,6 @@
         </main>
     </div>
 
-    <div class="modal fade" id="mediaLibraryModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content rounded-4 border-0 shadow-lg">
-                <div class="modal-header bg-info text-white">
-                    <h4 class="modal-title fw-bold"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط المحفوظة</h4>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body bg-light">
-                    <div class="bg-white p-3 rounded-4 mb-4 border border-info shadow-sm">
-                        <h5 class="fw-bold text-info mb-3">إضافة مقطع جديد للمكتبة</h5>
-                        <div class="row g-2">
-                            <div class="col-md-4"><input type="text" id="lib-name" class="form-control huge-input" placeholder="اسم المقطع (مثال: أذكار)"></div>
-                            <div class="col-md-5"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="رابط اليوتيوب أو الصورة..."></div>
-                            <div class="col-md-3"><button class="btn btn-info text-white w-100 fw-bold rounded-pill h-100 fs-4" onclick="saveToLibrary()">حفظ في المكتبة</button></div>
-                        </div>
-                    </div>
-                    <h5 class="fw-bold mb-3">المقاطع المحفوظة مسبقاً:</h5>
-                    <div id="media-library-list" style="max-height: 400px; overflow-y: auto;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="violationActionModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-4 border-0 shadow-lg">
@@ -642,7 +633,6 @@
         function showToast(m) { const t=document.getElementById('system-toast'); t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; t.style.display='block'; setTimeout(()=>{t.style.display='none'},3000); }
         function toggleVisibility(id) { const e=document.getElementById(id); e.type=e.type==='password'?'text':'password'; }
 
-        // ================= دالة حفظ الإعدادات والصلاحيات =================
         function saveSettings() {
             const updates = {
                 school: document.getElementById('s-school').value || '',
@@ -650,9 +640,9 @@
                 deputy: document.getElementById('s-deputy').value || '',
                 admin_email: document.getElementById('s-email').value || '',
                 permissions: {
-                    teacher: document.getElementById('perm-teacher').checked,
-                    guard: document.getElementById('perm-guard').checked,
-                    counselor: document.getElementById('perm-counselor').checked
+                    teacher: document.getElementById('perm-teacher') ? document.getElementById('perm-teacher').checked : false,
+                    guard: document.getElementById('perm-guard') ? document.getElementById('perm-guard').checked : false,
+                    counselor: document.getElementById('perm-counselor') ? document.getElementById('perm-counselor').checked : false
                 }
             };
             db.ref('settings').update(updates).then(() => showToast('تم حفظ الإعدادات'));
@@ -694,7 +684,6 @@
                  document.getElementById('pin-guard').value = data.settings.guard_pin || '';
                  document.getElementById('pin-counselor').value = data.settings.counselor_pin || '';
                  
-                 // تفعيل أزرار الصلاحيات
                  if(document.getElementById('perm-teacher')) {
                      document.getElementById('perm-teacher').checked = data.settings.permissions?.teacher || false;
                      document.getElementById('perm-guard').checked = data.settings.permissions?.guard || false;
@@ -806,7 +795,7 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // ================= الإدارة السريعة للتلفزيون + مكتبة الوسائط =================
+        // ================= الإدارة السريعة للتلفزيون والمكتبة =================
         function openMediaLibraryModal() {
             const modal = new bootstrap.Modal(document.getElementById('mediaLibraryModal'));
             renderMediaLibrary();
@@ -972,7 +961,7 @@
             if(document.exitFullscreen) document.exitFullscreen(); 
         }
 
-        // ================= مشغل الوسائط المتطور =================
+        // ================= مشغل الوسائط =================
         function openMediaScreen(screenId) {
             const screenData = data.screens && data.screens[screenId] ? data.screens[screenId] : [];
             const inner = document.getElementById('media-carousel-inner');
@@ -1228,30 +1217,6 @@
             setTimeout(() => loadAttendanceList(), 100); 
         }
 
-        function calculateBestClass() { 
-            let s = {}; 
-            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
-            classesArr.forEach(c => s[c] = 0); 
-            
-            let studentsArr = Object.values(data.students || {});
-            Object.values(data.stars || {}).forEach(st => { 
-                let o = studentsArr.find(x => x && x.name === st.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) + (st.value || 1); 
-            }); 
-            Object.values(data.violations || {}).forEach(v => { 
-                let o = studentsArr.find(x => x && x.name === v.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) - 1; 
-            }); 
-            
-            let best = Object.entries(s).sort((a,b) => b[1] - a[1])[0]; 
-            if(best && best[1] > 0) { 
-                document.getElementById('best-class-badge').classList.remove('d-none'); 
-                document.getElementById('best-class-txt').innerText = best[0]; 
-            } else {
-                document.getElementById('best-class-badge').classList.add('d-none');
-            }
-        }
-
         function importData(inp) { 
             const c=document.getElementById('imp-cls-name').value; 
             if(!c) return Swal.fire('تنبيه', 'أدخل اسم الفصل أولاً في المربع المخصص', 'warning'); 
@@ -1325,6 +1290,27 @@
         
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
+
+        function logOut() {
+            localStorage.clear();
+            sessionStorage.clear();
+            userRole = '';
+            
+            // إخفاء النظام وإظهار شاشة الدخول كإجراء سريع
+            document.getElementById('app-body').classList.add('d-none');
+            document.getElementById('auth-overlay').style.display = 'flex';
+            document.getElementById('pin-area').classList.add('hidden');
+            document.getElementById('role-selection').classList.remove('hidden');
+            document.getElementById('pin-input').value = '';
+            
+            // إغلاق القائمة الجانبية في الجوال
+            document.querySelector('.sidebar').classList.remove('active');
+            
+            // إعادة تحميل الصفحة من الخادم لتفريغ أي كاش نهائياً
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 300);
+        }
 
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
@@ -1465,6 +1451,7 @@
             });
         }
 
+        // ================= الطباعة الرسمية =================
         function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             

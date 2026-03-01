@@ -86,6 +86,8 @@
         .nav-link.active { border-right: 5px solid var(--gold); }
 
         .page-card { background: var(--card); border-radius: 25px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; transition: var(--transition); }
+        .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         
         .monitor-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
         .monitor-card.safe { border-color: #198754; background-color: #f1fdf6; }
@@ -100,7 +102,6 @@
         /* ================= شاشات العرض والتلفزيون ================= */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
         
-        /* زر الإغلاق الأحمر المحصن */
         .overlay-close { 
             position: fixed; top: 20px; right: 20px; 
             z-index: 2147483647 !important; 
@@ -119,12 +120,12 @@
         .carousel-item { height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; background: #000; }
         .carousel-item iframe, .carousel-item img { width: 100vw !important; height: 100vh !important; object-fit: contain; border: none; pointer-events: auto; }
 
-        /* ================= لوحة الشرف ================= */
+        /* ================= لوحة الشرف 👑 ================= */
         .champion-area { text-align: center; margin-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .champion-avatar { width: 180px; height: 180px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: #333; margin: 0 auto 15px; box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); }
-        .champion-name { font-size: 3.5rem; font-weight: 900; animation: colorCycle 5s infinite; text-shadow: 0 0 20px rgba(0,0,0,0.8); }
+        .champion-avatar { width: 200px; height: 200px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 6rem; color: #333; margin: 0 auto 15px; box-shadow: 0 0 60px rgba(255, 215, 0, 0.6); }
+        .champion-name { font-size: 5rem; font-weight: 900; animation: colorCycle 5s infinite; text-shadow: 0 0 20px rgba(0,0,0,0.8); }
         @keyframes colorCycle { 0%,100% {color:#fff; text-shadow:0 0 20px #FFD700;} 50% {color:#FFD700; text-shadow:0 0 20px #fff;} }
-        #challengers-container { width: 100%; max-width: 1200px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; position: relative; height: 250px; margin: 0 auto;}
+        #challengers-container { width: 100%; max-width: 1400px; display: flex; justify-content: center; position: relative; height: 350px; margin: 0 auto;}
         
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
@@ -134,7 +135,7 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= الطباعة الرسمية (النسخة الخارقة لصفحة واحدة) ================= */
+        /* ================= الطباعة الرسمية (النسخة الصارمة والنهائية) ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; background: white !important; font-family: 'Tajawal', sans-serif; overflow: hidden !important; }
@@ -152,11 +153,11 @@
                 width: 100%; height: 100%; margin: 0 !important; padding: 0 !important;
             }
 
-            /* إطار التعهد والمخالفة محمي بقوة لصفحة واحدة */
+            /* إطار التعهد والمخالفة محمي بقوة لصفحة واحدة (Portrait) */
             .form-frame {
                 width: 210mm !important; 
-                height: 290mm !important; /* طول A4 الفعلي تقريباً للطباعة */
-                max-height: 290mm !important; 
+                height: 285mm !important; 
+                max-height: 285mm !important; 
                 border: 6px double var(--primary) !important; 
                 padding: 10mm 15mm !important; 
                 display: flex !important; flex-direction: column !important; justify-content: space-between !important;
@@ -164,19 +165,19 @@
                 page-break-inside: avoid !important; page-break-after: avoid !important; page-break-before: avoid !important;
                 direction: rtl !important; text-align: right !important; margin: 0 auto !important; overflow: hidden !important;
             }
-            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 2px solid #ccc; padding-bottom: 10px;}
+            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 2px solid #ccc; padding-bottom: 10px; flex-shrink: 0;}
             .form-header img { max-height: 70px; }
             .form-header-text { font-weight: bold; font-size: 1.1rem; line-height: 1.4; color: #000; text-align: right; }
             .form-header-left { text-align: left; font-size: 1rem; font-weight: bold; line-height: 1.4; color: #000; direction: ltr;}
             
-            .form-title { text-align: center; font-size: 1.8rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; }
+            .form-title { text-align: center; font-size: 1.8rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; flex-shrink: 0;}
             
-            .form-body { font-size: 1.2rem; line-height: 1.6; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; }
+            .form-body { font-size: 1.2rem; line-height: 1.6; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; overflow: hidden;}
             .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.1rem;}
             
-            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; }
+            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; flex-shrink: 0;}
             
-            /* إطار شهادة الشكر (عرضي 96%) */
+            /* إطار شهادة الشكر (Landscape 96%) */
             .cert-frame { 
                 width: 297mm !important; height: 210mm !important; margin: 0 auto !important; 
                 border: 15px solid var(--gold) !important; padding: 20mm !important; 
@@ -187,14 +188,17 @@
             .cert-body h1 { font-size: 4rem; color: var(--primary); font-weight: 900; margin-bottom: 20px; }
             .cert-name-box { border-bottom: 4px solid var(--gold); display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: var(--gold); margin: 30px 0; }
             
-            /* التقارير العادية (جداول) */
-            #modal-print-content {
-                visibility: visible; position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 20px; direction: rtl;
+            /* إطار التقارير (الجداول) محمي بصفحة واحدة */
+            .report-frame {
+                width: 210mm !important; height: 285mm !important; max-height: 285mm !important; 
+                padding: 10mm !important; margin: 0 auto !important; background: white !important;
+                display: flex !important; flex-direction: column !important; justify-content: space-between !important;
+                box-sizing: border-box !important; overflow: hidden !important; direction: rtl !important;
             }
-            #modal-print-content * { visibility: visible; }
-            .table-bordered { border: 2px solid #000 !important; width: 100%; margin-bottom: 20px; border-collapse: collapse; }
-            .table-bordered th, .table-bordered td { border: 1px solid #000 !important; padding: 6px; font-size: 1.1rem; text-align: center; }
-            .table-dark th { background-color: #eee !important; color: #000 !important; font-weight: bold; }
+            .report-frame .table-responsive { flex-grow: 1; overflow: hidden !important; }
+            .report-frame table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 10px !important; }
+            .report-frame th, .report-frame td { border: 1px solid #000 !important; padding: 5px !important; font-size: 0.95rem !important; text-align: center !important; }
+            .report-frame th { background-color: #eee !important; color: #000 !important; font-weight: bold !important; }
         }
     </style>
 </head>
@@ -206,20 +210,15 @@
         <button type="button" class="overlay-close" onclick="closeOverlay('media-slider-overlay')"><i class="fas fa-power-off me-2"></i> إغلاق الشاشة</button>
         <div id="mediaCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="10000">
             <div class="carousel-inner" id="media-carousel-inner"></div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#mediaCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon" style="width: 4rem; height: 4rem;"></span></button>
-            <button class="carousel-control-next" type="button" data-bs-target="#mediaCarousel" data-bs-slide="next"><span class="carousel-control-next-icon" style="width: 4rem; height: 4rem;"></span></button>
+            <button type="button" class="carousel-control-prev" data-bs-target="#mediaCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon" style="width: 4rem; height: 4rem;"></span></button>
+            <button type="button" class="carousel-control-next" data-bs-target="#mediaCarousel" data-bs-slide="next"><span class="carousel-control-next-icon" style="width: 4rem; height: 4rem;"></span></button>
         </div>
-    </div>
-
-    <div id="cert-display-overlay" class="full-overlay" style="background: rgba(0,0,0,0.95);">
-        <button type="button" class="overlay-close" onclick="closeOverlay('cert-display-overlay')"><i class="fas fa-power-off me-2"></i> إغلاق الشهادات</button>
-        <div id="cert-display-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"></div>
     </div>
 
     <div id="hall-of-fame-overlay" class="full-overlay" style="background: radial-gradient(circle at center, #001f3f 0%, #000000 100%);">
         <button type="button" class="overlay-close" onclick="closeOverlay('hall-of-fame-overlay')"><i class="fas fa-power-off me-2"></i> إغلاق اللوحة</button>
-        <div class="hof-container" style="width:100%; height:100%; padding-top: 50px;">
-            <h1 class="text-center mb-4 text-warning" id="disp-hof-title" style="font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">💎 لوحة الشرف 💎</h1>
+        <div class="hof-container" style="width:100%; height:100%; padding-top: 30px;">
+            <h1 class="text-center mb-4 text-warning" id="disp-hof-title" style="font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">💎 شاشة التميز 💎</h1>
             <div id="hof-content" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
         </div>
     </div>
@@ -228,7 +227,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content rounded-4 border-0 shadow-lg">
                 <div class="modal-header bg-info text-white">
-                    <h4 class="modal-title fw-bold"><i class="fas fa-photo-video me-2"></i> مكتبة الوسائط (الصور والفيديوهات)</h4>
+                    <h4 class="modal-title fw-bold"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط (الصور والفيديوهات)</h4>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body bg-light">
@@ -247,8 +246,7 @@
                         </div>
                     </div>
                     <h5 class="fw-bold mb-3 border-bottom pb-2">المقاطع المحفوظة:</h5>
-                    <div id="media-library-list" style="max-height: 300px; overflow-y: auto; padding-right: 10px;">
-                        </div>
+                    <div id="media-library-list" style="max-height: 300px; overflow-y: auto; padding-right: 10px;"></div>
                 </div>
             </div>
         </div>
@@ -257,6 +255,9 @@
     <div id="top-bar" class="fixed-top no-print">
         <div class="d-flex align-items-center"><div style="width:15px; height:15px; background:red; border-radius:50%; margin-left:15px;" id="status-dot"></div><h5 class="m-0 fw-bold text-dark d-none d-sm-block">نظام إذن <span class="text-success">الاحترافي</span></h5><h4 class="m-0 fw-bold text-dark d-sm-none">نظام إذن</h4></div>
         <div class="d-flex align-items-center gap-3">
+            <button type="button" class="btn btn-warning text-dark rounded-pill fw-bold d-none d-md-block shadow-sm" onclick="openHallOfFame()"><i class="fas fa-crown me-2"></i> شاشة التميز</button>
+            <button type="button" class="btn btn-warning text-dark rounded-circle p-3 d-md-none shadow-sm" onclick="openHallOfFame()"><i class="fas fa-crown fa-lg"></i></button>
+            
             <div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div>
             <button type="button" class="btn btn-light rounded-circle border p-3 shadow-sm" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up fa-lg"></i></button>
             <button type="button" class="btn btn-outline-dark d-lg-none p-2 shadow-sm" onclick="toggleSidebar()"><i class="fas fa-bars fa-2x"></i></button>
@@ -368,24 +369,12 @@
                 </div> 
 
                 <div id="admin-panel-content" class="d-none">
-                     <div class="page-card p-4 mb-4 border-2 border-primary bg-light shadow-sm">
-                        <h4 class="fw-bold text-primary mb-4 text-center"><i class="fas fa-tv me-2"></i> التحكم السريع بشاشة المدرسة 📺</h4>
-                        
-                        <div class="row g-3 text-center">
-                            <div class="col-md-6 col-12">
-                                <button type="button" class="btn btn-info text-white w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="openMediaLibraryModal()">
-                                    <i class="fas fa-folder-open me-2"></i> مكتبة الوسائط (إضافة وتشغيل)
-                                </button>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <button type="button" class="btn btn-dark w-100 py-3 fw-bold fs-4 shadow-sm rounded-pill" onclick="openTvMenu()">
-                                    <i class="fas fa-play-circle me-2"></i> خيارات تشغيل الشاشة
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                     
+                     <div class="admin-dash-grid mb-4" id="admin-screens-container">
+                         <button type="button" class="btn btn-warning text-dark shadow fw-bold" onclick="openHallOfFame()"><i class="fas fa-crown d-block mb-2 fa-2x"></i> شاشة التميز</button>
+                         <button type="button" class="btn btn-info text-white shadow fw-bold" onclick="openMediaLibraryModal()"><i class="fas fa-folder-open d-block mb-2 fa-2x"></i> مكتبة الوسائط والتلفزيون</button>
+                     </div>
 
-                     <div class="admin-dash-grid mb-4" id="admin-screens-container"></div>
                      <div class="row g-3 mb-4 text-center">
                         <div class="col-4"><div class="stat-box blue"><h2 class="mb-1" id="adm-stat-out">0</h2><small class="fs-4 fw-bold">بالخارج</small></div></div>
                         <div class="col-4"><div class="stat-box green"><h2 class="mb-1" id="adm-stat-vis">0</h2><small class="fs-4 fw-bold">زوار</small></div></div>
@@ -591,7 +580,6 @@
         let cache_classes = "";
         let cache_teachers = "";
 
-        // المزامنة الحية
         function syncLiveViews() {
             if(userRole === 'admin') { renderAdmin(); renderMediaLibrary(); }
             if(userRole === 'counselor') renderCounselor();
@@ -647,7 +635,6 @@
         function showToast(m) { const t=document.getElementById('system-toast'); t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; t.style.display='block'; setTimeout(()=>{t.style.display='none'},3000); }
         function toggleVisibility(id) { const e=document.getElementById(id); e.type=e.type==='password'?'text':'password'; }
 
-        // ================= دالة حفظ الإعدادات والصلاحيات =================
         function saveSettings() {
             const updates = {
                 school: document.getElementById('s-school').value || '',
@@ -699,7 +686,6 @@
                  document.getElementById('pin-guard').value = data.settings.guard_pin || '';
                  document.getElementById('pin-counselor').value = data.settings.counselor_pin || '';
                  
-                 // تفعيل أزرار الصلاحيات
                  if(document.getElementById('perm-teacher')) {
                      document.getElementById('perm-teacher').checked = data.settings.permissions?.teacher || false;
                      document.getElementById('perm-guard').checked = data.settings.permissions?.guard || false;
@@ -811,7 +797,7 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // ================= الإدارة السريعة للتلفزيون + مكتبة الوسائط =================
+        // ================= الإدارة السريعة للتلفزيون والمكتبة =================
         function openMediaLibraryModal() {
             const modal = new bootstrap.Modal(document.getElementById('mediaLibraryModal'));
             renderMediaLibrary();
@@ -864,7 +850,7 @@
             const list = document.getElementById('media-library-list');
             if(!list) return;
             const items = data.mediaLibrary || {};
-            if(Object.keys(items).length === 0) { list.innerHTML = '<div class="text-muted text-center p-3">المكتبة فارغة</div>'; return; }
+            if(Object.keys(items).length === 0) { list.innerHTML = '<div class="text-muted text-center p-3">المكتبة فارغة. قم بإضافة مقاطع.</div>'; return; }
             
             list.innerHTML = Object.keys(items).map(k => { 
                 const item = items[k];
@@ -873,7 +859,7 @@
                 <div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 rounded shadow-sm border p-3">
                     <span class="fw-bold fs-4 mb-2 mb-md-0"><i class="${icon} me-2"></i> ${item.name}</span>
                     <div class="btn-group w-100 w-md-auto">
-                        <button type="button" class="btn btn-primary fw-bold" onclick="playFromLibrary('${item.url}', '${item.type}')"><i class="fas fa-play me-1"></i> عرض</button>
+                        <button type="button" class="btn btn-primary fw-bold" onclick="playFromLibrary('${item.url}', '${item.type}')"><i class="fas fa-play me-1"></i> عرض على الشاشة</button>
                         <button type="button" class="btn btn-danger" onclick="db.ref('mediaLibrary/${k}').remove()"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`; 
@@ -882,76 +868,31 @@
 
         function playFromLibrary(url, type) {
             const screenId = 'showcase';
-            db.ref(`screens/${screenId}`).set({ default: { type: type, url: url } }).then(() => { 
+            db.ref(`screens/${screenId}`).push({ type: type, url: url }).then(() => { 
                 const modal = bootstrap.Modal.getInstance(document.getElementById('mediaLibraryModal'));
                 if(modal) modal.hide();
                 openMediaScreen('showcase');
             });
         }
 
-        function openTvMenu() {
-            Swal.fire({
-                title: '📺 تشغيل الشاشة للطلاب',
-                html: `
-                    <div class="d-flex flex-column gap-3 mt-3">
-                        <button type="button" class="btn btn-success btn-lg rounded-pill fw-bold py-3 shadow" onclick="Swal.close(); setTimeout(()=>openMediaScreen('showcase'), 300)">
-                            <i class="fas fa-play me-2"></i> تشغيل العرض الحالي
-                        </button>
-                        <button type="button" class="btn btn-warning text-dark btn-lg rounded-pill fw-bold py-3 shadow" onclick="Swal.close(); setTimeout(startCertSlideshow, 300)">
-                            <i class="fas fa-certificate me-2"></i> عرض شهادات المتميزين
-                        </button>
-                        <button type="button" class="btn btn-dark btn-lg rounded-pill fw-bold py-3 shadow" onclick="Swal.close(); setTimeout(openHallOfFame, 300)">
-                            <i class="fas fa-crown me-2"></i> عرض لوحة الشرف (التوب 10)
-                        </button>
-                    </div>
-                `,
-                showConfirmButton: false,
-                showCancelButton: true,
-                cancelButtonText: 'إغلاق القائمة',
-                cancelButtonColor: '#dc3545'
+        // ================= عرض الشاشة المدرسية =================
+        function openMediaScreen(screenId) {
+            const screenData = data.screens && data.screens[screenId] ? data.screens[screenId] : [];
+            const inner = document.getElementById('media-carousel-inner');
+            if(!screenData || Object.keys(screenData).length === 0) { Swal.fire('تنبيه', 'لا توجد وسائط قيد العرض حالياً. يمكنك الإرسال من المكتبة.', 'info'); return; }
+            
+            inner.innerHTML = ''; let isFirst = true;
+            Object.values(screenData).forEach(media => {
+                let content = '';
+                if(media.type === 'image') { 
+                    content = `<img src="${media.url}" alt="عرض">`; 
+                } 
+                else if(media.type === 'video') { 
+                    content = `<iframe src="${media.url}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; 
+                }
+                const activeClass = isFirst ? 'active' : ''; inner.innerHTML += `<div class="carousel-item ${activeClass}">${content}</div>`; isFirst = false;
             });
-        }
-
-        function startCertSlideshow() {
-            let s = {}; 
-            Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
-            const topStudents = Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
-            
-            if(topStudents.length === 0) return Swal.fire('تنبيه', 'لا يوجد طلاب متميزين لعرض شهاداتهم بعد.', 'info');
-            
-            let idx = 0;
-            displayStudentCertOnScreen(topStudents[idx]);
-            
-            clearInterval(window.certSlideInterval);
-            window.certSlideInterval = setInterval(() => {
-                idx++;
-                if(idx >= topStudents.length) idx = 0;
-                displayStudentCertOnScreen(topStudents[idx]);
-            }, 6000); 
-        }
-
-        function displayStudentCertOnScreen(studentName) {
-            const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
-            let certHtml = `
-            <div style="width: 96vw; height: 96vh; border: 20px solid #C69C6D; padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; background: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22none%22 stroke=%22%23006C35%22 stroke-width=%224%22 stroke-dasharray=%2210 10%22/></svg>') white; border-radius: 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div style="text-align:right; font-weight:bold; font-size:1.8rem; color:#000; line-height: 1.8;">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:#006C35;">${data.settings.school || ''}</span></div>
-                    <div><img src="${data.settings.logo || ''}" style="max-height: 120px;"></div>
-                    <div style="width: 250px;"></div>
-                </div>
-                <div>
-                    <h1 style="font-size: 5rem; color: #006C35; font-weight: 900; margin-bottom: 30px;">شهادة شكر وتقدير</h1>
-                    <p style="font-size: 2.5rem; color: #333;">تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
-                    <div style="border-bottom: 4px solid #C69C6D; display: inline-block; padding: 15px 60px; font-size: 5rem; font-weight: 900; color: #C69C6D; margin: 30px 0;">${studentName}</div>
-                    <p style="font-size: 2.2rem; color: #333; line-height:1.6;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
-                </div>
-                <div style="display: flex; justify-content: space-between; width: 100%; padding: 0 50px; margin-top: 30px; font-size: 2rem; font-weight: bold; color:#000;">
-                    <div style="text-align: right;"><strong>وكيل شؤون الطلاب</strong><br><br><span style="color:#006C35">${data.settings.deputy || '.......................'}</span></div>
-                    <div style="text-align: left;"><strong>مدير المدرسة</strong><br><br><span style="color:#006C35">${data.settings.manager || '.......................'}</span></div>
-                </div>
-            </div>`;
-            document.getElementById('cert-display-content').innerHTML = certHtml;
-            document.getElementById('cert-display-overlay').style.display = 'block';
+            document.getElementById('media-slider-overlay').style.display = 'block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
         }
 
@@ -961,29 +902,6 @@
             document.getElementById(id).style.display='none'; 
             if(document.exitFullscreen) document.exitFullscreen(); 
         }
-
-        // ================= مشغل الوسائط =================
-        function openMediaScreen(screenId) {
-            const screenData = data.screens && data.screens[screenId] ? data.screens[screenId] : [];
-            const inner = document.getElementById('media-carousel-inner');
-            if(!screenData || Object.keys(screenData).length === 0) { Swal.fire('تنبيه', 'لا توجد وسائط لعرضها حالياً. أضفها من المكتبة.', 'info'); return; }
-            inner.innerHTML = ''; let isFirst = true;
-            Object.values(screenData).forEach(media => {
-                let content = '';
-                if(media.type === 'image') { 
-                    content = `<img src="${media.url}" alt="عرض">`; 
-                } 
-                else if(media.type === 'video') { 
-                    let vUrl = getEmbedUrl(media.url);
-                    content = `<iframe src="${vUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; 
-                }
-                const activeClass = isFirst ? 'active' : ''; inner.innerHTML += `<div class="carousel-item ${activeClass}">${content}</div>`; isFirst = false;
-            });
-            document.getElementById('media-slider-overlay').style.display = 'block';
-            if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-        }
-
-        function closeMediaSlider() { document.getElementById('media-slider-overlay').style.display='none'; document.getElementById('media-carousel-inner').innerHTML=''; if(document.exitFullscreen) document.exitFullscreen(); }
 
         function smartRefreshDropdowns() {
             try {
@@ -1216,30 +1134,6 @@
                 if (newState) { db.ref(`attendance/${date}/periods/${period}/${name}`).set({status: 'absent', teacher: teacherName}); } else { db.ref(`attendance/${date}/periods/${period}/${name}`).remove(); } 
             } 
             setTimeout(() => loadAttendanceList(), 100); 
-        }
-
-        function calculateBestClass() { 
-            let s = {}; 
-            let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
-            classesArr.forEach(c => s[c] = 0); 
-            
-            let studentsArr = Object.values(data.students || {});
-            Object.values(data.stars || {}).forEach(st => { 
-                let o = studentsArr.find(x => x && x.name === st.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) + (st.value || 1); 
-            }); 
-            Object.values(data.violations || {}).forEach(v => { 
-                let o = studentsArr.find(x => x && x.name === v.student); 
-                if(o && o.class) s[o.class] = (s[o.class] || 0) - 1; 
-            }); 
-            
-            let best = Object.entries(s).sort((a,b) => b[1] - a[1])[0]; 
-            if(best && best[1] > 0) { 
-                document.getElementById('best-class-badge').classList.remove('d-none'); 
-                document.getElementById('best-class-txt').innerText = best[0]; 
-            } else {
-                document.getElementById('best-class-badge').classList.add('d-none');
-            }
         }
 
         function importData(inp) { 
@@ -1540,6 +1434,7 @@
             setTimeout(() => { window.print(); document.body.className = ''; }, 500);
         }
 
+        // ================= التقارير (طباعة مقيدة بصفحة واحدة) =================
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
             const logo = data.settings.logo || "";
@@ -1550,35 +1445,37 @@
             const timeStr = new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
 
             let h = `
-            <div style="border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:flex-start; direction:rtl;">
-                <div style="text-align:right; width:33%; font-weight:bold; font-size:1.1rem; line-height:1.5;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div>
-                <div style="text-align:center; width:33%"><img src="${logo}" style="max-height:70px"></div>
-                <div style="text-align:left; width:33%; font-weight:bold; font-size:1.1rem; line-height:1.5; direction:ltr;">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
-            </div>
-            <div style="text-align:center; font-weight:bold; font-size:1.6rem; text-decoration:underline; margin-bottom:20px;">${titles[type]||'تقرير'}</div>
+            <div class="report-frame">
+                <div style="border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 15px; display:flex; justify-content:space-between; align-items:flex-start; direction:rtl; flex-shrink: 0;">
+                    <div style="text-align:right; width:33%; font-weight:bold; font-size:1rem; line-height:1.4;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div>
+                    <div style="text-align:center; width:33%"><img src="${logo}" style="max-height:60px"></div>
+                    <div style="text-align:left; width:33%; font-weight:bold; font-size:1rem; line-height:1.4; direction:ltr;">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
+                </div>
+                <div style="text-align:center; font-weight:bold; font-size:1.4rem; text-decoration:underline; margin-bottom:15px; flex-shrink: 0;">${titles[type]||'تقرير'}</div>
+                <div class="table-responsive" style="flex-grow: 1; overflow: hidden;">
             `;
             
             try {
                 if(type==='stars') { 
                     let s = {}; Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
-                    h+=`<div class="table-responsive"><table class="table table-bordered text-center align-middle"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>الرصيد</th><th class="no-print">إجراءات الشهادة</th></tr></thead><tbody>`; 
+                    h+=`<table class="table table-bordered text-center align-middle"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>الرصيد</th><th class="no-print">إجراءات الشهادة</th></tr></thead><tbody>`; 
                     Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).forEach(x=> { 
                         const sObj=Object.values(data.students||{}).find(stu=>stu && stu.name===x[0]); 
                         h+=`<tr>
                             <td class="fw-bold">${x[0]}</td>
                             <td>${sObj?sObj.class:'-'}</td>
-                            <td class="fw-bold text-warning fs-4">${x[1]} ⭐</td>
+                            <td class="fw-bold text-warning fs-5">${x[1]} ⭐</td>
                             <td class="no-print d-flex gap-2 justify-content-center flex-wrap">
-                                <button type="button" class="btn btn-warning rounded-pill fw-bold m-1" onclick="printOfficialForm('${x[0]}', '', 'certificate')"><i class="fas fa-print me-2"></i> طباعة</button>
+                                <button type="button" class="btn btn-warning btn-sm rounded-pill fw-bold m-1" onclick="printOfficialForm('${x[0]}', '', 'certificate')"><i class="fas fa-print me-2"></i> طباعة</button>
                             </td>
                         </tr>`; 
-                    }); h+=`</tbody></table></div>`; 
+                    }); h+=`</tbody></table>`; 
                 } else if(type==='permits') { 
                     h += `<table class="table table-bordered text-center"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المعلم</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).filter(p=>p).reverse().map(p=>{ const sObj=Object.values(data.students||{}).find(stu=>stu && stu.name===p.student); return `<tr><td>${p.student}</td><td>${sObj?sObj.class:'-'}</td><td class="text-primary">${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`; 
                 } else if(type==='attendance') { 
                     const t = new Date().toLocaleDateString('en-CA'); h += `<table class="table table-bordered text-center table-striped"><thead><tr class="table-dark"><th>الطالب</th><th>الفصل</th><th>المعلم الراصد</th><th>الحالة</th></tr></thead><tbody>`; Object.values(data.students||{}).forEach(s => { if(!s) return; if(data.attendance?.[t]?.['full_day']?.[s.name]) { const rec = data.attendance[t]['full_day'][s.name]; h+=`<tr><td>${s.name}</td><td>${s.class}</td><td class="text-primary">${rec.teacher||'-'}</td><td class="bg-danger text-white">غائب يوم كامل</td></tr>`; } else { let p = []; let tea = '-'; for(let i=1;i<=7;i++) { const rec = data.attendance?.[t]?.['periods']?.[i]?.[s.name]; if(rec && (rec === 'absent' || rec.status === 'absent')) { p.push(i); tea = rec.teacher || tea; } } if(p.length) h+=`<tr><td>${s.name}</td><td>${s.class}</td><td class="text-primary">${tea}</td><td>حصص: ${p.join(',')}</td></tr>`; } }); h+=`</tbody></table>`; 
                 } else if(type==='violations') { 
-                    h += `<div class="table-responsive"><table class="table table-bordered text-center align-middle"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>الإجراء المتخذ</th><th class="no-print">طباعة المستند</th></tr></thead><tbody>`; 
+                    h += `<table class="table table-bordered text-center align-middle"><thead><tr class="table-dark"><th>الطالب</th><th>المخالفة</th><th>الإجراء المتخذ</th><th class="no-print">طباعة المستند</th></tr></thead><tbody>`; 
                     Object.values(data.violations||{}).filter(v=>v).reverse().forEach(v => {
                         let actionText = 'معلقة';
                         if(v.actionTaken === 'verbal_warning') actionText = 'إنذار شفهي';
@@ -1595,7 +1492,7 @@
                         }
                         h += `<tr><td class="fw-bold">${v.student}</td><td>${v.type}</td><td class="text-primary fw-bold">${actionText}</td><td class="no-print">${printBtn}</td></tr>`;
                     });
-                    h += `</tbody></table></div>`; 
+                    h += `</tbody></table>`; 
                 } else if(type==='visitors') { 
                     h += `<table class="table table-bordered text-center"><thead><tr class="table-dark"><th>الاسم</th><th>السبب</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).filter(v=>v).reverse().map(v=>`<tr><td>${v.name}</td><td>${v.reason}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`; 
                 } else if(type==='late') { 
@@ -1603,9 +1500,11 @@
                 }
                 
                 h+=`
-                <div style="display:flex; justify-content:space-between; margin-top:30px; padding:0 20px; font-size:1.3rem;">
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:20px; padding:0 20px; font-size:1.2rem; flex-shrink: 0;">
                     <div style="text-align:right"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
                     <div style="text-align:left"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
+                </div>
                 </div>`;
                 
                 document.getElementById('modal-print-content').innerHTML = h; 

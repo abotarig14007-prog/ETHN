@@ -110,7 +110,6 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.8);
             pointer-events: auto !important;
         }
-        .overlay-close:active { background: #b02a37 !important; transform: scale(0.95); }
 
         .carousel, .carousel-inner { height: 100vh; width: 100vw; }
         .carousel-item { height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; background: #000; }
@@ -131,7 +130,7 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= الطباعة الرسمية (النسخة الصارمة والمحصنة لصفحة واحدة) ================= */
+        /* ================= الطباعة الرسمية (النسخة النهائية المحصنة) ================= */
         #cert-print-area { display: none; }
         @media print {
             html, body { width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; background: white !important; font-family: 'Tajawal', sans-serif; overflow: hidden !important; }
@@ -144,17 +143,17 @@
             #cert-print-area, #cert-print-area * { visibility: visible; }
             #cert-print-area { 
                 display: flex !important; position: absolute; left: 0; top: 0; 
-                background: white; z-index: 999999; 
+                background: white !important; z-index: 999999; 
                 flex-direction: column; align-items: center; justify-content: flex-start; box-sizing: border-box;
                 width: 100%; height: 100%; margin: 0 !important; padding: 0 !important;
             }
 
-            /* إطار التعهد والمخالفة (A4 Portrait) - محكم بصفحة واحدة */
+            /* إطار التعهد والمخالفة محمي بصفحة واحدة تماماً */
             .form-frame {
                 width: 210mm !important; 
-                height: 285mm !important; 
+                height: 280mm !important; /* طول ثابت لمنع التمدد */
                 max-height: 285mm !important; 
-                border: 6px double var(--primary) !important; 
+                border: 5px double var(--primary) !important; 
                 padding: 10mm 15mm !important; 
                 display: flex !important; flex-direction: column !important; justify-content: space-between !important;
                 box-sizing: border-box !important; background: white !important; 
@@ -167,26 +166,26 @@
             .form-header-left { text-align: left; font-size: 1rem; font-weight: bold; line-height: 1.4; color: #000; direction: ltr;}
             
             .form-title { text-align: center; font-size: 1.8rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; flex-shrink: 0;}
-            
             .form-body { font-size: 1.2rem; line-height: 1.6; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; overflow: hidden;}
             .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.1rem;}
-            
             .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; flex-shrink: 0;}
             
-            /* إطار شهادة الشكر (Landscape 96%) */
+            /* إطار شهادة الشكر (عرضي 96%) */
             .cert-frame { 
-                width: 297mm !important; height: 210mm !important; margin: 0 auto !important; 
-                border: 15px solid var(--gold) !important; padding: 20mm !important; 
+                width: 285mm !important; height: 195mm !important; margin: 0 auto !important; 
+                border: 10px solid var(--gold) !important; outline: 4px solid var(--primary) !important; outline-offset: -8px !important;
+                padding: 15mm !important; 
                 text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important;
-                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="none" stroke="%23006C35" stroke-width="4" stroke-dasharray="10 10"/></svg>') !important;
+                background-color: white !important;
                 box-sizing: border-box !important; page-break-inside: avoid !important; overflow: hidden !important;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
-            .cert-body h1 { font-size: 4rem; color: var(--primary); font-weight: 900; margin-bottom: 20px; }
-            .cert-name-box { border-bottom: 4px solid var(--gold); display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: var(--gold); margin: 30px 0; }
+            .cert-body h1 { font-size: 4rem; color: var(--primary) !important; font-weight: 900; margin-bottom: 10px; }
+            .cert-name-box { border-bottom: 4px solid var(--gold) !important; display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: var(--gold) !important; margin: 20px 0; }
             
-            /* إطار التقارير (الجداول) محمي بصفحة واحدة */
+            /* إطار التقارير (محمي بصفحة واحدة) */
             .report-frame {
-                width: 210mm !important; height: 285mm !important; max-height: 285mm !important; 
+                width: 210mm !important; height: 280mm !important; max-height: 285mm !important; 
                 padding: 10mm !important; margin: 0 auto !important; background: white !important;
                 display: flex !important; flex-direction: column !important; justify-content: space-between !important;
                 box-sizing: border-box !important; overflow: hidden !important; direction: rtl !important;
@@ -194,7 +193,7 @@
             .report-frame .table-responsive { flex-grow: 1; overflow: hidden !important; }
             .report-frame table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 10px !important; }
             .report-frame th, .report-frame td { border: 1px solid #000 !important; padding: 5px !important; font-size: 0.95rem !important; text-align: center !important; }
-            .report-frame th { background-color: #eee !important; color: #000 !important; font-weight: bold !important; }
+            .report-frame th { background-color: #eee !important; color: #000 !important; font-weight: bold !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;}
         }
     </style>
 </head>
@@ -227,9 +226,6 @@
     <div id="top-bar" class="fixed-top no-print">
         <div class="d-flex align-items-center"><div style="width:15px; height:15px; background:red; border-radius:50%; margin-left:15px;" id="status-dot"></div><h5 class="m-0 fw-bold text-dark d-none d-sm-block">نظام إذن <span class="text-success">الاحترافي</span></h5><h4 class="m-0 fw-bold text-dark d-sm-none">نظام إذن</h4></div>
         <div class="d-flex align-items-center gap-3">
-            <button type="button" class="btn btn-warning text-dark rounded-pill fw-bold d-none d-md-block shadow-sm" onclick="openHallOfFame()"><i class="fas fa-crown me-2"></i> شاشة التميز</button>
-            <button type="button" class="btn btn-warning text-dark rounded-circle p-3 d-md-none shadow-sm" onclick="openHallOfFame()"><i class="fas fa-crown fa-lg"></i></button>
-            
             <div id="best-class-badge" class="badge bg-warning text-dark p-2 px-3 rounded-pill d-none animate__animated animate__bounceIn fs-6 shadow-sm"><i class="fas fa-trophy me-1"></i> المثالي: <span id="best-class-txt"></span></div>
             <button type="button" class="btn btn-light rounded-circle border p-3 shadow-sm" onclick="toggleMute()" id="mute-btn"><i class="fas fa-volume-up fa-lg"></i></button>
             <button type="button" class="btn btn-outline-dark d-lg-none p-2 shadow-sm" onclick="toggleSidebar()"><i class="fas fa-bars fa-2x"></i></button>
@@ -260,8 +256,9 @@
                 <h5 class="fw-bold text-white mt-2" id="disp-school">...</h5>
             </div>
             <div id="nav-items" class="px-2" style="flex-grow: 1; overflow-y: auto;"></div>
+            
             <div class="px-3 pb-4 pt-3" style="flex-shrink: 0; background: rgba(0,0,0,0.1); margin-top: auto;">
-                <button type="button" class="btn btn-danger w-100 rounded-pill fw-bold fs-4 shadow border-2 border-white" style="padding: 15px;" onclick="logOut()">
+                <button type="button" class="btn btn-danger w-100 rounded-pill fw-bold fs-4 shadow border-2 border-white" style="padding: 15px; position: relative; z-index: 1050;" onclick="logOut()">
                     <i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج
                 </button>
             </div>
@@ -273,7 +270,6 @@
 
         <main class="main-content">
             <section id="sec-services" class="view-section d-none fade-in">
-                
                 <div id="teacher-services-container" class="d-none">
                     <div class="page-card p-4 mb-4 bg-white border-0 shadow-sm rounded-4">
                         <div class="d-flex flex-column gap-2 text-center">
@@ -342,24 +338,49 @@
 
                 <div id="admin-panel-content" class="d-none">
                      <div class="row g-4 mb-4">
+                        
                         <div class="col-lg-4 col-12 order-lg-2">
-                            <div class="page-card h-100 border-info border-2 bg-light">
+                            <div class="page-card p-3 mb-3 border-warning border-3 bg-light text-center shadow-sm">
+                                <button type="button" class="btn btn-warning w-100 py-3 fw-bold fs-3 rounded-pill shadow mb-2 text-dark" onclick="openHallOfFame()"><i class="fas fa-crown me-2"></i> شاشة التميز</button>
+                                <button type="button" class="btn btn-dark w-100 py-3 fw-bold fs-4 rounded-pill shadow" onclick="openMediaScreen('showcase')"><i class="fas fa-play-circle me-2"></i> تشغيل العرض الحالي</button>
+                            </div>
+
+                            <div class="page-card border-info border-2 bg-white shadow-sm mb-3">
                                 <div class="card-header-custom bg-info text-white text-center d-block">
-                                    <h4 class="fw-bold m-0"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط والشاشة</h4>
+                                    <h5 class="fw-bold m-0"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط</h5>
                                 </div>
                                 <div class="p-3">
                                     <div class="mb-3">
-                                        <input type="text" id="lib-name" class="form-control mb-2 fw-bold" placeholder="اسم المقطع (مثال: أذكار)">
+                                        <input type="text" id="lib-name" class="form-control mb-2 fw-bold" placeholder="اسم المقطع...">
                                         <input type="text" id="lib-url" class="form-control mb-2 text-start" dir="ltr" placeholder="رابط يوتيوب...">
                                         <button type="button" class="btn btn-primary w-100 fw-bold shadow-sm" onclick="saveToLibrary()"><i class="fas fa-save me-1"></i> حفظ الرابط</button>
                                     </div>
-                                    <div class="mb-4">
+                                    <div class="mb-3 border-bottom pb-3">
                                         <input type="file" id="lib-file" style="display:none" accept="image/*" onchange="saveImageToLibrary(this)">
                                         <button type="button" class="btn btn-outline-success w-100 fw-bold shadow-sm" onclick="document.getElementById('lib-file').click()"><i class="fas fa-upload me-1"></i> رفع صورة من الجهاز</button>
                                     </div>
-                                    <h5 class="fw-bold text-dark border-bottom pb-2">المقاطع المحفوظة:</h5>
-                                    <div id="media-library-list" style="max-height: 400px; overflow-y: auto;">
-                                        </div>
+                                    <h6 class="fw-bold text-dark">المقاطع المحفوظة:</h6>
+                                    <div id="media-library-list" style="max-height: 250px; overflow-y: auto;"></div>
+                                </div>
+                            </div>
+
+                            <div class="page-card border-secondary border-2 bg-white shadow-sm">
+                                <div class="card-header-custom bg-secondary text-white text-center d-block">
+                                    <h5 class="fw-bold m-0"><i class="fas fa-user-shield me-2"></i> صلاحيات التقارير</h5>
+                                </div>
+                                <div class="p-3">
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="perm-teacher" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;">
+                                        <label class="form-check-label fs-5 fw-bold text-dark">المعلمين</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="perm-guard" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;">
+                                        <label class="form-check-label fs-5 fw-bold text-dark">الحارس</label>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="perm-counselor" onchange="saveSettings()" style="transform: scale(1.3); margin-left: 10px;">
+                                        <label class="form-check-label fs-5 fw-bold text-dark">الموجه الطلابي</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -371,7 +392,15 @@
                                 <div class="col-4"><div class="stat-box red"><h2 class="mb-1" id="adm-stat-vio">0</h2><small class="fs-4 fw-bold">مخالفات</small></div></div>
                             </div>
                             <div class="row g-3">
-                                <div class="col-12"><div class="page-card h-100 border-danger border-2"><div class="card-header-custom bg-danger text-white"><span class="fs-3"><i class="fas fa-bell me-2"></i> المخالفات المعلقة</span><div class="d-flex gap-2"><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="adm-vio-count">0</span></div></div><div id="adm-vio-list" class="p-3 bg-light"></div></div></div>
+                                <div class="col-12">
+                                    <div class="page-card h-100 border-danger border-2">
+                                        <div class="card-header-custom bg-danger text-white cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')">
+                                            <span class="fs-3"><i class="fas fa-bell me-2"></i> المخالفات المعلقة</span>
+                                            <div class="d-flex gap-2"><button type="button" class="btn btn-sm btn-light rounded-pill fw-bold text-danger" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="adm-vio-count">0</span></div>
+                                        </div>
+                                        <div id="adm-vio-list" class="p-3 bg-light d-none"></div>
+                                    </div>
+                                </div>
                                 <div class="col-12"><div class="page-card h-100"><div class="card-header-custom">الزوار في المدرسة</div><div id="adm-vis-list" class="list-group list-group-flush p-2"></div></div></div>
                                 <div class="col-12"><div class="page-card h-100"><div class="card-header-custom">أمر انصراف نهائي للطالب</div><div class="p-4"><label class="fs-4 fw-bold mb-3 text-primary">اسم الطالب <span class="text-danger">*</span></label><input id="adm-dep-name" class="form-control mb-4" style="font-size:1.6rem; height:60px; border-radius:15px; text-align:center;"><button type="button" class="btn btn-primary w-100 rounded-pill btn-lg-mobile fw-bold shadow" style="font-size:1.6rem; padding:15px;" onclick="sendDeparture()">إرسال الأمر للحارس</button></div></div></div>
                             </div>
@@ -432,23 +461,7 @@
 
             <section id="sec-data" class="view-section d-none fade-in">
                 <div class="page-card p-4">
-                    <h4 class="fw-bold mb-5 text-primary border-bottom pb-3 fs-2 text-center">الإعدادات الشاملة</h4>
-                    
-                    <div class="setting-card-yellow p-4 mb-5 rounded shadow-sm border-2 border-warning bg-light">
-                        <h5 class="fw-bold text-dark mb-4"><i class="fas fa-lock me-2"></i> صلاحيات الدخول للتقارير (للإدارة فقط)</h5>
-                        <div class="form-check form-switch mb-3">
-                            <input class="form-check-input" type="checkbox" id="perm-teacher" onchange="saveSettings()" style="transform: scale(1.5); margin-left: 15px;">
-                            <label class="form-check-label fs-4 fw-bold">السماح للمعلمين بمشاهدة التقارير</label>
-                        </div>
-                        <div class="form-check form-switch mb-3">
-                            <input class="form-check-input" type="checkbox" id="perm-guard" onchange="saveSettings()" style="transform: scale(1.5); margin-left: 15px;">
-                            <label class="form-check-label fs-4 fw-bold">السماح للحارس بمشاهدة التقارير</label>
-                        </div>
-                        <div class="form-check form-switch mb-3">
-                            <input class="form-check-input" type="checkbox" id="perm-counselor" onchange="saveSettings()" style="transform: scale(1.5); margin-left: 15px;">
-                            <label class="form-check-label fs-4 fw-bold">السماح للموجه الطلابي بمشاهدة التقارير</label>
-                        </div>
-                    </div>
+                    <h4 class="fw-bold mb-5 text-primary border-bottom pb-3 fs-2 text-center">الإعدادات المتقدمة</h4>
 
                     <h5 class="text-primary border-bottom pb-2 mt-5 fs-2 fw-bold">بيانات المدرسة والشهادات</h5>
                     <div class="row g-4 mb-5">
@@ -569,7 +582,6 @@
         let cache_classes = "";
         let cache_teachers = "";
 
-        // المزامنة الحية
         function syncLiveViews() {
             if(userRole === 'admin') { renderAdmin(); renderMediaLibrary(); }
             if(userRole === 'counselor') renderCounselor();
@@ -787,7 +799,7 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // ================= الإدارة السريعة للتلفزيون ومكتبة الوسائط المدمجة =================
+        // ================= الإدارة السريعة للتلفزيون والمكتبة =================
         function getEmbedUrl(url) {
             let videoId = '';
             if (url.includes('youtube.com/watch?v=')) { videoId = url.split('v=')[1].split('&')[0]; } 
@@ -840,10 +852,10 @@
                 const item = items[k];
                 const icon = item.type === 'video' ? 'fas fa-video text-danger' : 'fas fa-image text-success';
                 return `
-                <div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 rounded shadow-sm border p-3 bg-white">
-                    <span class="fw-bold fs-4 mb-2 mb-md-0"><i class="${icon} me-2"></i> ${item.name}</span>
-                    <div class="btn-group w-100 w-md-auto">
-                        <button type="button" class="btn btn-primary fw-bold" onclick="playFromLibrary('${item.url}', '${item.type}')"><i class="fas fa-play me-1"></i> عرض على الشاشة</button>
+                <div class="list-group-item d-flex flex-column justify-content-between align-items-center mb-2 rounded shadow-sm border p-3 bg-white">
+                    <span class="fw-bold fs-4 mb-2 text-truncate w-100"><i class="${icon} me-2"></i> ${item.name}</span>
+                    <div class="btn-group w-100">
+                        <button type="button" class="btn btn-primary fw-bold" onclick="playFromLibrary('${item.url}', '${item.type}')"><i class="fas fa-play me-1"></i> تشغيل</button>
                         <button type="button" class="btn btn-danger" onclick="db.ref('mediaLibrary/${k}').remove()"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`; 
@@ -852,7 +864,6 @@
 
         function playFromLibrary(url, type) {
             const screenId = 'showcase';
-            // نقوم بحذف المحتوى القديم ووضع المحتوى الجديد ليعمل فوراً
             db.ref(`screens/${screenId}`).remove().then(() => {
                 db.ref(`screens/${screenId}`).push({ type: type, url: url }).then(() => { 
                     openMediaScreen('showcase');
@@ -1218,22 +1229,12 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
-        // ================= الإغلاق الآمن للمتصفح =================
+        // الخروج النهائي المبرمج
         function logOut() {
-            localStorage.removeItem('userRole');
-            localStorage.removeItem('currentView');
+            localStorage.clear();
             sessionStorage.clear();
             userRole = '';
-            
-            document.getElementById('app-body').classList.add('d-none');
-            document.getElementById('auth-overlay').style.display = 'flex';
-            document.getElementById('pin-area').classList.add('hidden');
-            document.getElementById('role-selection').classList.remove('hidden');
-            document.getElementById('pin-input').value = '';
-            document.querySelector('.sidebar').classList.remove('active');
-            
-            // تحديث قسري للمتصفح لتنظيف الكاش
-            window.location.replace(window.location.href.split('?')[0].split('#')[0] + "?t=" + Date.now());
+            window.location.replace(window.location.pathname); // العودة النظيفة للرئيسية بدون كاش
         }
 
         function renderAdmin() { 
@@ -1261,7 +1262,6 @@
                 </div>`).join(''); 
         }
 
-        // ================= الموجه الطلابي مع سجل الحالات المعالجة =================
         function renderCounselor() {
             const counselorViolations = Object.entries(data.violations||{}).filter(x=>x[1] && x[1].status==='pending_counselor');
             const resolvedViolations = Object.entries(data.violations||{}).filter(x=>x[1] && x[1].status==='closed_counselor');
@@ -1287,7 +1287,6 @@
                 }
             }
             
-            // تحديث سجل الحالات المعالجة
             if(resolvedList) {
                 if(resolvedViolations.length === 0) {
                     resolvedList.innerHTML = '<tr><td colspan="3" class="text-muted p-4">لم يتم معالجة أي حالة بعد</td></tr>';
@@ -1392,7 +1391,7 @@
             });
         }
 
-        // ================= الطباعة الرسمية (تنسيق الصفحة الواحدة الصارم) =================
+        // ================= الطباعة الرسمية (النسخة الصارمة والمحصنة لصفحة واحدة) =================
         function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
@@ -1438,7 +1437,7 @@
                 
                 headerContainer.innerHTML = `
                     <div class="form-header-text">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:var(--primary);">${data.settings.school || ''}</span></div>
-                    <div><img src="${data.settings.logo || ''}" style="max-height: 80px;"></div>
+                    <div><img src="${data.settings.logo || ''}" style="max-height: 70px;"></div>
                     <div class="form-header-left">اليوم: ${dayStr}<br>التاريخ: ${dateStr}<br>الوقت: ${timeStr}</div>
                 `;
 
@@ -1455,7 +1454,7 @@
                             ${noteHtml}
                             <br>وأتعهد لإدارة المدرسة بالالتزام التام بأنظمة وضوابط السلوك والمواظبة، وعدم تكرار هذه المخالفة أو غيرها مستقبلاً. وفي حال تكرار ذلك، يحق لإدارة المدرسة اتخاذ الإجراءات النظامية المعتمدة في قواعد السلوك والمواظبة بما في ذلك الحسم من درجات السلوك أو الاستدعاء الرسمي لولي الأمر.
                         </div>
-                        <div style="font-size:1.3rem; text-align:left; color:#000; font-weight:bold; margin-top:20px;">توقيع الطالب: .....................................</div>
+                        <div style="font-size:1.2rem; text-align:left; color:#000; font-weight:bold; margin-top:20px;">توقيع الطالب: .....................................</div>
                     `;
                 } else if (formType === 'referral') {
                     bodyContainer.innerHTML = `
@@ -1468,17 +1467,17 @@
                             ${noteHtml}
                             <br>نأمل منكم دراسة حالة الطالب، واتخاذ الإجراءات الإرشادية والتربوية المناسبة وفقاً للائحة السلوك والمواظبة، وإفادتنا بما يتم حيال ذلك.
                         </div>
-                        <div style="font-size:1.3rem; text-align:center; font-weight:bold; margin-top:20px; color:#000;">وتقبلوا تحيات إدارة المدرسة،،،</div>
+                        <div style="font-size:1.2rem; text-align:center; font-weight:bold; margin-top:20px; color:#000;">وتقبلوا تحيات إدارة المدرسة،،،</div>
                     `;
                 }
             }
 
             document.getElementById('final-print-container').innerHTML = ''; 
             document.body.className = formType === 'certificate' ? 'print-landscape' : 'print-portrait'; 
-            setTimeout(() => { window.print(); document.body.className = ''; }, 500);
+            setTimeout(() => { window.print(); document.body.className = ''; }, 800); // زيادة وقت الانتظار لضمان الاستقرار
         }
 
-        // ================= التقارير المدرسية (في صفحة واحدة) =================
+        // ================= التقارير المدرسية (في صفحة واحدة محمية من التحديث) =================
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
             const logo = data.settings.logo || "";
@@ -1545,7 +1544,7 @@
                 
                 h+=`
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-top:15px; padding:0 20px; font-size:1.1rem; flex-shrink: 0;">
+                <div style="display:flex; justify-content:space-between; margin-top:20px; padding:0 20px; font-size:1.2rem; flex-shrink: 0;">
                     <div style="text-align:right"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
                     <div style="text-align:left"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
                 </div>
@@ -1562,7 +1561,7 @@
         function executePrint() { 
             document.getElementById('final-print-container').innerHTML = document.getElementById('modal-print-content').innerHTML; 
             document.body.className = 'print-portrait';
-            setTimeout(()=>{ window.print(); document.body.className = ''; }, 500); 
+            setTimeout(()=>{ window.print(); document.body.className = ''; }, 800); 
         }
 
     </script>

@@ -20,14 +20,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-        /* ================= Core Styles (نسف الشاشة البيضاء) ================= */
+        /* ================= Core Styles ================= */
         :root { --primary: #006C35; --gold: #C69C6D; --bg: #F8FAFC; --card: #ffffff; --text: #1E293B; --border: #E2E8F0; --transition: all 0.3s ease; }
-        /* تمت إزالة visibility: hidden لضمان ظهور الصفحة فوراً */
+        /* تم إزالة visibility: hidden لحل مشكلة الشاشة البيضاء نهائياً */
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 80px; }
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
         
-        .swal2-container { z-index: 2147483647 !important; }
+        .swal2-container { z-index: 110000 !important; }
 
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: transform 0.3s ease; }
         .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
@@ -42,7 +42,6 @@
             .services-grid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 15px; }
             .services-grid .btn { padding: 25px 5px !important; font-size: 1.5rem !important; height: 150px !important; flex-direction: column; opacity: 0.6; }
             .services-grid .btn.active-tab { opacity: 1; transform: scale(1.03); border: 3px solid #000; }
-            .btn-lg-mobile { font-size: 1.7rem !important; padding: 18px !important; border-radius: 50px !important; }
         }
 
         @media (min-width: 992px) {
@@ -72,8 +71,13 @@
         .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
 
-        /* ================= تصميم أيقونات التقارير ================= */
-        .report-grid-item { background: #ffffff; border-radius: 25px; padding: 35px 20px; text-align: center; cursor: pointer; border: 2px solid #e2e8f0; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* ================= تصميم أيقونات التقارير الجذاب ================= */
+        .report-grid-item { 
+            background: #ffffff; border-radius: 25px; padding: 35px 20px; 
+            text-align: center; cursor: pointer; border: 2px solid #e2e8f0; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
         .report-grid-item:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 15px 30px rgba(0,108,53,0.15); }
         .report-grid-item i { font-size: 4rem; margin-bottom: 15px; }
 
@@ -95,11 +99,15 @@
         .challenger-group { display: flex; gap: 20px; justify-content: center; width: 100%; position: absolute; left: 0; }
         .challenger-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 215, 0, 0.4); border-radius: 25px; padding: 25px; text-align: center; width: 320px; }
         
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 2147483647 !important; display: flex; align-items: center; justify-content: center; }
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
         .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; font-size: 1.5rem; }
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 90px; border-bottom: 1px solid var(--border); }
         
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         /* نافذة التقارير الأنيقة */
         .report-modal-header { background: linear-gradient(to left, #006C35, #004d25); color: white; border-bottom: 5px solid #C69C6D; padding: 20px; border-radius: 15px 15px 0 0; }
         .report-modal-body { background: #f8fafc; padding: 30px; }
@@ -107,55 +115,80 @@
         .report-table th { background-color: #f1f5f9; color: #1e293b; font-weight: 800; border-bottom: 2px solid #cbd5e1; padding: 15px; }
         .report-table td { padding: 15px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; font-size: 1.2rem; font-weight: 500;}
 
-        /* ================= الكي الخفي للطباعة (Native Pure CSS Print) ================= */
+        /* ================= الكي الخفي للطباعة (نظام متكامل وصلب 100%) ================= */
+        /* إخفاء حاوية الطباعة في الشاشة العادية */
         @media screen {
-            #native-print-container { display: none !important; }
+            #print-engine-container { display: none !important; }
         }
 
+        /* إعدادات الطباعة الصارمة */
         @media print {
-            /* 1. إخفاء النظام بأكمله والنوافذ المنبثقة لمنع تدخل المتصفح */
-            body > *:not(#native-print-container) { display: none !important; }
+            /* 1. إخفاء جميع عناصر الشاشة الأصلية تماماً لتجنب التحديث */
+            body > *:not(#print-engine-container) { display: none !important; }
             .modal, .modal-backdrop { display: none !important; }
             
-            /* 2. إعداد الصفحة الأساسية للطابعة */
-            html, body { width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; background: white !important; font-family: 'Tajawal', sans-serif; overflow: hidden !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;}
+            /* 2. إعدادات الورقة */
+            html, body { width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; background: white !important; font-family: 'Tajawal', sans-serif; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             
-            /* 3. إظهار حاوية الطباعة فقط */
-            #native-print-container { 
-                display: block !important; position: absolute; left: 0; top: 0; 
-                width: 100%; margin: 0 !important; padding: 0 !important; background: white !important; z-index: 999999; 
+            body.print-landscape @page { size: A4 landscape; margin: 0; }
+            body.print-portrait @page { size: A4 portrait; margin: 0; }
+            
+            /* 3. إظهار غرفة الطباعة فقط */
+            #print-engine-container { 
+                display: flex !important; position: absolute; left: 0; top: 0; 
+                background: white !important; z-index: 999999; 
+                flex-direction: column; align-items: center; justify-content: flex-start; box-sizing: border-box;
+                width: 100%; height: 100%; margin: 0 !important; padding: 0 !important;
             }
 
-            /* إعداد الورقة للعمودي (A4) */
-            .print-page { 
+            /* إطار التعهد والإحالة (A4 عمودي محكم لورقة واحدة) */
+            .print-form-frame {
+                width: 210mm !important; 
+                height: 290mm !important; 
+                max-height: 290mm !important; 
+                border: 6px double var(--primary) !important; 
+                padding: 10mm 15mm !important; 
+                display: flex !important; flex-direction: column !important; justify-content: space-between !important;
+                box-sizing: border-box !important; background: white !important; 
+                page-break-inside: avoid !important; page-break-after: avoid !important;
+                direction: rtl !important; text-align: right !important; margin: 0 auto !important; overflow: hidden !important;
+            }
+            .p-header { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 5px !important; border-bottom: 2px solid #ccc !important; padding-bottom: 10px !important; flex-shrink: 0 !important;}
+            .p-header img { max-height: 70px !important; }
+            .p-header-text { font-weight: bold !important; font-size: 1.1rem !important; line-height: 1.4 !important; color: #000 !important; text-align: right !important; }
+            .p-header-left { text-align: left !important; font-size: 1rem !important; font-weight: bold !important; line-height: 1.4 !important; color: #000 !important; direction: ltr !important;}
+            
+            .p-title { text-align: center !important; font-size: 1.8rem !important; font-weight: 900 !important; color: #000 !important; margin: 10px 0 !important; text-decoration: underline !important; flex-shrink: 0 !important;}
+            .p-body { font-size: 1.2rem !important; line-height: 1.6 !important; color: #000 !important; text-align: justify !important; flex-grow: 1 !important; margin-bottom: 5px !important; overflow: hidden !important;}
+            .p-note { background: #f9f9f9 !important; border: 1px dashed #aaa !important; padding: 10px !important; border-radius: 8px !important; margin: 10px 0 !important; font-size: 1.1rem !important;}
+            /* التوقيعات محمية من الضغط */
+            .p-footer { display: flex !important; justify-content: space-around !important; margin-top: auto !important; font-size: 1.2rem !important; font-weight: bold !important; color: #000 !important; padding-top: 10px !important; flex-shrink: 0 !important;}
+            
+            /* إطار شهادة الشكر (A4 أفقي محكم وبالألوان) */
+            .print-cert-frame { 
+                width: 290mm !important; height: 200mm !important; margin: 0 auto !important; 
+                border: 10px solid var(--gold) !important; outline: 4px solid var(--primary) !important; outline-offset: -8px !important;
+                padding: 15mm !important; 
+                text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important;
+                background-color: white !important;
+                box-sizing: border-box !important; page-break-inside: avoid !important; overflow: hidden !important;
+            }
+            .print-cert-frame * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .c-title { font-size: 4rem !important; color: var(--primary) !important; font-weight: 900 !important; margin-bottom: 10px !important; }
+            .c-name { border-bottom: 4px solid var(--gold) !important; display: inline-block !important; padding: 10px 50px !important; font-size: 3.5rem !important; font-weight: 900 !important; color: var(--gold) !important; margin: 20px 0 !important; }
+            
+            /* إطار التقارير (الجداول) محمي بصفحة واحدة */
+            .print-report-frame {
                 width: 210mm !important; height: 290mm !important; max-height: 290mm !important; 
-                margin: 0 auto !important; box-sizing: border-box !important; background: white !important; 
-                overflow: hidden !important; page-break-after: avoid !important; page-break-inside: avoid !important;
+                padding: 10mm !important; margin: 0 auto !important; background: white !important;
+                display: flex !important; flex-direction: column !important; justify-content: space-between !important;
+                box-sizing: border-box !important; overflow: hidden !important; direction: rtl !important;
             }
-            
-            /* إعداد الورقة للأفقي (الشهادات) */
-            .print-landscape { width: 290mm !important; height: 200mm !important; max-height: 200mm !important; }
-            
-            @page { margin: 0; }
-
-            /* --- تنسيق التعهد والإحالة والتقارير --- */
-            .form-frame { width: 100%; height: 100%; border: 6px double var(--primary); padding: 10mm 15mm; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; direction: rtl; text-align: right; overflow: hidden; }
-            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; border-bottom: 2px solid #ccc; padding-bottom: 10px; flex-shrink: 0;}
-            .form-header img { max-height: 70px; }
-            .form-title { text-align: center; font-size: 1.8rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; flex-shrink: 0;}
-            .form-body { font-size: 1.2rem; line-height: 1.6; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; overflow: hidden;}
-            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; flex-shrink: 0;} /* حماية التوقيعات من الانضغاط */
-            
-            /* --- تنسيق الشهادة --- */
-            .cert-frame { width: 100%; height: 100%; border: 10px solid var(--gold); outline: 4px solid var(--primary); outline-offset: -8px; padding: 15mm; text-align: center; display: flex; flex-direction: column; justify-content: space-between; background-color: white; box-sizing: border-box; overflow: hidden; }
-            .c-title { font-size: 4rem; color: var(--primary) !important; font-weight: 900; margin-bottom: 10px; }
-            .c-name { border-bottom: 4px solid var(--gold) !important; display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: var(--gold) !important; margin: 20px 0; }
-            
-            /* --- تنسيق الجداول --- */
-            .report-table-wrapper { flex-grow: 1; overflow: hidden; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-            th, td { border: 1px solid #000 !important; padding: 5px; font-size: 0.95rem; text-align: center; color: #000; }
-            th { background-color: #eee !important; font-weight: bold; }
+            .r-table-wrap { flex-grow: 1 !important; overflow: hidden !important; }
+            .print-report-frame table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 10px !important; }
+            .print-report-frame th, .print-report-frame td { border: 1px solid #000 !important; padding: 5px !important; font-size: 0.95rem !important; text-align: center !important; color:#000 !important;}
+            .print-report-frame th { background-color: #eee !important; font-weight: bold !important; -webkit-print-color-adjust: exact !important;}
+            .r-footer { flex-shrink: 0 !important; display: flex !important; justify-content: space-between !important; margin-top: auto !important; font-size: 1.2rem !important; font-weight: bold !important; padding: 10px 20px 0 !important; color: #000 !important;}
         }
     </style>
 </head>
@@ -163,9 +196,7 @@
     <div class="gradient-bg"></div>
     <div class="custom-toast" id="system-toast">تنبيه جديد!</div>
 
-    <div id="native-print-container"></div>
-
-    <audio id="bell" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" style="display:none; width:0; height:0;" preload="auto"></audio>
+    <div id="print-engine-container"></div>
 
     <div id="media-slider-overlay" class="full-overlay">
         <button type="button" class="overlay-close" onclick="closeOverlay('media-slider-overlay')"><i class="fas fa-power-off me-2"></i> إغلاق الشاشة</button>
@@ -293,7 +324,7 @@
             </div>
             <div id="nav-items" class="px-2" style="flex-grow: 1; overflow-y: auto;"></div>
             
-            <div class="px-3 pb-4 pt-3" style="flex-shrink: 0; background: rgba(0,0,0,0.1); margin-top: auto; z-index: 9999;">
+            <div class="px-3 pb-4 pt-3" style="flex-shrink: 0; background: rgba(0,0,0,0.1); margin-top: auto; z-index: 9999; position: relative;">
                 <button type="button" class="btn btn-danger w-100 rounded-pill fw-bold fs-4 shadow border-2 border-white" style="padding: 15px;" onclick="logOut()">
                     <i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج
                 </button>
@@ -377,6 +408,7 @@
                      <div class="row g-4 mb-4">
                         
                         <div class="col-lg-4 col-12 order-lg-2">
+                            
                             <div class="page-card p-4 mb-4 border-warning border-3 bg-white text-center shadow-sm">
                                 <h3 class="fw-bold text-dark mb-4 border-bottom pb-3"><i class="fas fa-tv me-2"></i> شاشات العرض</h3>
                                 <button type="button" class="btn btn-warning w-100 py-3 fw-bold fs-3 rounded-pill shadow mb-3 text-dark" onclick="openHallOfFameMenu()"><i class="fas fa-crown me-2"></i> شاشة التميز 👑</button>
@@ -415,9 +447,7 @@
                                     <div class="page-card h-100 border-danger border-2">
                                         <div class="card-header-custom bg-danger text-white cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')">
                                             <span class="fs-3"><i class="fas fa-bell me-2"></i> المخالفات المعلقة</span>
-                                            <div class="d-flex gap-2">
-                                                <span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2 animate__animated animate__pulse animate__infinite" id="adm-vio-count">0</span>
-                                            </div>
+                                            <div class="d-flex gap-2"><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2 animate__animated animate__pulse animate__infinite" id="adm-vio-count">0</span></div>
                                         </div>
                                         <div id="adm-vio-list" class="p-3 bg-light d-none"></div>
                                     </div>
@@ -575,7 +605,7 @@
                 <div class="report-modal-body" id="modal-print-content"></div>
                 <div class="modal-footer bg-white border-top">
                     <button type="button" class="btn btn-secondary px-5 fw-bold fs-4 rounded-pill" data-bs-dismiss="modal">إغلاق</button>
-                    <button type="button" class="btn btn-primary px-5 fw-bold fs-4 rounded-pill shadow" onclick="executeNativePrint()">
+                    <button type="button" class="btn btn-primary px-5 fw-bold fs-4 rounded-pill shadow" onclick="executeIframePrint()">
                         <i class="fas fa-print me-2"></i> طباعة التقرير
                     </button>
                 </div>
@@ -583,6 +613,8 @@
         </div>
     </div>
     
+    <audio id="bell" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" preload="auto"></audio>
+
     <script>
         const firebaseConfig = { apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE", authDomain: "ethn-63848.firebaseapp.com", databaseURL: "https://ethn-63848-default-rtdb.firebaseio.com", projectId: "ethn-63848", storageBucket: "ethn-63848.appspot.com", messagingSenderId: "747489913596", appId: "1:747489913596:web:d98d88447e4a25cc808579" };
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
@@ -607,6 +639,10 @@
             const savedRole = localStorage.getItem('userRole');
             db.ref('/').on('value', snap => {
                 const val = snap.val();
+                
+                // إلغاء الشاشة البيضاء تماماً
+                document.body.style.visibility = 'visible';
+
                 if(val) {
                     data.settings = { ...data.settings, ...(val.settings || {}) };
                     data.classes = val.classes || [];
@@ -823,7 +859,6 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // ================= الإدارة السريعة للمكتبة والتلفزيون =================
         function getEmbedUrl(url) {
             let videoId = '';
             if (url.includes('youtube.com/watch?v=')) { videoId = url.split('v=')[1].split('&')[0]; } 
@@ -886,7 +921,6 @@
             }).join('');
         }
 
-        // تشغيل المحدد والمتابعة المتسلسلة
         function playSelectedLibrary() {
             const checked = document.querySelectorAll('.lib-checkbox:checked');
             if(checked.length === 0) return Swal.fire('تنبيه', 'الرجاء تحديد مقطع واحد على الأقل', 'warning');
@@ -1015,11 +1049,10 @@
                 document.getElementById('cert-display-overlay').style.display = 'block';
                 if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             } else {
-                printOfficialForm(studentName, '', 'certificate', reason); // طباعة عبر الدالة المعزولة
+                printViaIframe(html, true); 
             }
         }
 
-        // ================= لوحة الشرف الذكية =================
         function openHallOfFame() {
             document.getElementById('hall-of-fame-overlay').style.display='block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
@@ -1493,6 +1526,13 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
+        function logOut() {
+            localStorage.clear();
+            sessionStorage.clear();
+            userRole = '';
+            window.location.replace(window.location.pathname); 
+        }
+
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
             const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
@@ -1518,6 +1558,7 @@
                 </div>`).join(''); 
         }
 
+        // ================= الموجه الطلابي =================
         function renderCounselor() {
             const counselorViolations = Object.entries(data.violations||{}).filter(x=>x[1] && x[1].status==='pending_counselor');
             const resolvedViolations = Object.entries(data.violations||{}).filter(x=>x[1] && x[1].status==='closed_counselor');
@@ -1641,45 +1682,55 @@
             });
         }
 
-        // ================= نظام الطباعة الأصلي (Native Pure CSS Print) بدون Iframe =================
-        // هذا النظام آمن 100% ولا يغلق النوافذ أو يقوم بتحديث الصفحة.
-        function triggerNativePrint(htmlContent, isLandscape) {
-            const printContainer = document.getElementById('native-print-container');
-            const pageClass = isLandscape ? 'print-page print-landscape' : 'print-page';
+        // ================= الطباعة المعزولة 100% (الغرفة السرية Iframe) =================
+        function printViaIframe(htmlContent, isLandscape = false) {
+            const iframe = document.getElementById('print-iframe');
+            const doc = iframe.contentWindow.document;
+            let orientation = isLandscape ? 'landscape' : 'portrait';
             
-            // حقن الكود في حاوية الطباعة
-            printContainer.innerHTML = `<div class="${pageClass}">${htmlContent}</div>`;
+            doc.open();
+            doc.write(`
+                <html dir="rtl" lang="ar">
+                <head>
+                    <title>الطباعة</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+                    <style>
+                        @page { size: A4 ${orientation}; margin: 0; }
+                        body { font-family: 'Tajawal', sans-serif; background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                        
+                        .form-frame { width: 210mm; height: 285mm; border: 5px double #006C35; padding: 15mm; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; margin: 0 auto; overflow: hidden; }
+                        .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+                        .form-header img { max-height: 70px; }
+                        .form-header-text { font-weight: bold; font-size: 1.1rem; line-height: 1.4; color: #000; text-align: right; }
+                        .form-header-left { text-align: left; font-size: 1rem; font-weight: bold; line-height: 1.4; color: #000; direction: ltr; }
+                        .form-title { text-align: center; font-size: 1.8rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; }
+                        .form-body { font-size: 1.2rem; line-height: 1.6; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; overflow: hidden; }
+                        .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.1rem; }
+                        .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; }
+                        
+                        /* إطار التقارير المتطور يحافظ على التوقيعات في الأسفل */
+                        .report-frame { width: 210mm; height: 280mm; padding: 15mm; margin: 0 auto; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: hidden; }
+                        .report-table-wrapper { flex: 1 1 auto; overflow: hidden; } 
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+                        th, td { border: 1px solid #000; padding: 4px; font-size: 0.85rem; text-align: center; color: #000; }
+                        th { background-color: #eee; font-weight: bold; }
+                        .report-signatures { flex-shrink: 0; margin-top: auto; display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; padding-top: 10px;}
+                    </style>
+                </head>
+                <body>
+                    ${htmlContent}
+                </body>
+                </html>
+            `);
+            doc.close();
             
-            // إضافة كلاس للبودي لتفعيل الطباعة في CSS
-            document.body.classList.add('printing-form');
-            if (isLandscape) { document.body.classList.add('print-landscape'); } 
-            else { document.body.classList.add('print-portrait'); }
-            
-            // إغلاق النوافذ المنبثقة بشكل فوري وصامت (بدون Animation) لمنع تعليق المتصفح
-            const modalEl = document.getElementById('printModal');
-            const actionModalEl = document.getElementById('violationActionModal');
-            const customCertModalEl = document.getElementById('customCertModal');
-            
-            if(modalEl) modalEl.classList.remove('show', 'd-block');
-            if(actionModalEl) actionModalEl.classList.remove('show', 'd-block');
-            if(customCertModalEl) customCertModalEl.classList.remove('show', 'd-block');
-            
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
-            const backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(b => b.remove());
-
-            // إعطاء المتصفح وقت لرسم الشاشة قبل إطلاق أمر الطباعة
             setTimeout(() => {
-                window.print();
-                
-                // تنظيف بعد الطباعة
-                document.body.classList.remove('printing-form', 'print-landscape', 'print-portrait');
-                printContainer.innerHTML = '';
-            }, 500);
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            }, 800); 
         }
 
+        // ================= الطباعة الرسمية للنماذج =================
         function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const dateStr = new Date().toLocaleDateString('ar-SA');
             const dayStr = new Date().toLocaleDateString('ar-SA', {weekday: 'long'});
@@ -1694,22 +1745,22 @@
 
             if (formType === 'certificate') {
                 html = `
-                <div class="cert-frame">
+                <div style="width: 285mm; height: 195mm; margin: 0 auto; border: 10px solid #C69C6D; outline: 4px solid #006C35; outline-offset: -8px; padding: 15mm; text-align: center; display: flex; flex-direction: column; justify-content: space-between; background-color: white; box-sizing: border-box; overflow: hidden;">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
                         <div style="text-align:right; font-weight:bold; font-size:1.4rem; color:#000; line-height: 1.5;">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:#006C35;">${schoolName}</span></div>
                         <div><img src="${logo}" style="max-height: 100px;"></div>
                         <div style="width: 200px;"></div>
                     </div>
-                    <h1 class="c-title">شهادة شكر وتقدير</h1>
+                    <h1 style="font-size:4rem; color:#006C35; font-weight:900; margin-bottom:10px;">شهادة شكر وتقدير</h1>
                     <p style="font-size:2rem; margin-top:10px; color:#000;">تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
-                    <div class="c-name">${studentName}</div>
+                    <div style="border-bottom: 4px solid #C69C6D; display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: #C69C6D; margin: 20px 0;">${studentName}</div>
                     <p style="font-size:1.8rem; line-height: 1.6; margin-top:10px; color:#000;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
                     <div style="display:flex; justify-content:space-between; width:100%; margin-top:auto; font-size:1.5rem; font-weight:bold; color:#000;">
                         <div style="text-align:right;"><strong>وكيل شؤون الطلاب</strong><br><br>${deputy}</div>
                         <div style="text-align:left;"><strong>مدير المدرسة</strong><br><br>${manager}</div>
                     </div>
                 </div>`;
-                triggerNativePrint(html, true); // Landscape
+                printViaIframe(html, true); 
             } else {
                 let noteHtml = customNote ? `<div class="form-body-details"><strong>ملاحظات الوكيل / الإجراء:</strong> ${customNote}</div>` : '';
                 let title = formType === 'pledge' ? 'تعهد خطي على طالب' : 'نموذج إحالة للموجه الطلابي';
@@ -1734,11 +1785,11 @@
                         <div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${deputy}</div>
                     </div>
                 </div>`;
-                triggerNativePrint(html, false); // Portrait
+                printViaIframe(html, false); 
             }
         }
 
-        // ================= التقارير المدرسية =================
+        // ================= تصميم التقارير الجديد =================
         let currentPrintHTML = ""; 
         
         function showReportModal(type) {
@@ -1815,6 +1866,7 @@
                     tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).filter(t=>t).reverse().map(t=>`<tr><td class="fw-bold">${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
                 }
 
+                // إكمال كود الشاشة
                 h += tableContent;
                 h += `</div>
                 <div style="display:flex; justify-content:space-between; margin-top:40px; padding:0 20px; font-size:1.2rem;">
@@ -1822,6 +1874,7 @@
                     <div style="text-align:center;"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
                 </div>`;
                 
+                // إكمال كود الطباعة
                 printH += tableContent;
                 printH += `</div>
                 <div class="report-signatures">
@@ -1830,7 +1883,7 @@
                 </div></div>`;
 
                 document.getElementById('modal-print-content').innerHTML = h; 
-                currentPrintHTML = printH; 
+                currentPrintHTML = printH; // تخزين الكود الجاهز للطباعة
                 modal.show();
             } catch (e) {
                 console.error(e);
@@ -1838,9 +1891,9 @@
             }
         }
 
-        // إطلاق الطباعة للتقارير
-        function executePrint() { 
-            triggerNativePrint(currentPrintHTML, false); 
+        // الطباعة المعزولة
+        function executeIframePrint() { 
+            printViaIframe(currentPrintHTML, false); 
         }
 
     </script>

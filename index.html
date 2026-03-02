@@ -22,11 +22,9 @@
     <style>
         /* ================= Core Styles ================= */
         :root { --primary: #006C35; --gold: #C69C6D; --bg: #F8FAFC; --card: #ffffff; --text: #1E293B; --border: #E2E8F0; --transition: all 0.3s ease; }
-        /* تم إزالة visibility: hidden لحل مشكلة الشاشة البيضاء نهائياً */
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 80px; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; visibility: hidden; padding-bottom: 80px; }
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
-        
         .swal2-container { z-index: 110000 !important; }
 
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: transform 0.3s ease; }
@@ -71,14 +69,18 @@
         .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
 
-        /* ================= تصميم أيقونات التقارير الجذاب ================= */
+        /* ================= تصميم أيقونات التقارير الجذاب (VIP Cards) ================= */
         .report-grid-item { 
             background: #ffffff; border-radius: 25px; padding: 35px 20px; 
             text-align: center; cursor: pointer; border: 2px solid #e2e8f0; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .report-grid-item:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 15px 30px rgba(0,108,53,0.15); }
+        .report-grid-item:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--primary); 
+            box-shadow: 0 15px 30px rgba(0,108,53,0.15); 
+        }
         .report-grid-item i { font-size: 4rem; margin-bottom: 15px; }
 
         /* ================= شاشات العرض ================= */
@@ -103,7 +105,6 @@
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
         .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; font-size: 1.5rem; }
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 90px; border-bottom: 1px solid var(--border); }
-        
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -115,80 +116,9 @@
         .report-table th { background-color: #f1f5f9; color: #1e293b; font-weight: 800; border-bottom: 2px solid #cbd5e1; padding: 15px; }
         .report-table td { padding: 15px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; font-size: 1.2rem; font-weight: 500;}
 
-        /* ================= الكي الخفي للطباعة (نظام متكامل وصلب 100%) ================= */
-        /* إخفاء حاوية الطباعة في الشاشة العادية */
+        /* ================= الكي الخفي للطباعة (إخفاء المتسربات) ================= */
         @media screen {
-            #print-engine-container { display: none !important; }
-        }
-
-        /* إعدادات الطباعة الصارمة */
-        @media print {
-            /* 1. إخفاء جميع عناصر الشاشة الأصلية تماماً لتجنب التحديث */
-            body > *:not(#print-engine-container) { display: none !important; }
-            .modal, .modal-backdrop { display: none !important; }
-            
-            /* 2. إعدادات الورقة */
-            html, body { width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; background: white !important; font-family: 'Tajawal', sans-serif; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            
-            body.print-landscape @page { size: A4 landscape; margin: 0; }
-            body.print-portrait @page { size: A4 portrait; margin: 0; }
-            
-            /* 3. إظهار غرفة الطباعة فقط */
-            #print-engine-container { 
-                display: flex !important; position: absolute; left: 0; top: 0; 
-                background: white !important; z-index: 999999; 
-                flex-direction: column; align-items: center; justify-content: flex-start; box-sizing: border-box;
-                width: 100%; height: 100%; margin: 0 !important; padding: 0 !important;
-            }
-
-            /* إطار التعهد والإحالة (A4 عمودي محكم لورقة واحدة) */
-            .print-form-frame {
-                width: 210mm !important; 
-                height: 290mm !important; 
-                max-height: 290mm !important; 
-                border: 6px double var(--primary) !important; 
-                padding: 10mm 15mm !important; 
-                display: flex !important; flex-direction: column !important; justify-content: space-between !important;
-                box-sizing: border-box !important; background: white !important; 
-                page-break-inside: avoid !important; page-break-after: avoid !important;
-                direction: rtl !important; text-align: right !important; margin: 0 auto !important; overflow: hidden !important;
-            }
-            .p-header { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 5px !important; border-bottom: 2px solid #ccc !important; padding-bottom: 10px !important; flex-shrink: 0 !important;}
-            .p-header img { max-height: 70px !important; }
-            .p-header-text { font-weight: bold !important; font-size: 1.1rem !important; line-height: 1.4 !important; color: #000 !important; text-align: right !important; }
-            .p-header-left { text-align: left !important; font-size: 1rem !important; font-weight: bold !important; line-height: 1.4 !important; color: #000 !important; direction: ltr !important;}
-            
-            .p-title { text-align: center !important; font-size: 1.8rem !important; font-weight: 900 !important; color: #000 !important; margin: 10px 0 !important; text-decoration: underline !important; flex-shrink: 0 !important;}
-            .p-body { font-size: 1.2rem !important; line-height: 1.6 !important; color: #000 !important; text-align: justify !important; flex-grow: 1 !important; margin-bottom: 5px !important; overflow: hidden !important;}
-            .p-note { background: #f9f9f9 !important; border: 1px dashed #aaa !important; padding: 10px !important; border-radius: 8px !important; margin: 10px 0 !important; font-size: 1.1rem !important;}
-            /* التوقيعات محمية من الضغط */
-            .p-footer { display: flex !important; justify-content: space-around !important; margin-top: auto !important; font-size: 1.2rem !important; font-weight: bold !important; color: #000 !important; padding-top: 10px !important; flex-shrink: 0 !important;}
-            
-            /* إطار شهادة الشكر (A4 أفقي محكم وبالألوان) */
-            .print-cert-frame { 
-                width: 290mm !important; height: 200mm !important; margin: 0 auto !important; 
-                border: 10px solid var(--gold) !important; outline: 4px solid var(--primary) !important; outline-offset: -8px !important;
-                padding: 15mm !important; 
-                text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important;
-                background-color: white !important;
-                box-sizing: border-box !important; page-break-inside: avoid !important; overflow: hidden !important;
-            }
-            .print-cert-frame * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .c-title { font-size: 4rem !important; color: var(--primary) !important; font-weight: 900 !important; margin-bottom: 10px !important; }
-            .c-name { border-bottom: 4px solid var(--gold) !important; display: inline-block !important; padding: 10px 50px !important; font-size: 3.5rem !important; font-weight: 900 !important; color: var(--gold) !important; margin: 20px 0 !important; }
-            
-            /* إطار التقارير (الجداول) محمي بصفحة واحدة */
-            .print-report-frame {
-                width: 210mm !important; height: 290mm !important; max-height: 290mm !important; 
-                padding: 10mm !important; margin: 0 auto !important; background: white !important;
-                display: flex !important; flex-direction: column !important; justify-content: space-between !important;
-                box-sizing: border-box !important; overflow: hidden !important; direction: rtl !important;
-            }
-            .r-table-wrap { flex-grow: 1 !important; overflow: hidden !important; }
-            .print-report-frame table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 10px !important; }
-            .print-report-frame th, .print-report-frame td { border: 1px solid #000 !important; padding: 5px !important; font-size: 0.95rem !important; text-align: center !important; color:#000 !important;}
-            .print-report-frame th { background-color: #eee !important; font-weight: bold !important; -webkit-print-color-adjust: exact !important;}
-            .r-footer { flex-shrink: 0 !important; display: flex !important; justify-content: space-between !important; margin-top: auto !important; font-size: 1.2rem !important; font-weight: bold !important; padding: 10px 20px 0 !important; color: #000 !important;}
+            #print-iframe { display: none !important; }
         }
     </style>
 </head>
@@ -196,7 +126,7 @@
     <div class="gradient-bg"></div>
     <div class="custom-toast" id="system-toast">تنبيه جديد!</div>
 
-    <div id="print-engine-container"></div>
+    <iframe id="print-iframe" style="display: none; width: 0; height: 0; border: none;"></iframe>
 
     <div id="media-slider-overlay" class="full-overlay">
         <button type="button" class="overlay-close" onclick="closeOverlay('media-slider-overlay')"><i class="fas fa-power-off me-2"></i> إغلاق الشاشة</button>
@@ -235,13 +165,13 @@
                         <h5 class="fw-bold text-dark mb-3 text-center">إضافة مقطع جديد للمكتبة</h5>
                         <div class="row g-3 mb-3">
                             <div class="col-md-6 col-12"><input type="text" id="lib-name" class="form-control huge-input" placeholder="اسم المقطع (مثال: أذكار)"></div>
-                            <div class="col-md-6 col-12"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="رابط يوتيوب هنا..."></div>
+                            <div class="col-md-6 col-12"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="رابط يوتيوب..."></div>
                         </div>
                         <div class="row g-3">
-                            <div class="col-md-6 col-12"><button type="button" class="btn btn-info text-white w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="saveToLibrary()"><i class="fas fa-save me-2"></i> حفظ الرابط في المكتبة</button></div>
+                            <div class="col-md-6 col-12"><button type="button" class="btn btn-info text-white w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="saveToLibrary()"><i class="fas fa-save me-2"></i> حفظ الرابط</button></div>
                             <div class="col-md-6 col-12">
                                 <input type="file" id="lib-file" style="display:none" accept="image/*" onchange="saveImageToLibrary(this)">
-                                <button type="button" class="btn btn-outline-success w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="document.getElementById('lib-file').click()"><i class="fas fa-upload me-2"></i> أو رفع صورة من الجهاز</button>
+                                <button type="button" class="btn btn-outline-success w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="document.getElementById('lib-file').click()"><i class="fas fa-upload me-2"></i> رفع صورة من الجهاز</button>
                             </div>
                         </div>
                     </div>
@@ -617,8 +547,7 @@
 
     <script>
         const firebaseConfig = { apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE", authDomain: "ethn-63848.firebaseapp.com", databaseURL: "https://ethn-63848-default-rtdb.firebaseio.com", projectId: "ethn-63848", storageBucket: "ethn-63848.appspot.com", messagingSenderId: "747489913596", appId: "1:747489913596:web:d98d88447e4a25cc808579" };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const db = firebase.database();
+        firebase.initializeApp(firebaseConfig); const db = firebase.database();
         let userRole='', isMuted=true, attMode='period'; 
         let data = { settings: {school:'متوسطة الإمام النووي', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:'', admin_email:'', permissions:{}}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, stars:{}, tardiness:{}, mediaLibrary:{}, screens:{} };
 
@@ -626,7 +555,6 @@
         let cache_teachers = "";
         let currentPrintHTML = ""; 
 
-        // المزامنة الحية المحصنة بـ Try-Catch لضمان عدم توقفها أبداً
         function syncLiveViews() {
             try { if(userRole === 'admin') { renderAdmin(); renderMediaLibrary(); } } catch(e){}
             try { if(userRole === 'counselor') renderCounselor(); } catch(e){}
@@ -639,10 +567,6 @@
             const savedRole = localStorage.getItem('userRole');
             db.ref('/').on('value', snap => {
                 const val = snap.val();
-                
-                // إلغاء الشاشة البيضاء تماماً
-                document.body.style.visibility = 'visible';
-
                 if(val) {
                     data.settings = { ...data.settings, ...(val.settings || {}) };
                     data.classes = val.classes || [];
@@ -660,6 +584,7 @@
                     
                     document.getElementById('disp-school').innerText = data.settings.school || 'المدرسة';
                     document.getElementById('login-school-name').innerText = data.settings.school || 'المدرسة';
+                    document.body.style.visibility = 'visible';
                     
                     try { calculateBestClass(); } catch(e) {}
                     try { smartRefreshDropdowns(); } catch(e) {}
@@ -921,6 +846,7 @@
             }).join('');
         }
 
+        // تشغيل المحدد والمتابعة المتسلسلة
         function playSelectedLibrary() {
             const checked = document.querySelectorAll('.lib-checkbox:checked');
             if(checked.length === 0) return Swal.fire('تنبيه', 'الرجاء تحديد مقطع واحد على الأقل', 'warning');
@@ -936,6 +862,7 @@
             launchCarousel(selectedItems);
         }
 
+        // بناء الشرائح وإجبار Bootstrap على العمل
         function launchCarousel(itemsArray) {
             const inner = document.getElementById('media-carousel-inner');
             inner.innerHTML = ''; 
@@ -979,7 +906,7 @@
             document.getElementById(id).style.display='none'; 
             
             if (id === 'media-slider-overlay') {
-                document.getElementById('media-carousel-inner').innerHTML = ''; 
+                document.getElementById('media-carousel-inner').innerHTML = ''; // القتل الفوري للصوت
             } else if (id === 'cert-display-overlay') {
                 document.getElementById('cert-display-content').innerHTML = '';
             } else if (id === 'hall-of-fame-overlay') {
@@ -989,6 +916,7 @@
             if(document.exitFullscreen) document.exitFullscreen(); 
         }
 
+        // ================= خيارات التميز =================
         function openHallOfFameMenu() {
             Swal.fire({
                 title: 'شاشة التميز 👑',
@@ -1010,6 +938,7 @@
             });
         }
 
+        // ================= منصة التكريم المخصصة =================
         function generateCustomCert(actionType) {
             const studentName = document.getElementById('cert-student-name').value;
             const title = document.getElementById('cert-title').value || 'شهادة شكر وتقدير';
@@ -1049,10 +978,11 @@
                 document.getElementById('cert-display-overlay').style.display = 'block';
                 if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             } else {
-                printViaIframe(html, true); 
+                printViaIframe(html, true); // طباعة أفقية
             }
         }
 
+        // ================= لوحة الشرف الذكية =================
         function openHallOfFame() {
             document.getElementById('hall-of-fame-overlay').style.display='block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
@@ -1526,6 +1456,7 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
+        // الخروج النهائي المبرمج
         function logOut() {
             localStorage.clear();
             sessionStorage.clear();
@@ -1673,9 +1604,15 @@
                 document.getElementById('va-custom-note').value = '';
                 
                 if(action === 'written_pledge') {
-                    printOfficialForm(stuName, vType, 'pledge', customNote);
+                    Swal.fire({
+                        title: 'تم الإغلاق', text: 'تم تسجيل التعهد. هل تريد طباعة النموذج الآن؟', icon: 'success',
+                        showCancelButton: true, confirmButtonText: 'نعم، طباعة التعهد', cancelButtonText: 'لاحقاً'
+                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'pledge', customNote); });
                 } else if(action === 'refer_to_counselor') {
-                    printOfficialForm(stuName, vType, 'referral', customNote);
+                    Swal.fire({
+                        title: 'تم التحويل', text: 'تم التحويل للموجه. هل تريد طباعة الإحالة؟', icon: 'info',
+                        showCancelButton: true, confirmButtonText: 'نعم، طباعة التحويل', cancelButtonText: 'لاحقاً'
+                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'referral', customNote); });
                 } else {
                     Swal.fire('تم', 'تم تسجيل الإنذار الشفهي وإغلاق المخالفة.', 'success');
                 }
@@ -1706,11 +1643,11 @@
                         .form-title { text-align: center; font-size: 1.8rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; }
                         .form-body { font-size: 1.2rem; line-height: 1.6; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; overflow: hidden; }
                         .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.1rem; }
-                        .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; }
+                        .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; flex-shrink: 0;}
                         
                         /* إطار التقارير المتطور يحافظ على التوقيعات في الأسفل */
-                        .report-frame { width: 210mm; height: 280mm; padding: 15mm; margin: 0 auto; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: hidden; }
-                        .report-table-wrapper { flex: 1 1 auto; overflow: hidden; } 
+                        .report-frame { width: 210mm; height: 285mm; padding: 15mm; margin: 0 auto; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: hidden; }
+                        .report-table-wrapper { flex: 1 1 auto; overflow: hidden; } /* الحماية من دفع التوقيعات للخارج */
                         table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
                         th, td { border: 1px solid #000; padding: 4px; font-size: 0.85rem; text-align: center; color: #000; }
                         th { background-color: #eee; font-weight: bold; }
@@ -1727,7 +1664,7 @@
             setTimeout(() => {
                 iframe.contentWindow.focus();
                 iframe.contentWindow.print();
-            }, 800); 
+            }, 800); // إعطاء وقت كافي للمتصفح لرسم الورقة
         }
 
         // ================= الطباعة الرسمية للنماذج =================
@@ -1760,7 +1697,7 @@
                         <div style="text-align:left;"><strong>مدير المدرسة</strong><br><br>${manager}</div>
                     </div>
                 </div>`;
-                printViaIframe(html, true); 
+                printViaIframe(html, true); // True = Landscape
             } else {
                 let noteHtml = customNote ? `<div class="form-body-details"><strong>ملاحظات الوكيل / الإجراء:</strong> ${customNote}</div>` : '';
                 let title = formType === 'pledge' ? 'تعهد خطي على طالب' : 'نموذج إحالة للموجه الطلابي';
@@ -1785,11 +1722,11 @@
                         <div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${deputy}</div>
                     </div>
                 </div>`;
-                printViaIframe(html, false); 
+                printViaIframe(html, false); // False = Portrait
             }
         }
 
-        // ================= تصميم التقارير الجديد =================
+        // ================= تصميم التقارير الجديد الـ (VIP) =================
         let currentPrintHTML = ""; 
         
         function showReportModal(type) {
@@ -1866,15 +1803,9 @@
                     tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).filter(t=>t).reverse().map(t=>`<tr><td class="fw-bold">${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
                 }
 
-                // إكمال كود الشاشة
                 h += tableContent;
-                h += `</div>
-                <div style="display:flex; justify-content:space-between; margin-top:40px; padding:0 20px; font-size:1.2rem;">
-                    <div style="text-align:center;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
-                    <div style="text-align:center;"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
-                </div>`;
+                h += `</div>`;
                 
-                // إكمال كود الطباعة
                 printH += tableContent;
                 printH += `</div>
                 <div class="report-signatures">
@@ -1883,7 +1814,7 @@
                 </div></div>`;
 
                 document.getElementById('modal-print-content').innerHTML = h; 
-                currentPrintHTML = printH; // تخزين الكود الجاهز للطباعة
+                currentPrintHTML = printH; 
                 modal.show();
             } catch (e) {
                 console.error(e);
@@ -1891,7 +1822,7 @@
             }
         }
 
-        // الطباعة المعزولة
+        // الطباعة المعزولة 100% للتقارير
         function executeIframePrint() { 
             printViaIframe(currentPrintHTML, false); 
         }

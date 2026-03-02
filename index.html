@@ -49,7 +49,11 @@
             .services-grid .btn i { display: none; }
         }
 
-        /* تحسينات الحقول */
+        .service-card-green { background-color: #e8f5e9 !important; border: 3px solid #28a745 !important; }
+        .service-card-blue { background-color: #e7f1ff !important; border: 3px solid #0d6efd !important; }
+        .service-card-yellow { background-color: #fffdf0 !important; border: 3px solid #ffc107 !important; }
+        .service-card-red { background-color: #fdf5f5 !important; border: 3px solid #dc3545 !important; }
+        
         .huge-input { font-size: 1.6rem !important; font-weight: 900 !important; padding: 15px !important; border-radius: 15px !important; text-align: center; border: 2px solid #ccc; height: auto !important; }
         .checkbox-huge { transform: scale(2.5); margin-left: 20px !important; margin-right: 10px !important; cursor: pointer; }
 
@@ -63,10 +67,9 @@
         .page-card { background: var(--card); border-radius: 25px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; }
         .stat-box { background: var(--card); padding: 25px; border-radius: 20px; text-align: center; border-bottom: 5px solid #ccc; }
         .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
-        
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
 
-        /* ================= شاشات العرض والتلفزيون واليوتيوب ================= */
+        /* ================= شاشات العرض والتلفزيون ================= */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
         
         .overlay-close { position: fixed; top: 20px; right: 20px; z-index: 2147483647 !important; background: #dc3545 !important; color: white !important; border: 3px solid white !important; padding: 12px 35px; border-radius: 50px; font-weight: 900; cursor: pointer; font-size: 1.6rem; box-shadow: 0 5px 20px rgba(0,0,0,0.8); pointer-events: auto !important; }
@@ -92,92 +95,91 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ================= الكي الخفي للطباعة (تحصين كامل للصفحة الواحدة) ================= */
+        /* ================= الكي الخفي للطباعة (تحصين كامل ضد الخروج والتحديث) ================= */
         @media screen {
-            .print-only-container { display: none !important; }
+            #final-print-container { display: none !important; }
         }
 
         @media print {
-            html, body { width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; background: white !important; font-family: 'Tajawal', sans-serif; overflow: hidden !important; }
-            body * { visibility: hidden; }
-            .no-print { display: none !important; }
+            /* 1. إخفاء النظام بأكمله والنوافذ المنبثقة لمنع التداخل */
+            body > *:not(#final-print-container) { display: none !important; }
+            .modal, .modal-backdrop { display: none !important; }
             
+            /* 2. إعداد الصفحة الأساسية */
+            html, body { width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; background: white !important; font-family: 'Tajawal', sans-serif; }
+            
+            /* توجيه الطابعة حسب نوع المستند */
             body.print-landscape @page { size: A4 landscape; margin: 0; }
             body.print-portrait @page { size: A4 portrait; margin: 0; }
             
-            /* إظهار حاوية الطباعة الخاصة بالنماذج (تعهد/إحالة) */
-            body.printing-form #cert-print-area, 
-            body.printing-form #cert-print-area * { visibility: visible; }
-            body.printing-form #cert-print-area { 
-                display: flex !important; position: absolute; left: 0; top: 0; 
-                background: white !important; z-index: 999999; 
-                flex-direction: column; align-items: center; justify-content: flex-start; box-sizing: border-box;
-                width: 100%; height: 100%; margin: 0 !important; padding: 0 !important;
+            /* 3. إظهار حاوية الطباعة فقط */
+            #final-print-container { 
+                display: block !important; position: absolute; left: 0; top: 0; 
+                width: 100%; min-height: 100vh; background: white !important; z-index: 999999; 
             }
 
-            .form-frame {
-                width: 210mm !important; height: 280mm !important; max-height: 285mm !important; 
-                border: 6px double var(--primary) !important; padding: 10mm 15mm !important; 
+            /* إطار النماذج (تعهد / إحالة / تقارير) - محمي لصفحة واحدة */
+            .form-frame, .report-frame {
+                width: 210mm !important; 
+                height: 290mm !important; /* طول ورقة A4 */
+                max-height: 290mm !important; 
+                border: 6px double #000 !important; 
+                padding: 10mm 15mm !important; 
                 display: flex !important; flex-direction: column !important; justify-content: space-between !important;
                 box-sizing: border-box !important; background: white !important; 
-                page-break-inside: avoid !important; direction: rtl !important; text-align: right !important; margin: 0 auto !important; overflow: hidden !important;
+                page-break-inside: avoid !important;
+                direction: rtl !important; text-align: right !important; margin: 0 auto !important; overflow: hidden !important;
             }
-            .form-header { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 5px !important; border-bottom: 2px solid #ccc !important; padding-bottom: 10px !important; flex-shrink: 0 !important;}
-            .form-header img { max-height: 70px !important; }
-            .form-title { text-align: center !important; font-size: 1.8rem !important; font-weight: 900 !important; color: #000 !important; margin: 10px 0 !important; text-decoration: underline !important; flex-shrink: 0 !important;}
-            .form-body { font-size: 1.2rem !important; line-height: 1.6 !important; color: #000 !important; text-align: justify !important; flex-grow: 1 !important; margin-bottom: 5px !important; overflow: hidden !important;}
-            .form-signatures { display: flex !important; justify-content: space-around !important; margin-top: auto !important; font-size: 1.2rem !important; font-weight: bold !important; color: #000 !important; padding-top: 10px !important; flex-shrink: 0 !important;}
+            .form-header { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 5px !important; border-bottom: 2px solid #ccc !important; padding-bottom: 10px !important;}
+            .form-header img { max-height: 60px !important; }
+            .form-title { text-align: center !important; font-size: 1.6rem !important; font-weight: 900 !important; color: #000 !important; margin: 10px 0 !important; text-decoration: underline !important;}
+            .form-body { font-size: 1.1rem !important; line-height: 1.5 !important; color: #000 !important; text-align: justify !important; flex-grow: 1 !important;}
+            .form-body-details { background: #f9f9f9 !important; border: 1px dashed #aaa !important; padding: 10px !important; border-radius: 8px !important; margin: 10px 0 !important; font-size: 1rem !important;}
+            .form-signatures { display: flex !important; justify-content: space-around !important; margin-top: auto !important; font-size: 1.1rem !important; font-weight: bold !important; color: #000 !important; padding-top: 10px !important;}
             
-            /* إطار شهادة الشكر */
+            /* إطار شهادة الشكر (عرضي ومحمي للطباعة بالألوان الإجبارية) */
             .cert-frame { 
-                width: 285mm !important; height: 195mm !important; margin: 0 auto !important; 
-                border: 10px solid var(--gold) !important; outline: 4px solid var(--primary) !important; outline-offset: -8px !important;
+                width: 297mm !important; height: 210mm !important; margin: 0 auto !important; 
                 padding: 15mm !important; text-align: center !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important;
-                background-color: white !important; box-sizing: border-box !important; page-break-inside: avoid !important; overflow: hidden !important;
-                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+                background-color: white !important; box-sizing: border-box !important; page-break-inside: avoid !important; overflow: hidden !important; position: relative;
             }
+            /* خدعة إجبار الطابعة على الألوان */
+            .cert-bg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; border: 15px solid var(--gold) !important; outline: 5px solid var(--primary) !important; outline-offset: -10px !important;}
             
-            /* إظهار نافذة التقارير للطباعة (بدون تغيير الـ DOM) */
-            body.printing-report #printModal, body.printing-report #printModal * { visibility: visible; }
-            body.printing-report #printModal { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; background: white; z-index: 999999; }
-            body.printing-report .modal-dialog { margin: 0; max-width: 100%; }
-            body.printing-report .modal-header, body.printing-report .modal-footer { display: none !important; }
-            body.printing-report .modal-content { border: none !important; box-shadow: none !important; }
-
-            .report-frame {
-                width: 210mm !important; height: 280mm !important; max-height: 285mm !important; 
-                padding: 10mm !important; margin: 0 auto !important; background: white !important;
-                display: flex !important; flex-direction: column !important; justify-content: space-between !important;
-                box-sizing: border-box !important; overflow: hidden !important; direction: rtl !important;
-            }
+            .cert-content { z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+            .cert-body h1 { font-size: 3.5rem !important; color: var(--primary) !important; font-weight: 900 !important; margin-bottom: 10px !important; }
+            .cert-name-box { border-bottom: 4px solid var(--gold) !important; display: inline-block !important; padding: 10px 50px !important; font-size: 3rem !important; font-weight: 900 !important; color: var(--gold) !important; margin: 20px 0 !important; }
+            
+            /* الجداول في التقارير */
             .report-frame .table-responsive { flex-grow: 1; overflow: hidden !important; }
             .report-frame table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 10px !important; }
-            .report-frame th, .report-frame td { border: 1px solid #000 !important; padding: 5px !important; font-size: 0.95rem !important; text-align: center !important; }
-            .report-frame th { background-color: #eee !important; color: #000 !important; font-weight: bold !important; -webkit-print-color-adjust: exact !important; }
+            .report-frame th, .report-frame td { border: 1px solid #000 !important; padding: 5px !important; font-size: 0.9rem !important; text-align: center !important; color: #000 !important;}
+            .report-frame th { background-color: #eee !important; font-weight: bold !important; -webkit-print-color-adjust: exact !important;}
         }
     </style>
 </head>
 <body>
     <div class="gradient-bg"></div>
-    <div class="custom-toast" id="system-toast" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:11000; background:var(--primary); color:white; padding:15px 50px; border-radius:50px; font-weight:bold; font-size:1.5rem;">تنبيه!</div>
+    <div class="custom-toast" id="system-toast">تنبيه جديد!</div>
+
+    <div id="final-print-container"></div>
 
     <div id="media-slider-overlay" class="full-overlay">
         <button type="button" class="overlay-close" onclick="closeOverlay('media-slider-overlay')"><i class="fas fa-power-off me-2"></i> إغلاق الشاشة</button>
-        <button type="button" class="overlay-back" onclick="closeOverlay('media-slider-overlay')"><i class="fas fa-arrow-right me-2"></i> رجوع</button>
-        <div id="mediaCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner" id="media-carousel-inner"></div>
+        <button type="button" class="overlay-back" onclick="closeOverlay('media-slider-overlay'); setTimeout(()=>openMediaLibraryModal(), 300);"><i class="fas fa-arrow-right me-2"></i> رجوع للمكتبة</button>
+        <div id="mediaCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="8000"> <div class="carousel-inner" id="media-carousel-inner"></div>
+            <button type="button" class="carousel-control-prev" data-bs-target="#mediaCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon" style="width: 4rem; height: 4rem;"></span></button>
+            <button type="button" class="carousel-control-next" data-bs-target="#mediaCarousel" data-bs-slide="next"><span class="carousel-control-next-icon" style="width: 4rem; height: 4rem;"></span></button>
         </div>
     </div>
 
     <div id="cert-display-overlay" class="full-overlay" style="background: rgba(0,0,0,0.95);">
         <button type="button" class="overlay-close" onclick="closeOverlay('cert-display-overlay')"><i class="fas fa-power-off me-2"></i> إغلاق الشهادات</button>
-        <button type="button" class="overlay-back" onclick="closeOverlay('cert-display-overlay')"><i class="fas fa-arrow-right me-2"></i> رجوع</button>
         <div id="cert-display-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;"></div>
     </div>
 
     <div id="hall-of-fame-overlay" class="full-overlay" style="background: radial-gradient(circle at center, #001f3f 0%, #000000 100%);">
         <button type="button" class="overlay-close" onclick="closeOverlay('hall-of-fame-overlay')"><i class="fas fa-power-off me-2"></i> إغلاق اللوحة</button>
-        <button type="button" class="overlay-back" onclick="closeOverlay('hall-of-fame-overlay')"><i class="fas fa-arrow-right me-2"></i> رجوع</button>
         <div class="hof-container" style="width:100%; height:100%; padding-top: 30px;">
             <h1 class="text-center mb-4 text-warning" id="disp-hof-title" style="font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">💎 شاشة التميز والمنافسة 💎</h1>
             <div id="hof-content" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
@@ -216,7 +218,7 @@
                     <div id="media-library-list" style="max-height: 350px; overflow-y: auto; padding-right: 10px;"></div>
                 </div>
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary fs-4 px-4 rounded-pill" data-bs-dismiss="modal">عودة للإدارة</button>
+                    <button type="button" class="btn btn-secondary fs-4 px-4 rounded-pill" data-bs-dismiss="modal">إغلاق النافذة</button>
                 </div>
             </div>
         </div>
@@ -340,28 +342,27 @@
                      <div class="row g-4 mb-4">
                         
                         <div class="col-lg-4 col-12 order-lg-2">
-                            <div class="page-card p-4 mb-4 border-warning border-3 bg-white text-center shadow-sm">
-                                <h3 class="fw-bold text-dark mb-4 border-bottom pb-2"><i class="fas fa-tv me-2"></i> شاشات العرض</h3>
-                                <button type="button" class="btn btn-warning w-100 py-4 fw-bold rounded-pill shadow mb-3 text-dark" style="font-size: 1.8rem;" onclick="openHallOfFame()"><i class="fas fa-crown me-2"></i> شاشة التميز المدرسية</button>
-                                <button type="button" class="btn btn-info text-white w-100 py-4 fw-bold rounded-pill shadow" style="font-size: 1.8rem;" onclick="openMediaLibraryModal()"><i class="fas fa-folder-open me-2"></i> مكتبة الوسائط</button>
+                            <div class="page-card p-3 mb-4 border-warning border-3 bg-white text-center shadow-sm">
+                                <button type="button" class="btn btn-warning w-100 py-4 fw-bold fs-3 rounded-pill shadow mb-3 text-dark" onclick="openHallOfFame()"><i class="fas fa-crown me-2"></i> شاشة التميز المدرسية</button>
+                                <button type="button" class="btn btn-info text-white w-100 py-4 fw-bold fs-3 rounded-pill shadow" onclick="openMediaLibraryModal()"><i class="fas fa-folder-open me-2"></i> إدارة مكتبة الوسائط</button>
                             </div>
 
                             <div class="page-card border-secondary border-2 bg-light shadow-sm">
                                 <div class="card-header-custom bg-secondary text-white text-center d-block">
-                                    <h4 class="fw-bold m-0"><i class="fas fa-user-shield me-2"></i> لوحة الصلاحيات السريعة</h4>
+                                    <h5 class="fw-bold m-0"><i class="fas fa-user-shield me-2"></i> لوحة الصلاحيات السريعة</h5>
                                 </div>
-                                <div class="p-4">
-                                    <h5 class="fw-bold text-primary border-bottom pb-2">المعلمون</h5>
-                                    <div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" id="perm-teacher-rep" onchange="saveSettings()" style="transform: scale(1.4); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold text-dark">دخول التقارير</label></div>
-                                    <div class="form-check form-switch mb-4"><input class="form-check-input" type="checkbox" id="perm-teacher-mon" onchange="saveSettings()" style="transform: scale(1.4); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold text-dark">المتابعة الحية</label></div>
+                                <div class="p-3">
+                                    <h6 class="fw-bold text-primary border-bottom pb-2">المعلمون</h6>
+                                    <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="perm-teacher-rep" onchange="saveSettings()" style="transform: scale(1.2); margin-left: 10px;"><label class="form-check-label fw-bold">دخول التقارير</label></div>
+                                    <div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" id="perm-teacher-mon" onchange="saveSettings()" style="transform: scale(1.2); margin-left: 10px;"><label class="form-check-label fw-bold">المتابعة الحية</label></div>
                                     
-                                    <h5 class="fw-bold text-dark border-bottom pb-2">الحراس</h5>
-                                    <div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" id="perm-guard-rep" onchange="saveSettings()" style="transform: scale(1.4); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold text-dark">دخول التقارير</label></div>
-                                    <div class="form-check form-switch mb-4"><input class="form-check-input" type="checkbox" id="perm-guard-mon" onchange="saveSettings()" style="transform: scale(1.4); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold text-dark">المتابعة الحية</label></div>
+                                    <h6 class="fw-bold text-dark border-bottom pb-2">الحراس</h6>
+                                    <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="perm-guard-rep" onchange="saveSettings()" style="transform: scale(1.2); margin-left: 10px;"><label class="form-check-label fw-bold">دخول التقارير</label></div>
+                                    <div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" id="perm-guard-mon" onchange="saveSettings()" style="transform: scale(1.2); margin-left: 10px;"><label class="form-check-label fw-bold">المتابعة الحية</label></div>
 
-                                    <h5 class="fw-bold text-info border-bottom pb-2">الموجه الطلابي</h5>
-                                    <div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" id="perm-counselor-rep" onchange="saveSettings()" style="transform: scale(1.4); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold text-dark">دخول التقارير</label></div>
-                                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-counselor-mon" onchange="saveSettings()" style="transform: scale(1.4); margin-left: 10px;"><label class="form-check-label fs-5 fw-bold text-dark">المتابعة الحية</label></div>
+                                    <h6 class="fw-bold text-info border-bottom pb-2">الموجه الطلابي</h6>
+                                    <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="perm-counselor-rep" onchange="saveSettings()" style="transform: scale(1.2); margin-left: 10px;"><label class="form-check-label fw-bold">دخول التقارير</label></div>
+                                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="perm-counselor-mon" onchange="saveSettings()" style="transform: scale(1.2); margin-left: 10px;"><label class="form-check-label fw-bold">المتابعة الحية</label></div>
                                 </div>
                             </div>
                         </div>
@@ -377,7 +378,7 @@
                                     <div class="page-card h-100 border-danger border-2">
                                         <div class="card-header-custom bg-danger text-white cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')">
                                             <span class="fs-3"><i class="fas fa-bell me-2"></i> المخالفات المعلقة</span>
-                                            <div class="d-flex gap-2"><button type="button" class="btn btn-sm btn-light rounded-pill fw-bold text-danger" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="adm-vio-count">0</span></div>
+                                            <div class="d-flex gap-2"><button type="button" class="btn btn-sm btn-light rounded-pill fw-bold text-danger" onclick="syncLiveViews(); event.stopPropagation();"><i class="fas fa-sync-alt"></i> تحديث</button><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="adm-vio-count">0</span></div>
                                         </div>
                                         <div id="adm-vio-list" class="p-3 bg-light d-none"></div>
                                     </div>
@@ -423,7 +424,7 @@
                         <div class="page-card h-100 border-danger border-2 mb-4">
                             <div class="card-header-custom bg-danger text-white">
                                 <span class="fs-3"><i class="fas fa-folder-open me-2"></i> الحالات المحالة للموجه (معلقة)</span>
-                                <div class="d-flex gap-2"><button type="button" class="btn btn-sm btn-light rounded-pill fw-bold text-danger" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="counselor-vio-count">0</span></div>
+                                <div class="d-flex gap-2"><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="counselor-vio-count">0</span></div>
                             </div>
                             <div class="table-responsive p-3"><table class="table table-hover text-center align-middle mb-0" style="font-size:1.4rem;"><thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>إجراء</th></tr></thead><tbody id="counselor-list"></tbody></table><div id="counselor-empty" class="text-center p-5 text-muted d-none"><i class="fas fa-smile-beam fa-4x mb-3 text-success"></i><h4 class="fw-bold">لا توجد حالات معلقة</h4></div></div>
                         </div>
@@ -536,14 +537,14 @@
                 <div class="modal-body bg-white" id="modal-print-content"></div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-primary w-100 fw-bold rounded-pill py-3 fs-3 shadow" onclick="executePrint()">
-                        <i class="fas fa-print me-2"></i> طباعة التقرير الكامل
+                        <i class="fas fa-print me-2"></i> طباعة التقرير
                     </button>
                 </div>
             </div>
         </div>
     </div>
     
-    <div id="cert-print-area" class="print-only-container">
+    <div id="cert-print-area">
         <div class="cert-frame" id="dynamic-print-frame">
             <div class="form-header" id="dynamic-print-header" style="display: none;"></div>
             <div class="cert-body" id="dynamic-print-body" style="flex-grow: 1;"></div>
@@ -551,7 +552,6 @@
         </div>
     </div>
     
-    <div id="final-print-container" class="print-only-container"></div>
     <audio id="bell" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" preload="auto"></audio>
 
     <script>
@@ -563,9 +563,8 @@
         let cache_classes = "";
         let cache_teachers = "";
 
-        // المزامنة الحية
         function syncLiveViews() {
-            if(userRole === 'admin') { renderAdmin(); renderMediaLibrary(); }
+            if(userRole === 'admin') { renderAdmin(); }
             if(userRole === 'counselor') renderCounselor();
             if(userRole === 'guard') renderGuard();
             if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor();
@@ -619,7 +618,6 @@
         function showToast(m) { const t=document.getElementById('system-toast'); t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; t.style.display='block'; setTimeout(()=>{t.style.display='none'},3000); }
         function toggleVisibility(id) { const e=document.getElementById(id); e.type=e.type==='password'?'text':'password'; }
 
-        // ================= دالة حفظ الإعدادات والصلاحيات المحدثة =================
         function saveSettings() {
             const updates = {
                 school: document.getElementById('s-school').value || '',
@@ -637,7 +635,7 @@
             };
             db.ref('settings').update(updates).then(() => {
                 showToast('تم حفظ الإعدادات والصلاحيات بنجاح');
-                buildMenu(); // تحديث القائمة فوراً
+                buildMenu(); 
             });
         }
 
@@ -677,7 +675,6 @@
                  document.getElementById('pin-guard').value = data.settings.guard_pin || '';
                  document.getElementById('pin-counselor').value = data.settings.counselor_pin || '';
                  
-                 // تفعيل أزرار الصلاحيات الشاملة
                  if(document.getElementById('perm-teacher-rep')) {
                      document.getElementById('perm-teacher-rep').checked = data.settings.permissions?.teacher_reports || false;
                      document.getElementById('perm-teacher-mon').checked = data.settings.permissions?.teacher_monitor || false;
@@ -718,7 +715,6 @@
             if(sidebar.classList.contains('active')) { icon.className = 'fas fa-chevron-right'; } else { icon.className = 'fas fa-chevron-left'; }
         }
 
-        // بناء القائمة مع الصلاحيات الجديدة الشاملة
         function buildMenu() { 
             const m = document.getElementById('nav-items'); 
             let links = [];
@@ -865,7 +861,7 @@
             }).join('');
         }
 
-        // تشغيل المتعدد والمتتابع
+        // تشغيل المحدد والمتابعة المتسلسلة (Slideshow) للمقاطع المتعددة
         function playSelectedLibrary() {
             const checked = document.querySelectorAll('.lib-checkbox:checked');
             if(checked.length === 0) return Swal.fire('تنبيه', 'الرجاء تحديد مقطع واحد على الأقل', 'warning');
@@ -912,15 +908,14 @@
             carousel.cycle();
         }
 
-        // التدمير الكامل للصوت والصورة عند الإغلاق
+        // إغلاق العرض وتدمير الفيديو لمنع الصوت في الخلفية
         function closeOverlay(id) { 
             clearInterval(window.certSlideInterval); 
             clearInterval(window.hofSlideInterval);
             document.getElementById(id).style.display='none'; 
             
             if (id === 'media-slider-overlay') {
-                // تدمير الكود لإطفاء اليوتيوب في الخلفية
-                document.getElementById('media-carousel-inner').innerHTML = ''; 
+                document.getElementById('media-carousel-inner').innerHTML = ''; // القتل الفوري للصوت
             } else if (id === 'cert-display-overlay') {
                 document.getElementById('cert-display-content').innerHTML = '';
             } else if (id === 'hall-of-fame-overlay') {
@@ -941,7 +936,6 @@
                 scores[s.student] = (scores[s.student]||0) + val;
             });
             
-            // ترتيب تنازلي
             const sorted = Object.entries(scores).filter(s => s[1] > 0).sort((a,b)=>b[1]-a[1]);
 
             const content = document.getElementById('hof-content');
@@ -950,10 +944,10 @@
                 return;
             }
 
-            // استخراج الأبطال (قد يكون هناك تعادل في المركز الأول)
+            // استخراج الأبطال
             const maxScore = sorted[0][1];
             const champions = sorted.filter(s => s[1] === maxScore);
-            const runnersUp = sorted.filter(s => s[1] < maxScore).slice(0, 9); // أخذ الـ 9 التالين
+            const runnersUp = sorted.filter(s => s[1] < maxScore).slice(0, 9); // أخذ الـ 9 التالين فقط
 
             let champHtml = '';
             if(champions.length > 1) {
@@ -1001,7 +995,6 @@
                 container.innerHTML = groups.map((g, gIdx) => `
                     <div class="challenger-group ${gIdx === 0 ? 'animate__fadeInUp' : 'd-none'} animate__animated" id="hof-group-${gIdx}">
                         ${g.map((s, i) => {
-                            // الترتيب الرقمي يتجاهل المكررين في المركز الأول ويستمر
                             const rank = champions.length + (gIdx * 3) + i + 1;
                             return `
                             <div class="challenger-card">
@@ -1368,6 +1361,14 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
+        // الخروج النهائي المبرمج النظيف
+        function logOut() {
+            localStorage.clear();
+            sessionStorage.clear();
+            userRole = '';
+            window.location.replace(window.location.pathname); // العودة النظيفة للرئيسية بدون كاش
+        }
+
         function renderAdmin() { 
             const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
             const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
@@ -1523,12 +1524,11 @@
             });
         }
 
-        // ================= الطباعة الرسمية (منسقة لصفحة واحدة ومحمية) =================
+        // ================= الطباعة الرسمية =================
         function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
             const modal = bootstrap.Modal.getInstance(document.getElementById('printModal')); if(modal) modal.hide();
             
             document.getElementById('cert-school-name').innerText = data.settings.school || 'المدرسة'; 
-            document.getElementById('cert-logo-img').src = data.settings.logo || ''; 
             
             const dateStr = new Date().toLocaleDateString('ar-SA');
             const dayStr = new Date().toLocaleDateString('ar-SA', {weekday: 'long'});
@@ -1545,19 +1545,25 @@
                 headerContainer.style.display = 'none';
                 footerContainer.style.display = 'none';
                 
+                // إضافة طبقة SVG خلفية إجبارية للشهادة حتى لو كانت إعدادات الطابعة تمنع الخلفيات
                 bodyContainer.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
-                        <div style="text-align:right; font-weight:bold; font-size:1.4rem; color:#000; line-height: 1.5;">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:var(--primary);">${data.settings.school || ''}</span></div>
-                        <div><img src="${data.settings.logo || ''}" style="max-height: 100px;"></div>
-                        <div style="width: 200px;"></div>
-                    </div>
-                    <h1 style="font-size:4rem; color:var(--primary); font-weight:900; margin-bottom:10px;">شهادة شكر وتقدير</h1>
-                    <p style="font-size:2rem; margin-top:10px; color:#000;">تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
-                    <div class="cert-name-box">${studentName}</div>
-                    <p style="font-size:1.8rem; line-height: 1.6; margin-top:10px; color:#000;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
-                    <div style="display:flex; justify-content:space-between; width:100%; margin-top:auto; font-size:1.5rem; font-weight:bold; color:#000;">
-                        <div style="text-align:right;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
-                        <div style="text-align:left;"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
+                    <div class="cert-bg-layer"></div>
+                    <div class="cert-content">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
+                            <div style="text-align:right; font-weight:bold; font-size:1.4rem; color:#000; line-height: 1.5;">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:var(--primary);">${data.settings.school || ''}</span></div>
+                            <div><img src="${data.settings.logo || ''}" style="max-height: 100px;"></div>
+                            <div style="width: 200px;"></div>
+                        </div>
+                        <div>
+                            <h1 style="font-size:4rem; color:var(--primary); font-weight:900; margin-bottom:10px;">شهادة شكر وتقدير</h1>
+                            <p style="font-size:2rem; margin-top:10px; color:#000;">تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
+                            <div class="cert-name-box">${studentName}</div>
+                            <p style="font-size:1.8rem; line-height: 1.6; margin-top:10px; color:#000;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; width:100%; margin-top:auto; font-size:1.5rem; font-weight:bold; color:#000;">
+                            <div style="text-align:right;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
+                            <div style="text-align:left;"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
+                        </div>
                     </div>
                 `;
             } else {
@@ -1602,14 +1608,19 @@
                 }
             }
 
+            // تفعيل الطباعة عبر الـ CSS الصارم وبدون إغلاق المودال
             document.body.classList.add('printing-form');
-            setTimeout(() => { 
-                window.print(); 
-                document.body.classList.remove('printing-form'); 
-            }, 500);
+            document.body.className += formType === 'certificate' ? ' print-landscape' : ' print-portrait'; 
+            
+            // استخدام requestAnimationFrame لضمان رسم المتصفح للشاشة قبل فتح الطابعة
+            window.requestAnimationFrame(() => {
+                setTimeout(() => { 
+                    window.print(); 
+                    document.body.classList.remove('printing-form', 'print-landscape', 'print-portrait'); 
+                }, 300);
+            });
         }
 
-        // ================= التقارير المدرسية (الوكيل يمين - المدير يسار) =================
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
             const logo = data.settings.logo || "";
@@ -1690,12 +1701,16 @@
             }
         }
 
+        // الطباعة المباشرة من المودال بتقنية CSS
         function executePrint() { 
             document.body.classList.add('printing-report');
-            setTimeout(()=>{ 
-                window.print(); 
-                document.body.classList.remove('printing-report'); 
-            }, 500); 
+            document.body.classList.add('print-portrait');
+            window.requestAnimationFrame(() => {
+                setTimeout(()=>{ 
+                    window.print(); 
+                    document.body.classList.remove('printing-report', 'print-portrait'); 
+                }, 300); 
+            });
         }
 
     </script>

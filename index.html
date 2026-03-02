@@ -69,6 +69,20 @@
         .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
 
+        /* ================= تصميم أيقونات التقارير الجذاب (VIP Cards) ================= */
+        .report-grid-item { 
+            background: #ffffff; border-radius: 25px; padding: 35px 20px; 
+            text-align: center; cursor: pointer; border: 2px solid #e2e8f0; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .report-grid-item:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--primary); 
+            box-shadow: 0 15px 30px rgba(0,108,53,0.15); 
+        }
+        .report-grid-item i { font-size: 4rem; margin-bottom: 15px; }
+
         /* ================= شاشات العرض ================= */
         .full-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; display: none; overflow: hidden; color: white; font-family: 'Tajawal', sans-serif; }
         .overlay-close { position: fixed; top: 20px; right: 20px; z-index: 2147483647 !important; background: #dc3545 !important; color: white !important; border: 3px solid white !important; padding: 12px 35px; border-radius: 50px; font-weight: 900; cursor: pointer; font-size: 1.6rem; box-shadow: 0 5px 20px rgba(0,0,0,0.8); pointer-events: auto !important; }
@@ -95,17 +109,17 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* ================= الكي الخفي للطباعة (تحصين كامل للصفحة الواحدة وتثبيت التوقيعات) ================= */
-        @media screen {
-            #print-iframe { display: none !important; }
-        }
-
         /* نافذة التقارير الأنيقة */
         .report-modal-header { background: linear-gradient(to left, #006C35, #004d25); color: white; border-bottom: 5px solid #C69C6D; padding: 20px; border-radius: 15px 15px 0 0; }
         .report-modal-body { background: #f8fafc; padding: 30px; }
         .report-table-card { background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #e2e8f0; }
         .report-table th { background-color: #f1f5f9; color: #1e293b; font-weight: 800; border-bottom: 2px solid #cbd5e1; padding: 15px; }
         .report-table td { padding: 15px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; font-size: 1.2rem; font-weight: 500;}
+
+        /* ================= الكي الخفي للطباعة (إخفاء المتسربات) ================= */
+        @media screen {
+            #print-iframe { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -119,6 +133,8 @@
         <button type="button" class="overlay-back" onclick="closeOverlay('media-slider-overlay'); setTimeout(()=>openMediaLibraryModal(), 300);"><i class="fas fa-arrow-right me-2"></i> رجوع للمكتبة</button>
         <div id="mediaCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner" id="media-carousel-inner"></div>
+            <button type="button" class="carousel-control-prev" data-bs-target="#mediaCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon" style="width: 4rem; height: 4rem;"></span></button>
+            <button type="button" class="carousel-control-next" data-bs-target="#mediaCarousel" data-bs-slide="next"><span class="carousel-control-next-icon" style="width: 4rem; height: 4rem;"></span></button>
         </div>
     </div>
 
@@ -146,22 +162,22 @@
                 </div>
                 <div class="modal-body bg-light">
                     <div class="bg-white p-4 rounded-4 mb-4 border border-info shadow-sm">
-                        <h5 class="fw-bold text-dark mb-4 text-center">إضافة مقطع جديد للمكتبة</h5>
+                        <h5 class="fw-bold text-dark mb-3 text-center">إضافة مقطع جديد للمكتبة</h5>
                         <div class="row g-3 mb-3">
-                            <div class="col-md-6 col-12"><input type="text" id="lib-name" class="form-control huge-input" placeholder="اسم المقطع (مثال: أذكار، إعلان)"></div>
-                            <div class="col-md-6 col-12"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="ضع رابط يوتيوب هنا..."></div>
+                            <div class="col-md-6 col-12"><input type="text" id="lib-name" class="form-control huge-input" placeholder="اسم المقطع (مثال: أذكار)"></div>
+                            <div class="col-md-6 col-12"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="رابط يوتيوب..."></div>
                         </div>
                         <div class="row g-3">
-                            <div class="col-md-6 col-12"><button type="button" class="btn btn-info text-white w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="saveToLibrary()"><i class="fas fa-save me-2"></i> حفظ الرابط في المكتبة</button></div>
+                            <div class="col-md-6 col-12"><button type="button" class="btn btn-info text-white w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="saveToLibrary()"><i class="fas fa-save me-2"></i> حفظ الرابط</button></div>
                             <div class="col-md-6 col-12">
                                 <input type="file" id="lib-file" style="display:none" accept="image/*" onchange="saveImageToLibrary(this)">
-                                <button type="button" class="btn btn-outline-success w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="document.getElementById('lib-file').click()"><i class="fas fa-upload me-2"></i> أو رفع صورة من الجهاز</button>
+                                <button type="button" class="btn btn-outline-success w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="document.getElementById('lib-file').click()"><i class="fas fa-upload me-2"></i> رفع صورة من الجهاز</button>
                             </div>
                         </div>
                     </div>
                     
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-                        <h5 class="fw-bold m-0">المقاطع المحفوظة:</h5>
+                        <h5 class="fw-bold m-0">المقاطع المحفوظة (حدد للتشغيل المتتابع):</h5>
                         <div class="btn-group">
                             <button type="button" class="btn btn-sm btn-dark fw-bold rounded-pill px-4 shadow" onclick="playSelectedLibrary()"><i class="fas fa-play me-2"></i> تشغيل المحدد 📺</button>
                         </div>
@@ -238,7 +254,7 @@
             </div>
             <div id="nav-items" class="px-2" style="flex-grow: 1; overflow-y: auto;"></div>
             
-            <div class="px-3 pb-4 pt-3" style="flex-shrink: 0; background: rgba(0,0,0,0.1); margin-top: auto; z-index: 9999;">
+            <div class="px-3 pb-4 pt-3" style="flex-shrink: 0; background: rgba(0,0,0,0.1); margin-top: auto; z-index: 9999; position: relative;">
                 <button type="button" class="btn btn-danger w-100 rounded-pill fw-bold fs-4 shadow border-2 border-white" style="padding: 15px;" onclick="logOut()">
                     <i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج
                 </button>
@@ -251,6 +267,7 @@
 
         <main class="main-content">
             <section id="sec-services" class="view-section d-none fade-in">
+                
                 <div id="teacher-services-container" class="d-none">
                     <div class="page-card p-4 mb-4 bg-white border-0 shadow-sm rounded-4">
                         <div class="d-flex flex-column gap-2 text-center">
@@ -360,7 +377,7 @@
                                     <div class="page-card h-100 border-danger border-2">
                                         <div class="card-header-custom bg-danger text-white cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')">
                                             <span class="fs-3"><i class="fas fa-bell me-2"></i> المخالفات المعلقة</span>
-                                            <div class="d-flex gap-2"><button type="button" class="btn btn-sm btn-light rounded-pill fw-bold text-danger" onclick="syncLiveViews(); event.stopPropagation();"><i class="fas fa-sync-alt"></i> تحديث</button><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="adm-vio-count">0</span></div>
+                                            <div class="d-flex gap-2"><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2 animate__animated animate__pulse animate__infinite" id="adm-vio-count">0</span></div>
                                         </div>
                                         <div id="adm-vio-list" class="p-3 bg-light d-none"></div>
                                     </div>
@@ -382,12 +399,12 @@
              <section id="sec-reports" class="view-section d-none fade-in">
                 <div class="d-flex flex-column gap-3 mb-4"><h4 class="fw-bold m-0 fs-1 text-center text-primary border-bottom pb-3">التقارير المدرسية والطباعة</h4></div>
                 <div class="row g-3">
-                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('permits')"><i class="fas fa-file-invoice fa-3x mb-3 text-primary"></i><h5 class="fw-bold">الأذونات</h5></div></div>
-                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('visitors')"><i class="fas fa-user-shield fa-3x mb-3 text-success"></i><h5 class="fw-bold">الزوار</h5></div></div>
-                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('violations')"><i class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i><h5 class="fw-bold">المخالفات</h5></div></div>
-                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('attendance')"><i class="fas fa-calendar-check fa-3x mb-3 text-info"></i><h5 class="fw-bold">الغياب</h5></div></div>
-                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('stars')"><i class="fas fa-trophy fa-3x mb-3 text-warning"></i><h5 class="fw-bold">الشرف والشهادات</h5></div></div>
-                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('late')"><i class="fas fa-user-clock fa-3x mb-3 text-secondary"></i><h5 class="fw-bold">التأخر</h5></div></div>
+                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('permits')"><i class="fas fa-file-invoice text-primary"></i><h5 class="fw-bold">الأذونات</h5></div></div>
+                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('visitors')"><i class="fas fa-user-shield text-success"></i><h5 class="fw-bold">الزوار</h5></div></div>
+                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('violations')"><i class="fas fa-exclamation-triangle text-danger"></i><h5 class="fw-bold">المخالفات</h5></div></div>
+                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('attendance')"><i class="fas fa-calendar-check text-info"></i><h5 class="fw-bold">الغياب</h5></div></div>
+                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('stars')"><i class="fas fa-trophy text-warning"></i><h5 class="fw-bold">الشرف والشهادات</h5></div></div>
+                    <div class="col-md-4 col-6"><div class="report-grid-item border-2" onclick="showReportModal('late')"><i class="fas fa-user-clock text-secondary"></i><h5 class="fw-bold">التأخر</h5></div></div>
                 </div>
             </section>
 
@@ -406,7 +423,7 @@
                         <div class="page-card h-100 border-danger border-2 mb-4">
                             <div class="card-header-custom bg-danger text-white">
                                 <span class="fs-3"><i class="fas fa-folder-open me-2"></i> الحالات المحالة للموجه (معلقة)</span>
-                                <div class="d-flex gap-2"><button type="button" class="btn btn-sm btn-light rounded-pill fw-bold text-danger" onclick="syncLiveViews()"><i class="fas fa-sync-alt"></i> تحديث</button><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="counselor-vio-count">0</span></div>
+                                <div class="d-flex gap-2"><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2" id="counselor-vio-count">0</span></div>
                             </div>
                             <div class="table-responsive p-3"><table class="table table-hover text-center align-middle mb-0" style="font-size:1.4rem;"><thead class="table-light"><tr><th>الطالب</th><th>المخالفة</th><th>إجراء</th></tr></thead><tbody id="counselor-list"></tbody></table><div id="counselor-empty" class="text-center p-5 text-muted d-none"><i class="fas fa-smile-beam fa-4x mb-3 text-success"></i><h4 class="fw-bold">لا توجد حالات معلقة</h4></div></div>
                         </div>
@@ -489,12 +506,14 @@
                         <p id="va-violation-desc" class="fs-4 m-0"></p>
                         <small id="va-violation-teacher" class="text-muted"></small>
                     </div>
+                    
                     <label class="fw-bold fs-4 mb-2">الرجاء اختيار الإجراء المناسب:</label>
                     <select id="va-action-select" class="form-select huge-input border-dark mb-4">
                         <option value="verbal_warning">توجيه إنذار شفهي وإغلاق</option>
                         <option value="written_pledge">أخذ تعهد خطي على الطالب</option>
                         <option value="refer_to_counselor">إحالة للموجه الطلابي</option>
                     </select>
+                    
                     <label class="fw-bold fs-4 mb-2">تفاصيل الإجراء / ملاحظات للطباعة (اختياري):</label>
                     <textarea id="va-custom-note" class="form-control bg-white shadow-sm fw-bold mb-2" rows="3" style="font-size:1.4rem; border-radius:15px; padding:15px; border:2px solid #ccc;" placeholder="اكتب هنا الدرجة المستحقة للمخالفة أو التوجيه للموجه الطلابي..."></textarea>
                     <input type="hidden" id="va-violation-id">
@@ -534,13 +553,14 @@
 
         let cache_classes = "";
         let cache_teachers = "";
+        let currentPrintHTML = ""; 
 
         function syncLiveViews() {
-            if(userRole === 'admin') { renderAdmin(); renderMediaLibrary(); }
-            if(userRole === 'counselor') renderCounselor();
-            if(userRole === 'guard') renderGuard();
-            if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor();
-            checkSecurityAlerts();
+            try { if(userRole === 'admin') { renderAdmin(); renderMediaLibrary(); } } catch(e){}
+            try { if(userRole === 'counselor') renderCounselor(); } catch(e){}
+            try { if(userRole === 'guard') renderGuard(); } catch(e){}
+            try { if(!document.getElementById('sec-monitor').classList.contains('d-none')) renderMonitor(); } catch(e){}
+            try { checkSecurityAlerts(); } catch(e){}
         }
 
         window.onload = () => {
@@ -567,7 +587,7 @@
                     document.body.style.visibility = 'visible';
                     
                     try { calculateBestClass(); } catch(e) {}
-                    smartRefreshDropdowns();
+                    try { smartRefreshDropdowns(); } catch(e) {}
 
                     if(userRole) syncLiveViews();
                     
@@ -764,13 +784,6 @@
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // ================= الإدارة السريعة للمكتبة والتلفزيون =================
-        function openMediaLibraryModal() {
-            const modal = new bootstrap.Modal(document.getElementById('mediaLibraryModal'));
-            renderMediaLibrary();
-            modal.show();
-        }
-
         function getEmbedUrl(url) {
             let videoId = '';
             if (url.includes('youtube.com/watch?v=')) { videoId = url.split('v=')[1].split('&')[0]; } 
@@ -849,7 +862,7 @@
             launchCarousel(selectedItems);
         }
 
-        // بناء الشرائح وإجبار Bootstrap على العمل بشكل صحيح
+        // بناء الشرائح وإجبار Bootstrap على العمل
         function launchCarousel(itemsArray) {
             const inner = document.getElementById('media-carousel-inner');
             inner.innerHTML = ''; 
@@ -863,7 +876,6 @@
                     content = `<iframe src="${media.url}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`; 
                 }
                 const activeClass = index === 0 ? 'active' : ''; 
-                // إعطاء الصورة 8 ثوانٍ للقراءة والفيديو 15 ثانية للتغيير (أو يمكنك تركه يعمل وتغييره يدوياً)
                 const interval = media.type === 'image' ? 'data-bs-interval="8000"' : 'data-bs-interval="15000"'; 
                 inner.innerHTML += `<div class="carousel-item ${activeClass}" ${interval}>${content}</div>`; 
             });
@@ -871,7 +883,6 @@
             document.getElementById('media-slider-overlay').style.display = 'block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             
-            // إعادة ضبط وإقلاع مشغل الشرائح بالقوة
             let myCarouselEl = document.getElementById('mediaCarousel');
             let bsCarousel = bootstrap.Carousel.getInstance(myCarouselEl);
             if (bsCarousel) bsCarousel.dispose();
@@ -883,15 +894,19 @@
             bsCarousel.cycle();
         }
 
-        // التدمير الكامل عند الإغلاق لمنع عمل الفيديو في الخلفية
+        function openMediaLibraryModal() {
+            const modal = new bootstrap.Modal(document.getElementById('mediaLibraryModal'));
+            renderMediaLibrary();
+            modal.show();
+        }
+
         function closeOverlay(id) { 
             clearInterval(window.certSlideInterval); 
             clearInterval(window.hofSlideInterval);
             document.getElementById(id).style.display='none'; 
             
             if (id === 'media-slider-overlay') {
-                // تدمير الكود لإطفاء اليوتيوب في الخلفية تماماً
-                document.getElementById('media-carousel-inner').innerHTML = ''; 
+                document.getElementById('media-carousel-inner').innerHTML = ''; // القتل الفوري للصوت
             } else if (id === 'cert-display-overlay') {
                 document.getElementById('cert-display-content').innerHTML = '';
             } else if (id === 'hall-of-fame-overlay') {
@@ -927,7 +942,7 @@
         function generateCustomCert(actionType) {
             const studentName = document.getElementById('cert-student-name').value;
             const title = document.getElementById('cert-title').value || 'شهادة شكر وتقدير';
-            const reason = document.getElementById('cert-reason').value || 'نظير تميزك وانضباطك وتفوقك.';
+            const reason = document.getElementById('cert-reason').value || 'نظير تميزه وانضباطه وتفوقه.';
             
             if(!studentName) return Swal.fire('تنبيه', 'الرجاء إدخال اسم الطالب المكرم', 'warning');
             
@@ -999,7 +1014,7 @@
                             const cObj = Object.values(data.students||{}).find(s=>s.name===c[0]);
                             return `
                             <div class="champion-box text-center">
-                                <div class="champion-avatar animate__animated animate__pulse animate__infinite"><i class="fas fa-user-graduate"></i></div>
+                                <div class="champion-avatar animate__animated animate__pulse animate__infinite" style="width:120px; height:120px; font-size:3rem;"><i class="fas fa-user-graduate"></i></div>
                                 <h2 class="text-warning fw-bold text-shadow">${c[0]}</h2>
                                 <h3 class="text-white">${c[1]} نجمة 🌟</h3>
                                 <h4 class="text-info">${cObj?cObj.class:''}</h4>
@@ -1186,6 +1201,7 @@
 
         function sendPermit() { 
             const teacherName = getStrictTeacherName(); if(!teacherName) return;
+            
             if(!validate(['t-class', 't-stu', 't-dest'])) return; 
             
             let timeVal = document.getElementById('t-time').value; 
@@ -1440,12 +1456,12 @@
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
         function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
-        // ================= دالة الخروج الجذري والآمن 100% =================
+        // الخروج النهائي المبرمج
         function logOut() {
             localStorage.clear();
             sessionStorage.clear();
             userRole = '';
-            window.location.replace(window.location.pathname + '?t=' + new Date().getTime());
+            window.location.replace(window.location.pathname); 
         }
 
         function renderAdmin() { 
@@ -1588,16 +1604,22 @@
                 document.getElementById('va-custom-note').value = '';
                 
                 if(action === 'written_pledge') {
-                    printOfficialForm(stuName, vType, 'pledge', customNote);
+                    Swal.fire({
+                        title: 'تم الإغلاق', text: 'تم تسجيل التعهد. هل تريد طباعة النموذج الآن؟', icon: 'success',
+                        showCancelButton: true, confirmButtonText: 'نعم، طباعة التعهد', cancelButtonText: 'لاحقاً'
+                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'pledge', customNote); });
                 } else if(action === 'refer_to_counselor') {
-                    printOfficialForm(stuName, vType, 'referral', customNote);
+                    Swal.fire({
+                        title: 'تم التحويل', text: 'تم التحويل للموجه. هل تريد طباعة الإحالة؟', icon: 'info',
+                        showCancelButton: true, confirmButtonText: 'نعم، طباعة التحويل', cancelButtonText: 'لاحقاً'
+                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'referral', customNote); });
                 } else {
                     Swal.fire('تم', 'تم تسجيل الإنذار الشفهي وإغلاق المخالفة.', 'success');
                 }
             });
         }
 
-        // ================= نظام الطباعة عبر الـ Iframe المعزول (لا يغلق الشاشة أبداً) =================
+        // ================= الطباعة المعزولة 100% (الغرفة السرية Iframe) =================
         function printViaIframe(htmlContent, isLandscape = false) {
             const iframe = document.getElementById('print-iframe');
             const doc = iframe.contentWindow.document;
@@ -1621,10 +1643,10 @@
                         .form-title { text-align: center; font-size: 1.8rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; }
                         .form-body { font-size: 1.2rem; line-height: 1.6; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; overflow: hidden; }
                         .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.1rem; }
-                        .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; }
+                        .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; flex-shrink: 0;}
                         
                         /* إطار التقارير المتطور يحافظ على التوقيعات في الأسفل */
-                        .report-frame { width: 210mm; height: 280mm; padding: 15mm; margin: 0 auto; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: hidden; }
+                        .report-frame { width: 210mm; height: 285mm; padding: 15mm; margin: 0 auto; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: hidden; }
                         .report-table-wrapper { flex: 1 1 auto; overflow: hidden; } /* الحماية من دفع التوقيعات للخارج */
                         table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
                         th, td { border: 1px solid #000; padding: 4px; font-size: 0.85rem; text-align: center; color: #000; }
@@ -1642,7 +1664,7 @@
             setTimeout(() => {
                 iframe.contentWindow.focus();
                 iframe.contentWindow.print();
-            }, 800);
+            }, 800); // إعطاء وقت كافي للمتصفح لرسم الورقة
         }
 
         // ================= الطباعة الرسمية للنماذج =================
@@ -1675,7 +1697,7 @@
                         <div style="text-align:left;"><strong>مدير المدرسة</strong><br><br>${manager}</div>
                     </div>
                 </div>`;
-                printViaIframe(html, true);
+                printViaIframe(html, true); // True = Landscape
             } else {
                 let noteHtml = customNote ? `<div class="form-body-details"><strong>ملاحظات الوكيل / الإجراء:</strong> ${customNote}</div>` : '';
                 let title = formType === 'pledge' ? 'تعهد خطي على طالب' : 'نموذج إحالة للموجه الطلابي';
@@ -1700,12 +1722,12 @@
                         <div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${deputy}</div>
                     </div>
                 </div>`;
-                printViaIframe(html, false);
+                printViaIframe(html, false); // False = Portrait
             }
         }
 
-        // ================= التقارير المدرسية (شاشة العرض VIP وتجهيز كود الطباعة) =================
-        let currentPrintHTML = ""; // متغير لحفظ الكود للطباعة
+        // ================= تصميم التقارير الجديد الـ (VIP) =================
+        let currentPrintHTML = ""; 
         
         function showReportModal(type) {
             const modal = new bootstrap.Modal(document.getElementById('printModal')); 
@@ -1716,7 +1738,6 @@
             const dayStr = new Date().toLocaleDateString('ar-SA', {weekday: 'long'});
             const timeStr = new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
 
-            // بناء الشكل الذي يظهر على الشاشة
             let h = `
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 3px double #000; padding-bottom: 15px; margin-bottom: 20px;">
                     <div style="text-align:right; font-weight:bold; font-size:1.1rem;">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div>
@@ -1727,7 +1748,6 @@
                 <div class="report-table-card">
             `;
             
-            // بناء الشكل المخصص للطباعة (مدمج في إطار محمي)
             let printH = `
             <div class="report-frame">
                 <div class="form-header">
@@ -1756,7 +1776,7 @@
                         </tr>`; 
                     }); tableContent+=`</tbody></table>`; 
                 } else if(type==='permits') { 
-                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>الفصل</th><th>المعلم</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).filter(p=>p).reverse().map(p=>{ const sObj=Object.values(data.students||{}).find(stu=>stu && stu.name===p.student); return `<tr><td class="fw-bold">${p.student}</td><td>${sObj?sObj.class:'-'}</td><td class="text-primary">${p.teacher||'-'}</td><td>${p.dest}</td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`; 
+                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>الفصل</th><th>المعلم</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).filter(p=>p).reverse().map(p=>{ const sObj=Object.values(data.students||{}).find(stu=>stu && stu.name===p.student); return `<tr><td class="fw-bold">${p.student}</td><td>${sObj?sObj.class:'-'}</td><td class="text-primary">${p.teacher||'-'}</td><td><span class="badge bg-secondary rounded-pill px-3">${p.dest}</span></td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`; 
                 } else if(type==='attendance') { 
                     const t = new Date().toLocaleDateString('en-CA'); tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>الفصل</th><th>المعلم الراصد</th><th>الحالة</th></tr></thead><tbody>`; Object.values(data.students||{}).forEach(s => { if(!s) return; if(data.attendance?.[t]?.['full_day']?.[s.name]) { const rec = data.attendance[t]['full_day'][s.name]; tableContent+=`<tr><td class="fw-bold">${s.name}</td><td>${s.class}</td><td class="text-primary">${rec.teacher||'-'}</td><td class="text-danger fw-bold">غائب يوم كامل</td></tr>`; } else { let p = []; let tea = '-'; for(let i=1;i<=7;i++) { const rec = data.attendance?.[t]?.['periods']?.[i]?.[s.name]; if(rec && (rec === 'absent' || rec.status === 'absent')) { p.push(i); tea = rec.teacher || tea; } } if(p.length) tableContent+=`<tr><td class="fw-bold">${s.name}</td><td>${s.class}</td><td class="text-primary">${tea}</td><td class="text-danger fw-bold">حصص: ${p.join(',')}</td></tr>`; } }); tableContent+=`</tbody></table>`; 
                 } else if(type==='violations') { 
@@ -1778,20 +1798,14 @@
                     });
                     tableContent += `</tbody></table>`; 
                 } else if(type==='visitors') { 
-                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الاسم</th><th>السبب</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).filter(v=>v).reverse().map(v=>`<tr><td class="fw-bold">${v.name}</td><td>${v.reason}</td><td>${v.status}</td></tr>`).join('')}</tbody></table>`; 
+                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الاسم</th><th>السبب</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).filter(v=>v).reverse().map(v=>`<tr><td class="fw-bold">${v.name}</td><td>${v.reason}</td><td><span class="badge bg-primary rounded-pill px-3">${v.status}</span></td></tr>`).join('')}</tbody></table>`; 
                 } else if(type==='late') { 
                     tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).filter(t=>t).reverse().map(t=>`<tr><td class="fw-bold">${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
                 }
 
-                // إكمال كود الشاشة
                 h += tableContent;
-                h += `</div>
-                <div style="display:flex; justify-content:space-between; margin-top:40px; padding:0 20px; font-size:1.2rem;">
-                    <div style="text-align:center;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
-                    <div style="text-align:center;"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
-                </div>`;
+                h += `</div>`;
                 
-                // إكمال كود الطباعة
                 printH += tableContent;
                 printH += `</div>
                 <div class="report-signatures">
@@ -1800,7 +1814,7 @@
                 </div></div>`;
 
                 document.getElementById('modal-print-content').innerHTML = h; 
-                currentPrintHTML = printH; // تخزين الكود الجاهز للطباعة
+                currentPrintHTML = printH; 
                 modal.show();
             } catch (e) {
                 console.error(e);
@@ -1808,9 +1822,9 @@
             }
         }
 
-        // ================= الطباعة المعزولة 100% (زر الطباعة لن يعيد تحميل الصفحة) =================
-        function executePrint() { 
-            printViaIframe(currentPrintHTML, false); // إرسال التقرير الجاهز لغرفة الطباعة
+        // الطباعة المعزولة 100% للتقارير
+        function executeIframePrint() { 
+            printViaIframe(currentPrintHTML, false); 
         }
 
     </script>

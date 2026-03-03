@@ -22,10 +22,11 @@
     <style>
         /* ================= Core Styles ================= */
         :root { --primary: #006C35; --gold: #C69C6D; --bg: #F8FAFC; --card: #ffffff; --text: #1E293B; --border: #E2E8F0; --transition: all 0.3s ease; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; visibility: hidden; padding-bottom: 80px; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 80px; }
         .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff); z-index: -2; animation: bgAnim 20s infinite alternate; }
         @keyframes bgAnim { 0% {background-position: 0% 50%} 100% {background-position: 100% 50%} }
-        .swal2-container { z-index: 110000 !important; }
+        
+        .swal2-container { z-index: 2147483647 !important; }
 
         .sidebar { width: 280px; height: 100vh; background: var(--primary); color: white; position: fixed; right: 0; top: 0; z-index: 1000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: transform 0.3s ease; }
         .main-content { margin-right: 280px; padding: 30px; padding-top: 110px; min-height: 100vh; transition: var(--transition); }
@@ -40,6 +41,7 @@
             .services-grid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 15px; }
             .services-grid .btn { padding: 25px 5px !important; font-size: 1.5rem !important; height: 150px !important; flex-direction: column; opacity: 0.6; }
             .services-grid .btn.active-tab { opacity: 1; transform: scale(1.03); border: 3px solid #000; }
+            .btn-lg-mobile { font-size: 1.7rem !important; padding: 18px !important; border-radius: 50px !important; }
         }
 
         @media (min-width: 992px) {
@@ -69,18 +71,9 @@
         .stat-box.blue { border-color: #0d6efd; color: #0d6efd; } .stat-box.green { border-color: #198754; color: #198754; } .stat-box.red { border-color: #dc3545; color: #dc3545; }
         .card-header-custom { padding: 15px 25px; background: rgba(var(--primary), 0.05); border-bottom: 1px solid var(--border); font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
 
-        /* ================= تصميم أيقونات التقارير الجذاب (VIP Cards) ================= */
-        .report-grid-item { 
-            background: #ffffff; border-radius: 25px; padding: 35px 20px; 
-            text-align: center; cursor: pointer; border: 2px solid #e2e8f0; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .report-grid-item:hover { 
-            transform: translateY(-10px); 
-            border-color: var(--primary); 
-            box-shadow: 0 15px 30px rgba(0,108,53,0.15); 
-        }
+        /* ================= تصميم أيقونات التقارير ================= */
+        .report-grid-item { background: #ffffff; border-radius: 25px; padding: 35px 20px; text-align: center; cursor: pointer; border: 2px solid #e2e8f0; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .report-grid-item:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 15px 30px rgba(0,108,53,0.15); }
         .report-grid-item i { font-size: 4rem; margin-bottom: 15px; }
 
         /* ================= شاشات العرض ================= */
@@ -92,7 +85,7 @@
         .carousel-item { height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; background: #000; transition: opacity 1s ease-in-out !important; }
         .carousel-item iframe, .carousel-item img { width: 100vw !important; height: 100vh !important; object-fit: contain; border: none; pointer-events: auto; }
 
-        /* ================= لوحة الشرف 👑 ================= */
+        /* ================= لوحة الشرف ================= */
         .champion-area { text-align: center; margin-bottom: 30px; width: 100%; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;}
         .champion-box { text-align: center; }
         .champion-avatar { width: 150px; height: 150px; background: #fff; border-radius: 50%; border: 8px solid #FFD700; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: #333; margin: 0 auto 15px; box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
@@ -101,7 +94,8 @@
         .challenger-group { display: flex; gap: 20px; justify-content: center; width: 100%; position: absolute; left: 0; }
         .challenger-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 2px solid rgba(255, 215, 0, 0.4); border-radius: 25px; padding: 25px; text-align: center; width: 320px; }
         
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        /* شاشة الدخول مع حماية Z-Index المطلقة */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #003319, #006C35); z-index: 2147483647 !important; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--card); padding: 50px; border-radius: 40px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
         .custom-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 11000; background: var(--primary); color: white; padding: 15px 50px; border-radius: 50px; display: none; font-weight: bold; font-size: 1.5rem; }
         #top-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left:0; width: 100%; z-index: 900; height: 90px; border-bottom: 1px solid var(--border); }
@@ -109,16 +103,47 @@
         .fade-in { animation: fadeIn 0.6s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* نافذة التقارير الأنيقة */
+        /* نافذة التقارير */
         .report-modal-header { background: linear-gradient(to left, #006C35, #004d25); color: white; border-bottom: 5px solid #C69C6D; padding: 20px; border-radius: 15px 15px 0 0; }
         .report-modal-body { background: #f8fafc; padding: 30px; }
         .report-table-card { background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #e2e8f0; }
         .report-table th { background-color: #f1f5f9; color: #1e293b; font-weight: 800; border-bottom: 2px solid #cbd5e1; padding: 15px; }
         .report-table td { padding: 15px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; font-size: 1.2rem; font-weight: 500;}
 
-        /* ================= الكي الخفي للطباعة (إخفاء المتسربات) ================= */
+        /* ================= الكي الخفي للطباعة الأصلية ================= */
         @media screen {
-            #print-iframe { display: none !important; }
+            #native-print-container { display: none !important; }
+        }
+
+        @media print {
+            body > *:not(#native-print-container) { display: none !important; }
+            .modal, .modal-backdrop { display: none !important; }
+            
+            html, body { width: 100%; height: 100%; margin: 0 !important; padding: 0 !important; background: white !important; font-family: 'Tajawal', sans-serif; overflow: hidden !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;}
+            
+            #native-print-container { display: block !important; position: absolute; left: 0; top: 0; width: 100%; margin: 0 !important; padding: 0 !important; background: white !important; z-index: 999999; }
+
+            .print-page { width: 210mm !important; height: 290mm !important; max-height: 290mm !important; margin: 0 auto !important; box-sizing: border-box !important; background: white !important; overflow: hidden !important; page-break-after: avoid !important; page-break-inside: avoid !important; }
+            .print-landscape { width: 290mm !important; height: 200mm !important; max-height: 200mm !important; }
+            
+            @page { margin: 0; }
+
+            .form-frame { width: 100%; height: 100%; border: 6px double var(--primary); padding: 10mm 15mm; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; direction: rtl; text-align: right; overflow: hidden; }
+            .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; border-bottom: 2px solid #ccc; padding-bottom: 10px; flex-shrink: 0;}
+            .form-header img { max-height: 70px; }
+            .form-title { text-align: center; font-size: 1.8rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; flex-shrink: 0;}
+            .form-body { font-size: 1.2rem; line-height: 1.6; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; overflow: hidden;}
+            .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; flex-shrink: 0;} 
+            
+            .cert-frame { width: 100%; height: 100%; border: 10px solid var(--gold); outline: 4px solid var(--primary); outline-offset: -8px; padding: 15mm; text-align: center; display: flex; flex-direction: column; justify-content: space-between; background-color: white; box-sizing: border-box; overflow: hidden; }
+            .cert-frame * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .c-title { font-size: 4rem; color: var(--primary) !important; font-weight: 900; margin-bottom: 10px; }
+            .c-name { border-bottom: 4px solid var(--gold) !important; display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: var(--gold) !important; margin: 20px 0; }
+            
+            .report-table-wrapper { flex-grow: 1; overflow: hidden; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+            th, td { border: 1px solid #000 !important; padding: 5px; font-size: 0.95rem; text-align: center; color: #000; }
+            th { background-color: #eee !important; font-weight: bold; }
         }
     </style>
 </head>
@@ -126,11 +151,13 @@
     <div class="gradient-bg"></div>
     <div class="custom-toast" id="system-toast">تنبيه جديد!</div>
 
-    <iframe id="print-iframe" style="display: none; width: 0; height: 0; border: none;"></iframe>
+    <div id="native-print-container"></div>
+
+    <audio id="bell" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" style="display:none; width:0; height:0;" preload="auto"></audio>
 
     <div id="media-slider-overlay" class="full-overlay">
         <button type="button" class="overlay-close" onclick="closeOverlay('media-slider-overlay')"><i class="fas fa-power-off me-2"></i> إغلاق الشاشة</button>
-        <button type="button" class="overlay-back" onclick="closeOverlay('media-slider-overlay'); setTimeout(()=>openMediaLibraryModal(), 300);"><i class="fas fa-arrow-right me-2"></i> رجوع للمكتبة</button>
+        <button type="button" class="overlay-back" onclick="closeOverlay('media-slider-overlay'); setTimeout(function(){openMediaLibraryModal();}, 300);"><i class="fas fa-arrow-right me-2"></i> رجوع للمكتبة</button>
         <div id="mediaCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner" id="media-carousel-inner"></div>
             <button type="button" class="carousel-control-prev" data-bs-target="#mediaCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon" style="width: 4rem; height: 4rem;"></span></button>
@@ -165,19 +192,19 @@
                         <h5 class="fw-bold text-dark mb-3 text-center">إضافة مقطع جديد للمكتبة</h5>
                         <div class="row g-3 mb-3">
                             <div class="col-md-6 col-12"><input type="text" id="lib-name" class="form-control huge-input" placeholder="اسم المقطع (مثال: أذكار)"></div>
-                            <div class="col-md-6 col-12"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="رابط يوتيوب..."></div>
+                            <div class="col-md-6 col-12"><input type="text" id="lib-url" class="form-control huge-input text-start" dir="ltr" placeholder="رابط يوتيوب هنا..."></div>
                         </div>
                         <div class="row g-3">
-                            <div class="col-md-6 col-12"><button type="button" class="btn btn-info text-white w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="saveToLibrary()"><i class="fas fa-save me-2"></i> حفظ الرابط</button></div>
+                            <div class="col-md-6 col-12"><button type="button" class="btn btn-info text-white w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="saveToLibrary()"><i class="fas fa-save me-2"></i> حفظ الرابط في المكتبة</button></div>
                             <div class="col-md-6 col-12">
                                 <input type="file" id="lib-file" style="display:none" accept="image/*" onchange="saveImageToLibrary(this)">
-                                <button type="button" class="btn btn-outline-success w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="document.getElementById('lib-file').click()"><i class="fas fa-upload me-2"></i> رفع صورة من الجهاز</button>
+                                <button type="button" class="btn btn-outline-success w-100 fw-bold rounded-pill fs-4 py-3 shadow-sm" onclick="document.getElementById('lib-file').click()"><i class="fas fa-upload me-2"></i> أو رفع صورة من الجهاز</button>
                             </div>
                         </div>
                     </div>
                     
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-                        <h5 class="fw-bold m-0">المقاطع المحفوظة (حدد للتشغيل المتتابع):</h5>
+                        <h5 class="fw-bold m-0">المقاطع المحفوظة (حدد للتشغيل):</h5>
                         <div class="btn-group">
                             <button type="button" class="btn btn-sm btn-dark fw-bold rounded-pill px-4 shadow" onclick="playSelectedLibrary()"><i class="fas fa-play me-2"></i> تشغيل المحدد 📺</button>
                         </div>
@@ -338,7 +365,6 @@
                      <div class="row g-4 mb-4">
                         
                         <div class="col-lg-4 col-12 order-lg-2">
-                            
                             <div class="page-card p-4 mb-4 border-warning border-3 bg-white text-center shadow-sm">
                                 <h3 class="fw-bold text-dark mb-4 border-bottom pb-3"><i class="fas fa-tv me-2"></i> شاشات العرض</h3>
                                 <button type="button" class="btn btn-warning w-100 py-3 fw-bold fs-3 rounded-pill shadow mb-3 text-dark" onclick="openHallOfFameMenu()"><i class="fas fa-crown me-2"></i> شاشة التميز 👑</button>
@@ -377,7 +403,9 @@
                                     <div class="page-card h-100 border-danger border-2">
                                         <div class="card-header-custom bg-danger text-white cursor-pointer" onclick="document.getElementById('adm-vio-list').classList.toggle('d-none')">
                                             <span class="fs-3"><i class="fas fa-bell me-2"></i> المخالفات المعلقة</span>
-                                            <div class="d-flex gap-2"><span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2 animate__animated animate__pulse animate__infinite" id="adm-vio-count">0</span></div>
+                                            <div class="d-flex gap-2">
+                                                <span class="badge bg-light text-danger rounded-pill fs-3 px-3 py-2 animate__animated animate__pulse animate__infinite" id="adm-vio-count">0</span>
+                                            </div>
                                         </div>
                                         <div id="adm-vio-list" class="p-3 bg-light d-none"></div>
                                     </div>
@@ -535,7 +563,7 @@
                 <div class="report-modal-body" id="modal-print-content"></div>
                 <div class="modal-footer bg-white border-top">
                     <button type="button" class="btn btn-secondary px-5 fw-bold fs-4 rounded-pill" data-bs-dismiss="modal">إغلاق</button>
-                    <button type="button" class="btn btn-primary px-5 fw-bold fs-4 rounded-pill shadow" onclick="executeIframePrint()">
+                    <button type="button" class="btn btn-primary px-5 fw-bold fs-4 rounded-pill shadow" onclick="executeNativePrint()">
                         <i class="fas fa-print me-2"></i> طباعة التقرير
                     </button>
                 </div>
@@ -543,18 +571,25 @@
         </div>
     </div>
     
-    <audio id="bell" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" preload="auto"></audio>
-
     <script>
         const firebaseConfig = { apiKey: "AIzaSyD0IJONOe7Ef4a0XG8L1Cgbc1qVSSck0xE", authDomain: "ethn-63848.firebaseapp.com", databaseURL: "https://ethn-63848-default-rtdb.firebaseio.com", projectId: "ethn-63848", storageBucket: "ethn-63848.appspot.com", messagingSenderId: "747489913596", appId: "1:747489913596:web:d98d88447e4a25cc808579" };
-        firebase.initializeApp(firebaseConfig); const db = firebase.database();
+        
+        // جدار حماية صارم لمنع تعليق الجافاسكريبت بسبب فايربيس
+        let db = null;
+        try {
+            if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+            db = firebase.database();
+        } catch(e) {
+            console.error("Firebase Error:", e);
+        }
+        
         let userRole='', isMuted=true, attMode='period'; 
         let data = { settings: {school:'متوسطة الإمام النووي', manager:'', deputy:'', admin_pin:'2026', teacher_pin:'2026', guard_pin:'1111', counselor_pin:'2026', logo:'', admin_email:'', permissions:{}}, classes:[], students:{}, teachers:{}, permits:{}, visitors:{}, departures:{}, violations:{}, attendance:{}, stars:{}, tardiness:{}, mediaLibrary:{}, screens:{} };
 
         let cache_classes = "";
         let cache_teachers = "";
-        let currentPrintHTML = ""; 
 
+        // المزامنة الحية المحصنة بالكامل
         function syncLiveViews() {
             try { if(userRole === 'admin') { renderAdmin(); renderMediaLibrary(); } } catch(e){}
             try { if(userRole === 'counselor') renderCounselor(); } catch(e){}
@@ -563,51 +598,57 @@
             try { checkSecurityAlerts(); } catch(e){}
         }
 
-        window.onload = () => {
-            const savedRole = localStorage.getItem('userRole');
-            db.ref('/').on('value', snap => {
-                const val = snap.val();
-                if(val) {
-                    data.settings = { ...data.settings, ...(val.settings || {}) };
-                    data.classes = val.classes || [];
-                    data.students = val.students || {};
-                    data.teachers = val.teachers || {};
-                    data.permits = val.permits || {};
-                    data.visitors = val.visitors || {};
-                    data.departures = val.departures || {};
-                    data.violations = val.violations || {};
-                    data.attendance = val.attendance || {};
-                    data.stars = val.stars || {};
-                    data.tardiness = val.tardiness || {};
-                    data.screens = val.screens || {};
-                    data.mediaLibrary = val.mediaLibrary || {};
-                    
-                    document.getElementById('disp-school').innerText = data.settings.school || 'المدرسة';
-                    document.getElementById('login-school-name').innerText = data.settings.school || 'المدرسة';
-                    document.body.style.visibility = 'visible';
-                    
-                    try { calculateBestClass(); } catch(e) {}
-                    try { smartRefreshDropdowns(); } catch(e) {}
+        window.onload = function() {
+            // تشغيل الشاشة والدخول فوراً بدون انتظار الإنترنت
+            var savedRole = localStorage.getItem('userRole');
+            if(savedRole) {
+                userRole = savedRole;
+                document.getElementById('auth-overlay').style.display='none';
+                document.getElementById('app-body').classList.remove('d-none');
+                buildMenu();
+                navigate(localStorage.getItem('currentView') || 'services');
+                if(userRole === 'teacher') showServiceDefault(); 
+                populateSettingsUI(); 
+            }
+            
+            // الاتصال بفايربيس في الخلفية بأمان
+            if (db) {
+                try {
+                    db.ref('/').on('value', function(snap) {
+                        var val = snap.val();
+                        if(val) {
+                            data.settings = Object.assign({}, data.settings, val.settings || {});
+                            data.classes = val.classes || [];
+                            data.students = val.students || {};
+                            data.teachers = val.teachers || {};
+                            data.permits = val.permits || {};
+                            data.visitors = val.visitors || {};
+                            data.departures = val.departures || {};
+                            data.violations = val.violations || {};
+                            data.attendance = val.attendance || {};
+                            data.stars = val.stars || {};
+                            data.tardiness = val.tardiness || {};
+                            data.screens = val.screens || {};
+                            data.mediaLibrary = val.mediaLibrary || {};
+                            
+                            document.getElementById('disp-school').innerText = data.settings.school || 'المدرسة';
+                            document.getElementById('login-school-name').innerText = data.settings.school || 'المدرسة';
+                            
+                            try { calculateBestClass(); } catch(e) {}
+                            try { smartRefreshDropdowns(); } catch(e) {}
 
-                    if(userRole) syncLiveViews();
-                    
-                    if(savedRole && !userRole) {
-                        userRole = savedRole;
-                        document.getElementById('auth-overlay').style.display='none';
-                        document.getElementById('app-body').classList.remove('d-none');
-                        buildMenu();
-                        navigate(localStorage.getItem('currentView') || 'services');
-                        if(userRole === 'teacher') showServiceDefault(); 
-                        populateSettingsUI(); 
-                    } else if(userRole) {
-                        populateSettingsUI(); 
-                    }
+                            if(userRole) syncLiveViews();
+                            populateSettingsUI();
+                        }
+                    });
+                } catch(e) {
+                    console.error("Sync Error", e);
                 }
-            });
+            }
             setInterval(monitorLoop, 10000);
         };
 
-        function showToast(m) { const t=document.getElementById('system-toast'); t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; t.style.display='block'; setTimeout(()=>{t.style.display='none'},3000); }
+        function showToast(m) { const t=document.getElementById('system-toast'); t.innerHTML=`<i class="fas fa-check-circle me-2"></i> ${m}`; t.style.display='block'; setTimeout(function(){t.style.display='none'},3000); }
         function toggleVisibility(id) { const e=document.getElementById(id); e.type=e.type==='password'?'text':'password'; }
 
         function saveSettings() {
@@ -625,7 +666,7 @@
                     counselor_monitor: document.getElementById('perm-counselor-mon') ? document.getElementById('perm-counselor-mon').checked : false
                 }
             };
-            db.ref('settings').update(updates).then(() => {
+            if(db) db.ref('settings').update(updates).then(function() {
                 showToast('تم حفظ الإعدادات والصلاحيات بنجاح');
                 buildMenu(); 
             });
@@ -638,15 +679,15 @@
                 guard_pin: document.getElementById('pin-guard').value,
                 counselor_pin: document.getElementById('pin-counselor').value
             };
-            db.ref('settings').update(updates).then(() => Swal.fire('تم', 'تم حفظ الرموز السرية', 'success'));
+            if(db) db.ref('settings').update(updates).then(function() { Swal.fire('تم', 'تم حفظ الرموز السرية', 'success'); });
         }
 
         function uploadLogo() {
             const file = document.getElementById('logo-upload').files[0];
             if(!file) return;
             const reader = new FileReader();
-            reader.onload = e => {
-                db.ref('settings/logo').set(e.target.result).then(() => {
+            reader.onload = function(e) {
+                if(db) db.ref('settings/logo').set(e.target.result).then(function() {
                     showToast('تم رفع الشعار بنجاح');
                     document.getElementById('logo-preview').src = e.target.result;
                     document.getElementById('logo-preview').style.display = 'block';
@@ -667,13 +708,13 @@
                  document.getElementById('pin-guard').value = data.settings.guard_pin || '';
                  document.getElementById('pin-counselor').value = data.settings.counselor_pin || '';
                  
-                 if(document.getElementById('perm-teacher-rep')) {
-                     document.getElementById('perm-teacher-rep').checked = data.settings.permissions?.teacher_reports || false;
-                     document.getElementById('perm-teacher-mon').checked = data.settings.permissions?.teacher_monitor || false;
-                     document.getElementById('perm-guard-rep').checked = data.settings.permissions?.guard_reports || false;
-                     document.getElementById('perm-guard-mon').checked = data.settings.permissions?.guard_monitor || false;
-                     document.getElementById('perm-counselor-rep').checked = data.settings.permissions?.counselor_reports || false;
-                     document.getElementById('perm-counselor-mon').checked = data.settings.permissions?.counselor_monitor || false;
+                 if(document.getElementById('perm-teacher-rep') && data.settings.permissions) {
+                     document.getElementById('perm-teacher-rep').checked = data.settings.permissions.teacher_reports || false;
+                     document.getElementById('perm-teacher-mon').checked = data.settings.permissions.teacher_monitor || false;
+                     document.getElementById('perm-guard-rep').checked = data.settings.permissions.guard_reports || false;
+                     document.getElementById('perm-guard-mon').checked = data.settings.permissions.guard_monitor || false;
+                     document.getElementById('perm-counselor-rep').checked = data.settings.permissions.counselor_reports || false;
+                     document.getElementById('perm-counselor-mon').checked = data.settings.permissions.counselor_monitor || false;
                  }
              }
         }
@@ -683,15 +724,19 @@
         function togglePinVisibility() { const p=document.getElementById('pin-input'); p.type=p.type==='password'?'text':'password'; }
         
         function doLogin() { 
-            const p = document.getElementById('pin-input').value; 
-            if(p === String(data.settings[`${userRole}_pin`])) { 
+            var p = document.getElementById('pin-input').value.trim(); 
+            var targetPin = '2026';
+            if (userRole === 'guard') targetPin = '1111';
+            
+            if (data && data.settings && data.settings[userRole + '_pin']) {
+                targetPin = String(data.settings[userRole + '_pin']);
+            }
+
+            if(p === targetPin) { 
                 localStorage.setItem('userRole', userRole); 
                 document.getElementById('auth-overlay').style.display='none'; 
                 document.getElementById('app-body').classList.remove('d-none'); 
                 
-                const bell = document.getElementById('bell');
-                if(bell) { bell.volume = 0; bell.play().then(()=>bell.pause()).catch(e=>{}); bell.volume = 1; }
-
                 Swal.fire({ title: 'تم تسجيل الدخول بنجاح', icon: 'success', timer: 1500, showConfirmButton: false });
 
                 buildMenu(); navigate('services'); 
@@ -729,8 +774,10 @@
             }
             
             const uniqueLinks = []; const map = new Map();
-            for (const item of links) { if(!map.has(item[0])){ map.set(item[0], true); uniqueLinks.push(item); }}
-            let navHtml = uniqueLinks.map(l => `<div class="nav-link fs-4 py-3" id="nav-${l[0]}" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-3 fa-lg"></i> ${l[1]}</div>`).join(''); 
+            for (let i = 0; i < links.length; i++) { 
+                if(!map.has(links[i][0])){ map.set(links[i][0], true); uniqueLinks.push(links[i]); }
+            }
+            let navHtml = uniqueLinks.map(function(l) { return `<div class="nav-link fs-4 py-3" id="nav-${l[0]}" onclick="navigate('${l[0]}')"><i class="fas fa-${l[2]} me-3 fa-lg"></i> ${l[1]}</div>`; }).join(''); 
             m.innerHTML = navHtml;
         }
 
@@ -742,7 +789,8 @@
 
         function navigate(id) { 
             localStorage.setItem('currentView', id); 
-            document.querySelectorAll('.view-section').forEach(s => s.classList.add('d-none')); 
+            var sections = document.querySelectorAll('.view-section');
+            for(var i=0; i<sections.length; i++) sections[i].classList.add('d-none');
             
             if(id === 'services') {
                 document.getElementById('sec-services').classList.remove('d-none');
@@ -760,7 +808,8 @@
             } else if (id === 'sec-data') { document.getElementById('sec-data').classList.remove('d-none'); populateSettingsUI(); } 
             else { const el = document.getElementById('sec-'+id); if(el) el.classList.remove('d-none'); if(id==='monitor') renderMonitor(); }
             
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); 
+            var navs = document.querySelectorAll('.nav-link');
+            for(var j=0; j<navs.length; j++) navs[j].classList.remove('active');
             if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active'); 
             
             if(window.innerWidth < 992) { 
@@ -780,7 +829,7 @@
             else { btn.style.display = 'flex'; }
         }
 
-        function showServiceDefault() { const boxes = ['srv-permit-box', 'srv-attendance-box', 'srv-behavior-box', 'srv-violation-box', 'srv-late-box']; let active = false; boxes.forEach(b => { if(!document.getElementById(b).classList.contains('d-none')) active = true; }); if(!active) tabService('permit'); }
+        function showServiceDefault() { const boxes = ['srv-permit-box', 'srv-attendance-box', 'srv-behavior-box', 'srv-violation-box', 'srv-late-box']; let active = false; boxes.forEach(function(b) { if(!document.getElementById(b).classList.contains('d-none')) active = true; }); if(!active) tabService('permit'); }
         function toggleMute() { isMuted=!isMuted; document.getElementById('mute-btn').innerHTML=isMuted?'<i class="fas fa-volume-mute fa-lg"></i>':'<i class="fas fa-volume-up fa-lg"></i>'; }
         function toggleFullScreen() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
@@ -799,8 +848,8 @@
             const finalName = nameInput ? nameInput : 'صورة مخصصة';
             
             const reader = new FileReader();
-            reader.onload = e => {
-                db.ref('mediaLibrary').push({ name: finalName, type: 'image', url: e.target.result }).then(() => {
+            reader.onload = function(e) {
+                if(db) db.ref('mediaLibrary').push({ name: finalName, type: 'image', url: e.target.result }).then(function() {
                     showToast('تم حفظ الصورة في المكتبة بنجاح');
                     input.value = '';
                     document.getElementById('lib-name').value = '';
@@ -820,7 +869,7 @@
             if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) { type = 'image'; }
             else if (url.includes('youtu')) { finalUrl = getEmbedUrl(url); type = 'video'; }
 
-            db.ref('mediaLibrary').push({ name: name, type: type, url: finalUrl }).then(() => {
+            if(db) db.ref('mediaLibrary').push({ name: name, type: type, url: finalUrl }).then(function() {
                 Swal.fire('تم', 'تم الحفظ في المكتبة بنجاح', 'success');
                 document.getElementById('lib-name').value = '';
                 document.getElementById('lib-url').value = '';
@@ -834,25 +883,24 @@
             const items = data.mediaLibrary || {};
             if(Object.keys(items).length === 0) { list.innerHTML = '<div class="text-muted text-center p-3">المكتبة فارغة. قم بإضافة مقاطع أعلاه.</div>'; return; }
             
-            list.innerHTML = Object.keys(items).map(k => { 
+            list.innerHTML = Object.keys(items).map(function(k) { 
                 const item = items[k];
                 const icon = item.type === 'video' ? 'fas fa-video text-danger' : 'fas fa-image text-success';
                 return `
                 <div class="list-group-item d-flex align-items-center mb-2 rounded shadow-sm border p-2 bg-white">
                     <input class="form-check-input lib-checkbox ms-3" type="checkbox" value="${k}" style="transform: scale(1.5); cursor: pointer;">
                     <span class="fw-bold fs-4 flex-grow-1 text-truncate"><i class="${icon} me-2"></i> ${item.name}</span>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="db.ref('mediaLibrary/${k}').remove().then(()=>renderMediaLibrary())"><i class="fas fa-trash"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="db.ref('mediaLibrary/${k}').remove().then(function(){renderMediaLibrary()})"><i class="fas fa-trash"></i></button>
                 </div>`; 
             }).join('');
         }
 
-        // تشغيل المحدد والمتابعة المتسلسلة
         function playSelectedLibrary() {
             const checked = document.querySelectorAll('.lib-checkbox:checked');
             if(checked.length === 0) return Swal.fire('تنبيه', 'الرجاء تحديد مقطع واحد على الأقل', 'warning');
             
             let selectedItems = [];
-            checked.forEach(cb => {
+            checked.forEach(function(cb) {
                 selectedItems.push(data.mediaLibrary[cb.value]);
             });
             
@@ -862,12 +910,11 @@
             launchCarousel(selectedItems);
         }
 
-        // بناء الشرائح وإجبار Bootstrap على العمل
         function launchCarousel(itemsArray) {
             const inner = document.getElementById('media-carousel-inner');
             inner.innerHTML = ''; 
             
-            itemsArray.forEach((media, index) => {
+            itemsArray.forEach(function(media, index) {
                 let content = '';
                 if(media.type === 'image') { 
                     content = `<img src="${media.url}" alt="عرض">`; 
@@ -887,10 +934,7 @@
             let bsCarousel = bootstrap.Carousel.getInstance(myCarouselEl);
             if (bsCarousel) bsCarousel.dispose();
             
-            bsCarousel = new bootstrap.Carousel(myCarouselEl, {
-                ride: 'carousel',
-                wrap: true
-            });
+            bsCarousel = new bootstrap.Carousel(myCarouselEl, { ride: 'carousel', wrap: true });
             bsCarousel.cycle();
         }
 
@@ -906,7 +950,7 @@
             document.getElementById(id).style.display='none'; 
             
             if (id === 'media-slider-overlay') {
-                document.getElementById('media-carousel-inner').innerHTML = ''; // القتل الفوري للصوت
+                document.getElementById('media-carousel-inner').innerHTML = ''; 
             } else if (id === 'cert-display-overlay') {
                 document.getElementById('cert-display-content').innerHTML = '';
             } else if (id === 'hall-of-fame-overlay') {
@@ -916,7 +960,6 @@
             if(document.exitFullscreen) document.exitFullscreen(); 
         }
 
-        // ================= خيارات التميز =================
         function openHallOfFameMenu() {
             Swal.fire({
                 title: 'شاشة التميز 👑',
@@ -929,7 +972,7 @@
                 cancelButtonText: 'إلغاء',
                 confirmButtonColor: '#212529',
                 denyButtonColor: '#ffc107'
-            }).then((result) => {
+            }).then(function(result) {
                 if (result.isConfirmed) {
                     openHallOfFame();
                 } else if (result.isDenied) {
@@ -938,7 +981,6 @@
             });
         }
 
-        // ================= منصة التكريم المخصصة =================
         function generateCustomCert(actionType) {
             const studentName = document.getElementById('cert-student-name').value;
             const title = document.getElementById('cert-title').value || 'شهادة شكر وتقدير';
@@ -978,22 +1020,21 @@
                 document.getElementById('cert-display-overlay').style.display = 'block';
                 if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             } else {
-                printViaIframe(html, true); // طباعة أفقية
+                triggerNativePrint(html, true); 
             }
         }
 
-        // ================= لوحة الشرف الذكية =================
         function openHallOfFame() {
             document.getElementById('hall-of-fame-overlay').style.display='block';
             if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
 
             let scores = {};
-            Object.values(data.stars||{}).forEach(s => {
+            Object.values(data.stars||{}).forEach(function(s) {
                 const val = s.value !== undefined ? s.value : 1;
                 scores[s.student] = (scores[s.student]||0) + val;
             });
             
-            const sorted = Object.entries(scores).filter(s => s[1] > 0).sort((a,b)=>b[1]-a[1]);
+            const sorted = Object.entries(scores).filter(function(s){ return s[1] > 0; }).sort(function(a,b){ return b[1]-a[1]; });
             const content = document.getElementById('hof-content');
             
             if(sorted.length === 0) {
@@ -1002,16 +1043,16 @@
             }
 
             const maxScore = sorted[0][1];
-            const champions = sorted.filter(s => s[1] === maxScore);
-            const runnersUp = sorted.filter(s => s[1] < maxScore).slice(0, 9); 
+            const champions = sorted.filter(function(s){ return s[1] === maxScore; });
+            const runnersUp = sorted.filter(function(s){ return s[1] < maxScore; }).slice(0, 9); 
 
             let champHtml = '';
             if(champions.length > 1) {
                 champHtml = `
                     <h2 class="text-danger bg-white px-4 py-2 rounded-pill d-inline-block mb-4 fw-bold shadow animate__animated animate__flash animate__infinite">🔥 منافسة شرسة على المركز الأول 🔥</h2>
                     <div class="d-flex justify-content-center gap-4 flex-wrap w-100">
-                        ${champions.map(c => {
-                            const cObj = Object.values(data.students||{}).find(s=>s.name===c[0]);
+                        ${champions.map(function(c) {
+                            const cObj = Object.values(data.students||{}).find(function(s){return s.name===c[0];});
                             return `
                             <div class="champion-box text-center">
                                 <div class="champion-avatar animate__animated animate__pulse animate__infinite" style="width:120px; height:120px; font-size:3rem;"><i class="fas fa-user-graduate"></i></div>
@@ -1024,7 +1065,7 @@
                 `;
             } else {
                 const c = champions[0];
-                const cObj = Object.values(data.students||{}).find(s=>s.name===c[0]);
+                const cObj = Object.values(data.students||{}).find(function(s){return s.name===c[0];});
                 champHtml = `
                     <div class="champion-box text-center">
                         <div class="champion-avatar animate__animated animate__pulse animate__infinite"><i class="fas fa-user-graduate"></i></div>
@@ -1035,19 +1076,17 @@
                 `;
             }
 
-            content.innerHTML = `
-                <div class="champion-area mb-4 w-100">${champHtml}</div>
-                <div id="challengers-container"></div>
-            `;
+            content.innerHTML = `<div class="champion-area mb-4 w-100">${champHtml}</div><div id="challengers-container"></div>`;
 
             if(runnersUp.length > 0) {
                 const container = document.getElementById('challengers-container');
                 let groups = [];
                 for(let i=0; i<runnersUp.length; i+=3) { groups.push(runnersUp.slice(i, i+3)); }
                 
-                container.innerHTML = groups.map((g, gIdx) => `
+                container.innerHTML = groups.map(function(g, gIdx) { 
+                    return `
                     <div class="challenger-group ${gIdx === 0 ? 'animate__fadeInUp' : 'd-none'} animate__animated" id="hof-group-${gIdx}">
-                        ${g.map((s, i) => {
+                        ${g.map(function(s, i) {
                             const rank = champions.length + (gIdx * 3) + i + 1;
                             return `
                             <div class="challenger-card">
@@ -1056,18 +1095,18 @@
                                 <h4 class="text-warning">${s[1]} نجمة</h4>
                             </div>`;
                         }).join('')}
-                    </div>
-                `).join('');
+                    </div>`;
+                }).join('');
 
                 let currentGroup = 0;
                 clearInterval(window.hofSlideInterval);
                 if(groups.length > 1) {
-                    window.hofSlideInterval = setInterval(() => {
+                    window.hofSlideInterval = setInterval(function() {
                         const oldEl = document.getElementById(`hof-group-${currentGroup}`);
                         if(oldEl) {
                             oldEl.classList.remove('animate__fadeInUp');
                             oldEl.classList.add('animate__fadeOutDown');
-                            setTimeout(() => {
+                            setTimeout(function() {
                                 oldEl.classList.add('d-none');
                                 oldEl.classList.remove('animate__fadeOutDown');
                                 currentGroup = (currentGroup + 1) % groups.length;
@@ -1085,8 +1124,8 @@
 
         function startCertSlideshow() {
             let s = {}; 
-            Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
-            const topStudents = Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+            Object.values(data.stars||{}).forEach(function(st){ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
+            const topStudents = Object.entries(s).filter(function(e){ return e[1]>0; }).sort(function(a,b){ return b[1]-a[1]; }).map(function(x){ return x[0]; });
             
             if(topStudents.length === 0) return Swal.fire('تنبيه', 'لا يوجد طلاب متميزين لعرض شهاداتهم بعد.', 'info');
             
@@ -1094,7 +1133,7 @@
             displayStudentCertOnScreen(topStudents[idx]);
             
             clearInterval(window.certSlideInterval);
-            window.certSlideInterval = setInterval(() => {
+            window.certSlideInterval = setInterval(function() {
                 idx++;
                 if(idx >= topStudents.length) idx = 0;
                 displayStudentCertOnScreen(topStudents[idx]);
@@ -1128,30 +1167,30 @@
         function smartRefreshDropdowns() {
             try {
                 let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
-                const safeClasses = classesArr.filter(c => c !== null && c !== undefined && c !== '');
+                const safeClasses = classesArr.filter(function(c) { return c !== null && c !== undefined && c !== ''; });
                 const newClassDataString = JSON.stringify(safeClasses);
 
                 if (cache_classes !== newClassDataString) {
                     cache_classes = newClassDataString;
-                    const classOptionsHtml = '<option value="">اختر الفصل</option>' + safeClasses.map(c => `<option value="${c}">${c}</option>`).join('');
+                    const classOptionsHtml = '<option value="">اختر الفصل</option>' + safeClasses.map(function(c) { return `<option value="${c}">${c}</option>`; }).join('');
                     
-                    ['t-class','v-class','b-class','att-class','late-class'].forEach(id=>{ 
+                    ['t-class','v-class','b-class','att-class','late-class'].forEach(function(id) { 
                         const e = document.getElementById(id); 
                         if(e) { 
                             const currentVal = e.value; 
                             e.innerHTML = classOptionsHtml; 
-                            if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal; 
+                            if(currentVal && Array.from(e.options).some(function(opt) { return opt.value === currentVal; })) e.value = currentVal; 
                         }
                     });
                 }
 
-                const safeTeachers = Object.values(data.teachers || {}).filter(t => t && t.name).map(t => t.name);
+                const safeTeachers = Object.values(data.teachers || {}).filter(function(t) { return t && t.name; }).map(function(t) { return t.name; });
                 const newTeacherDataString = JSON.stringify(safeTeachers);
                 
                 const te = document.getElementById('global-teacher-name'); 
                 if (te && cache_teachers !== newTeacherDataString) {
                     cache_teachers = newTeacherDataString;
-                    const teacherOptionsHtml = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(t => `<option value="${t}">${t}</option>`).join('');
+                    const teacherOptionsHtml = '<option value="">-- اضغط لاختيار اسمك (مطلوب) --</option>' + safeTeachers.map(function(t) { return `<option value="${t}">${t}</option>`; }).join('');
                     const currentVal = te.value;
                     te.innerHTML = teacherOptionsHtml;
                     if(currentVal) te.value = currentVal; else { const stored = localStorage.getItem('teacher'); if(stored) te.value = stored; } 
@@ -1161,13 +1200,13 @@
         }
 
         function loadStudentsForRole(c, id) { 
-            const safeStudents = Object.values(data.students || {}).filter(s => s && s.name && String(s.class) === String(c)).map(s => s.name); 
+            const safeStudents = Object.values(data.students || {}).filter(function(s) { return s && s.name && String(s.class) === String(c); }).map(function(s) { return s.name; }); 
             const e = document.getElementById(id); 
             if(e) {
                 const currentVal = e.value;
-                e.innerHTML = '<option value="">اختر الطالب</option>' + safeStudents.map(name => `<option value="${name}">${name}</option>`).join('');
+                e.innerHTML = '<option value="">اختر الطالب</option>' + safeStudents.map(function(name) { return `<option value="${name}">${name}</option>`; }).join('');
                 e.disabled = (safeStudents.length === 0);
-                if(currentVal && Array.from(e.options).some(opt => opt.value === currentVal)) e.value = currentVal;
+                if(currentVal && Array.from(e.options).some(function(opt) { return opt.value === currentVal; })) e.value = currentVal;
             }
         }
 
@@ -1179,8 +1218,8 @@
         }
 
         function validate(ids) { 
-            for(let id of ids) { 
-                const e=document.getElementById(id); 
+            for(let i=0; i<ids.length; i++) { 
+                const e=document.getElementById(ids[i]); 
                 if(!e || !e.value) { 
                     Swal.fire('تنبيه', 'الرجاء تعبئة جميع الحقول المطلوبة', 'warning'); 
                     if(e) e.focus(); 
@@ -1193,51 +1232,48 @@
         function rememberTeacher(v) { localStorage.setItem('teacher', v); }
         
         function tabService(tab, btnElement) {
-            document.querySelectorAll('#teacher-services-container .page-card').forEach(c => { if(c.id.includes('srv-')) c.classList.add('d-none'); });
-            document.querySelectorAll('.services-grid .btn').forEach(b => { b.classList.remove('active-tab'); });
+            var cards = document.querySelectorAll('#teacher-services-container .page-card');
+            for(var i=0; i<cards.length; i++) { if(cards[i].id.includes('srv-')) cards[i].classList.add('d-none'); }
+            var btns = document.querySelectorAll('.services-grid .btn');
+            for(var j=0; j<btns.length; j++) { btns[j].classList.remove('active-tab'); }
             if(btnElement) { btnElement.classList.add('active-tab'); }
             const target = document.getElementById('srv-' + tab + '-box'); if(target) target.classList.remove('d-none');
         }
 
         function sendPermit() { 
             const teacherName = getStrictTeacherName(); if(!teacherName) return;
-            
             if(!validate(['t-class', 't-stu', 't-dest'])) return; 
             
             let timeVal = document.getElementById('t-time').value; 
             if(!timeVal || timeVal <= 0) timeVal = 10; 
             
             const stu = document.getElementById('t-stu').value;
-            const activePermits = Object.values(data.permits||{}).filter(p => p && p.student === stu && p.active);
+            const activePermits = Object.values(data.permits||{}).filter(function(p) { return p && p.student === stu && p.active; });
             if(activePermits.length > 0) return Swal.fire('عذراً', 'الطالب موجود خارج الفصل حالياً!', 'error');
             
             const specialCheck = document.getElementById('t-special');
             const isSpecial = specialCheck && specialCheck.checked;
             
             if(!isSpecial) { 
-                const studentPermits = Object.values(data.permits||{}).filter(p => p && p.student === stu && !p.active);
+                const studentPermits = Object.values(data.permits||{}).filter(function(p) { return p && p.student === stu && !p.active; });
                 if (studentPermits.length > 0) {
-                    const lastPermit = studentPermits.sort((a,b)=>new Date(b.end)-new Date(a.end))[0]; 
+                    const lastPermit = studentPermits.sort(function(a,b){ return new Date(b.end)-new Date(a.end); })[0]; 
                     if(lastPermit && lastPermit.end) { 
                         const diff = (new Date() - new Date(lastPermit.end)) / 60000; 
                         if(diff < 120) return Swal.fire('تنبيه', `يجب الانتظار ساعتين. متبقى ${Math.round(120-diff)} دقيقة`, 'warning'); 
                     } 
                 }
             }
-            db.ref('permits').push({
-                student: stu, 
-                teacher: teacherName, 
-                class: document.getElementById('t-class').value, 
-                dest: document.getElementById('t-dest').value, 
-                limit: parseInt(timeVal), 
-                start: new Date().toISOString(), 
-                active: true
-            }).then(() => {
+            if(db) db.ref('permits').push({
+                student: stu, teacher: teacherName, class: document.getElementById('t-class').value, 
+                dest: document.getElementById('t-dest').value, limit: parseInt(timeVal), 
+                start: new Date().toISOString(), active: true
+            }).then(function() {
                 Swal.fire('تم','تم تسجيل خروج الطالب وبدأ المؤقت بنجاح','success'); 
                 navigate('monitor');
                 document.getElementById('t-time').value = '';
                 if(specialCheck) specialCheck.checked = false;
-            }).catch(e => { Swal.fire('خطأ', 'حدث خطأ بالاتصال بالشبكة', 'error'); });
+            }).catch(function(e) { Swal.fire('خطأ', 'حدث خطأ بالاتصال بالشبكة', 'error'); });
         }
 
         function sendViolation() { 
@@ -1249,38 +1285,26 @@
             const type = document.getElementById('v-type').value;
             const desc = document.getElementById('v-desc').value || 'لا يوجد تفاصيل إضافية';
 
-            db.ref('violations').push({
-                student: stu, 
-                class: cls,
-                type: type, 
-                desc: desc, 
-                status: 'pending_admin', 
-                date: new Date().toLocaleDateString('ar-SA'), 
-                teacher: teacherName,
-                actionTaken: 'none',
-                deputyNote: ''
-            }).then(() => {
+            if(db) db.ref('violations').push({
+                student: stu, class: cls, type: type, desc: desc, 
+                status: 'pending_admin', date: new Date().toLocaleDateString('ar-SA'), 
+                teacher: teacherName, actionTaken: 'none', deputyNote: ''
+            }).then(function() {
                 Swal.fire('تم', 'تم رفع المخالفة للوكيل بنجاح', 'success'); 
                 document.getElementById('v-type').value = '';
                 document.getElementById('v-desc').value = '';
-            }).catch(e => { Swal.fire('خطأ', 'حدث خطأ بالاتصال بالشبكة', 'error'); });
+            }).catch(function(e) { Swal.fire('خطأ', 'حدث خطأ بالاتصال بالشبكة', 'error'); });
         }
 
-        function sendStar() { const teacherName = getStrictTeacherName(); if(!teacherName) return; if(validate(['b-class', 'b-stu','b-reason'])) { db.ref('stars').push({student:document.getElementById('b-stu').value, reason:document.getElementById('b-reason').value, teacher:teacherName, value:1, date:new Date().toISOString()}).then(()=>Swal.fire('تم','تم منح النجمة بنجاح','success')); } }
-        function deductStar() { const teacherName = getStrictTeacherName(); if(!teacherName) return; if(!validate(['b-class', 'b-stu'])) return; const stu = document.getElementById('b-stu').value; const today = new Date().toLocaleDateString('en-CA'); const deductions = Object.values(data.stars||{}).filter(s => s && s.student === stu && s.value === -1 && new Date(s.date).toLocaleDateString('en-CA') === today); if(deductions.length >= 2) return Swal.fire('عذراً', 'الحد الأقصى للخصم اليومي هو نجمتان', 'error'); db.ref('stars').push({student:stu, reason:'سحب نجمة', teacher:teacherName, value:-1, date:new Date().toISOString()}).then(()=>Swal.fire('تم', 'تم سحب النجمة', 'warning')); }
+        function sendStar() { const teacherName = getStrictTeacherName(); if(!teacherName) return; if(validate(['b-class', 'b-stu','b-reason'])) { if(db) db.ref('stars').push({student:document.getElementById('b-stu').value, reason:document.getElementById('b-reason').value, teacher:teacherName, value:1, date:new Date().toISOString()}).then(function(){Swal.fire('تم','تم منح النجمة بنجاح','success')}); } }
+        function deductStar() { const teacherName = getStrictTeacherName(); if(!teacherName) return; if(!validate(['b-class', 'b-stu'])) return; const stu = document.getElementById('b-stu').value; const today = new Date().toLocaleDateString('en-CA'); const deductions = Object.values(data.stars||{}).filter(function(s) { return s && s.student === stu && s.value === -1 && new Date(s.date).toLocaleDateString('en-CA') === today; }); if(deductions.length >= 2) return Swal.fire('عذراً', 'الحد الأقصى للخصم اليومي هو نجمتان', 'error'); if(db) db.ref('stars').push({student:stu, reason:'سحب نجمة', teacher:teacherName, value:-1, date:new Date().toISOString()}).then(function(){Swal.fire('تم', 'تم سحب النجمة', 'warning')}); }
         
         function sendVisitorReq() { 
             if(validate(['g-v-name','g-v-id','g-v-reason'])) { 
-                db.ref('visitors').push({
-                    name: document.getElementById('g-v-name').value, 
-                    id: document.getElementById('g-v-id').value, 
-                    reason: document.getElementById('g-v-reason').value, 
-                    status: 'pending', 
-                    time: new Date().toISOString()
-                }).then(() => {
-                    document.getElementById('g-v-name').value = ''; 
-                    document.getElementById('g-v-id').value = ''; 
-                    document.getElementById('g-v-reason').value = ''; 
+                if(db) db.ref('visitors').push({
+                    name: document.getElementById('g-v-name').value, id: document.getElementById('g-v-id').value, reason: document.getElementById('g-v-reason').value, status: 'pending', time: new Date().toISOString()
+                }).then(function() {
+                    document.getElementById('g-v-name').value = ''; document.getElementById('g-v-id').value = ''; document.getElementById('g-v-reason').value = ''; 
                     showToast('تم إرسال الطلب للإدارة');
                 }); 
             } 
@@ -1288,10 +1312,9 @@
 
         function sendDeparture() { 
             if(validate(['adm-dep-name'])) { 
-                db.ref('departures').push({
-                    name: document.getElementById('adm-dep-name').value, 
-                    status: 'pending'
-                }).then(() => {
+                if(db) db.ref('departures').push({
+                    name: document.getElementById('adm-dep-name').value, status: 'pending'
+                }).then(function() {
                     document.getElementById('adm-dep-name').value = ''; 
                     showToast('تم إرسال الأمر للحارس');
                 }); 
@@ -1299,16 +1322,16 @@
         }
 
         function checkSecurityAlerts() {
-            const pendingGuard = Object.values(data.departures||{}).some(d=>d && d.status==='pending');
-            const pendingAdmin = Object.values(data.visitors||{}).some(v=>v && v.status==='pending');
-            const pendingCounselor = Object.values(data.violations||{}).some(v=>v && v.status==='pending_counselor');
+            const pendingGuard = Object.values(data.departures||{}).some(function(d){ return d && d.status==='pending'; });
+            const pendingAdmin = Object.values(data.visitors||{}).some(function(v){ return v && v.status==='pending'; });
+            const pendingCounselor = Object.values(data.violations||{}).some(function(v){ return v && v.status==='pending_counselor'; });
 
             if((userRole === 'guard' && pendingGuard) ||
                (userRole === 'admin' && pendingAdmin) ||
                (userRole === 'counselor' && pendingCounselor)) {
                 if(!isMuted) {
                     const bell = document.getElementById('bell');
-                    if(bell) { bell.play().catch(e=>{}); }
+                    if(bell) { bell.play().catch(function(e){}); }
                 }
             }
         }
@@ -1331,16 +1354,20 @@
             if(!cls) { body.innerHTML = '<tr><td colspan="2">اختر الفصل أولاً</td></tr>'; return; } 
             
             const today = new Date().toLocaleDateString('en-CA'); 
-            const safeStudents = Object.values(data.students || {}).filter(s => s && s.name && String(s.class) === String(cls)); 
+            const safeStudents = Object.values(data.students || {}).filter(function(s) { return s && s.name && String(s.class) === String(cls); }); 
             
-            body.innerHTML = safeStudents.map(s => { 
+            body.innerHTML = safeStudents.map(function(s) { 
                 let isAbsent = false; 
                 if (attMode === 'day') { 
-                    const attData = data.attendance?.[today]?.['full_day']?.[s.name]; 
-                    isAbsent = attData === true || (attData && attData.status === true); 
+                    if (data.attendance && data.attendance[today] && data.attendance[today]['full_day'] && data.attendance[today]['full_day'][s.name]) {
+                        const attData = data.attendance[today]['full_day'][s.name];
+                        isAbsent = attData === true || (attData && attData.status === true); 
+                    }
                 } else { 
-                    const attData = data.attendance?.[today]?.['periods']?.[period]?.[s.name]; 
-                    isAbsent = attData === 'absent' || (attData && attData.status === 'absent'); 
+                    if (data.attendance && data.attendance[today] && data.attendance[today]['periods'] && data.attendance[today]['periods'][period] && data.attendance[today]['periods'][period][s.name]) {
+                        const attData = data.attendance[today]['periods'][period][s.name];
+                        isAbsent = attData === 'absent' || (attData && attData.status === 'absent'); 
+                    }
                 } 
                 return `<tr><td class="fw-bold">${s.name}</td><td><button type="button" class="btn btn-sm ${isAbsent ? 'btn-danger' : 'btn-success'} w-75 rounded-pill fw-bold fs-4 py-2 shadow-sm" onclick="toggleAtt('${today}', '${s.name}', ${isAbsent})">${isAbsent ? 'غائب' : 'حاضر'}</button></td></tr>`; 
             }).join(''); 
@@ -1351,29 +1378,29 @@
             const period = document.getElementById('att-period').value; 
             const newState = !currentlyAbsent; 
             if (attMode === 'day') { 
-                if (newState) { db.ref(`attendance/${date}/full_day/${name}`).set({status: true, teacher: teacherName}); } else { db.ref(`attendance/${date}/full_day/${name}`).remove(); } 
+                if (newState) { if(db) db.ref(`attendance/${date}/full_day/${name}`).set({status: true, teacher: teacherName}); } else { if(db) db.ref(`attendance/${date}/full_day/${name}`).remove(); } 
             } else { 
-                if (newState) { db.ref(`attendance/${date}/periods/${period}/${name}`).set({status: 'absent', teacher: teacherName}); } else { db.ref(`attendance/${date}/periods/${period}/${name}`).remove(); } 
+                if (newState) { if(db) db.ref(`attendance/${date}/periods/${period}/${name}`).set({status: 'absent', teacher: teacherName}); } else { if(db) db.ref(`attendance/${date}/periods/${period}/${name}`).remove(); } 
             } 
-            setTimeout(() => loadAttendanceList(), 100); 
+            setTimeout(function() { loadAttendanceList(); }, 100); 
         }
 
         function calculateBestClass() { 
             let s = {}; 
             let classesArr = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
-            classesArr.forEach(c => s[c] = 0); 
+            classesArr.forEach(function(c) { s[c] = 0; }); 
             
             let studentsArr = Object.values(data.students || {});
-            Object.values(data.stars || {}).forEach(st => { 
-                let o = studentsArr.find(x => x && x.name === st.student); 
+            Object.values(data.stars || {}).forEach(function(st) { 
+                let o = studentsArr.find(function(x) { return x && x.name === st.student; }); 
                 if(o && o.class) s[o.class] = (s[o.class] || 0) + (st.value || 1); 
             }); 
-            Object.values(data.violations || {}).forEach(v => { 
-                let o = studentsArr.find(x => x && x.name === v.student); 
+            Object.values(data.violations || {}).forEach(function(v) { 
+                let o = studentsArr.find(function(x) { return x && x.name === v.student; }); 
                 if(o && o.class) s[o.class] = (s[o.class] || 0) - 1; 
             }); 
             
-            let best = Object.entries(s).sort((a,b) => b[1] - a[1])[0]; 
+            let best = Object.entries(s).sort(function(a,b) { return b[1] - a[1]; })[0]; 
             if(best && best[1] > 0) { 
                 document.getElementById('best-class-badge').classList.remove('d-none'); 
                 document.getElementById('best-class-txt').innerText = best[0]; 
@@ -1386,14 +1413,14 @@
             const c=document.getElementById('imp-cls-name').value; 
             if(!c) return Swal.fire('تنبيه', 'أدخل اسم الفصل أولاً في المربع المخصص', 'warning'); 
             const r=new FileReader(); 
-            r.onload=e=>{ 
+            r.onload=function(e) { 
                 const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); 
-                j.forEach(row=>{if(row[0]) db.ref('students').push({name:row[0],class:c})}); 
+                j.forEach(function(row){if(row[0] && db) db.ref('students').push({name:row[0],class:c})}); 
                 
                 let cl = Array.isArray(data.classes) ? data.classes : Object.values(data.classes || {});
-                const safeClasses = cl.filter(item => item !== null && item !== undefined);
+                const safeClasses = cl.filter(function(item) { return item !== null && item !== undefined; });
                 
-                if(!safeClasses.includes(c)) { safeClasses.push(c); db.ref('classes').set(safeClasses); } 
+                if(!safeClasses.includes(c)) { safeClasses.push(c); if(db) db.ref('classes').set(safeClasses); } 
                 Swal.fire('تم الاستيراد بنجاح', '', 'success'); 
                 inp.value = '';
             }; 
@@ -1401,7 +1428,7 @@
         }
 
         function importTeachers(inp) { 
-            const r=new FileReader(); r.onload=e=>{ const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(row=>{if(row[0]) db.ref('teachers').push({name:row[0]})}); Swal.fire('تم الاستيراد بنجاح', '', 'success'); inp.value = ''; }; r.readAsArrayBuffer(inp.files[0]); 
+            const r=new FileReader(); r.onload=function(e) { const j=XLSX.utils.sheet_to_json(XLSX.read(e.target.result,{type:'array'}).Sheets[XLSX.read(e.target.result,{type:'array'}).SheetNames[0]],{header:1}); j.forEach(function(row){if(row[0] && db) db.ref('teachers').push({name:row[0]})}); Swal.fire('تم الاستيراد بنجاح', '', 'success'); inp.value = ''; }; r.readAsArrayBuffer(inp.files[0]); 
         }
 
         function exportData() { 
@@ -1417,11 +1444,11 @@
         function secureReset(type) { 
             const email = data.settings.admin_email || 'البريد المسجل'; 
             const pin = String(data.settings.admin_pin || '2026'); 
-            Swal.fire({ title: '🔒 تحقق أمني', text: `أدخل رمز الإدارة السري للتأكيد:`, input: 'password', showCancelButton: true, confirmButtonText: 'تأكيد الحذف' }).then((r) => { 
+            Swal.fire({ title: '🔒 تحقق أمني', text: `أدخل رمز الإدارة السري للتأكيد:`, input: 'password', showCancelButton: true, confirmButtonText: 'تأكيد الحذف' }).then(function(r) { 
                 if (r.isConfirmed) {
                     if (r.value === pin) { 
-                        if (type === 'reports') { ['permits','visitors','violations','departures','attendance','stars','tardiness'].forEach(p=>db.ref(p).remove()); Swal.fire('تم التصفير', 'تم حذف السجلات بنجاح', 'success'); } 
-                        else if (type === 'factory') { db.ref('/').remove().then(() => location.reload()); } 
+                        if (type === 'reports') { ['permits','visitors','violations','departures','attendance','stars','tardiness'].forEach(function(p){if(db) db.ref(p).remove()}); Swal.fire('تم التصفير', 'تم حذف السجلات بنجاح', 'success'); } 
+                        else if (type === 'factory') { if(db) db.ref('/').remove().then(function() { location.reload(); }); } 
                     } else { Swal.fire('خطأ', 'الرمز السري غير صحيح!', 'error'); }
                 } 
             }); 
@@ -1429,12 +1456,13 @@
 
         function renderMonitor() { 
             const g = document.getElementById('monitor-grid'); 
-            const l = Object.entries(data.permits||{}).filter(x=>x[1] && x[1].active); 
+            const l = Object.entries(data.permits||{}).filter(function(x){ return x[1] && x[1].active; }); 
             document.getElementById('no-students').classList.toggle('d-none', l.length>0); 
             
             let isAnyoneOverdue = false;
 
-            g.innerHTML = l.map(([k,p])=>{ 
+            g.innerHTML = l.map(function(arr){ 
+                const k = arr[0]; const p = arr[1];
                 const m = Math.floor((new Date()-new Date(p.start))/60000); 
                 const isOverdue = m >= p.limit;
                 if(isOverdue) isAnyoneOverdue = true;
@@ -1449,12 +1477,12 @@
 
             if(isAnyoneOverdue && !isMuted) {
                 const bell = document.getElementById('bell');
-                if(bell) { bell.play().catch(e=>{}); }
+                if(bell) { bell.play().catch(function(e){}); }
             }
         }
         
         function monitorLoop() { if(!document.getElementById('sec-monitor').classList.contains('d-none')) { renderMonitor(); } }
-        function closePermit(k) { db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
+        function closePermit(k) { if(db) db.ref('permits/' + k).update({ active: false, end: new Date().toISOString() }); renderMonitor(); }
 
         // الخروج النهائي المبرمج
         function logOut() {
@@ -1465,34 +1493,39 @@
         }
 
         function renderAdmin() { 
-            const activePermits = Object.values(data.permits||{}).filter(p=>p && p.active).length;
-            const activeVisitors = Object.values(data.visitors||{}).filter(v=>v && v.status==='pending').length;
-            const pendingViolations = Object.entries(data.violations||{}).filter(x=>x[1] && x[1].status==='pending_admin');
+            const activePermits = Object.values(data.permits||{}).filter(function(p){ return p && p.active; }).length;
+            const activeVisitors = Object.values(data.visitors||{}).filter(function(v){ return v && v.status==='pending'; }).length;
+            const pendingViolations = Object.entries(data.violations||{}).filter(function(x){ return x[1] && x[1].status==='pending_admin'; });
             
             document.getElementById('adm-stat-out').innerText = activePermits;
             document.getElementById('adm-stat-vis').innerText = activeVisitors;
             document.getElementById('adm-stat-vio').innerText = pendingViolations.length;
 
-            document.getElementById('adm-vis-list').innerHTML = Object.entries(data.visitors||{}).filter(x=>x[1] && x[1].status==='pending').map(([k,v])=>`<div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center p-3 gap-3"><span class="fs-4 fw-bold text-primary text-center">${v.name}</span><span class="text-muted fs-5 text-center">${v.reason}</span><div class="btn-group w-100"><button type="button" class="btn btn-success py-3 fs-5 fw-bold w-50" onclick="db.ref('visitors/${k}').update({status:'approved'})"><i class="fas fa-check"></i> موافقة</button><button type="button" class="btn btn-danger py-3 fs-5 fw-bold w-50" onclick="db.ref('visitors/${k}').update({status:'rejected'})"><i class="fas fa-times"></i> رفض</button></div></div>`).join(''); 
+            document.getElementById('adm-vis-list').innerHTML = Object.entries(data.visitors||{}).filter(function(x){ return x[1] && x[1].status==='pending'; }).map(function(arr){
+                const k = arr[0]; const v = arr[1];
+                return `<div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center p-3 gap-3"><span class="fs-4 fw-bold text-primary text-center">${v.name}</span><span class="text-muted fs-5 text-center">${v.reason}</span><div class="btn-group w-100"><button type="button" class="btn btn-success py-3 fs-5 fw-bold w-50" onclick="db.ref('visitors/${k}').update({status:'approved'})"><i class="fas fa-check"></i> موافقة</button><button type="button" class="btn btn-danger py-3 fs-5 fw-bold w-50" onclick="db.ref('visitors/${k}').update({status:'rejected'})"><i class="fas fa-times"></i> رفض</button></div></div>`;
+            }).join(''); 
             
             const vioCountEl = document.getElementById('adm-vio-count');
             if(vioCountEl) vioCountEl.innerText = pendingViolations.length;
             
-            document.getElementById('adm-vio-list').innerHTML = pendingViolations.map(([k,v])=>`
-                <div class="alert alert-danger p-4 mb-3 border-danger shadow-sm rounded-4">
+            document.getElementById('adm-vio-list').innerHTML = pendingViolations.map(function(arr){
+                const k = arr[0]; const v = arr[1];
+                return `<div class="alert alert-danger p-4 mb-3 border-danger shadow-sm rounded-4">
                     <strong class="fs-3 d-block mb-3 text-danger"><i class="fas fa-user me-2"></i>${v.student}</strong>
                     <span class="fs-4 d-block text-dark mb-2"><i class="fas fa-exclamation-circle me-2"></i>${v.type}</span>
                     <span class="fs-5 text-muted d-block"><i class="fas fa-chalkboard-teacher me-1"></i> رفعها: ${v.teacher||'غير محدد'}</span>
                     <button type="button" class="btn btn-dark w-100 mt-4 py-3 fs-4 fw-bold rounded-pill shadow" onclick="openViolationActionModal('${k}', '${v.student}', '${v.type}', '${v.teacher||''}')">
                         <i class="fas fa-gavel me-2"></i> معالجة المخالفة
                     </button>
-                </div>`).join(''); 
+                </div>`;
+            }).join(''); 
         }
 
         // ================= الموجه الطلابي =================
         function renderCounselor() {
-            const counselorViolations = Object.entries(data.violations||{}).filter(x=>x[1] && x[1].status==='pending_counselor');
-            const resolvedViolations = Object.entries(data.violations||{}).filter(x=>x[1] && x[1].status==='closed_counselor');
+            const counselorViolations = Object.entries(data.violations||{}).filter(function(x){ return x[1] && x[1].status==='pending_counselor'; });
+            const resolvedViolations = Object.entries(data.violations||{}).filter(function(x){ return x[1] && x[1].status==='closed_counselor'; });
             
             const list = document.getElementById('counselor-list');
             const empty = document.getElementById('counselor-empty');
@@ -1507,11 +1540,13 @@
                     empty.classList.remove('d-none');
                 } else {
                     empty.classList.add('d-none');
-                    list.innerHTML = counselorViolations.map(([k,v])=>`<tr>
+                    list.innerHTML = counselorViolations.map(function(arr){
+                        const k = arr[0]; const v = arr[1];
+                        return `<tr>
                         <td class="fw-bold text-primary fs-4">${v.student}</td>
                         <td class="fs-4">${v.type}</td>
                         <td><button type="button" class="btn btn-success rounded-pill py-2 px-4 shadow-sm fw-bold fs-5" onclick="closeCounselorCase('${k}', '${v.student}')"><i class="fas fa-check-circle me-1"></i> إنهاء الحالة</button></td>
-                    </tr>`).join('');
+                    </tr>`;}).join('');
                 }
             }
             
@@ -1519,11 +1554,13 @@
                 if(resolvedViolations.length === 0) {
                     resolvedList.innerHTML = '<tr><td colspan="3" class="text-muted p-4">لم يتم معالجة أي حالة بعد</td></tr>';
                 } else {
-                    resolvedList.innerHTML = resolvedViolations.map(([k,v])=>`<tr>
+                    resolvedList.innerHTML = resolvedViolations.map(function(arr){
+                        const k = arr[0]; const v = arr[1];
+                        return `<tr>
                         <td class="fw-bold">${v.student}</td>
                         <td>${v.type}</td>
                         <td class="text-success fw-bold">${v.date}</td>
-                    </tr>`).join('');
+                    </tr>`;}).join('');
                 }
             }
         }
@@ -1536,9 +1573,9 @@
                 showCancelButton: true,
                 confirmButtonText: 'نعم، إغلاق الملف',
                 cancelButtonText: 'إلغاء'
-            }).then((result) => {
+            }).then(function(result) {
                 if (result.isConfirmed) {
-                    db.ref('violations/' + k).update({status:'closed_counselor'}).then(()=>{
+                    if(db) db.ref('violations/' + k).update({status:'closed_counselor'}).then(function() {
                         Swal.fire('تم', 'تم إنهاء الحالة وإغلاق الملف بنجاح', 'success');
                     });
                 }
@@ -1550,19 +1587,22 @@
             const res = document.getElementById('stu-history-res');
             if(!name) return Swal.fire('تنبيه', 'الرجاء كتابة اسم الطالب للبحث', 'warning');
             
-            const studentVios = Object.values(data.violations||{}).filter(v => v && v.student && v.student.includes(name));
+            const studentVios = Object.values(data.violations||{}).filter(function(v) { return v && v.student && v.student.includes(name); });
             res.classList.remove('d-none');
             
             if(studentVios.length === 0) {
                 res.innerHTML = '<span class="text-success fw-bold"><i class="fas fa-check-circle me-2"></i> سجل الطالب نظيف، لا توجد مخالفات مسجلة عليه.</span>';
             } else {
                 res.innerHTML = `<span class="text-danger fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> يوجد (${studentVios.length}) مخالفات مسجلة:</span><br><br>` + 
-                                studentVios.map(v => `<div class="mb-2 border-bottom pb-2">- <strong>${v.type}</strong> <span class="text-muted fs-6">(${v.date})</span></div>`).join('');
+                                studentVios.map(function(v) { return `<div class="mb-2 border-bottom pb-2">- <strong>${v.type}</strong> <span class="text-muted fs-6">(${v.date})</span></div>`; }).join('');
             }
         }
 
         function renderGuard() { 
-            document.getElementById('g-dep-list').innerHTML = Object.entries(data.departures||{}).filter(x=>x[1] && x[1].status==='pending').map(([k,d])=>`<div class="alert alert-danger d-flex flex-column flex-md-row justify-content-between align-items-center p-4 gap-4 rounded-4 shadow-sm"><strong class="fs-2 text-danger">${d.name}</strong><button type="button" class="btn btn-success btn-lg-mobile fw-bold w-100 rounded-pill shadow" onclick="db.ref('departures/${k}').update({status:'exited'})"><i class="fas fa-check-double me-2"></i> تأكيد خروج الطالب نهائياً</button></div>`).join(''); 
+            document.getElementById('g-dep-list').innerHTML = Object.entries(data.departures||{}).filter(function(x){ return x[1] && x[1].status==='pending'; }).map(function(arr){
+                const k = arr[0]; const d = arr[1];
+                return `<div class="alert alert-danger d-flex flex-column flex-md-row justify-content-between align-items-center p-4 gap-4 rounded-4 shadow-sm"><strong class="fs-2 text-danger">${d.name}</strong><button type="button" class="btn btn-success btn-lg-mobile fw-bold w-100 rounded-pill shadow" onclick="db.ref('departures/${k}').update({status:'exited'})"><i class="fas fa-check-double me-2"></i> تأكيد خروج الطالب نهائياً</button></div>`;
+            }).join(''); 
         }
 
         function openViolationActionModal(id, studentName, vType, teacher) {
@@ -1571,7 +1611,7 @@
             document.getElementById('va-violation-desc').innerText = vType;
             document.getElementById('va-violation-teacher').innerText = 'المعلم الراصد: ' + teacher;
 
-            const previousViolations = Object.values(data.violations||{}).filter(v => v && v.student === studentName).length;
+            const previousViolations = Object.values(data.violations||{}).filter(function(v) { return v && v.student === studentName; }).length;
             const warningEl = document.getElementById('va-warning-msg');
             
             if(previousViolations > 1) { 
@@ -1598,77 +1638,52 @@
             else if(action === 'written_pledge') newStatus = 'closed_pledge';
             else if(action === 'refer_to_counselor') newStatus = 'pending_counselor';
 
-            db.ref(`violations/${vId}`).update({ status: newStatus, actionTaken: action, deputyNote: customNote }).then(() => {
+            if(db) db.ref(`violations/${vId}`).update({ status: newStatus, actionTaken: action, deputyNote: customNote }).then(function() {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('violationActionModal'));
                 if(modal) modal.hide();
                 document.getElementById('va-custom-note').value = '';
                 
                 if(action === 'written_pledge') {
-                    Swal.fire({
-                        title: 'تم الإغلاق', text: 'تم تسجيل التعهد. هل تريد طباعة النموذج الآن؟', icon: 'success',
-                        showCancelButton: true, confirmButtonText: 'نعم، طباعة التعهد', cancelButtonText: 'لاحقاً'
-                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'pledge', customNote); });
+                    triggerNativePrint(getFormHTML(stuName, vType, 'pledge', customNote), false);
                 } else if(action === 'refer_to_counselor') {
-                    Swal.fire({
-                        title: 'تم التحويل', text: 'تم التحويل للموجه. هل تريد طباعة الإحالة؟', icon: 'info',
-                        showCancelButton: true, confirmButtonText: 'نعم، طباعة التحويل', cancelButtonText: 'لاحقاً'
-                    }).then((result) => { if (result.isConfirmed) printOfficialForm(stuName, vType, 'referral', customNote); });
+                    triggerNativePrint(getFormHTML(stuName, vType, 'referral', customNote), false);
                 } else {
                     Swal.fire('تم', 'تم تسجيل الإنذار الشفهي وإغلاق المخالفة.', 'success');
                 }
             });
         }
 
-        // ================= الطباعة المعزولة 100% (الغرفة السرية Iframe) =================
-        function printViaIframe(htmlContent, isLandscape = false) {
-            const iframe = document.getElementById('print-iframe');
-            const doc = iframe.contentWindow.document;
-            let orientation = isLandscape ? 'landscape' : 'portrait';
+        // ================= نظام الطباعة الأصلي (الكي الخفي للطباعة الثابتة) =================
+        function triggerNativePrint(htmlContent, isLandscape) {
+            const printContainer = document.getElementById('native-print-container');
+            const pageClass = isLandscape ? 'print-page print-landscape' : 'print-page';
             
-            doc.open();
-            doc.write(`
-                <html dir="rtl" lang="ar">
-                <head>
-                    <title>الطباعة</title>
-                    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-                    <style>
-                        @page { size: A4 ${orientation}; margin: 0; }
-                        body { font-family: 'Tajawal', sans-serif; background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-                        
-                        .form-frame { width: 210mm; height: 285mm; border: 5px double #006C35; padding: 15mm; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; margin: 0 auto; overflow: hidden; }
-                        .form-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
-                        .form-header img { max-height: 70px; }
-                        .form-header-text { font-weight: bold; font-size: 1.1rem; line-height: 1.4; color: #000; text-align: right; }
-                        .form-header-left { text-align: left; font-size: 1rem; font-weight: bold; line-height: 1.4; color: #000; direction: ltr; }
-                        .form-title { text-align: center; font-size: 1.8rem; font-weight: 900; color: #000; margin: 10px 0; text-decoration: underline; }
-                        .form-body { font-size: 1.2rem; line-height: 1.6; color: #000; text-align: justify; flex-grow: 1; margin-bottom: 5px; overflow: hidden; }
-                        .form-body-details { background: #f9f9f9; border: 1px dashed #aaa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 1.1rem; }
-                        .form-signatures { display: flex; justify-content: space-around; margin-top: auto; font-size: 1.2rem; font-weight: bold; color: #000; padding-top: 10px; flex-shrink: 0;}
-                        
-                        /* إطار التقارير المتطور يحافظ على التوقيعات في الأسفل */
-                        .report-frame { width: 210mm; height: 285mm; padding: 15mm; margin: 0 auto; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: hidden; }
-                        .report-table-wrapper { flex: 1 1 auto; overflow: hidden; } /* الحماية من دفع التوقيعات للخارج */
-                        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-                        th, td { border: 1px solid #000; padding: 4px; font-size: 0.85rem; text-align: center; color: #000; }
-                        th { background-color: #eee; font-weight: bold; }
-                        .report-signatures { flex-shrink: 0; margin-top: auto; display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; padding-top: 10px;}
-                    </style>
-                </head>
-                <body>
-                    ${htmlContent}
-                </body>
-                </html>
-            `);
-            doc.close();
+            printContainer.innerHTML = `<div class="${pageClass}">${htmlContent}</div>`;
             
-            setTimeout(() => {
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
-            }, 800); // إعطاء وقت كافي للمتصفح لرسم الورقة
+            document.body.classList.add('printing-form');
+            if (isLandscape) { document.body.classList.add('print-landscape'); } 
+            else { document.body.classList.add('print-portrait'); }
+            
+            // إغلاق النوافذ لمنع تعليق المتصفح
+            const modalEl = document.getElementById('printModal');
+            if(modalEl) { modalEl.classList.remove('show', 'd-block'); modalEl.style.display = 'none'; }
+            
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            for(let i=0; i<backdrops.length; i++) backdrops[i].remove();
+
+            // طلب الطباعة
+            setTimeout(function() {
+                window.print();
+                
+                document.body.classList.remove('printing-form', 'print-landscape', 'print-portrait');
+                printContainer.innerHTML = '';
+            }, 500);
         }
 
-        // ================= الطباعة الرسمية للنماذج =================
-        function printOfficialForm(studentName, violationDesc, formType, customNote = '') {
+        function getFormHTML(studentName, violationDesc, formType, customNote) {
             const dateStr = new Date().toLocaleDateString('ar-SA');
             const dayStr = new Date().toLocaleDateString('ar-SA', {weekday: 'long'});
             const timeStr = new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
@@ -1678,28 +1693,25 @@
             const deputy = data.settings.deputy || '.......................';
             const manager = data.settings.manager || '.......................';
 
-            let html = '';
-
             if (formType === 'certificate') {
-                html = `
-                <div style="width: 285mm; height: 195mm; margin: 0 auto; border: 10px solid #C69C6D; outline: 4px solid #006C35; outline-offset: -8px; padding: 15mm; text-align: center; display: flex; flex-direction: column; justify-content: space-between; background-color: white; box-sizing: border-box; overflow: hidden;">
+                return `
+                <div class="cert-frame">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px;">
                         <div style="text-align:right; font-weight:bold; font-size:1.4rem; color:#000; line-height: 1.5;">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:#006C35;">${schoolName}</span></div>
                         <div><img src="${logo}" style="max-height: 100px;"></div>
                         <div style="width: 200px;"></div>
                     </div>
-                    <h1 style="font-size:4rem; color:#006C35; font-weight:900; margin-bottom:10px;">شهادة شكر وتقدير</h1>
+                    <h1 class="c-title">شهادة شكر وتقدير</h1>
                     <p style="font-size:2rem; margin-top:10px; color:#000;">تتقدم إدارة المدرسة بوافر الشكر وصادق التقدير للطالب المتميز:</p>
-                    <div style="border-bottom: 4px solid #C69C6D; display: inline-block; padding: 10px 50px; font-size: 3.5rem; font-weight: 900; color: #C69C6D; margin: 20px 0;">${studentName}</div>
+                    <div class="c-name">${studentName}</div>
                     <p style="font-size:1.8rem; line-height: 1.6; margin-top:10px; color:#000;">نظير تميزه وانضباطه السلوكي والأخلاقي خلال هذا العام.<br>سائلين المولى عز وجل له دوام التوفيق والنجاح.</p>
                     <div style="display:flex; justify-content:space-between; width:100%; margin-top:auto; font-size:1.5rem; font-weight:bold; color:#000;">
                         <div style="text-align:right;"><strong>وكيل شؤون الطلاب</strong><br><br>${deputy}</div>
                         <div style="text-align:left;"><strong>مدير المدرسة</strong><br><br>${manager}</div>
                     </div>
                 </div>`;
-                printViaIframe(html, true); // True = Landscape
             } else {
-                let noteHtml = customNote ? `<div class="form-body-details"><strong>ملاحظات الوكيل / الإجراء:</strong> ${customNote}</div>` : '';
+                let noteHtml = customNote ? `<div class="p-note"><strong>ملاحظات الوكيل / الإجراء:</strong> ${customNote}</div>` : '';
                 let title = formType === 'pledge' ? 'تعهد خطي على طالب' : 'نموذج إحالة للموجه الطلابي';
                 let bodyText = formType === 'pledge' 
                     ? `أقر أنا الطالب / <strong>${studentName}</strong>، بأني قد ارتكبت المخالفة السلوكية المتمثلة في: <br>( <strong style="color:red;">${violationDesc}</strong> )<br>${noteHtml}<br>وأتعهد لإدارة المدرسة بالالتزام التام بأنظمة وضوابط السلوك والمواظبة، وعدم تكرار هذه المخالفة مستقبلاً.`
@@ -1709,7 +1721,7 @@
                     ? `<div style="font-size:1.3rem; text-align:left; color:#000; font-weight:bold; margin-top:20px;">توقيع الطالب: .....................................</div>` 
                     : `<div style="font-size:1.3rem; text-align:center; font-weight:bold; margin-top:20px; color:#000;">وتقبلوا تحيات إدارة المدرسة،،،</div>`;
 
-                html = `
+                return `
                 <div class="form-frame">
                     <div class="form-header">
                         <div class="form-header-text">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم<br><span style="color:#006C35;">${schoolName}</span></div>
@@ -1722,11 +1734,10 @@
                         <div style="text-align: center; width: 100%;"><strong>وكيل شؤون الطلاب</strong><br><br>${deputy}</div>
                     </div>
                 </div>`;
-                printViaIframe(html, false); // False = Portrait
             }
         }
 
-        // ================= تصميم التقارير الجديد الـ (VIP) =================
+        // ================= التقارير المدرسية =================
         let currentPrintHTML = ""; 
         
         function showReportModal(type) {
@@ -1749,7 +1760,7 @@
             `;
             
             let printH = `
-            <div class="report-frame">
+            <div class="print-report-frame">
                 <div class="form-header">
                     <div class="form-header-text">المملكة العربية السعودية<br>وزارة التعليم<br>${data.settings.school}</div>
                     <div><img src="${logo}"></div>
@@ -1762,53 +1773,69 @@
             try {
                 let tableContent = '';
                 if(type==='stars') { 
-                    let s = {}; Object.values(data.stars||{}).forEach(st=>{ const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
+                    let s = {}; Object.values(data.stars||{}).forEach(function(st) { const val = st.value !== undefined ? st.value : 1; s[st.student] = (s[st.student]||0)+val; }); 
                     tableContent+=`<table class="table report-table text-center align-middle mb-0"><thead><tr><th>الطالب</th><th>الفصل</th><th>الرصيد</th><th class="no-print">إجراءات الشهادة</th></tr></thead><tbody>`; 
-                    Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).forEach(x=> { 
-                        const sObj=Object.values(data.students||{}).find(stu=>stu && stu.name===x[0]); 
+                    Object.entries(s).filter(function(e){ return e[1]>0; }).sort(function(a,b){ return b[1]-a[1]; }).forEach(function(x) { 
+                        const sObj=Object.values(data.students||{}).find(function(stu) { return stu && stu.name===x[0]; }); 
                         tableContent+=`<tr>
                             <td class="fw-bold">${x[0]}</td>
                             <td>${sObj?sObj.class:'-'}</td>
                             <td class="fw-bold text-warning fs-5">${x[1]} ⭐</td>
                             <td class="no-print">
-                                <button type="button" class="btn btn-warning btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="printOfficialForm('${x[0]}', '', 'certificate')"><i class="fas fa-print me-1"></i> طباعة</button>
+                                <button type="button" class="btn btn-warning btn-sm rounded-pill fw-bold px-3 shadow-sm" onclick="triggerNativePrint(getFormHTML('${x[0]}', '', 'certificate', ''), true)"><i class="fas fa-print me-1"></i> طباعة</button>
                             </td>
                         </tr>`; 
                     }); tableContent+=`</tbody></table>`; 
                 } else if(type==='permits') { 
-                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>الفصل</th><th>المعلم</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).filter(p=>p).reverse().map(p=>{ const sObj=Object.values(data.students||{}).find(stu=>stu && stu.name===p.student); return `<tr><td class="fw-bold">${p.student}</td><td>${sObj?sObj.class:'-'}</td><td class="text-primary">${p.teacher||'-'}</td><td><span class="badge bg-secondary rounded-pill px-3">${p.dest}</span></td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`; 
+                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>الفصل</th><th>المعلم</th><th>الوجهة</th><th>الوقت</th></tr></thead><tbody>${Object.values(data.permits||{}).filter(function(p){ return p; }).reverse().map(function(p) { const sObj=Object.values(data.students||{}).find(function(stu){ return stu && stu.name===p.student; }); return `<tr><td class="fw-bold">${p.student}</td><td>${sObj?sObj.class:'-'}</td><td class="text-primary">${p.teacher||'-'}</td><td><span class="badge bg-secondary rounded-pill px-3">${p.dest}</span></td><td>${new Date(p.start).toLocaleTimeString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`; 
                 } else if(type==='attendance') { 
-                    const t = new Date().toLocaleDateString('en-CA'); tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>الفصل</th><th>المعلم الراصد</th><th>الحالة</th></tr></thead><tbody>`; Object.values(data.students||{}).forEach(s => { if(!s) return; if(data.attendance?.[t]?.['full_day']?.[s.name]) { const rec = data.attendance[t]['full_day'][s.name]; tableContent+=`<tr><td class="fw-bold">${s.name}</td><td>${s.class}</td><td class="text-primary">${rec.teacher||'-'}</td><td class="text-danger fw-bold">غائب يوم كامل</td></tr>`; } else { let p = []; let tea = '-'; for(let i=1;i<=7;i++) { const rec = data.attendance?.[t]?.['periods']?.[i]?.[s.name]; if(rec && (rec === 'absent' || rec.status === 'absent')) { p.push(i); tea = rec.teacher || tea; } } if(p.length) tableContent+=`<tr><td class="fw-bold">${s.name}</td><td>${s.class}</td><td class="text-primary">${tea}</td><td class="text-danger fw-bold">حصص: ${p.join(',')}</td></tr>`; } }); tableContent+=`</tbody></table>`; 
+                    const t = new Date().toLocaleDateString('en-CA'); tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>الفصل</th><th>المعلم الراصد</th><th>الحالة</th></tr></thead><tbody>`; Object.values(data.students||{}).forEach(function(s) { if(!s) return; 
+                    if (data.attendance && data.attendance[t] && data.attendance[t]['full_day'] && data.attendance[t]['full_day'][s.name]) { 
+                        const rec = data.attendance[t]['full_day'][s.name]; tableContent+=`<tr><td class="fw-bold">${s.name}</td><td>${s.class}</td><td class="text-primary">${rec.teacher||'-'}</td><td class="text-danger fw-bold">غائب يوم كامل</td></tr>`; 
+                    } else { 
+                        let p = []; let tea = '-'; 
+                        for(let i=1;i<=7;i++) { 
+                            if (data.attendance && data.attendance[t] && data.attendance[t]['periods'] && data.attendance[t]['periods'][i] && data.attendance[t]['periods'][i][s.name]) { 
+                                const rec = data.attendance[t]['periods'][i][s.name]; 
+                                if(rec && (rec === 'absent' || rec.status === 'absent')) { p.push(i); tea = rec.teacher || tea; } 
+                            } 
+                        } 
+                        if(p.length) tableContent+=`<tr><td class="fw-bold">${s.name}</td><td>${s.class}</td><td class="text-primary">${tea}</td><td class="text-danger fw-bold">حصص: ${p.join(',')}</td></tr>`; 
+                    } }); tableContent+=`</tbody></table>`; 
                 } else if(type==='violations') { 
                     tableContent += `<table class="table report-table text-center align-middle mb-0"><thead><tr><th>الطالب</th><th>المخالفة</th><th>الإجراء المتخذ</th><th class="no-print">النماذج</th></tr></thead><tbody>`; 
-                    Object.values(data.violations||{}).filter(v=>v).reverse().forEach(v => {
-                        let actionBadge = 'معلقة';
-                        if(v.actionTaken === 'verbal_warning') actionBadge = 'إنذار شفهي';
-                        else if(v.actionTaken === 'written_pledge') actionBadge = 'تعهد خطي';
-                        else if(v.actionTaken === 'refer_to_counselor') actionBadge = 'إحالة للموجه';
-                        else if(v.status === 'closed_counselor') actionBadge = 'أغلقها الموجه';
+                    Object.values(data.violations||{}).filter(function(v) { return v; }).reverse().forEach(function(v) {
+                        let actionBadge = '<span class="badge bg-warning text-dark rounded-pill px-3">معلقة</span>';
+                        if(v.actionTaken === 'verbal_warning') actionBadge = '<span class="badge bg-secondary rounded-pill px-3">إنذار شفهي</span>';
+                        else if(v.actionTaken === 'written_pledge') actionBadge = '<span class="badge bg-dark rounded-pill px-3">تعهد خطي</span>';
+                        else if(v.actionTaken === 'refer_to_counselor') actionBadge = '<span class="badge bg-info text-white rounded-pill px-3">إحالة للموجه</span>';
+                        else if(v.status === 'closed_counselor') actionBadge = '<span class="badge bg-success rounded-pill px-3">أغلقها الموجه</span>';
 
                         let printBtn = '-';
                         if(v.actionTaken === 'written_pledge') {
-                            printBtn = `<button type="button" class="btn btn-dark btn-sm rounded-pill fw-bold shadow-sm px-3" onclick="printOfficialForm('${v.student}', '${v.type}', 'pledge', '${v.deputyNote||''}')"><i class="fas fa-print me-1"></i> التعهد</button>`;
+                            printBtn = `<button type="button" class="btn btn-dark btn-sm rounded-pill fw-bold shadow-sm px-3" onclick="triggerNativePrint(getFormHTML('${v.student}', '${v.type}', 'pledge', '${v.deputyNote||''}'), false)"><i class="fas fa-print me-1"></i> التعهد</button>`;
                         } else if (v.actionTaken === 'refer_to_counselor' || v.status === 'pending_counselor' || v.status === 'closed_counselor') {
-                            printBtn = `<button type="button" class="btn btn-info text-white btn-sm rounded-pill fw-bold shadow-sm px-3" onclick="printOfficialForm('${v.student}', '${v.type}', 'referral', '${v.deputyNote||''}')"><i class="fas fa-print me-1"></i> الإحالة</button>`;
+                            printBtn = `<button type="button" class="btn btn-info text-white btn-sm rounded-pill fw-bold shadow-sm px-3" onclick="triggerNativePrint(getFormHTML('${v.student}', '${v.type}', 'referral', '${v.deputyNote||''}'), false)"><i class="fas fa-print me-1"></i> الإحالة</button>`;
                         }
-                        tableContent += `<tr><td class="fw-bold">${v.student}</td><td class="text-danger fw-bold">${v.type}</td><td class="fw-bold">${actionBadge}</td><td class="no-print">${printBtn}</td></tr>`;
+                        tableContent += `<tr><td class="fw-bold">${v.student}</td><td class="text-danger fw-bold">${v.type}</td><td>${actionBadge}</td><td class="no-print">${printBtn}</td></tr>`;
                     });
                     tableContent += `</tbody></table>`; 
                 } else if(type==='visitors') { 
-                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الاسم</th><th>السبب</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).filter(v=>v).reverse().map(v=>`<tr><td class="fw-bold">${v.name}</td><td>${v.reason}</td><td><span class="badge bg-primary rounded-pill px-3">${v.status}</span></td></tr>`).join('')}</tbody></table>`; 
+                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الاسم</th><th>السبب</th><th>الحالة</th></tr></thead><tbody>${Object.values(data.visitors||{}).filter(function(v) { return v; }).reverse().map(function(v) { return `<tr><td class="fw-bold">${v.name}</td><td>${v.reason}</td><td><span class="badge bg-primary rounded-pill px-3">${v.status}</span></td></tr>`; }).join('')}</tbody></table>`; 
                 } else if(type==='late') { 
-                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).filter(t=>t).reverse().map(t=>`<tr><td class="fw-bold">${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`).join('')}</tbody></table>`; 
+                    tableContent += `<table class="table report-table text-center mb-0"><thead><tr><th>الطالب</th><th>التاريخ</th></tr></thead><tbody>${Object.values(data.tardiness||{}).filter(function(t) { return t; }).reverse().map(function(t) { return `<tr><td class="fw-bold">${t.student}</td><td>${new Date(t.date).toLocaleDateString('ar-SA')}</td></tr>`; }).join('')}</tbody></table>`; 
                 }
 
                 h += tableContent;
-                h += `</div>`;
+                h += `</div>
+                <div style="display:flex; justify-content:space-between; margin-top:40px; padding:0 20px; font-size:1.2rem;">
+                    <div style="text-align:center;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
+                    <div style="text-align:center;"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
+                </div>`;
                 
                 printH += tableContent;
                 printH += `</div>
-                <div class="report-signatures">
+                <div class="r-footer">
                     <div style="text-align:center;"><strong>وكيل شؤون الطلاب</strong><br><br>${data.settings.deputy || '.......................'}</div>
                     <div style="text-align:center;"><strong>مدير المدرسة</strong><br><br>${data.settings.manager || '.......................'}</div>
                 </div></div>`;
@@ -1822,9 +1849,8 @@
             }
         }
 
-        // الطباعة المعزولة 100% للتقارير
-        function executeIframePrint() { 
-            printViaIframe(currentPrintHTML, false); 
+        function executeNativePrint() { 
+            triggerNativePrint(currentPrintHTML, false); 
         }
 
     </script>
